@@ -1,0 +1,15 @@
+<div class="material">
+	<div class="title">{{ entity.title }}<div class="mod-panel">{{ entity.add_markers.moder_panel }}</div></div>
+	<div class="title2">Автор: <a href="{{ entity.add_markers.profile_url }}">{{ entity.author.name }}</a>&nbsp;&nbsp;Раздел: <a href="{{ entity.add_markers.category_url }}">{{ entity.category.title }}</a></div>
+	<div class="view">
+		<a href="{{ entity.add_markers.main }}"><img alt="{{ entity.add_markers.foto_alt }}" title="{{ entity.add_markers.foto_alt }}" style="max-width:500px; max-height:500px;" src="{{ entity.add_markers.main }}" /></a>
+		<br />
+		{{ entity.add_markers.description }}
+	</div>
+	<div class="meta">
+		<div class="icon-views"></div>Просмотров: {{ entity.views }}  
+		<div class="icon-data"></div>Дата: {{ entity.date }}
+	</div>
+</div>
+<div class="foto-rotator"><a href="{{ entity.add_markers.previous_url }}">Предыдущее фото</a> | <a href="{{ entity.add_markers.next_url }}">Следующее фото</a></div>
+

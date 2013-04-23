@@ -1,0 +1,18 @@
+<!doctype html>
+<html>
+<head>
+</head>
+<body style="background:#182126;">
+<div style="color:#809197; margin:0 auto;margin-top:170px;border:1px solid #7B8D95;padding:10px;width:250px;height:90px;background:#3E4E55;text-align:center;">
+	<span style="color:#789435;">Информация</span><br />
+	{{ data.info_message }}
+</div>
+{% if data.error_message %}
+	<div id="sql_querys" style="color:#809197;">
+	<br />{{ data.error_message }}
+	</div>
+{% endif %} 
+</body>
+</html>
+
+

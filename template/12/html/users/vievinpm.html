@@ -1,0 +1,39 @@
+﻿<table cellspacing="0" cellpadding="0" class="cat-tb">
+	<tr>
+		<td colspan="5" class="title">Личная почта</td>
+	</tr>
+	<tr>
+		<td colspan="5" class="meta">{{ messages_menu }}</td>
+	</tr>
+		<tr class="meta">
+		<td class="meta" align="center" width="10%">Статус</td>
+		<td class="meta" align="center" width="20%">Отправитель</td>
+		<td class="meta" align="center" width="35%">Тема</td>
+		<td class="meta" align="center" width="20%">Дата</td>
+		<td class="meta" align="left">Удалить<input type="checkbox" onClick="checkAll('packPoint', this.checked)"></td>
+	</tr>
+	
+{{ contects.error }}	
+{% if messages %}
+{% for message in messages %}
+	<tr>
+		<td class="col">{{ message.icon }}</td>
+		<td class="col">{{ message.fromuser.name }}</td>
+		<td class="col">{{ message.theme }}</td>
+		<td class="puttime">{{ message.sendtime }}</td>
+		<td class="col">{{ message.delete }}<input type="checkbox" class="packPoint" onClick="if(this.checked){addToPackage(this.value);}else{delFromPackage(this.value);}" value="{{ message.id }}" /></td>
+	</tr>
+{% endfor %}	
+{% endif %}	
+
+
+</table>
+<div class="fps-controll">
+	<select style="width:100px;">
+		<option>Удалить</option>
+	</select>
+	<input id="packButton" type="button" disabled="disabled" onClick="sendPack('/users/delete_message_pack/');" value="(0)">
+	<div style="display:none;">
+		<form id="actionPack" action="" method="POST"></form>
+	</div>
+</div>

@@ -1,0 +1,153 @@
+﻿<form name="addNewUserFormByAdmin" action="{{ context.action }}" method="POST" enctype="multipart/form-data">
+
+<table class="material anket-form" cellpadding="0" cellspacing="0">
+<tr>
+  <td class="title" colspan="2">Изменение профиля</td>
+</tr>
+{% if context.error %}
+<tr>
+	<td colspan="2" align="center">{{ context.error }}</td>
+</tr>
+{% endif %}
+<tr>
+  <td class="left"><strong>Имя:</strong></td>
+  <td class="right"><input type="text" name="name" maxlength="30" value="{{ context.login }}" readonly /></td>
+</tr>
+
+<tr>
+  <td class="left"><strong>Статус:</strong></td>
+  <td class="right">{{ context.status }}</td>
+</tr>
+
+<tr>
+  <td class="left"><strong>Адрес e-mail:</strong></td>
+  <td class="right">
+  <input type="text" name="email" maxlength="60" value="{{ context.email }}" />
+  <input type="hidden" name="oldEmail" value="{{ context.oldemail }}" />
+  </td>
+</tr>
+
+<tr>
+  <td class="left">
+  <strong>Новый пароль:</strong><br/>
+  Указывайте пароль <em>только</em> если вы хотите его поменять.
+  </td>
+  <td class="right"><input type="password" name="newpassword" maxlength="30" value="" /></td>
+</tr>
+
+<tr>
+  <td class="left">
+  <strong>Подтвердите пароль:</strong><br/>
+  Подтверждать пароль нужно в том случае, если вы изменили его выше.
+  </td>
+  <td class="right"><input type="password" name="confirm" maxlength="30" value="" /></td>
+</tr>
+
+<tr>
+  <td class="left"><strong>Номер в ICQ:</strong></td>
+  <td class="right"><input type="text" name="icq" maxlength="12" value="{{ context.icq }}" /></td>
+</tr>
+
+<tr>
+	<td class="left"><strong>Jabber:</strong></td>
+	<td class="right"><input type="text" name="jabber" maxlength="100" value="{{ context.jabber }}" /></td>
+</tr>
+<tr>
+	<td class="left"><strong>Пол:</strong></td>
+	<td class="right">
+		Мужской<input type="radio" name="pol" value="1"{{ context.mpol }} />
+		Женский<input type="radio" name="pol" value="2"{{ context.fpol }} />
+	</td>
+</tr>
+<tr>
+	<td class="left"><strong>Город:</strong></td>
+	<td class="right"><input type="text" name="city" maxlength="100" value="{{ context.city }}" /></td>
+</tr>
+<tr>
+	<td class="left"><strong>Телефон:</strong></td>
+	<td class="right"><input type="text" name="telephone" maxlength="100" value="{{ context.telephone }}" /></td>
+</tr>
+<tr>
+	<td class="left"><strong>Дата рождния:</strong></td>
+	<td class="right">
+		<select style="width:50px;" name="byear">
+            {{ context.byears_selector }}
+		</select>&nbsp;
+		<select style="width:50px;" name="bmonth">
+            {{ context.bmonth_selector }}
+		</select>
+		<select style="width:50px;" name="bday">
+            {{ context.bday_selector }}
+		</select>
+	</td>
+</tr>
+
+
+<tr>
+  <td class="left"><strong>Домашняя страничка:</strong></td>
+  <td class="right"><input type="text" name="url" maxlength="60" value="{{ context.url }}" /></td>
+</tr>
+
+<tr>
+  <td class="left"><strong>Интересы:</strong></td>
+  <td class="right"><textarea name="about">{{ context.about }}</textarea></td>
+</tr>
+
+<tr>
+  <td class="left">
+  <strong>Подпись:</strong><br/>
+  Это текст, который будет добавлен к размещаемым пользователем сообщениям.
+  </td>
+  <td class="right"><textarea name="signature">{{ context.signature }}</textarea></td>
+</tr>
+
+<tr>
+  <td class="left">
+  <strong>Коррекция временных зон:</strong><br/>
+  Введите необходимую разницу в часах относительно времени на форуме, и все время будет отображаться с учетом
+  разницы во временной зоне.
+  </td>
+  <td class="right">
+  <select name="timezone">
+      {{ context.options }}
+  </select>
+  Текущее время на сервере: {{ context.servertime }}
+  </td>
+</tr>
+
+<tr>
+	<td class="left" rowspan="2">
+		<strong>Аватар:</strong><br/>
+		Показывает небольшое изображение под информацией о вас в сообщениях.
+	</td>
+	<td class="right">
+		<img title="{{ context.name }}" class="userAvatar" border="0" src="{{ context.avatar }}">
+	</td>
+</tr>
+<tr>
+	<td class="right">
+		<input type="file" name="avatar"  />
+	</td>
+</tr>
+<tr>
+	<td class="left">
+		Удалить текущую аватарку(если есть)
+	</td>
+	<td class="right">
+        {{ context.unlinkfile }}
+	</td>
+</tr>
+<tr>
+	<td class="left">Активация</td>
+	<td class="right">{{ context.activation }}</td>
+</tr>
+
+
+
+
+<tr>
+  <td colspan="2" align="center"><input type="submit" name="submitForm" value="Отправить" /></td>
+</tr>
+</table>
+
+</form>

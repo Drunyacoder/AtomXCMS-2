@@ -1,0 +1,30 @@
+{% if context.preview %}
+	{{ context.preview }}
+{% endif %}
+{{ context.error }}
+{{ editor_body }}
+<form name="sendForm" id="sendForm" action="{{ context.action }}" method="POST"
+enctype="multipart/form-data" onsubmit="return checkForm(this)">
+<table border="0"  class="add-form" cellspacing="1" cellpadding="0">
+	<tr>
+		<td>Для пользователя:<font color="red" class="manStar">*</font></td>
+		<td class="right"><input type="text" name="toUser" maxlength="30" value="{{ context.touser }}" /></td>
+	</tr>
+	<tr>
+		<td>Заголовок сообщения:<font color="red" class="manStar">*</font></td>
+		<td class="right"><input type="text" name="subject" maxlength="60" value="{{ context.subject }}" /></td>
+	</tr>
+
+	<tr>
+		<td colspan="2">
+			<textarea id="editor" {{ editor_text }} class="text-area" name="mainText" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);">{{ context.main_text }}</textarea>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<input class="subm" type="submit" name="submitForm" value="Отправить" />
+			<input class="subm" type="submit" name="viewMessage" value="Предварительный просмотр" />
+		</td>
+	</tr>
+</table>
+</form>

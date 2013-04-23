@@ -1,0 +1,1 @@
+<?phpclass AddSmiles {		// How match comments to view	private $limit = 5;		// Wraper for comments	private $wrap;			public function __construct($params) {	}			public function common($params) {		return str_replace('= )', 'your smile', $params);	}}

@@ -1,0 +1,43 @@
+<table border="0" cellspacing="0" cellpadding="0" class="cat-tb">
+	<tr>
+		<td class="title" colspan="7">{{ context.forum_name }}</td>
+	</tr>
+	<tr>
+		<td width="5%" colspan="1" class="meta">&nbsp;</td>
+		<td  class="meta" align="left">Тема</td>
+		<td width="3%" class="meta" align="center">Ответы</td>
+		<td width="4%" class="meta" align="center">Просмотры</td>
+		<td width="14%" class="meta" align="center">Автор темы</td>
+		<td width="25%" class="meta" align="left">Обновления</td>
+	</tr>
+
+	
+	{% for theme in themes %}
+	<tr>
+		<td class="iconTd" align="center">{{ theme.themeicon }}</td>
+		<td class="threadNametd">{{ theme.importantly }}<a class="threadLink" href="{{ theme.theme_url }}">{{ theme.title }}</a>{{ theme.near_pages }}<br />
+		{{ theme.description }}
+		<div style="float:right;">{{ theme.adminbar }}</div>
+		<div class="parent-forum" style="float:right;">[{{ theme.parent_forum }}]</div></td>
+		<td class="threadPostTd" align="center">{{ theme.posts }}</td>
+		<td class="threadViewTd" align="center">{{ theme.views }}</td>
+		<td class="threadAuthTd" align="center">
+			<span class="threadAuthor">
+				{{ theme.author.name }}
+			</span>
+		</td>
+		<td class="forumLastPostTd">
+			{{ theme.last_post }}
+			<br />Сообщение от: 
+			<span class="lastPostUser">{{ theme.last_user }}</span><br />
+			{{ theme.last_page }}
+		</td>
+	</tr>
+	{% endfor %}
+
+		
+	
+	
+</table>
+
+

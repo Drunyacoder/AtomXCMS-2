@@ -1,0 +1,166 @@
+<table class="posts-tb" border="0" cellspacing="0" cellpadding="0" id="top">
+	<tr>
+		<td class="title">{{ theme.title }}</td>
+	</tr>
+	<tr>
+		<td>
+			{{ theme.poll }}
+		</td>
+	</tr>
+	<tr>
+		<td class="postFirst">
+
+		
+		
+		
+			{% for post in posts %}
+			<table cellspacing="0" cellpadding="0" class="post-tb" id="post{{ post.post_number }}">
+				<tr>
+					<td class="meta">
+						<div style="width:140px;overflow:hidden;">
+							<a class="postUser" href="javascript://" {{ editor_forum_name }} >{{ post.author.name }}</a>
+						</div>
+					</td>
+					<td class="meta">
+						Добавлено: {{ post.time }} | 
+						<a href="javascript://" onClick="prompt('Ссылка к сообщению','{{ post.post_number_url }}');return false;">{{ post.post_number }}</a>
+					</td>
+				</tr>
+				<tr>
+					<td  width="15%" class="postTdInfo" valign="top">
+						
+						<div class="avatar"><img title="{{ post.author.name }}" class="userAvatar" border="0" src="{{ post.author.avatar }}"></div>
+                        {% if post.id_author != 0 %}
+                        <div class="miniprofile-cont">
+							<div class="userRank">{{ post.author.user_rank }}</div>
+							<div class="info">Статус: <span class="unp">{{ post.author.rank }}</span></div>
+							<div class="info">Группа: <span class="unp">{{ post.author.status_title }}</span></div>
+							<div class="info">Сообщений: <span class="unp">{{ post.author.posts }}</span></div>
+							<div class="info">Регистрация: <span class="repNums"><b>{{ post.author.puttime }}</b></span></div>
+							<div class="info">Состояние: <span class="unp">{{ post.author.status_on }}</span></div>
+							
+							<div class="info">
+								Репутация:&nbsp;<a href="javascript:void(0)" onClick="showFpsWin('{{ www_root }}/users/votes_story/{{ post.author.id }}', '', 'История рейтинга ({{ post.author.name }})');">{{ post.author.rating }}</a>&nbsp;
+								<div class="ratingBlock" id="ratingBlock_{{ post.author.id }}" style="">
+									<a href="javascript:void(0)" onClick="$('#setRating_{{ post.author.id }}').show();">-&nbsp;/&nbsp;+</a>
+								</div>
+							</div>
+							
+							<div class="info">
+								Предупреждения:&nbsp;<a href="javascript:void(0)" onClick="showFpsWin('{{ www_root }}/users/warnings_story/{{ post.author.id }}', '', 'История предупреждений ({{ post.author.name }})');">{{ post.author.warnings }}</a>&nbsp;
+								<div class="ratingBlock" id="warningsBlock_{{ post.author.id }}" style="">
+									<a href="javascript:void(0)" onClick="$('#addWarning_{{ post.author.id }}').show();">+</a>
+								</div>
+							</div>
+						</div>
+                        {% endif %}
+						&nbsp;
+					</td>
+					<td class="posttdMessage" valign="top">{{ post.message }}
+						<div align="left" class="eAttach">{{ post.attachment }}</div>
+                        {% if post.id_author != 0 %}
+						<br><hr size="1" width="150" align="left" class="signatureHr"><span style="clear:both;" class="signatureView">{{ post.author.signature }}</span>
+						{% endif %}
+                        <br><br><div class="edited">{{ post.editor_info }}</div>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" class="meta-b" align="center">
+						<table border="0" width="100%" cellspacing="0" cellpadding="0">
+							<tr>
+								<td width="20%">
+                                    {% if post.id_author != 0 %}
+										<a href="{{ www_root }}/users/info/{{ post.id_author }}"><img src="{{ template_path }}/img/icon_profile.png" title="View profile" alt="View profile" /></a>
+										{% if fps_user != false %}
+											<a href="{{ www_root }}/users/send_mail_form/{{ post.id_author }}"><img src="{{ template_path }}/img/icon_email.png" title="Send mail" alt="Send mail" /></a>
+											<a href="{{ www_root }}/users/send_msg_form/{{ post.id_author }}"><img src="{{ template_path }}/img/icon_pm.png" title="PM" alt="PM" /></a>
+										{% endif %}
+										{% if post.author.url %}
+											<a href="{{ post.author.url }}" target="_blank"><img src="{{ template_path }}/img/icon_www.png" title="Author site" alt="Author site" /></a>
+										{% endif %}
+								    {% endif %}
+                                </td>
+								<td align="center">
+									<span class="quoteAuthor" {{ editor_forum_quote }}>Цитировать</span>
+								</td>
+								<td width="9%" nowrap align="right">
+                                    {{ post.on_top_link }} {{ post.edit_link }} {{ post.delete_link }}
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+
+
+			<div id="setRating_{{ post.author.id }}" class="fps-fwin" style="display:none;">
+			<div class="drag_window">
+				<div class="title" onmousedown="drag_object(event, this.parentNode)">Голос для <b>{{ post.author.name }}</b></div>
+				<div onClick="$('#setRating_{{ post.author.id }}').hide()" class="close"></div>
+				<div class="cont">
+					<form id="ratingForm_{{ post.author.id }}">
+						<input type="radio" name="points" value="1" /><b>&nbsp;1</b><br />
+						<input type="radio" name="points" value="0" /><b>&nbsp;0</b><br />
+						<input type="radio" name="points" value="-1" /><b>-1</b><br />
+						<textarea name="comment"></textarea><br />
+						<input type="button" value="Отправить" onClick="setRating({{ post.author.id }}, 'ratingForm_{{ post.author.id }}');" />
+					</form>
+					<div id="infomess_{{ post.author.id }}"></div>
+				</div>
+			</div>
+			</div>
+
+
+			<div id="addWarning_{{ post.author.id }}" class="fps-fwin" style="display:none;">
+			<div class="drag_window">
+				<div class="title" onmousedown="drag_object(event, this.parentNode)">Замечание для <b>{{ post.author.name }}</b></div>
+				<div onClick="$('#addWarning_{{ post.author.id }}').hide()" class="close"></div>
+				<div class="cont">
+					<form id="warningForm_{{ post.author.id }}">
+						<fieldset>
+							<legend><b>Действие</b></legend>
+							<input type="radio" name="points" value="1">[+]Повысить уровень замечаний<br />
+							<input type="radio" name="points" value="-1">[-]Понизить уровень замечаний(снять бан)<br />
+						</fieldset>
+						<fieldset>
+							<legend><b>Причина</b></legend>
+							<textarea style="width:98%;" name="cause"></textarea>
+						</fieldset>
+						<fieldset>
+							<legend><b>Бан</b></legend>
+							<input style="width:50px;margin:2px;" type="text" name="cnt" value="" />
+							<select style="width:80px;margin:2px;" name="mult">
+								<option value="h">Часа</option>
+								<option value="d">Дней</option>
+								<option value="w">Недель</option>
+								<option value="m">Месяцев</option>
+								<option value="y">Лет</option>
+							</select>
+							<input type="checkbox" name="permanently" value="1" />Навсегда
+						</fieldset>
+						<fieldset>
+							<legend><b>Уведомление</b></legend>
+							<input type="checkbox" name="noticepm" value="1" />Личные сообщения
+						</fieldset>
+						<fieldset>
+							<input type="button" value="Отправить" onClick="addWarning_({{ post.author.id }}, 'warningForm_{{ post.author.id }}');" />
+						</fieldset>
+					</form>
+					<div id="winfomess_{{ post.author.id }}"></div>
+				</div>
+			</div>
+			</div>
+			{% endfor %}
+
+		
+		
+		
+		
+		</td>
+	</tr>
+</table>
+
+<div style=" margin:5px;">{{ pagination }}</div>
+
+<div style="clear:both;"></div>
+{{ reply_form }}

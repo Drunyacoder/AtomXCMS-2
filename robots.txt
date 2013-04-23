@@ -1,0 +1,31 @@
+User-agent: *
+Disallow: /sys/cache/
+Disallow: /sys/tmp/
+Disallow: /sys/logs/
+Disallow: /sys/fnc/
+Disallow: /sys/inc/
+Disallow: /sys/plugins/
+Disallow: /sys/settings/
+Disallow: /admin/
+Disallow: /loads/download_file/
+Disallow: /forum/download_file/
+Disallow: /chat/
+Disallow: /search/
+Disallow: /template/
+Host: fapos.net
+
+User-agent: Yandex
+Disallow: /sys/cache/
+Disallow: /sys/tmp/
+Disallow: /sys/logs/
+Disallow: /sys/fnc/
+Disallow: /sys/inc/
+Disallow: /sys/plugins/
+Disallow: /sys/settings/
+Disallow: /admin/
+Disallow: /loads/download_file/
+Disallow: /forum/download_file/
+Disallow: /chat/
+Disallow: /search/
+Disallow: /template/
+

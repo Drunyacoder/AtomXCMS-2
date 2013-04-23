@@ -1,0 +1,26 @@
+<h1 style="text-align:center;">Введите ваше имя и пароль для входа в систему</h1>
+{{ context.error }}
+<form name="loginForm" action="{{ context.action }}" method="POST">
+	<table class="add-form login-form">
+		<tr>
+			<td width="20%" align="right">Имя:</td>
+			<td><input type="text" name="username" maxlength="30" value="" style="width:300px" /></td>
+		</tr>
+		<tr>
+			<td align="right">Пароль:</td>
+			<td><input type="password" name="password" maxlength="30" style="width:300px" />{{ context.form_key }}</td>
+		</tr>
+		<tr>
+			<td align="right">Запомнить:</td>	
+			<td><input type="checkbox" name="autologin" value="1" /></td>
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+			<td><input type="submit" name="submitForm"value="Вход" /></td>
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+			<td>{{ context.new_password }}</td>
+		</tr>
+	</table>
+</form>

@@ -1,0 +1,21 @@
+{% for entity in entities %}
+<div class="material">
+	<div class="title"><a href="{{ entity.add_markers.entry_url }}">{{ entity.title }}</a><div class="mod-panel">{{ entity.add_markers.moder_panel }}</div></div>
+	<div class="title2">
+		<span>Автор: <a href="{{ entity.add_markers.profile_url }}">{{ entity.author.name }}</a></span>
+		<span>Раздел: <a href="{{ entity.add_markers.category_url }}">{{ entity.category.title }}</a></span>
+	</div>
+	<div class="view">
+		{{ entity.add_markers.announce }}
+		<div style="clear:both;"></div>
+	</div>
+	<div class="meta">
+		<div class="icon-views"></div>{{ entity.views }}  
+		<img class="pere" alt="" src="{{ template_path }}/img/pere.png">
+		<div class="icon-data"></div>{{ entity.date }}
+		<img class="pere" alt="" src="{{ template_path }}/img/pere.png">
+		<div class="icon-comments"></div>Комментариев: {{ entity.comments }}
+	</div>
+</div>
+
+{% endfor %}

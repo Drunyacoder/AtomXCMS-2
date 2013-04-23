@@ -1,0 +1,22 @@
+{{ form.errors }}
+{{ editor_body }}
+<div class="addcomments-block">
+<form method="POST" action="{{ form.action }}">
+<table>
+	<tr>
+		<td><b>Имя:</b></td>
+		<td><input {{ form.disabled }} type="text" name="login" value="{{ form.name }}" /></td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<textarea id="editor" {{ editor_text }} name="message">
+			{{ form.message }}
+			</textarea>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2"><input type="submit" name="send" value="Сохранить" /></td>
+	</tr>
+</table>
+</form>
+</div>

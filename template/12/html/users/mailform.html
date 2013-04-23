@@ -1,0 +1,19 @@
+﻿<form action="{ACTION}" name="mailForm" method="POST" enctype="multipart/form-data">
+<table>
+<tr>
+  <td>Тема:</td>
+  <td><input class="input" type="text" name="theme" maxlength="200" value="" /></td>
+</tr>
+<tr>
+  <td>Сообщение:</td>
+  <td><textarea class="input" cols="63" rows="10" name="message"></textarea></td>
+</tr>
+<tr>
+  <td>&nbsp;</td>
+  <td><input class="button" type="submit" name="sendMailForm" value="Отправить" /></td>
+</tr>
+</table>
+<input type="hidden" name="id_author" value="{ID_AUTHOR}" />
+<input type="hidden" name="id_theme" value="{ID_THEME}" />
+<input type="hidden" name="id_forum" value="{ID_FORUM}" />
+</form>

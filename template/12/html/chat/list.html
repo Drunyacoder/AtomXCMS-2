@@ -1,0 +1,14 @@
+{% if messages %}
+{% for message in messages %}
+<table style="background:#F7F7F7; width:175px; margin:1px 1px 1px 1px; border: 1px solid #848484;font-family: Tahoma, Verdana, sans-serif; overflow:auto; -moz-border-radius: 3px; border-radius: 3px; -webkit-border-radius: 3px;"> 
+<tr>
+	<td><b><span style="color:#9DC13F; font-size:13px; font-weight:bold;">{{ message.name }}</span></b></td>
+	<td valign="top" align="right"><span style="font-size:9px;color:#525252;vertical-align:top;">{{ message.date }}</span>{{ message.ip }}</td>
+</tr>
+<tr>
+	<td style="font-size:11px;color:#525252;" colspan="2">{{ message.message }}</td>
+</tr>
+
+</table>
+{% endfor %}
+{% endif %}

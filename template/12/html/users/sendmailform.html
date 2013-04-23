@@ -1,0 +1,23 @@
+﻿{{ context.error }}
+<form name="sendMailForm" action="{{ context.action }}" method="POST">
+<table class="material message-tb" cellpadding="0" cellspacing="0">
+<tr>
+  <td class="title" colspan="2">Написать письмо</td>
+</tr>
+<tr>
+  <td class="left">Для пользователя:</td>
+  <td class="right"><input type="text" name="toUser" maxlength="30" value="{{ context.to_user }}" /></td>
+</tr>
+<tr>
+  <td class="left">Заголовок письма:</td>
+  <td class="right"><input type="text" name="subject" maxlength="60" value="{{ context.subject }}" /></td>
+</tr>
+<tr>
+  <td colspan="2"><textarea name="message" cols="60" rows="15">{{ context.message }}</textarea>
+</tr>
+<tr>
+  <td>&nbsp;</td>
+  <td><input type="submit" name="sendForm" value="Отправить" /></td>
+</tr>
+</table>
+</form>

@@ -1,0 +1,67 @@
+{{ context.errors }}
+{{ context.preview }}
+{{ editor_body }}
+<script type="text/javascript">
+maxAttachedFiles = {{ context.max_attaches }};
+</script>
+<form name="sendForm" id="sendForm" action="{{ context.action }}" method="POST" 
+enctype="multipart/form-data" onsubmit="return checkForm(this)">
+<table border="0"  class="add-form small" cellspacing="1" cellpadding="0">
+	<tr>
+		<td>Категория:<font color="red" class="manStar">*</font></td>
+		<td class="right"><select name="cats_selector">{{ context.cats_selector }}</select></td>
+	</tr>
+	<tr>
+		<td>Заголовок:<font color="red" class="manStar">*</font></td>
+		<td class="right"><input type="text" name="title" maxlength="128" value="{{ context.title }}"></td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<textarea id="editor" {{ editor_text }} class="text-area" name="mainText" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);">{{ context.mainText }}</textarea>
+		</td>
+	</tr>
+	<tr>
+		<td>Meta description:</td>
+		<td class="right"><textarea name="description">{{ context.description }}</textarea></td>
+	</tr>
+	<tr>
+		<td>Теги:</td>
+		<td class="right"><input size="70" type="text" name="tags" value="{{ context.tags }}" /></td>
+	</tr>
+	<tr>
+		<td>Источник(автор):</td>
+		<td class="right"><input size="70" type="text" name="sourse" value="{{ context.sourse }}" /></td>
+	</tr>
+	<tr>
+		<td>E-Mail автора:</td>
+		<td class="right"><input size="70" type="text" name="sourse_email" value="{{ context.sourse_email }}" /></td>
+	</tr>
+	<tr>
+		<td>Сайт автора:</td>
+		<td class="right"><input size="70" type="text" name="sourse_site" value="{{ context.sourse_site }}" /></td>
+	</tr>
+	<tr>
+		<td>Комментарии:</td>
+		<td class="right"><input type="checkbox" name="commented" value="1" {{ context.commented }} /></td>
+	</tr>
+	<tr>
+		<td>Доступен для просмотра:</td>
+		<td class="right"><input type="checkbox" name="available" value="1" {{ context.available }} /></td>
+	</tr>
+	<tr>
+		<td>Добавить файлы:</td>
+		<td class="right">
+			<div id="attachments">
+				<input style="width:20px;" type="button" name="addInput" value="+" onClick="addFileField('attachments');" />
+				<input class="attachField" type="file" id="attach1" name="attach1"  onChange="getFile(1)" /><span id="attachMeta1"></span><br />
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<input class="subm" type="submit" name="submitForm" value="Отправить" />
+			<input class="subm" type="submit" name="viewMessage" value="Предварительный просмотр" />
+		</td>
+	</tr>
+</table>
+</form>

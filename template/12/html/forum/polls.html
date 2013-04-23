@@ -1,0 +1,62 @@
+<script type="text/javascript">
+function sendVote(){
+	var ansver = $('input[type="radio"]:checked');
+	if (typeof ansver != 'undefined') {
+		$.get('{{ www_root }}/forum/vote_poll/{{ poll.id }}?ansver=' + ansver.val(), function(response){
+			$('#pollVote').hide();
+			
+			renderPollResults(response);
+			
+			$('#pollResults').show();
+		});
+	}
+}
+
+function renderPollResults(data) {
+	$('#pollResults').html('');
+	
+	data = jQuery.parseJSON(data);
+	
+	for (key in data) {
+		var poll = data[key];
+		
+		var row = '<div class="poll">'
+		+'<div class="variant">' + poll.ansver + '</div><div class="cnt">' + poll.votes + '</div><div style="width:' + poll.percentage + '%;" class="bar"></div><div class="percentege">' + poll.percentage + '%</div>'
+		+'<div class="clear"></div>'
+		+'</div>';
+		$('#pollResults').append(row);
+	}
+	
+	/*
+	data.each(function(poll){
+		var row = '<div class="poll">'
+		+'<div class="variant">' + poll.ansver + '</div><div class="cnt">' + poll.votes + '</div><div style="width:' + poll.percentage + '%;" class="bar"></div><div class="percentege">' + poll.percentage + '%</div>'
+		+'<div class="clear"></div>'
+		+'</div>';
+		$('#pollResults').append(row);
+	});
+	*/
+}
+</script>
+<div id="pollVote">
+{% if poll.can_voted %} 
+	{% for variant in poll.variants %}
+	<div class="poll2">
+		<div class="variant">{{ variant.ansver }}</div><div class="cnt"><input type="radio" name="ansver" value="{{ variant.ansver_id }}" /></div>
+		<div class="clear"></div>
+	</div>
+	{% endfor %}
+	
+	<div style="text-align:center; padding:10px;"><input onClick="sendVote();" style="cursor:pointer;" type="button" name="poll_send" value="Ответить" /></div>
+	
+{% endif %}
+</div>
+
+<div id="pollResults" {% if poll.can_voted %} style="display:none;" {% endif %} class="polls">
+{% for variant in poll.variants %}
+<div class="poll">
+	<div class="variant">{{ variant.ansver }}</div><div class="cnt">{{ variant.votes }}</div><div style="width:{{ variant.percentage }}%;" class="bar"></div><div class="percentege">{{ variant.percentage }} %</div>
+	<div class="clear"></div>
+</div>
+{% endfor %}
+</div>

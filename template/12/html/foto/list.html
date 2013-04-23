@@ -1,0 +1,14 @@
+{% for entity in entities %}
+<div class="material-foto">
+	<!--<div class="title2">Автор: <a href="{{ entity.add_markers.profile_url }}">{{ entity.author.name }}</a>&nbsp;&nbsp;Раздел: <a href="{{ entity.add_markers.category_url }}">{{ entity.add_markers.category_name }}</a></div>-->
+	<div class="view">
+	<a href="{{ entity.add_markers.entry_url }}"><img alt="{{ entity.add_markers.foto_alt }}" title="{{ entity.add_markers.foto_alt }}" src="{{ entity.add_markers.preview_foto }}" width="150" height="150" /></a>
+	</div>
+	<div class="meta">
+		Обозвали: <a href="{{ entity.add_markers.entry_url }}">{{ entity.title }}</a> <br />
+		Просмотров: {{ entity.views }}  <br />
+		{{ entity.add_markers.moder_panel }}
+	</div>
+</div>
+
+{% endfor %}

@@ -1,0 +1,42 @@
+{{ editor_body }}
+
+
+<script language="JavaScript" type="text/javascript">
+l_empty_message = "Вы должны ввести текст сообщения";
+l_no_text_selected = "Выделите текст на странице и попробуйте еще раз";
+</script>
+<form name="sendForm" id="sendForm" action="{{ context.action }}" method="POST" 
+enctype="multipart/form-data" onsubmit="return checkForm(this)">
+<table border="0"  class="add-form reply" cellspacing="0" cellpadding="0" width="100%">
+	<tr>
+		<td colspan="3" class="title">Быстрый ответ</td>
+	<tr>
+	<tr>
+
+		<td>
+			<table style="width:100%;" class="">
+				<tr>
+					<td colspan="2">
+						<textarea id="editor" {{ editor_forum_text }} class="text-area" name="mainText" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);">{{ context.main_text }}</textarea>
+					</td>
+				</tr>
+				<tr>
+					<td align="left" class="gTableRight">
+						<div id="attachments">
+							<input style="width:20px;" type="button" name="addInput" value="+" onClick="addFileField('attachments');" />
+							<input class="attachField" type="file" id="attach1" name="attach1"  onChange="getFile(1)" /><span id="attachMeta1"></span><br />
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<input class="subm" type="submit" name="submitForm" value="Отправить" />
+						<input class="subm" type="submit" name="viewMessage" value="Предварительный просмотр" />
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+</form>
+

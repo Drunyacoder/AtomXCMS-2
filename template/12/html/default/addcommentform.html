@@ -1,0 +1,21 @@
+{{ editor_body }}
+<div class="comm-pagi">{{ comments_pagination }}</div>
+<div class="addcomments-block">
+	<form method="POST" action="{{ data.action }}">
+		<table style="">
+			<tr>
+				<td><b>Имя:</b></td>
+				<td align="right"><input type="text" name="login" size="47" value="{{ data.add_comment_name }}" /></td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<textarea id="editor" {{ editor_text }} name="message" >{{ data.add_comment_message }}</textarea>
+				</td>
+			</tr>
+			{{ data.add_comment_captcha }}
+			<tr>
+				<td align="center" colspan="2"><input type="submit" name="send" value="Отправить" /></td>
+			</tr>
+		</table>
+	</form>
+</div>

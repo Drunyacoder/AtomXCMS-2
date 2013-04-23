@@ -1,0 +1,58 @@
+﻿<form name='editThemeForm' action="{{ context.action }}" method="POST">
+
+<table class="showTable">
+<tr>
+  <th colspan="2">Править тему</th>
+</tr>
+<tr>
+  <td width="30%">Форум:</td>
+  <td width="70%">
+  <select name="id_forum" style="width:400px">
+  {{ context.options }}
+  </select>
+  </td>
+</tr>
+<tr>
+  <td>Тема:</td>
+  <td><input type="text" name="theme" maxlength="128" value="{{ context.theme }}" style="width:400px" /></td>
+</tr>
+
+<tr>
+  <td>Описание:</td>
+  <td><input type="text" name="description" maxlength="128" value="{{ context.description }}"  style="width:400px" /></td>
+</tr>
+<tr>
+	<td>Закрыть доступ:</td>
+	<td>
+		{% for group in context.users_groups %}
+		<input type="checkbox"
+			{% for curr in context.gr_access %}
+				{% if curr == group.id %}
+				 checked="checked" 
+				{% endif %}
+			{% endfor %}
+		  value="{{ group.id }}" name="gr_access_{{ group.id }}" />&nbsp;{{ group.title }}<br />
+		{% endfor %}
+	</td>
+</tr>
+<tr>
+	<td>Закрепить первое сообщение темы:</td>
+	<td>
+		<input type="checkbox" name="first_top"
+		{% if context.first_top %}
+		checked="checked"
+		{% endif %}
+		/>
+	</td>
+</tr>
+<tr>
+  <td>Автор:</td>
+  <td><input type="text" name="author" value="{{ context.author }}" disabled style="width:400px" /></td>
+</tr>
+<tr>
+  <td>&nbsp;</td>
+  <td><input type="submit" name="sendForm" value="Сохранить" /></td>
+</tr>
+</table>
+
+</form>

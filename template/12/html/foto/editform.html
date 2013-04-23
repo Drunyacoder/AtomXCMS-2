@@ -1,0 +1,24 @@
+﻿{{ editor_body }}
+<form name="sendForm" id="sendForm" action="{{ data.action }}" method="POST" 
+enctype="multipart/form-data">
+<table border="0"  class="add-form small" cellspacing="1" cellpadding="0">
+	<tr>
+		<td>Категория:<font color="red" class="manStar">*</font></td>
+		<td class="right"><select name="cats_selector">{{ data.cats_selector }}</select></td>
+	</tr>
+	<tr>
+		<td>Заголовок:<font color="red" class="manStar">*</font></td>
+		<td class="right"><input type="text" name="title" maxlength="128" value="{{ data.title }}"></td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<textarea id="editor" {{ editor_text }} class="text-area" name="mainText" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);">{{ data.main_text }}</textarea>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<input class="subm" type="submit" name="submitForm" value="Отправить" />
+		</td>
+	</tr>
+</table>
+</form>

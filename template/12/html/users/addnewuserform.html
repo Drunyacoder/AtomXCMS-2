@@ -1,0 +1,126 @@
+﻿
+
+
+<form name="addNewUserForm" action="{{ context.action }}" method="POST" enctype="multipart/form-data">
+
+<table border="0" cellpadding="0" cellspacing="0" class="material anket-form">
+
+<tr>
+  <td class="title" colspan="2">Регистрация</td>
+</tr>
+
+{% if context.error %}
+<tr>
+	<td colspan="2" align="center">{{ context.error }}</td>
+</tr>
+{% endif %}
+<tr>
+  <td class="left"><strong>Имя:<span style="color:#F3191E;">*</span></strong></td>
+
+  <td class="right"><input type="text" name="login" maxlength="30" value="{{ context.login }}" /></td>
+</tr>
+<tr>
+  <td class="left"><strong>Адрес e-mail:<span style="color:#F3191E;">*</span></strong></td>
+
+  <td class="right"><input type="text" name="email" maxlength="60" value="{{ context.email }}" /></td>
+</tr>
+<tr>
+  <td class="left"><strong>Пароль:<span style="color:#F3191E;">*</span></strong></td>
+
+  <td class="right"><input type="password" name="password" maxlength="30" value="" /></td>
+</tr>
+<tr>
+  <td class="left"><strong>Подтвердите пароль:<span style="color:#F3191E;">*</span></strong></td>
+
+  <td class="right"><input type="password" name="confirm" maxlength="30" value="" /></td>
+</tr>
+<tr>
+  <td class="left"><strong>Номер в ICQ:</strong></td>
+  <td class="right"><input type="text" name="icq" maxlength="12" value="{{ context.icq }}" /></td>
+</tr>
+<tr>
+	<td class="left"><strong>Jabber:</strong></td>
+	<td class="right"><input type="text" name="jabber" maxlength="100" value="{{ context.jabber }}" /></td>
+</tr>
+<tr>
+	<td class="left"><strong>Пол:</strong></td>
+	<td class="right">
+		Мужской<input type="radio" name="pol" value="1"{{ context.mpol }} />
+		Женский<input type="radio" name="pol" value="2"{{ context.fpol }} />
+	</td>
+</tr>
+<tr>
+	<td class="left"><strong>Город:</strong></td>
+	<td class="right"><input type="text" name="city" maxlength="100" value="{{ context.city }}" /></td>
+</tr>
+<tr>
+	<td class="left"><strong>Телефон:</strong></td>
+	<td class="right"><input type="text" name="telephone" maxlength="100" value="{{ context.telephone }}" /></td>
+</tr>
+<tr>
+	<td class="left"><strong>Дата рождния:</strong></td>
+	<td class="right">
+		<select style="width:50px;" name="byear">
+            {{ context.byears_selector }}
+		</select>&nbsp;
+		<select style="width:50px;" name="bmonth">
+            {{ context.bmonth_selector }}
+		</select>
+		<select style="width:50px;" name="bday">
+            {{ context.bday_selector }}
+		</select>
+	</td>
+</tr>
+<tr>
+  <td class="left"><strong>Домашняя страничка:</strong></td>
+  <td class="right"><input type="text" name="url" maxlength="60" value="{{ context.url }}" /></td>
+</tr>
+<tr>
+  <td class="left"><strong>Интересы:</strong></td>
+  <td class="right"><textarea name="about" cols="30" rows="3">{{ context.about }}</textarea></td>
+</tr>
+<tr>
+  <td class="left">
+  <strong>Подпись:</strong><br/>
+  Это текст, который будет добавлен к размещаемым вами сообщениям.
+  </td>
+  <td class="right"><textarea name="signature" cols="30" rows="3">{{ context.signature }}</textarea></td>
+</tr>
+<tr>
+  <td>&nbsp;</td>
+  <td id="captcha"><img onclick="this.src='/sys/inc/kcaptcha/kc.php/?'+Math.round(Math.random(0)*1000)" src="{{ context.captcha }}" alt="" /></td>
+</tr>
+<tr>
+  <td class="left"><strong>Код подтверждения:<span style="color:#F3191E;">*</span></strong></td>
+
+  <td class="right"><input type="text" name="keystring" maxlength="6" value="{{ context.keystring }}" /></td>
+</tr>
+<tr>
+  <td class="left">
+  <strong>Коррекция временных зон:</strong><br/>
+  Введите необходимую разницу в часах относительно времени на форуме, и все время будет отображаться с учетом
+  разницы в вашей временной зоне.
+  </td>
+  <td class="right">
+  <select name="timezone">
+      {{ context.options }}
+  </select>
+  Текущее время на сервере: {{ context.servertime }}
+  </td>
+</tr>
+<tr>
+  <td class="left">
+  <strong>Аватар:</strong><br/>
+  Показывает небольшое изображение под информацией о вас в сообщениях.
+  </td>
+  <td class="right">
+  <input type="file" name="avatar" />
+  </td>
+</tr>
+
+<tr>
+  <td colspan="2" align="center"><input type="submit" name="submitForm" value="Отправить" /></td>
+</tr>
+</table>
+
+</form>
