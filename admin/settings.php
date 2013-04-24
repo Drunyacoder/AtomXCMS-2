@@ -7,7 +7,7 @@
 ## @package       CMS Fapos                     ##
 ## @subpackege    Admin Panel module            ##
 ## @copyright     ©Andrey Brykin 2010-2013      ##
-## @last mod.     2013/04/05                    ##
+## @last mod.     2013/04/24                    ##
 ##################################################
 
 
@@ -55,9 +55,9 @@ if (!empty($templates)) {
 
 // Prepare fonts select list
 $fonts = glob(ROOT . '/sys/fonts/*.ttf');
-sort($fonts);
 $fontSelect = array();
 if (!empty($fonts)) {
+	sort($fonts);
 	foreach ($fonts as $value) {
 		$pos = strrpos($value, "/");
 		if ($pos >= 0) {
