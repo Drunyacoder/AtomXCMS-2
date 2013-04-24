@@ -176,6 +176,15 @@ class Bootstrap
             ini_set('display_errors', 1);
             error_reporting(E_ALL);
         }
+		
+		
+		ini_set('upload_max_filesize', '100M');
+		ini_set('post_max_size', '100M');
+		
+		ini_set('log_errors', 1);
+		ini_set('error_log', ROOT . '/sys/logs/php_errors.log');
+
+
 
         
         /**
