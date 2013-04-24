@@ -1,6 +1,14 @@
 <?php
 
-function resampleImage($path, $new_path, $size) {
+function resampleImage($path, $new_path, $sizew, $sizeh = false) 
+{
+	if (false == $sizeh) $sizeh = $sizew;
+	
+
+	if (!isset($sizew) || $sizew < 150) $sizew = 150;
+	if (!isset($sizeh) || $sizeh < 150) $sizeh = 150;
+
+	$itype = 2;
 	if (function_exists('exif_imagetype')) {
 		$itype = exif_imagetype($path);
 		switch ($itype) {
@@ -14,7 +22,8 @@ function resampleImage($path, $new_path, $size) {
 	} else if (function_exists('getimagesize')) {
 		@$info = getimagesize($path);
 		if (!$info || empty($info['mime'])) return false;
-		switch ($info['mime']) {
+		$itype = $info['mime'];
+		switch ($itype) {
 			case 'image/jpeg': $img = imagecreatefromjpeg($path); break;
 			case 'image/gif': $img = imagecreatefromgif($path); break;
 			case 'image/png': $img = imagecreatefrompng($path); break;
@@ -26,21 +35,53 @@ function resampleImage($path, $new_path, $size) {
 	}
 	$w = imagesx($img);
 	$h = imagesy($img);
-	if ($w / $size < ($h / $size)) {
-		$nw = $size;
-		$nh = intval($h * $size / $w);
+	if ($w < $sizew && $h < $sizeh) {
+		$nw = $w;
+		$nh = $h;
 	} else {
-		$nw = intval($w * $size / $h);
-		$nh = $size;
+		if (($w / $sizew) < ($h / $sizeh)) {
+			$nw = intval($w * $sizeh / $h);
+			$nh = $sizeh;
+		} else {
+			$nw = $sizew;
+			$nh = intval($h * $sizew / $w);
+		}
 	}
 
-	$dest = imagecreatetruecolor($size, $size);
-	imagecopyresampled(
-		$dest, $img, intval($size / 2 - $nw / 2), intval($size / 2 - $nh / 2),
-		0, 0, $nw, $nh, $w, $h
-	);
+	$dest = imagecreatetruecolor($nw, $nh);
+	switch ($itype) {
+		case 'image/gif':
+		case 'image/png':
+			imagecolortransparent($dest, imagecolortransparent($img));
+			imagealphablending($dest, false);
+			imagesavealpha($dest, true);
+			break;
+		default: break;
+	}
+	imagecopyresampled($dest, $img, 0, 0, 0, 0, $nw, $nh, $w, $h);
 
-	imagejpeg($dest, $new_path);
+	$quality_jpeg = Config::read('quality_jpeg');
+	if (isset($quality_jpeg)) $quality_jpeg = (intval($quality_jpeg) < 0 || intval($quality_jpeg) > 100) ? 75 : intval($quality_jpeg);
+	$quality_png = Config::read('quality_png');
+	if (isset($quality_png)) $quality_png = (intval($quality_png) < 0 || intval($quality_png) > 9) ? 9 : intval($quality_png);
+
+	switch ($itype) {
+		case 1:
+		case 'image/gif':
+			imagegif($dest, $new_path);
+			break;
+		case 2:
+		case 'image/jpeg':
+			imagejpeg($dest, $new_path, $quality_jpeg);
+			break;
+		case 3:
+		case 'image/png':
+			imagepng($dest, $new_path, $quality_png);
+			break;
+		default:
+			imagejpeg($dest, $new_path, $quality_jpeg);
+			break;
+	}
 	imagedestroy($img);
 	imagedestroy($dest);
 	return true;
