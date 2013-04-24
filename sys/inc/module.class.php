@@ -4,12 +4,12 @@
 |  @Author:       Andrey Brykin (Drunya)         |
 |  @Email:        drunyacoder@gmail.com          |
 |  @Site:         http://fapos.net			     |
-|  @Version:      1.5.8                          |
+|  @Version:      1.5.9                          |
 |  @Project:      CMS                            |
 |  @Package       CMS Fapos                      |
 |  @Subpackege    Module Class                   |
 |  @Copyright     ©Andrey Brykin 2010-2013       |
-|  @Last mod.     2013/02/22                     |
+|  @Last mod.     2013/04/24                     |
 \-----------------------------------------------*/
 
 /*-----------------------------------------------\
@@ -652,5 +652,15 @@ class Module {
 			, '<a class="gallery" href="' . get_url('/sys/files/' . $module . '/' . $filename) 
 			. '"><img src="' . get_url('/image/' . $module . '/' . $filename) . '" /></a>'
 			, $message);
+	}
+	
+	
+	
+	// Функция возвращает путь к модулю
+	function getModuleURL($page = null)
+	{
+		$url = '/' . $this->module . '/' . $page;
+		$url = str_replace('//', '/', $url);
+		return $url;
 	}
 }
