@@ -34,7 +34,9 @@
 			$('#overlay').height($('#wrapper').height());
 		}, 2000);
 		
-		$('div.side-menu').height(($('body').height() - 35));
+		$('#wrapper').css('min-height', $('body').height());
+		$('.side-separator').css('min-height', $('body').height() - 55);
+		$('div.side-menu').css('min-height', $('body').height() - 55);
 	});
 	</script>
 </head> 
@@ -170,9 +172,9 @@
 		
 		<div class="center-wrapper">
 		
-			<table class="side-separator" cellpadding="0" cellspacing="0" width="100%" height="100%" >
+			<table class="side-separator" cellpadding="0" cellspacing="0" width="100%" >
 				<tr>
-					<td width="237" height="100%">
+					<td width="237" min-height="100%">
 						<div class="side-menu">
 							<div class="search">
 								<form>

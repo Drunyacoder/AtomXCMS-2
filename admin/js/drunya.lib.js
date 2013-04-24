@@ -58,6 +58,8 @@ function subMenu(id) {
 	} else {
 		$('#'+id).slideUp();
 	}
+	
+	
 }
 
 
