@@ -1864,6 +1864,10 @@ Class UsersModule extends Module {
 			redirect('/users/in_msg_box/' );
 		}
 		
+		if (!$message->getFromuser() || !$message->getTouser()) {
+			$this->showInfoMessage(__('Some error occurred'), '/' . $this->module . '/' );
+		}
+		
 		
 		// Далее мы должны выяснить, запрашивается входящее или исходящее
 		// сообщение? Это нужно, чтобы правильно указать "Отправитель"
@@ -1877,6 +1881,7 @@ Class UsersModule extends Module {
             $markers['redirect'] = get_url('/users/out_msg_box/');
 			$inBox = false;
 		}
+		
 		// Формируем заголовок страницы
 		if ($inBox)  // Папка "Входящие"
 			$markers['h1'] = __('PM in');
@@ -1884,6 +1889,7 @@ Class UsersModule extends Module {
             $markers['h1'] = __('PM on');
 		$markers['menu'] = $this->_getMessagesMenu();
 
+		
 		if ( $inBox ) {
 			$markers['in_on'] = __('From');
 			$markers['in_on_user'] = $message->getFromuser()->getName();
@@ -1894,6 +1900,7 @@ Class UsersModule extends Module {
 			$markers['in_on_user_id'] = $message->getTo_Suser();
 		}
 
+		
 		if ($inBox)
 			$markers['in_on_message'] = __('Sended');
 		else
