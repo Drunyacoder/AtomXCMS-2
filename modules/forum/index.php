@@ -1442,15 +1442,14 @@ Class ForumModule extends Module {
 		
 		
 		
-		$dforum = $this->Model->getCollection(array(
+		$dforum = $this->Model->getFirst(array(
 			'pos < ' . $order_up, 
 			'in_cat' => $forum->getIn_cat()
 		), array(
 			'order' => 'pos DESC',
-			'limit' => 1,
 		));
 		if (!$dforum) return $this->showInfoMessage(__('Forum is above all'), '/forum/' );
-		$dforum = $dforum[0];
+		
 		
 	
 		// Порядок следования и ID форума, который находится выше и будет "опущен" вниз
@@ -1503,15 +1502,14 @@ Class ForumModule extends Module {
 		$order_down = $forum->getPos();
 		
 		
-		$dforum = $this->Model->getCollection(array(
+		$dforum = $this->Model->getFirst(array(
 			'pos > ' . $order_down, 
 			'in_cat' => $forum->getIn_cat()
 		), array(
 			'order' => 'pos',
-			'limit' => 1,
 		));
 		if (!$dforum) return true;
-		$dforum = $dforum[0];
+		
 		
 	
 		// Порядок следования и ID форума, который находится ниже и будет "поднят" вверх
