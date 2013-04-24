@@ -195,7 +195,7 @@ class Document_Parser {
 		$markers['site_title'] = Config::read('site_title');
 		
 		if (isset($_SESSION['user']) && isset($_SESSION['user']['name'])) {
-			$markers['personal_page_link'] = get_url('/users/info/' . $_SESSION['user']['id']);
+			$markers['personal_page_link'] = get_url(getProfileUrl($_SESSION['user']['id']));
 			$markers['fps_user_name'] = $_SESSION['user']['name'];
 			$userGroup = $Register['ACL']->get_user_group($_SESSION['user']['status']);
 			$markers['fps_user_group'] = $userGroup['title'];
@@ -250,7 +250,7 @@ class Document_Parser {
 		if (count($today_born) > 0) {
 			$names = array();
 			foreach ($today_born as $user) {
-				$names[] = get_link($user['name'], '/users/info/' . $user['id']);
+				$names[] = get_link($user['name'], getProfileUrl($user['id']));
 			}
 			$tbout = implode(', ', $names);
 		}
@@ -292,7 +292,7 @@ class Document_Parser {
 		
 		$menu = get_link('Главная', '/');
 		if(isset($_SESSION['user']['name'])) {
-			$menu = $menu . get_link('Мой профиль', '/users/info/' . $_SESSION['user']['id']) 
+			$menu = $menu . get_link('Мой профиль', getProfileUrl($_SESSION['user']['id'])) 
 			. get_link('Выход', '/users/logout/');
 			$menu = $menu . get_link('Пользователи', '/users/index/');
 			if ($modul == 'forum') {

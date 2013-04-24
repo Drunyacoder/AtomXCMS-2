@@ -90,7 +90,7 @@ Class UsersModule extends Module {
             $uid = $user->getId();
 			
 
-			$markers['user_name'] = get_link(h($user->getName()), '/users/info/' . $uid);
+			$markers['user_name'] = get_link(h($user->getName()), getProfileUrl($uid));
 			
 			$markers['moder_panel'] = '';
 			if ($this->ACL->turn(array('users', 'edit_users'), false)) {
@@ -1108,7 +1108,7 @@ Class UsersModule extends Module {
 			setcookie( 'password', $_SESSION['user']['passw'], time() + 3600 * 24 * Config::read('cookie_time'), $path );
 		}
 		if ($this->Log) $this->Log->write('editing user', 'user id(' . $_SESSION['user']['id'] . ')');
-		return $this->showInfoMessage(__('Your profile has been changed'), '/users/info/' . $_SESSION['user']['id']);
+		return $this->showInfoMessage(__('Your profile has been changed'), getProfileUrl($_SESSION['user']['id']));
 	}
 
 
@@ -1496,7 +1496,7 @@ Class UsersModule extends Module {
 		}
 		
 		if ($this->Log) $this->Log->write('editing user by adm', 'user id(' . $id . ') adm id(' . $_SESSION['user']['id'] . ')');
-		return $this->showInfoMessage(__('Operation is successful'), '/users/info/' . $id);
+		return $this->showInfoMessage(__('Operation is successful'), getProfileUrl($id));
 	}
 
 

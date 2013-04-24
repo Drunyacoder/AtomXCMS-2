@@ -252,7 +252,7 @@ Class PagesModule extends Module {
 						
                         $markers['announce'] = $announce;
 
-						$markers['profile_url'] = get_url('/users/info/' . $result->getAuthor_id());
+						$markers['profile_url'] = get_url(getProfileUrl($result->getAuthor_id()));
 
                         $markers['module_title'] = $this->Register['Config']->read('title', $result->getSkey());
                         $result->setAdd_markers($markers);

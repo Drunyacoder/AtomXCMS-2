@@ -58,8 +58,8 @@ if (empty($html) && $commentsModel) {
 			
 			
 			if ($comment->getUser_id()) {
-				$markers['name_a'] = get_link(h($comment->getName()), '/users/info/' . (int)$comment->getUser_id());
-				$markers['user_url'] = get_url('/users/info/' . (int)$comment->getUser_id());
+				$markers['name_a'] = get_link(h($comment->getName()), getProfileUrl((int)$comment->getUser_id()));
+				$markers['user_url'] = get_url(getProfileUrl((int)$comment->getUser_id()));
 				$markers['avatar'] = get_link($markers['avatar'], $markers['user_url']);
 			} else {
 				$markers['name_a'] = h($comment->getName());
