@@ -1948,7 +1948,7 @@ Class UsersModule extends Module {
         $markers = array('error' => '');
         $messages = $this->Model->getInputMessages();
 
-        if (count($messages) == 0) {
+        if (!is_array($messages) || !count($messages)) {
             $markers['messages'] = array();
             $markers['error'] = __('This dir is empty');
             $source = $this->render('vievinpm.html', array('context' => $markers));
@@ -1989,7 +1989,7 @@ Class UsersModule extends Module {
 
         $markers = array('error' => '');
         $messages = $this->Model->getOutputMessages();
-        if (count($messages) == 0) {
+        if (!is_array($messages) || !count($messages)) {
             $markers['messages'] = array();
             $markers['error'] = __('This dir is empty');
             $source = $this->render('vievonpm.html', array('context' => $markers));
