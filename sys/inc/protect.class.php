@@ -91,7 +91,7 @@ class Protect
 
     public function antiSQL()
     {
-        if(!preg_match('#^[\#/\?&_\-=\.а-яa-z0-9]*$#ui', urldecode($_SERVER['REQUEST_URI']))) {
+        if(!preg_match('#^[\#/\?&_\-=\:.а-яa-z0-9]*$#ui', urldecode($_SERVER['REQUEST_URI']))) {
 
             $remote_addr = (!empty($_SERVER['REMOTE_ADDR'])) ? $_SERVER['REMOTE_ADDR'] : 'Unknown';
             $http_x_for = (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : 'Unknown';

@@ -536,6 +536,41 @@ $settingsInfo = array(
             'description' => 'Слова с приоритетом',
        	),
     ),
+	
+	/* Links */
+	'links' => array(
+		'use_noindex' => array(
+			'type' => 'checkbox',
+			'title' => 'Использовать noindex и nofollow',
+			'description' => 'Запрет индексации ссылок',
+			'value' => '1',
+			'checked' => '1',
+		),
+		'redirect_active' => array(
+			'type' => 'checkbox',
+			'title' => 'Включить переадресацию',
+			'description' => 'Проверка на наличие домена в белом и черном списках',
+			'value' => '1',
+			'checked' => '1',
+		),
+		'url_delay' => array(
+			'type' => 'text',
+			'title' => 'Задержка перед переходом по ссылке',
+			'help' => 'Секунд',
+		),
+        'blacklist_sites' => array(
+            'type' => 'text',
+			'title' => 'Черный список сайтов',
+            'description' => 'Домены, на которые запрещен автоматический переход',
+			'help' => __('Separated by comma'),
+      	),
+        'whitelist_sites' => array(
+            'type' => 'text',
+			'title' => 'Белый список сайтов',
+            'description' => 'Домены, переход на которые осуществляется без задержек',
+			'help' => __('Separated by comma'),
+       	),
+	),
 );
 $sysMods = array(
 	'sys',
@@ -545,6 +580,7 @@ $sysMods = array(
 	'sitemap',
 	'watermark',
 	'autotags',
+	'links',
 );
 $noSub = array(
 	'sys',
@@ -552,6 +588,7 @@ $noSub = array(
 	'sitemap',
 	'watermark',
 	'autotags',
+	'links',
 );
 
 

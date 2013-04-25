@@ -38,6 +38,11 @@ $set = array (
   'watermark_text_color' => 'FFFFFF',
   'watermark_text_border' => '0000FF',
   'watermark_text_font' => 'Scada-Bold.ttf',
+	'redirect_active' => 1,
+	'use_noindex' => 1,
+	'blacklist_sites' => '*.ucoz.ru,*.ucoz.net',
+	'whitelist_sites' => 'fapos.net,www.fapos.net',
+	'url_delay' => '5', 
   'latest_on_home' => 
   array (
     0 => 'news',
@@ -171,9 +176,9 @@ $set = array (
   ),
   'db' => 
   array (
-    'host' => '',
-    'name' => '',
-    'user' => '',
+    'host' => 'localhost',
+    'name' => 'fapos',
+    'user' => 'root',
     'pass' => '',
     'prefix' => '',
   ),

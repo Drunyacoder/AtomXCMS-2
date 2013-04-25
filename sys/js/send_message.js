@@ -518,7 +518,7 @@ function showFpsWin(url, params, title) {
  */
 function createFpsWin(title, data, params) {
         var blid = 'setRating_' + Math.floor((Math.random()*9999));
-        var fpsWin = '<div id="' + blid + '" class="fps-fwin" style="'+params+'"><div class="drag_window"><div class="title" onmousedown="drag_object(event, this.parentNode)">' + title + '</div><div onClick="$(\'#' + blid + '\').hide()" class="close"></div><div class="cont">' + data + '</div></div></div>';
+        var fpsWin = '<div id="' + blid + '" class="fps-fwin" style="'+params+'"><div class="drag_window"><div class="fps-title" onmousedown="drag_object(event, this.parentNode)">' + title + '</div><div onClick="$(\'#' + blid + '\').hide()" class="fps-close"></div><div class="fps-cont">' + data + '</div></div></div>';
         return fpsWin;
 }
 

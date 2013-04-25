@@ -120,9 +120,42 @@ if (empty($_GET['m']) || !is_string($_GET['m'])) $_GET['m'] = 'sys';
 $module = trim($_GET['m']);
 if (in_array($module, $sysMods)) {
 	$settingsInfo = $settingsInfo[$module];
+	
+	switch($module) {
+		case 'common':
+			$pageTitle = __('RSS settings');
+			break;
+		case 'hlu':
+			$pageTitle = __('HLU settings');
+			break;
+		case 'sitemap':
+			$pageTitle = __('Sitemap settings');
+			break;
+		case 'secure':
+			$pageTitle = __('Security settings');
+			break;
+		case 'watermark':
+			$pageTitle = __('Watermark settings');
+			break;
+		case 'autotags':
+			$pageTitle = __('Auto tags settings');
+			break;
+		case 'links':
+			$pageTitle = __('Links settings');
+			break;
+	}
+
+
 } else {
 	$pathToModInfo = ROOT . '/modules/' . $module . '/info.php';
-	include ($pathToModInfo);
+	if (file_exists($pathToModInfo)) {
+		include ($pathToModInfo);
+		$pageTitle = (isset($menuInfo['ankor']) ? $menuInfo['ankor'] . ' - Настройки' : $pageTitle);
+	} else {
+		$_SESSION['mess'] = "Модуль \"{$module}\" не найден!";
+		$module = 'sys';
+		$settingsInfo = $settingsInfo[$module];
+	}
 }
 
 
@@ -339,7 +372,7 @@ include_once ROOT . '/admin/template/header.php';
 
 <form method="POST" action="settings.php?m=<?php echo $module; ?>" enctype="multipart/form-data">
 <div class="list">
-	<div class="title">Настройки</div>
+	<div class="title"><?php echo $pageNav; ?></div>
 	<div class="level1">
 		<div class="head">
 			<div class="title settings">Ключ</div>

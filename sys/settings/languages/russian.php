@@ -258,6 +258,7 @@ $language = array(
 	'HLU settings'                  => 'Управление ЧПУ',
 	'SEO settings'                  => 'Управление SEO',
 	'RSS settings'                  => 'Настройки RSS',
+	'Links settings'				=> 'Настройки переадресации',
 	'Sitemap settings'              => 'Настройки Sitemap',
 	'Help'                          => 'Помощь',
 	'Fapos CMS Community'           => 'Сообщество CMS Fapos',

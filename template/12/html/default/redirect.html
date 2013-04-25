@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+<head>
+</head>
+<body style="background:#182126;">
+<div class="rek" style="margin:0 auto;margin-top:20px;padding:0px;text-align:center;">
+<img src="{{ template_path }}/img/rek.png" style="border:1px solid #7B8D95;"/>
+</div>
+<div style="color:#809197; margin:0 auto;margin-top:100px;border:1px solid #7B8D95;padding:10px;width:500px;height:100px;background:#3E4E55;text-align:center;">
+	<span style="color:#789435;">Переадресация</span><br />
+	{% if black %}
+	Сайт находится в "черном" списке и его посещение не рекомендуется:<br />{{ url }}
+	{% else %}
+	Ожидайте. Сейчас Вы будете перемещены по ссылке.
+	{% endif %}
+</div>
+</body>
+</html>
+
+

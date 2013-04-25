@@ -226,6 +226,9 @@ $language = array(
 	'Download from server'        	=> 'С сервера',
 	'Download remotely'         	=> 'Удаленно',
 	'Guest'         	            => 'Гость',
+	'User materials'           		=> 'Материалы пользователя %s',
+	'User comments'                 => 'Комментарии пользователя',
+	'All comments'                  => 'Комментарии пользователей', 
 
 	// BACKEND
 	
@@ -255,6 +258,7 @@ $language = array(
 	'HLU settings'                  => 'Управление ЧПУ',
 	'SEO settings'                  => 'Управление SEO',
 	'RSS settings'                  => 'Настройки RSS',
+	'Links settings'				=> 'Настройки переадресации',
 	'Sitemap settings'              => 'Настройки Sitemap',
 	'Help'                          => 'Помощь',
 	'Fapos CMS Community'           => 'Сообщество CMS Fapos',
