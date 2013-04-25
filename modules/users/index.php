@@ -2875,5 +2875,115 @@ Class UsersModule extends Module {
 			
 		die();
 	}
+	
+	
+	/**
+	 * Show comments by user.
+	 */
+	public function comments($id = null) 
+	{
+		/* COMMENT BLOCK */
+		$total = $this->Model->getCountComments($id);
+		$per_page = 25;
+
+		/* pages nav */
+		list($pages, $page) = pagination($total, $per_page, $this->getModuleURL('comments/' . ($id ? $id : '')));
+		$this->_globalize(array('comments_pagination' => $pages));
+
+		$offset = ($page - 1) * $per_page;
+
+		$comments = $this->Model->getComments($id, $offset, $per_page);
+		if ($comments && is_array($comments)) {
+			foreach ($comments as $index => $entity) {
+
+				$module = $entity->getModule();
+				$markers = array();
+
+				
+				// COMMENT ADMIN BAR
+				$ip = ($entity->getIp()) ? $entity->getIp() : 'Unknown';
+				$moder_panel = '';
+				$adm = false;
+				if ($this->ACL->turn(array($module, 'edit_comments'), false)) {
+					$moder_panel .= get_link('',
+					'/' . $module . '/edit_comment_form/' . $entity->getId(), array('class' => 'fps-edit')) . '&nbsp;';
+					$adm = true;
+				}
+
+				if ($this->ACL->turn(array($module, 'delete_comments'), false)) {
+					$moder_panel .= get_link('',
+					'/' . $module . '/delete_comment/' . $entity->getId(), array('class' => 'fps-delete', 'onClick' => "return confirm('" . __('Are you sure') . "')")) . '&nbsp;';
+					$adm = true;
+				}
+
+				if ($adm) {
+					$moder_panel = get_img('/sys/img/ip.png', array('alt' => 'ip', 'title' => h($ip))) . $moder_panel;
+				}
+
+
+				$img = array(
+					'alt' => 'User avatar',
+					'title' => h($entity->getName()),
+					'class' => 'ava',
+				);
+				
+				
+				
+				// Аватар
+				if (file_exists(ROOT . '/sys/avatars/' . $entity->getUser_id() . '.jpg')) 
+					$url = get_url('/sys/avatars/' . $entity->getUser_id() . '.jpg');
+				else 
+					$url = get_url('/sys/img/noavatar.png');
+					
+				$markers['avatar'] = '<img class="ava" src="' . $url . '" alt="User avatar" />';
+
+				
+
+				if ($entity->getUser_id()) {
+					$markers['name_a'] = get_link(h($entity->getName()), getProfileUrl((int)$entity->getUser_id()));
+					$markers['user_url'] = get_url(getProfileUrl((int)$entity->getUser_id()));
+					$markers['avatar'] = get_link($markers['avatar'], $markers['user_url']);
+				} else {
+					$markers['name_a'] = h($entity->getName());
+				}
+				$markers['name'] = h($entity->getName());
+
+
+				$markers['moder_panel'] = $moder_panel;
+				$markers['message'] = $this->Textarier->print_page($entity->getMessage());
+
+				if ($entity->getEditdate()!='0000-00-00 00:00:00') {
+					$markers['editdate'] = 'Комментарий был изменён '.$entity->getEditdate();
+				} else {
+					$markers['editdate'] = '';
+				}
+
+				$entity->setEntry_url(get_url('/' . $module . '/view/' . $entity->getEntity_id()));
+				$entity->setAdd_markers($markers);
+				
+				$comments[$index] = $entity;
+			}
+		}
+		$this->comments = $this->render('viewcomment.html', array('commentsr' => $comments));
+
+		$title = __('All comments');
+		if ($id && intval($id) > 0) {
+			$user = $this->Model->getById(intval($id));
+			if ($user)
+				$title = __('User comments') . ' "' . h($user->getName()) . '"';
+		}
+		$this->page_title = $title . ' - ' . $this->page_title;
+
+		$navi = array();
+		$navi['add_link'] = ($this->ACL->turn(array($this->module, 'add_materials'), false)) ? get_link(__('Add material'), $this->getModuleURL('add_form/')) : '';
+		$navi['module_url'] = get_url($this->getModuleURL());
+		$navi['category_url'] = get_url($this->getModuleURL('comments/' . ($id ? $id : '')));
+		$navi['category_name'] = $title;
+		$navi['navigation'] = get_link(__('Home'), '/') . __('Separator')
+		. get_link(h($this->module_title), $this->getModuleURL()) . __('Separator') . $title;
+		$this->_globalize($navi);
+
+		return $this->_view('');
+	}
 }
 
