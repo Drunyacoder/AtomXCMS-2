@@ -453,9 +453,13 @@ $(document).ready(function(){
 		init_clear: false,
 		remove_styles: false,
 		remove_classes: false,
-		image_upload: "/img_uploader.php",
+		imageGetJson: '/img_uploader.php',
+		imageUpload: '/img_uploader.php',
+		fileUpload: '/img_uploader.php',
 		autoresize: true,
 	});
+	
+
 	
 	
 	$.validator.addMethod('chars', function(value, element){
