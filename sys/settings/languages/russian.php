@@ -227,6 +227,8 @@ $language = array(
 	'Download remotely'         	=> 'Удаленно',
 	'Guest'         	            => 'Гость',
 	'User materials'           		=> 'Материалы пользователя %s',
+	'User comments'                 => 'Комментарии пользователя',
+	'All comments'                  => 'Комментарии пользователей', 
 
 	// BACKEND
 	

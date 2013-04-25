@@ -2,12 +2,12 @@
 /*---------------------------------------------\
 |											   |
 | @Author:       Andrey Brykin (Drunya)        |
-| @Version:      1.0                           |
+| @Version:      1.1                           |
 | @Project:      CMS                           |
 | @package       CMS Fapos                     |
 | @subpackege    Users Model                   |
-| @copyright     ©Andrey Brykin 2010-2012      |
-| @last mod      2012/02/27                    |
+| @copyright     ©Andrey Brykin 2010-2013      |
+| @last mod      2013/04/25                    |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
@@ -177,5 +177,44 @@ class UsersModel extends FpsModel
 				AND `viewed` = 0 AND `id_rmv` <> ".$uid);
 
 		return (!empty($res[0]) && !empty($res[0]['cnt'])) ? (string)$res[0]['cnt'] : 0;
+	}
+	
+	
+	function getCountComments($user_id = null) 
+	{
+		$user_id = intval($user_id);
+		if ($user_id < 1) return false;
+		
+		$Register = Register::getInstance();
+
+		
+		$commentsModel = $Register['ModManager']->getModelInstance('comments');
+		$cnt = $commentsModel->getTotal(array('cond' => array('user_id' => $user_id)));
+		
+		
+		return ($cnt) ? $cnt : false;
+	}
+
+	
+	function getComments($user_id = null, $offset = null, $per_page = null) 
+	{
+		$user_id = intval($user_id);
+		if ($user_id < 1) return false;
+	
+		$Register = Register::getInstance();
+		
+		
+		$per_page = intval($per_page);
+		$per_page = (!empty($per_page)) ? $per_page : 50;
+		
+		
+		$offset = intval($offset);
+		$page = (!empty($offset)) ? ceil($offset / $per_page) : 1;
+		
+		
+		$commentsModel = $Register['ModManager']->getModelInstance('comments');
+		$comments = $commentsModel->getCollection(array('user_id' => $user_id), array('page' => $page, 'limit' => $per_page));
+		
+		return ($comments) ? $comments : false;
 	}
 }
