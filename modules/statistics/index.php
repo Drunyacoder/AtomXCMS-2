@@ -2,12 +2,12 @@
 /*---------------------------------------------\
 |											   |
 | @Author:       Andrey Brykin (Drunya)        |
-| @Version:      1.6.0                         |
+| @Version:      1.6.1                         |
 | @Project:      CMS                           |
 | @package       CMS Fapos                     |
 | @subpackege    Statistic Module              |
-| @copyright     ©Andrey Brykin 2010-2012      |
-| @last mod      2012/06/04                    |
+| @copyright     ©Andrey Brykin 2010-2013      |
+| @last mod      2013/04/25                    |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
@@ -283,7 +283,7 @@ Class StatisticsModule
 	*
 	* clean overal stats key
 	*/
-	private function _deleteOveralKey($key) {
+	static private function _deleteOveralKey($key) {
 		$data = unserialize(file_get_contents(ROOT . '/sys/logs/overal_stats.dat'));
 		if (array_key_exists($key, $data)) unset($data[$key]);
 		file_put_contents(ROOT . '/sys/logs/overal_stats.dat', serialize($data));
@@ -332,7 +332,7 @@ Class StatisticsModule
 	/**
 	* write into database
 	*/
-	function _writeIntoDataBase($date) {
+	static public function _writeIntoDataBase($date) {
 		$file = ROOT . '/sys/logs/counter/' . $date . '.dat';
 		if (!preg_match('#^\d{4}-\d{2}-\d{2}$#', $date) || !file_exists($file)) return;
 		
@@ -342,7 +342,7 @@ Class StatisticsModule
 		
 		
 		$res = $Model->getCollection(array('date' => $date));
-		if (count($res) > 0) { 
+		if (is_array($res) && count($res)) { 
 			return;
 		} else {
 			$stats = unserialize(file_get_contents($file));
