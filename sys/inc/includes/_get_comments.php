@@ -41,7 +41,8 @@ if (empty($html) && $commentsModel) {
 			}
 			
 			if ($adm) {
-				$moder_panel = get_img('/sys/img/ip.png', array('alt' => 'ip', 'title' => h($ip))) . $moder_panel;
+				$moder_panel = '<a target="_blank" href="https://apps.db.ripe.net/search/query.html?searchtext=' 
+							. h($ip) . '" class="fps-ip" title="IP: ' . h($ip) . '"></a>' . $moder_panel;
 			}
 			
 			
