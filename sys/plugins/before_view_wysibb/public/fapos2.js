@@ -62,35 +62,38 @@ WBBPRESET = {
 	}
 }
 
-function catchSelection()
-{
-	if (window.getSelection)
-	{
+function catchSelection() {
+	if (window.getSelection) {
 		selection = window.getSelection().toString();
-	}
-	else if (document.getSelection)
-	{
+	} else if (document.getSelection) {
 		selection = document.getSelection();
-	}
-	else if (document.selection)
-	{
+	} else if (document.selection) {
 		selection = document.selection.createRange().text;
 	}
 }
 
-l_no_text_selected = "Выделите текст на странице и попробуйте еще раз";
 
-function quoteSelection(name)
-{
-	if (selection)
-	{
+function quoteSelection(name) {
+	l_no_text_selected = "Выделите текст на странице и попробуйте еще раз";
+	if (selection) {
 		$('#editor').execCommand('quote',{author:name,seltext:selection});
 		selection = '';
 		return; 
-	}
-	else
-	{ 
+	} else { 
 		alert(l_no_text_selected);
 		return; 
 	} 
+}
+
+
+function checkForm() {
+	l_empty_message = "Вы должны ввести текст сообщения";
+
+	$('#editor').sync();
+	if (document.getElementById("sendForm").mainText.value.length < 2) {
+		alert(l_empty_message);
+		return false;
+	} else {
+		return true;
+	}
 }
