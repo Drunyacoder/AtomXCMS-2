@@ -6,7 +6,7 @@
 		{{ entity.add_markers.mainText }}
         <br />
         <br />
-        <img src="/sys/img/file.gif" alt="Открыть файл" title="Открыть файл" align="absmiddle" />
+        <img src="{{ www_root }}/sys/img/file.gif" alt="Открыть файл" title="Открыть файл" align="absmiddle" />
         [Скачать &nbsp;{{ entity.add_markers.attachment }} ]&nbsp;&nbsp;&nbsp;Загрузок: {{ entity.downloads }}<br>
 		{% if entity.tags %}
 		<br />
@@ -19,7 +19,7 @@
 		</div>
 		{% endif %}
 		<div class="share-us">
-			<span>Мы в соцсетях:</span>&nbsp;<script language="JavaScript" type="text/javascript" src="/sys/js/share.js"></script>
+			<span>Мы в соцсетях:</span>&nbsp;<script language="JavaScript" type="text/javascript" src="{{ www_root }}/sys/js/share.js"></script>
 		</div>
 	</div>
 	<div class="meta">

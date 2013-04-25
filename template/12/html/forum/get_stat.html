@@ -6,20 +6,20 @@
 		<td colspan="2" class="meta">Сейчас на форуме: {{ all_online }}. {{ guests_online }} Гостей и {{ users_online }} Юзеров</td>
 	</tr>
 	<tr>
-		<td width="50px" align="center"><img style="border: 0pt none ; margin: 0pt; padding: 0pt;" title="Посетители" src="/sys/img/soo.gif"></td><td>{{ online_users_list }}</td>
+		<td width="50px" align="center"><img style="border: 0pt none ; margin: 0pt; padding: 0pt;" title="Посетители" src="{{ www_root }}/sys/img/soo.gif"></td><td>{{ online_users_list }}</td>
 	</tr>
 	<tr>
 		<td colspan="2" class="meta">Сегодня день рождения</td>
 	</tr>
 	<tr>
-		<td width="50px" align="center"><img style="border: 0pt none ; margin: 0pt; padding: 0pt;" title="Посетители" src="/sys/img/soo.gif"></td><td>{{ today_born_users }}</td>
+		<td width="50px" align="center"><img style="border: 0pt none ; margin: 0pt; padding: 0pt;" title="Посетители" src="{{ www_root }}/sys/img/soo.gif"></td><td>{{ today_born_users }}</td>
 	</tr>
 	<tr>
 		<td colspan="2" class="meta">Статистика</td>
 	</tr>
 	<tr>
 		<td width="50px" align="center">
-			<img style="border: 0pt none ; margin: 0pt; padding: 0pt;" title="Статистика форума" src="/sys/img/rating.gif">
+			<img style="border: 0pt none ; margin: 0pt; padding: 0pt;" title="Статистика форума" src="{{ www_root }}/sys/img/rating.gif">
 		</td>
 		<td>
 			Всего создано <b>{{ count_themes }}</b> тем, в которые добавлено <b>{{ count_posts }}</b> ответов.<br>Зарегистрировано <b>{{ count_users }}</b> участников. Приветствуем нового участника <b>{{ new_user }}</b>.
