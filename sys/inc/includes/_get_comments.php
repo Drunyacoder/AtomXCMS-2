@@ -2,7 +2,7 @@
 $id = (int)$entity->getId();
 if (empty($id) || $id < 1) $html = true;
 
-$commentsModel = $this->Register['ModManager']->getModelInstance($this->module . 'Comments');
+$commentsModel = $this->Register['ModManager']->getModelInstance('Comments');
 
 
 if (empty($html) && $commentsModel) {

@@ -5,7 +5,7 @@ $id = (!empty($id)) ? (int)$id : 0;
 if ($id < 1) redirect('/' . $this->module);
 
 
-$commentsModel = $this->Register['ModManager']->getModelInstance($this->module . 'Comments');
+$commentsModel = $this->Register['ModManager']->getModelInstance('Comments');
 if ($commentsModel) {
 	$comment = $commentsModel->getById($id);
 	if ($comment) {

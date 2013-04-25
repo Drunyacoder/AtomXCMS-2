@@ -101,7 +101,7 @@ $data = array(
 
 
 
-$className = $this->Register['ModManager']->getEntityName($this->module . 'Comments');
+$className = $this->Register['ModManager']->getEntityName('Comments');
 $entityComm = new $className($data);
 
 if ($entityComm) {
