@@ -828,15 +828,7 @@ Class ForumModule extends Module {
 								
 							//if attach is image and isset markers for this image
 							if ($attach->getIs_image() == 1) {
-							
 								$message = $this->insertImageAttach($message, $attach->getFilename(), $attach->getAttach_number());
-								
-							
-							
-								//$message = str_replace('{IMAGE' . $attach->getAttach_number() . '}', 
-								//	'[img]' . get_url('/sys/files/forum/' . $attach->getFilename()) . '[/img]',
-								//	$post->getMessage());
-								//$post->setMessage($message);
 							}
 							$collizion = true;
 							continue;
@@ -847,7 +839,7 @@ Class ForumModule extends Module {
 				} else {
 					$this->deleteCollizions($post);
 				}
-				
+				$post->setAttachment($attachment);
 				$post->setMessage($message);
 				
 
