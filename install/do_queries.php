@@ -132,7 +132,7 @@ $array[] = "CREATE TABLE `{$set['db']['prefix']}loads` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
 #####################################################################
 $array[] = "DROP TABLE IF EXISTS `{$set['db']['prefix']}comments`";
-$array[] = "CREATE TABLE `{$set['db']['prefix']}loads_comments` (
+$array[] = "CREATE TABLE `{$set['db']['prefix']}comments` (
   `id` int(11) NOT NULL auto_increment,
   `entity_id` int(11) NOT NULL,
   `user_id` INT(11) DEFAULT '0' NOT NULL,
