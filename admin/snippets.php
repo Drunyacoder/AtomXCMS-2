@@ -46,12 +46,13 @@ if (isset($_GET['a']) && $_GET['a'] == 'ed') {
 if (isset($_GET['a']) && $_GET['a'] == 'ed') {
 
 	$id = (!empty($_GET['id'])) ? intval($_GET['id']) : '';
-	if(isset($_POST['save']) && isset($_POST['text_edit'])) {
-		$sql = $FpsDB->save('snippets', array(
+	if(isset($_POST['send']) && isset($_POST['text_edit'])) {
+		$sql = $Register['DB']->save('snippets', array(
 			'body' => $_POST['text_edit'],
 			'id' => $id,
 		));
 		$_SESSION['mess'] = 'Сниппет успешно сохранен!';
+		
 		redirect('/admin/snippets.php?a=ed&id=' . $id);
 	}
 
