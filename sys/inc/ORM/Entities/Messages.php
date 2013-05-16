@@ -44,7 +44,7 @@ class MessagesEntity extends FpsEntity
 		$params = array(
 			'to_user' => intval($this->to_user),
 			'from_user' => intval($this->from_user),
-			'sendtime' => new Expr($this->sendtime),
+			'sendtime' => $this->sendtime,
 			'subject' => $this->subject,
 			'message' => $this->message,
 			'id_rmv' => intval($this->id_rmv),

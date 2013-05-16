@@ -1966,7 +1966,7 @@ Class UsersModule extends Module {
         }
 
 
-		$source = $this->render('vievinpm.html', array('messages' => $messages, 'contects' => $markers));
+		$source = $this->render('vievinpm.html', array('messages' => $messages, 'context' => $markers));
 		return $this->_view($source);
 	}
 
@@ -2007,7 +2007,7 @@ Class UsersModule extends Module {
         }
 
 
-		$source = $this->render('vievonpm.html', array('messages' => $messages, 'contects' => $markers));
+		$source = $this->render('vievonpm.html', array('messages' => $messages, 'context' => $markers));
 		return $this->_view($source);
 	}
 
