@@ -47,6 +47,9 @@ function pagination( $total, $perPage, $url )
 	}
 
 	if ($cntPages < 1) return array('', $page);
+	
+	
+	if (false === strpos($url, '?')) $url .= '?';
 
 
 	$url = get_url($url);
