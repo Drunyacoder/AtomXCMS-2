@@ -1,6 +1,5 @@
 <?php
-
-if (!isset($_GET['url'])) die();
+if (empty($_GET['url'])) die();
 $url = $_GET['url'];
 
 
@@ -49,13 +48,16 @@ if ($redirect) {
 
 if ($in_white) {
 	header('Refresh: 0; url=' . $url);
-	
+	die();
 } else {
-	if (!$in_black) header('Refresh: ' . $delay . '; url=' . $url);
+	if (!$in_black) {
+		header('Refresh: ' . $delay . '; url=' . $url);
+		die();
+	}
 	
 	$View = new Fps_Viewer_Manager();
 	echo $View->view('redirect.html', array('url' => $url, 'black' => $in_black, 'template_path' => get_url('/template/' . $Register['Config']::read('template'))));
 }
 
-die();
+
 
