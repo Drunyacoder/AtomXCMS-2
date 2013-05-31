@@ -105,7 +105,7 @@ include_once ROOT . '/admin/template/header.php';
 	
 		<td class="left"><?php echo getAddTitle($title); ?></td>
 		<?php foreach ($acl_groups as $id => $gr): ?>
-		<?php  $ch_id = $id . '_' . $title; ?>
+		<?php  $ch_id = $mod . '_' . $id . '_' . $title; ?>
 		<td class="right">
 			<input name="<?php echo $mod.'['.$title.'_'.$id.']' ?>" type="checkbox" value="1" <?php if ($ACL->turn(array($mod, $title), false, $id)) echo 'checked="checked"' ?> id="<?php  echo $ch_id; ?>" /><label for="<?php  echo $ch_id; ?>"></label>
 		</td>
