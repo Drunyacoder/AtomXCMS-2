@@ -6,7 +6,7 @@ if ($id < 1) redirect('/' . $this->module);
 
 
 
-$commModel = $this->Register['ModManager']->getModelInstance($this->module . 'Comments');
+$commModel = $this->Register['ModManager']->getModelInstance('Comments');
 $comment = $commModel->getById($id);
 if (!$comment) return $this->showInfoMessage(__('Comment not found'), '/' . $this->module . '/');
 
