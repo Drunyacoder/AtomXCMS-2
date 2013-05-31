@@ -15,7 +15,7 @@
 	
 	
 {{ context.error }}	
-{% if messages %}
+{% if messages >= 1 %}
 {% for message in messages %}
 	<tr>
 		<td class="col">{{ message.icon }}</td>
