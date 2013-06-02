@@ -61,7 +61,7 @@ Class PagesModule extends Module {
 				if (!preg_match('#^[\da-z_\-.]+$#i', $id))  redirect('/pages/');
 			
 				$page = $this->Model->getByUrl($id);
-				if (empty($record)) return $this->showInfoMessage(__('Can not find this page'), '/');
+				if (empty($page)) return $this->showInfoMessage(__('Can not find this page'), '/');
 			}
 		
 		

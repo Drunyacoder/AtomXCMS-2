@@ -210,7 +210,7 @@ if (isset($_POST['send'])) {
 		}	
 			
 		if (empty($value)) $value = '';
-		if ('checkbox' === $params['type']) {
+		if (!empty($params['type']) && 'checkbox' === $params['type']) {
 			$tmpSet[$fname] = (!empty($value)) ? 1 : 0;
 		} else {
 			$tmpSet[$fname] = $value;
