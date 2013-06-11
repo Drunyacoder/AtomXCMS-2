@@ -31,7 +31,9 @@ function responseData(resp, data) {
 	refreshCaptcha();
 }
 function refreshCaptcha() {
-	$('img#fps_captcha').src($('img#fps_captcha').src() + '&rand=' . Math.round(Math.random(0)*1000));
+	if ($('img#fps_captcha').length) {
+		$('img#fps_captcha').src($('img#fps_captcha').src() + '&rand=' . Math.round(Math.random(0)*1000));
+	}
 }
 
 
