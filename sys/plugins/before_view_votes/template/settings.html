@@ -1,0 +1,83 @@
+<div class="list">
+<div class="title">Управление опросами</div>
+<div onclick="openPopup('sec');" class="add-cat-butt"><div class="add"></div>Добавить опрос</div>
+<table class="grid" width="100%" cellspacing="0">
+	<th width="25%">Вопрос</th>
+	<th width="53%">Варианты</th>
+	<th width="15%">Проголосовавших</th>
+	<th width="7%">Действие</th>
+	{ROWS}
+</table>
+
+
+
+<table class="grid" cellspacing="0">
+	{SETTINGS}
+</table>
+</div>
+
+
+<script type="text/javascript">
+function addField(id) {
+	var cont = $('.'+id+'_fps-votes-fields');
+	var block = $('#'+id+'_fps-votes-fields');
+	var data = '<div class="item"><div class="left">' +
+	'Вариант ' + (cont.length + 1) + ':</div><div class="right">' +
+	'<input class="'+id+'_fps-votes-fields" type="text" value="" style="width:230px" name="variant[]" />' +
+	'</div><div class="clear"></div></div>';
+	
+	$('#'+id+'addfields').append(data);
+	//var field = document.createElement("div");
+	//block.append(field);
+	//field.innerHTML = data;
+	//var cont_ = $('#'+id+'_fps-votes-fields');
+	//cont_.html(cont_.html() + data);
+}
+</script>
+
+
+
+
+
+<div id="sec" class="popup">
+	<div class="top">
+		<div class="title">Редактирование голосования</div>
+		<div onClick="closePopup('sec');" class="close"></div>
+	</div>
+	<form action="plugins.php?ac=edit&plac=add&dir={PLDIR}" method="POST">
+	<div class="items">
+		<div class="item">
+			<div class="left">
+				Вопрос голосования:
+			</div>
+			<div class="right">
+				<input type="hidden" name="type" value="forum" />
+				<input type="text" style="width:230px" name="title" />
+			</div>
+			<div class="clear"></div>
+		</div>
+		<div id="{UNIQID}addfields">
+			<div class="item">
+				<div class="left">
+					Вариант 1:
+				</div>
+				<div class="right">
+					<input class="{UNIQID}_fps-votes-fields" type="text" style="width:230px" value="" name="variant[]" />
+				</div>
+				<div class="clear"></div>
+			</div>
+		</div>
+		<div class="form-item2">
+		<a onClick="addField('{UNIQID}')" href="javascript:void(0)">Добавить ответ</a><br />
+		<div style="clear:both;"></div></div>
+		<div class="item submit">
+			<div class="left"></div>
+			<div class="right" style="float:left;">
+				<input type="submit" value="Save" name="send" class="save-button" />
+			</div>
+			<div class="clear"></div>
+		</div>
+	</div>
+	</form>
+</div>
+

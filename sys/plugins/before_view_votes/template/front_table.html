@@ -1,0 +1,31 @@
+<div id="vote_cont">
+	<h3 style="color:#DB5903; text-align:center;">{PLTITLE}</h3>
+	{PLCONTENT}
+	<img id="ajaxLoader" style="display:none;" src="/sys/img/ajaxs.gif" />
+	<br>
+	<input style="font-size:10px;" onClick="sendVote('{PLTITLE}');" type="button" name="vote" value="Прогоосовать" />
+	<input style="font-size:10px;" onClick="showRes('{PLTITLE}');" type="button" name="view" value="Посмотреть" />
+</div>
+<script type="text/javascript">
+point = '';
+function setPoint(val) {
+	point = val;
+}
+function showRes(title) {
+	point = val;
+}
+function sendVote(title) {
+	$('#ajaxLoader').show();
+	$.post('{ACTION}', {ans:point,title:title,type:"sendvote"}, function(data){
+		$('#ajaxLoader').hide();
+		showRes(title);
+	});
+}
+function showRes(title) {
+	$('#ajaxLoader').show();
+	$.post('{ACTION}', {title:title,type:"show"}, function(data){
+		$('#ajaxLoader').hide();
+		$('#vote_cont').html(data);
+	});
+}
+</script>
