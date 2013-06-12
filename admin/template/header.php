@@ -28,7 +28,8 @@
 	<link rel="StyleSheet" type="text/css" href="template/css/style.css" />
 	
 	<script type="text/javascript">
-
+	
+	/*
 	$(document).ready(function(){
 		setTimeout(function(){
 			$('#overlay').height($('#wrapper').height());
@@ -38,10 +39,11 @@
 		$('.side-separator').css('min-height', $('body').height() - 55);
 		$('div.side-menu').css('min-height', $('body').height() - 55);
 	});
+	*/
 	</script>
 </head> 
 <body>
-	<div id="wrapper">
+	<div class="headmenuwrap">
 		<div class="headmenu">
 			<div class="logo"></div>
 			<div class="menu" id="topmenu">
@@ -80,6 +82,77 @@
 			</div>
 			<div class="clear"></div>
 		</div>
+		<div class="rcrumbs">
+			<?php echo (!empty($pageNavr)) ? $pageNavr : ''; ?>
+		</div>
+		<div class="crumbs">
+			<?php echo (!empty($pageNav)) ? $pageNav : ''; ?>
+		</div>
+	</div>
+	<div class="side-menu">
+		<div class="search">
+			<form>
+				<div class="input"><input type="text" name="search" placeholder="Search..." /></div>
+				<input class="submit-butt" type="submit" name="send" value="" />
+			</form>
+		</div>
+		<ul>
+		
+		
+		
+		<?php
+		$modsInstal = new FpsModuleInstaller;
+		$nsmods = $modsInstal->checkNewModules();
+
+		if (count($nsmods)):
+			foreach ($nsmods as $mk => $mv):
+		?>	
+		
+			<li>
+				<div class="icon new-module"></div><a href="#"><?php echo $mk; ?></a>
+				<div class="sub-opener" onClick="subMenu('sub<?php echo $mk; ?>')"></div>
+				<div class="clear"></div>
+				<div id="sub<?php echo $mk; ?>" class="sub">
+					<div class="shadow">
+						<ul>
+							<li><a href="<?php echo WWW_ROOT; ?>/admin?install=<?php echo $mk ?>">Install</a></li>
+						</ul>
+					</div>
+				</div>
+			</li>
+		<?php
+			endforeach;
+		endif;
+
+
+
+
+		$modules = getAdmFrontMenuParams();
+
+		foreach ($modules as $modKey => $modData): 
+			if (!empty($nsmods) && array_key_exists($modKey, $nsmods)) continue;
+		?>
+		
+			<li>
+				<div class="icon <?php echo $modKey ?>"></div><a href="<?php echo $modData['url']; ?>"><?php echo $modData['ankor']; ?></a>
+				<div class="sub-opener" onClick="subMenu('sub<?php echo $modKey ?>')"></div>
+				<div class="clear"></div>
+				<div id="sub<?php echo $modKey ?>" class="sub">
+					<div class="shadow">
+						<ul>
+							<?php foreach ($modData['sub'] as $url => $ankor): ?>
+							<li><a href="<?php echo $url; ?>"><?php echo $ankor; ?></a></li>
+							<?php endforeach; ?>
+						</ul>
+					</div>
+				</div>
+			</li>
+		<?php endforeach; ?>
+		</ul>
+		<div class="clear"></div>
+	</div>
+	<div id="wrapper">
+
 		
 		<!-- AdminBar -->
 		<script type="text/javascript">
@@ -176,76 +249,10 @@
 			<table class="side-separator" cellpadding="0" cellspacing="0" width="100%" >
 				<tr>
 					<td width="237" min-height="100%">
-						<div class="side-menu">
-							<div class="search">
-								<form>
-									<div class="input"><input type="text" name="search" placeholder="Search..." /></div>
-									<input class="submit-butt" type="submit" name="send" value="" />
-								</form>
-							</div>
-							<ul>
-							
-							
-							
-							<?php
-							$modsInstal = new FpsModuleInstaller;
-							$nsmods = $modsInstal->checkNewModules();
 
-							if (count($nsmods)):
-								foreach ($nsmods as $mk => $mv):
-							?>	
-							
-								<li>
-									<div class="icon new-module"></div><a href="#"><?php echo $mk; ?></a>
-									<div class="sub-opener" onClick="subMenu('sub<?php echo $mk; ?>')"></div>
-									<div class="clear"></div>
-									<div id="sub<?php echo $mk; ?>" class="sub">
-										<div class="shadow">
-											<ul>
-												<li><a href="<?php echo WWW_ROOT; ?>/admin?install=<?php echo $mk ?>">Install</a></li>
-											</ul>
-										</div>
-									</div>
-								</li>
-							<?php
-								endforeach;
-							endif;
-
-
-
-
-							$modules = getAdmFrontMenuParams();
-
-							foreach ($modules as $modKey => $modData): 
-								if (!empty($nsmods) && array_key_exists($modKey, $nsmods)) continue;
-							?>
-							
-								<li>
-									<div class="icon <?php echo $modKey ?>"></div><a href="<?php echo $modData['url']; ?>"><?php echo $modData['ankor']; ?></a>
-									<div class="sub-opener" onClick="subMenu('sub<?php echo $modKey ?>')"></div>
-									<div class="clear"></div>
-									<div id="sub<?php echo $modKey ?>" class="sub">
-										<div class="shadow">
-											<ul>
-												<?php foreach ($modData['sub'] as $url => $ankor): ?>
-												<li><a href="<?php echo $url; ?>"><?php echo $ankor; ?></a></li>
-												<?php endforeach; ?>
-											</ul>
-										</div>
-									</div>
-								</li>
-							<?php endforeach; ?>
-							</ul>
-							<div class="clear"></div>
-						</div>
 					</td>
-					<td style="position:relative; padding-bottom:100px;">
-						<div class="rcrumbs">
-							<?php echo (!empty($pageNavr)) ? $pageNavr : ''; ?>
-						</div>
-						<div class="crumbs">
-							<?php echo (!empty($pageNav)) ? $pageNav : ''; ?>
-						</div>
+					<td style="position:relative; padding-bottom:65px;">
+
 
 						<div id="content-wrapper">
 

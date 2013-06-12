@@ -91,7 +91,7 @@ function showHelpWin(text, title) {
 	helpWin.innerHTML = '<div class="popup" id="help-window" style="display:block;">' +
 		'<div class="top">' +
 			'<div class="title">' + title + '</div>' +
-			'<div class="close" onClick="closePopup(\'help-window\')"></div>' +
+			'<div class="close" onClick="closeHelpPopup(\'help-window\')"></div>' +
 		'</div>' +
 		'<div class="items text">' +
 			text +
@@ -99,6 +99,12 @@ function showHelpWin(text, title) {
 	'</div>';
 	
 	$('#content-wrapper').append(helpWin);
+}
+
+function closeHelpPopup(id) {
+	$('#'+id).fadeOut(400, function(){
+		$('#'+id).remove();
+	})
 }
 
 

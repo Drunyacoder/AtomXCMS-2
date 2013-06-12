@@ -1,22 +1,24 @@
 html, body, img, ul {border:0px; margin:0px; padding:0px; font:12px Arial;}
 html {height:100%;}
-body {background:url('../img/body-bg.png') repeat !important; min-height:100%;}
+body {background:url('../img/body-bg.png') repeat !important; min-height:100%; min-width:100%; position:relative;}
 #overlay {position:absolute; top:0px; left:0px; width:100%; height:100%; background:url('../img/overlay-bg.png') repeat; display:none;}
 .clear {clear:both;}
+a {color:#96C703;}
 
 
 /* Head menu */
-#wrapper {height:100%; min-width:1150px; padding:0px 3%; background:url('../img/headmenu-bg.png') repeat-x;}
+#wrapper {height:100%; min-width:1150px; padding:106px 3% 30px 3%;}
+.headmenuwrap {height:106px; width: 94%; padding:0px 3%; background:url('../img/headmenu-bg.png') repeat-x; position:fixed; z-index:9999; -webkit-box-shadow: 0 1px 3px #555; -moz-box-shadow: 0 1px 3px #555; box-shadow: 0 1px 3px #555;}
 .headmenu {width:100%; height:35px; padding:10px 0px;}
-.headmenu .logo {width:130px; height:50px; margin-top:-9px; float:left; background:url('../img/logo.png') no-repeat;}
+.headmenu .logo {width:110px; height:50px; margin:-9px 0px 0px 60px; float:left; background:url('../img/logo.png') no-repeat;}
 
-.headmenu .menu {float:left;}
+.headmenu .menu {float:left; z-index:99999; left: 17px; position: relative;}
 .headmenu .menu > ul {padding-top:4px; padding-left:50px; position:relative;}
 .headmenu .menu ul, .headmenu .menu ul li {list-style-type:none;}
 .headmenu .menu > ul > li {padding:6px 0px; height:16px; line-height:16px; float:left; position:relative;}
 .headmenu .menu > ul > li:hover {-moz-border-radius:4px; -webkit-border-radius:4px; border-radius:4px; background:url('../img/headmenu-hover-bg.png') repeat-x; -moz-box-shadow:inset 0px 1px 1px #000; -webkit-box-shadow:inset 0px 1px 1px #000; box-shadow:inset 0px 1px 1px #000; border-bottom:1px solid #848484;}
 .headmenu .menu > ul > li > a {display:block; padding:0px 20px; color:#ddd; text-decoration:none; -moz-text-shadow:0px -1px 2px #000; -webkit-text-shadow:0px -1px 2px #000; text-shadow:0px -1px 2px #000;}
-.headmenu .menu ul li .sub {display:none; width:200px; border-bottom:1px solid #8E8E8E; background:url("../img/sidemenu-bg.png") repeat; position:absolute; z-index:1; top:41px; -moz-box-shadow:0px 6px 9px #000; -webkit-box-shadow:0px 6px 9px #000; box-shadow:0px 6px 9px #000; overflow:hidden;}
+.headmenu .menu ul li .sub {display:none; width:200px; border-bottom:1px solid #8E8E8E; background:url("../img/sidemenu-bg.png") repeat; position:absolute; z-index:1; top:41px; -moz-box-shadow:0px 6px 9px #000; -webkit-box-shadow:0px 6px 9px #000; box-shadow:0px 6px 9px #000; overflow:hidden; z-index:99999;}
 .headmenu .menu ul li .sub .shadow {padding:10px 10px 10px 30px; box-shadow:inset 0px 3px 12px #000; width:180px; margin-left:-10px;}
 .headmenu .menu ul li .sub li {padding:3px 0px; text-align:left;}
 .headmenu .menu ul li .sub li a {color:#96C703; text-decoration:underline;}
@@ -38,7 +40,7 @@ body {background:url('../img/body-bg.png') repeat !important; min-height:100%;}
 .center-wrapper {position:relative;}
 table.side-separator, table.side-separator tr td {vertical-align:top; min-height:100%; position:relative;}
 
-.side-menu {width:235px; min-height:100%; background:url('../img/sidemenu-bg.png') repeat; border-left:1px solid #2a2a2b; border-right:1px solid #2a2a2b;}
+.side-menu {width:235px; min-height:100%; background:url('../img/sidemenu-bg.png') repeat; border-left:1px solid #2a2a2b; border-right:1px solid #2a2a2b; position:fixed; z-index:9999; top:55px; left:3%;}
 .side-menu > .search {height:31px; width:215px; padding:10px; -moz-box-shadow: 0px 0px 20px #000; -webkit-box-shadow: 0px 0px 20px #000; box-shadow: 0px 0px 20px #000; z-index:0;}
 .side-menu .search .input {width:168px; height:26px; float:left; border-radius:5px; -moz-border-radius:5px; -webkit-border-radius:5px; -moz-background:linear-gradient(#4b4a4b, #6a6969); -ms-background:linear-gradient(#4b4a4b, #6a6969); -webkit-background:linear-gradient(#4b4a4b, #6a6969); background:linear-gradient(#4b4a4b, #6a6969); -moz-box-shadow:inset 0px 0px 3px #000; -webkit-box-shadow:inset 0px 0px 3px #000; box-shadow:inset 0px 0px 3px #000; border-bottom:1px solid #a3a3a3; margin-right:10px;}
 .side-menu .search .input input[type="text"] {background:none; border:none; color:#cdcdcd; font-style:italic; padding:5px; -moz-box-shadow:none; -webkitbox-shadow:none; box-shadow:none;}
@@ -76,7 +78,8 @@ table.side-separator, table.side-separator tr td {vertical-align:top; min-height
 .crumbs, rcrumbs {height:17px; width:45%; padding:17px 20px; color:#a1a1a1; font-style:italic; font-size:12px;}
 .crumbs a, .rcrumbs a {color:#a1a1a1; font-style:italic; text-decoration:underline; font-size:12px;}
 .crumbs a:hover, .rcrumbs a:hover {text-decoration:none;}
-.rcrumbs {float:right; padding:17px 10px;}
+.rcrumbs {float:right; padding:17px 60px 17px 10px;}
+.crumbs {padding-left:260px;}
 
 #content-wrapper {padding:15px 15px 70px 15px; position:relative;}
 .warning {padding:15px 15px 15px 70px; background:#f4f2f2 url('../img/warning-icon.png') 14px center no-repeat; position:relative; -moz-border-radius:3px; -webkit-border-radius:3px; border-radius:3px; color:#a1a1a1; font-size:11px; margin-bottom:10px;}
@@ -198,7 +201,7 @@ a.undo {background-position:-253px 0px;}
 
 
 /* PopUp */
-.popup {width:500px; position:absolute; top:0; left:25%; background:#fff; -moz-border-radius:5px; -webkit-border-radius:5px; border-radius:5px; box-shadow:0px 2px 6px #000; overflow:hidden; z-index:999; display:none;}
+.popup {width:500px; position:relative; top:-260px; left:25%; background:#fff; -moz-border-radius:5px; -webkit-border-radius:5px; border-radius:5px; box-shadow:0px 2px 6px #000; overflow:hidden; z-index:999; display:none;}
 .popup .top {height:17px; border-bottom:1px solid #8E8E8E; padding:12px 20px; background:url("../img/list-title-bg.png") repeat-x;}
 .popup .top .title {color:#96C703; font-size:15px; font-weight:bold; float:left;}
 .popup .top .close {float:right; width:14px; height:14px; background:url('../img/close-button.png') no-repeat; margin-left:10px; cursor:pointer;}
