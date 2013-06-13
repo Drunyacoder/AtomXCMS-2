@@ -9,7 +9,7 @@
 |  @package       CMS Fapos                      |
 |  @subpackege    Template redactor              |
 |  @copyright     ©Andrey Brykin 2010-2013       |
-|  @last mod.     2013/01/20                     |
+|  @last mod.     2013/06/13                     |
 \-----------------------------------------------*/
 
 /*-----------------------------------------------\
@@ -22,6 +22,8 @@
 |  CMS Fapos или ее частей,                      |
 |  без согласия автора, является не законным     |
 \-----------------------------------------------*/
+
+
 
 include_once '../sys/boot.php';
 include_once ROOT . '/admin/inc/adm_boot.php';
@@ -143,7 +145,7 @@ if ('css' == $type) $file = 'style';
 
 if(isset($_POST['send']) && isset($_POST['templ'])) {
 	if ($type == 'css') {
-		$template_file = ROOT . '/template/' . Config::read('template') . '/css/style.css';
+		$template_file = ROOT . '/template/' . $Register['Config']::read('template') . '/css/style.css';
 		if (!is_file($template_file . '.stand')) {
 			copy($template_file, $template_file . '.stand');
 		}
@@ -152,12 +154,12 @@ if(isset($_POST['send']) && isset($_POST['templ'])) {
 
 	} else {
 		 
-		$template_file = ROOT . '/template/' . Config::read('template') . '/html/' . $module . '/' . $filename . '.html';
+		$template_file = ROOT . '/template/' . $Register['Config']::read('template') . '/html/' . $module . '/' . $filename . '.html';
 		
 		
 		
-		if (!is_file($template_file . '.stand') && file_exists($template_file)) {
-			copy($template_file, $backup_file_path);
+		if (!file_exists($template_file . '.stand') && file_exists($template_file)) {
+			copy($template_file, $template_file . '.stand');
 		}
 		$file = fopen($template_file, 'w+');
 	}
