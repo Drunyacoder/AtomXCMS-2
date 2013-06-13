@@ -4,7 +4,14 @@ var wStep = 10;
 var winTimeout = 50;
 var openedWindows = new Array();
 //var wObj = document.getElementById('test');
-
+function resizeWrapper(id) {
+	var nheight = $(id).height();
+	var wrapheight = $('#content-wrapper').height();
+	
+	if (nheight > wrapheight) {
+		$('#content-wrapper').height(nheight);
+	}
+}
 
 function selectAclTab(id) {
 	$('div.acl-perms-collection').each(function(){
@@ -16,6 +23,8 @@ function selectAclTab(id) {
 
 
 function openPopup(id) {
+	resizeWrapper($('#'+id));
+
 	$('#' + id).fadeIn(1000);
 	
 	if (!$('div#overlay').is(':visible')) {

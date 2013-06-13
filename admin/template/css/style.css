@@ -201,7 +201,7 @@ a.undo {background-position:-253px 0px;}
 
 
 /* PopUp */
-.popup {width:500px; position:relative; top:-260px; left:25%; background:#fff; -moz-border-radius:5px; -webkit-border-radius:5px; border-radius:5px; box-shadow:0px 2px 6px #000; overflow:hidden; z-index:999; display:none;}
+.popup {width:500px; position:absolute; top:0px; left:25%; background:#fff; -moz-border-radius:5px; -webkit-border-radius:5px; border-radius:5px; box-shadow:0px 2px 6px #000; overflow:hidden; z-index:999; display:none;}
 .popup .top {height:17px; border-bottom:1px solid #8E8E8E; padding:12px 20px; background:url("../img/list-title-bg.png") repeat-x;}
 .popup .top .title {color:#96C703; font-size:15px; font-weight:bold; float:left;}
 .popup .top .close {float:right; width:14px; height:14px; background:url('../img/close-button.png') no-repeat; margin-left:10px; cursor:pointer;}

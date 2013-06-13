@@ -192,7 +192,7 @@ class VotesSettings {
 						
 						$n = 1;
 						foreach ($vote as $vot => $cnt_ansv) {
-							$out .= '<div class="item"><div class="item">
+							$out .= '<div class="item"><div class="left">
 								Вариант ' . $n . ':</div><div class="right">
 								<input class="' . md5($key) . '_fps-votes-fields" type="text" style="width:230px" name="variant[]" value="' . h($vot) . '" /><br />
 								</div><div class="clear"></div></div>';
