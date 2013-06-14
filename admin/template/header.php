@@ -31,17 +31,14 @@
 	
 	<script type="text/javascript">
 	
-	/*
+	
 	$(document).ready(function(){
 		setTimeout(function(){
 			$('#overlay').height($('#wrapper').height());
 		}, 2000);
 		
-		$('#wrapper').css('min-height', $('body').height());
-		$('.side-separator').css('min-height', $('body').height() - 55);
-		$('div.side-menu').css('min-height', $('body').height() - 55);
+		$('#wrapper').css('min-height', ($('body').height() - 136));
 	});
-	*/
 	</script>
 </head> 
 <body>
@@ -253,7 +250,7 @@
 					<td width="237" min-height="100%">
 
 					</td>
-					<td style="position:relative; padding-bottom:65px;">
+					<td style="position:relative;">
 
 
 						<div id="content-wrapper">

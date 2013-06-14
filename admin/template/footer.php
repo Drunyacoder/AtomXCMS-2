@@ -23,7 +23,7 @@
 ?>
 							</div>
 							<div class="clear"></div>
-							<div class="footer">(c) Fapos — 2013. All rights reserved.</div>
+							
 						</div>
 						
 					</td>
@@ -31,6 +31,7 @@
 			</table>
 
 		</div>	
+		<div class="footer">(c) Fapos — 2013. All rights reserved.</div>
 	</div>
 	<div id="overlay"></div>
 </body>
