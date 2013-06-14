@@ -1,4 +1,5 @@
 install_
+install
 sys/cache/*
 sys/tmp/*
 sys/logs/*
