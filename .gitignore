@@ -3,3 +3,4 @@ sys/cache/*
 sys/tmp/*
 sys/logs/*
 sys/avatars/*
+sys/files/*
