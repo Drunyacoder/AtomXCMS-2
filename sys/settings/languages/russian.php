@@ -231,7 +231,6 @@ $language = array(
 	'All comments'                  => 'Комментарии пользователей', 
 
 	// BACKEND
-	
 	'Yes'                           => 'Да',
 	'No'                            => 'Нет',
 	'General'                       => 'Общее',
@@ -364,6 +363,7 @@ $language = array(
 	'All done' 						=> 'Все готово.',
 	'Autotags settings' 			=> 'Настройки автотегов',
 	'Watermark settings' 			=> 'Настройки watermark',
+	'Saved' 						=> 'Настройки сохранены',
 	
 	
 	// Templates name

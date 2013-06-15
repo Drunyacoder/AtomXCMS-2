@@ -7,7 +7,7 @@
 ## @package       CMS Fapos                     ##
 ## @subpackege    Admin Panel module            ##
 ## @copyright     ©Andrey Brykin 2010-2013      ##
-## @last mod.     2013/04/24                    ##
+## @last mod.     2013/06/15                    ##
 ##################################################
 
 
@@ -228,6 +228,10 @@ if (isset($_POST['send'])) {
 
 	//save settings
 	Config::write($tmpSet);
+	
+	$_SESSION['message'] = __('Saved');
+	
+	
 	//clean cache
 	$Cache = new Cache;
 	$Cache->clean(CACHE_MATCHING_ANY_TAG, array('module_' . $module));
@@ -369,6 +373,12 @@ $pageNav = $pageTitle;
 $pageNavr = '';
 include_once ROOT . '/admin/template/header.php';
 ?>
+
+
+<?php if (!empty($_SESSION['message'])): ?>
+<div class="warning"><?php echo $_SESSION['message'] ?></div>
+<?php unset($_SESSION['message']); endif; ?>
+
 
 <form method="POST" action="settings.php?m=<?php echo $module; ?>" enctype="multipart/form-data">
 <div class="list">
