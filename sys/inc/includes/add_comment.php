@@ -97,6 +97,7 @@ $data = array(
 	'user_id'  => (!empty($_SESSION['user']['id'])) ? $_SESSION['user']['id'] : 0,
 	'date'     => new Expr('NOW()'),
 	'mail'     => $mail,
+	'module'   => $this->module,
 );
 
 

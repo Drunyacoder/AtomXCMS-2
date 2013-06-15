@@ -65,7 +65,6 @@ class Fps_Viewer_Manager
 	private function executeSource($source, $context)
 	{
 		$context = $this->prepareContext($context);
-		
 		ob_start();
 		eval('?>' . $source);
 		$output = ob_get_clean();

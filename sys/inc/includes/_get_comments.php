@@ -15,7 +15,13 @@ if (empty($html) && $commentsModel) {
 	
 	$order_way = ($this->Register['Config']->read('comments_order', $this->module)) ? 'DESC' : 'ASC';
 	$params = array('order' => 'date ' . $order_way,);
-	$comments = $commentsModel->getCollection(array('entity_id' => $id), $params);
+	
+	$comments = $commentsModel->getCollection(array(
+		'entity_id' => $id,
+		'module' => $this->module,
+	), $params);
+	
+	
 	if ($comments) {
 		foreach ($comments as $comment) {
 			$markers = array();

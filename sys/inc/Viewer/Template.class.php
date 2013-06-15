@@ -25,7 +25,8 @@ abstract class Fps_Viewer_Template
 		}
 		
 
-		return '{{ ' . $need . ' }}';
+		//return '{{ ' . $need . ' }}';
+		return '';
 	}
 
 	abstract public function display();
