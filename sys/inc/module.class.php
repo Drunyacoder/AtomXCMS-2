@@ -663,4 +663,11 @@ class Module {
 		$url = str_replace('//', '/', $url);
 		return $url;
 	}
+	
+	
+	
+	public function showAjaxResponse($array)
+	{
+		echo json_encode($array); die();
+	}
 }

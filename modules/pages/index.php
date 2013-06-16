@@ -44,10 +44,7 @@ Class PagesModule extends Module {
 	* default action
 	*/
 	function index($id = null, $s =null, $x = null) {
-	
-		//$this->render('main.html', array()); die();
-	
-	
+
 		//if isset ID - we need load page with this ID
 		if (!empty($id)) {
 			if (is_int($id)) {
@@ -125,7 +122,7 @@ Class PagesModule extends Module {
 
 				//create SQL query
                 $entities = $this->Model->getEntitiesByHomePage($latest_on_home);
-
+				
 					
                 //if we have records
                 if (count($entities) > 0) {
@@ -202,7 +199,7 @@ Class PagesModule extends Module {
 
                     $entities = $mod_mats['news'] + $mod_mats['stat'] + $mod_mats['loads'];
                     ksort($entities);
-
+					
 
                     //if we have materials for view on home page (now we get their an create page)
                     $info = null;
@@ -264,9 +261,9 @@ Class PagesModule extends Module {
                             'record_id_' . $result->getId(),
                         ));
                     }
-
+					
                     $html = $this->render('list.html', array('entities' => $entities));
-
+					
 
                     //write int cache
                     if ($this->cached)

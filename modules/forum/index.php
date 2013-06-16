@@ -2,12 +2,12 @@
 /*-----------------------------------------------\
 | 												 |
 |  @Author:       Andrey Brykin (Drunya)         |
-|  @Version:      1.6.70                         |
+|  @Version:      1.6.71                         |
 |  @Project:      CMS                            |
 |  @package       CMS Fapos                      |
 |  @subpackege    Forum Module                   |
 |  @copyright     ©Andrey Brykin 2010-2013       |
-|  @last mod.     2013/03/30                     |
+|  @last mod.     2013/06/15                     |
 \-----------------------------------------------*/
 
 /*-----------------------------------------------\
@@ -2828,14 +2828,18 @@ Class ForumModule extends Module {
 	*/
 	public function delete_post($id = null) {
 		$id = (int)$id;
-		if (empty($id) || $id < 1) redirect('/forum/');
-		
+		if (empty($id) || $id < 1) $this->showAjaxResponse(array(
+			'error' => 'Empty ID',
+		));
+			
 
 		// Получаем из БД информацию об удаляемом сообщении - это нужно,
 		// чтобы узнать, имеет ли право пользователь удалить это сообщение
 		$postsModel = $this->Register['ModManager']->getModelInstance('Posts');
 		$post = $postsModel->getById($id);
-		if (!$post) return $this->showInfoMessage(__('Some error occurred'), '/forum/' );
+		if (!$post) $this->showAjaxResponse(array(
+			'error' => 'Post not found',
+		));
 
 				
 		// get theme for check access (by theme.id_forum)
@@ -2849,7 +2853,9 @@ Class ForumModule extends Module {
 		if (!$this->ACL->turn(array('forum', 'delete_posts', $theme->getId_forum()), false) 
 		&& (!empty($_SESSION['user']['id']) && $post->getId_author() == $_SESSION['user']['id'] 
 		&& $this->ACL->turn(array('forum', 'delete_mine_posts', $theme->getId_forum()), false)) === false) {
-			return $this->showInfoMessage(__('Permission denied'), '/forum/');
+			$this->showAjaxResponse(array(
+				'error' => 'Permission denied',
+			));
 		}
 
 
@@ -2951,7 +2957,11 @@ Class ForumModule extends Module {
 			else $forum->setLast_theme_id(0);
 			
 			$forum->save();
-			return $this->showInfoMessage(__('Operation is successful'), '/forum/view_forum/' . $theme->getId_forum());
+			
+			$this->showAjaxResponse(array(
+				'result' => 'Operation is successful',
+				'last_theme' => '/forum/view_forum/' . $theme->getId_forum(),
+			));
 			
 		} else {
 			$forum->setPosts($forum->getPosts() - 1);
@@ -2960,7 +2970,9 @@ Class ForumModule extends Module {
 			else $forum->setLast_theme_id(0);
 			
 			$forum->save();
-			return $this->showInfoMessage(__('Operation is successful'), getReferer());
+			$this->showAjaxResponse(array(
+				'result' => 'Operation is successful',
+			));
 		}
 	}
 

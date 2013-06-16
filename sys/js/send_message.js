@@ -45,7 +45,12 @@ packIds = [];
 
 maxAttachedFiles = 5;
 
-
+function _alert(message){
+	$('body').append('<div id="_alert" style="width:200px; padding:10px; color:#fff; font-weight:bold; position:fixed; left:40%; top:35%; background:#000; opacity:0.7; -webkit-border-radius:5px; -moz-border-radius:5px; border-radius:5px;">'+message+'</div>');
+	setTimeout(function(){
+		$('#_alert').remove();
+	}, 2000);
+}
 //create smiles buttons. id - id of container for smiles
 function getSmiles(id) {
 	//array with  smiles
