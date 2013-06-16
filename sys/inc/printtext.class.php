@@ -416,7 +416,7 @@ class PrintText {
 		return $str;
 	}
 	public function parseUrlBb($str) {
-		if (stripos($str, '[url') && stripos($str, '[/url]')) {
+		if (false !== (stripos($str, '[url')) && false !== (stripos($str, '[/url]'))) {
 			$noindex = Config::read('use_noindex');
 			$redirect = Config::read('redirect_active');
 			$url = $redirect ? get_url('redirect.php?url=') : '';
