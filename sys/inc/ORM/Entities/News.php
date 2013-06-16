@@ -83,7 +83,7 @@ class NewsEntity extends FpsEntity
 	{ 
 		$Register = Register::getInstance();
 		$attachClass = $Register['ModManager']->getModelNameFromModule('newsAttaches');
-		$commentsClass = $Register['ModManager']->getModelNameFromModule('newsComments');
+		$commentsClass = $Register['ModManager']->getModelNameFromModule('Comments');
 		$addContentClass = $Register['ModManager']->getModelNameFromModule('newsAddContent');
 		
 		$attachesModel = new $attachClass;

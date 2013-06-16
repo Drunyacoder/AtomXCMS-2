@@ -83,7 +83,7 @@ class StatEntity extends FpsEntity
 	{ 
 		$Register = Register::getInstance();
 		$attachClass = $Register['ModManager']->getModelNameFromModule('statAttaches');
-		$commentsClass = $Register['ModManager']->getModelNameFromModule('statComments');
+		$commentsClass = $Register['ModManager']->getModelNameFromModule('Comments');
 		$addContentClass = $Register['ModManager']->getModelNameFromModule('statAddContent');
 		
 		$attachesModel = new $attachClass;

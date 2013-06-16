@@ -94,7 +94,7 @@ class LoadsEntity extends FpsEntity
 	{ 
 		$Register = Register::getInstance();
 		$attachClass = $Register['ModManager']->getModelNameFromModule('loadsAttaches');
-		$commentsClass = $Register['ModManager']->getModelNameFromModule('loadsComments');
+		$commentsClass = $Register['ModManager']->getModelNameFromModule('Comments');
 		$addContentClass = $Register['ModManager']->getModelNameFromModule('loadsAddContent');
 		
 		$attachesModel = new $attachClass;
