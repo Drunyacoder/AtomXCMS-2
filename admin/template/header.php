@@ -33,9 +33,9 @@
 	
 	
 	$(document).ready(function(){
-		setTimeout(function(){
-			$('#overlay').height($('#wrapper').height());
-		}, 2000);
+		//setTimeout(function(){
+		//	$('#overlay').height($('#wrapper').height());
+		//}, 2000);
 		
 		$('#wrapper').css('min-height', ($('body').height() - 136));
 	});
