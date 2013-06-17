@@ -7,12 +7,8 @@ if ($id < 1) redirect('/' . $this->module);
 
 $commentsModel = $this->Register['ModManager']->getModelInstance('Comments');
 if ($commentsModel) {
-	$comments = $commentsModel->getCollection(array('id' => $id, 'module' => $this->module));
-	
-	
-	if (is_array($comments) && count($comments)) {
-	
-		$comment = $comments[0];
+	$comment = $commentsModel->getById($id);
+	if ($comment) {
 		$entityID = $comment->getEntity_id();
 		$comment->delete();
 		
