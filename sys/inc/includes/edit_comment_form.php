@@ -7,9 +7,11 @@ if ($id < 1) redirect('/' . $this->module);
 
 
 $commModel = $this->Register['ModManager']->getModelInstance('Comments');
-$comment = $commModel->getById($id);
-if (!$comment) return $this->showInfoMessage(__('Comment not found'), '/' . $this->module . '/');
 
+$comments = $commModel->getCollection(array('id' => $id, 'module' => $this->module));
+if (!$comments) return $this->showInfoMessage(__('Comment not found'), '/' . $this->module . '/');
+
+$comment = $comments[0];
 
 // Categories tree
 $entity = $this->Model->getById($comment->getEntity_id());

@@ -7,8 +7,10 @@ $error = '';
 
 
 $commModel = $this->Register['ModManager']->getModelInstance('Comments');
-$comment = $commModel->getById($id);
+$comments = $commModel->getCollection(array('id' => $id, 'module' => $this->module));
 if (!$comment) return $this->showInfoMessage(__('Comment not found'), $this->module);
+
+$comment = $comments[0];
 
 
 $message = (!empty($_POST['message'])) ? $_POST['message'] : '';
