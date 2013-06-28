@@ -430,7 +430,7 @@ function saveAnk() {
 		$errors .= '<li>Подпись содержит недопустимые символы</li>';
 
 	//check data for max/min lenght
-	if ($v_obj->len_val($login, 3, 15) !== true) 
+	if ($v_obj->len_val($login, 3, 20) !== true) 
 		$errors .= '<li>Имя слишком короткое/длинное. Должно быть в диапазоне 3-15 символов</li>';
 	if ($v_obj->len_val($url, 0) !== true) 
 		$errors .= '<li>Слишком длинный URL</li>';
@@ -438,8 +438,8 @@ function saveAnk() {
 		$errors .= '<li>ICQ не должно превышать 10 символов </li>';
 	if ($v_obj->len_val($about, 0, 300) !== true) 
 		$errors .= '<li>Поле "о себе" не должно превышать 300 символов</li>';
-	if ($v_obj->len_val($signature, 0) !== true) 
-		$errors .= '<li>Подпись не должна превышать 100 символов</li>';
+	if ($v_obj->len_val($signature, 0, 250) !== true) 
+		$errors .= '<li>Подпись не должна превышать 250 символов</li>';
 	if (!empty($passw) && $v_obj->len_val($passw, 6, 32) !== true) 
 		$errors .= '<li>Пароль слишком длинный/короткий. Он должен содержать 6-32 символа</li>';
 	
