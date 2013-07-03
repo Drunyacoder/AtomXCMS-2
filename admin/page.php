@@ -419,7 +419,8 @@ include_once ROOT . '/admin/template/header.php';
 				</div>
 				<div class="setting-item">
 					<div class="center">
-						<textarea style="min-height:300px;" id="mainTextarea" name="content"></textarea>
+						
+						<textarea contenteditable="true" style="min-height:300px;" id="mainTextarea" name="content"></textarea>
 					</div>
 					<div class="clear"></div>
 				</div>
@@ -443,13 +444,16 @@ include_once ROOT . '/admin/template/header.php';
 
 
 <script type="text/javascript">
+
 $(document).ready(function(){
-	redactor = $('#mainTextarea').redactor({
+	redactor_ = $('#mainTextarea').redactor({
 		css: 'redactor.css', 
 		cleanup: false,
 		autoclear: false, 
 		autoformat: false, 
 		convert_links: false, 
+		convertLinks: false, 
+		convertDivs: false, 
 		init_clear: false,
 		remove_styles: false,
 		remove_classes: false,
@@ -457,9 +461,13 @@ $(document).ready(function(){
 		imageUpload: '/img_uploader.php',
 		fileUpload: '/img_uploader.php',
 		autoresize: true,
+		deniedTags: [],
+		removeEmptyTags: false,
+		phpTags: true,
+		uploadCrossDomain: true
 	});
 	
-
+	
 	
 	
 	$.validator.addMethod('chars', function(value, element){
@@ -746,6 +754,13 @@ function fillForm(id){
 		$(form).find('input[name="meta_keywords"]').val(data.meta_keywords);
 		$(form).find('input[name="meta_description"]').val(data.meta_description);
 		$(form).find('input[name="template"]').val(data.template);
+		
+		
+		if (data.content.match(/(<script[^>]*>.*<\/script>)/gi)) {
+			//$('#mainTextarea').data("redactor").opts;
+			$('#mainTextarea').data("redactor").toggle();
+		}
+		
 		$(form).find('textarea[name="content"]').val(data.content);
 		$('div.redactor_editor').html(data.content); 
 		FpsLib.hideLoader();
