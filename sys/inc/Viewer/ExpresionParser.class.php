@@ -33,12 +33,11 @@ class Fps_Viewer_ExpresionParser
 	
 	public function parseExpression($precedence = 0)
 	{
-
 		$node = $this->parsePrimaryExpression();
 		$currToken = $this->parser->getStream()->getCurrent();
 		
 
-	
+		
 		switch ($currToken->getType()) {
 			case Fps_Viewer_Token::OPERATOR_TYPE:
 				if ('for2' === $this->parser->getEnv()) $this->parser->setEnv('for');

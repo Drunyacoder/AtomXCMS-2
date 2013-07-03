@@ -19,6 +19,8 @@ class Fps_Viewer_Token
     const PUNCTUATION_TYPE          = 9;
     const INTERPOLATION_START_TYPE  = 10;
     const INTERPOLATION_END_TYPE    = 11;
+    const URL_START_TYPE  			= 12;
+    const URL_END_TYPE    			= 13;
 
     /**
      * Constructor.
@@ -159,6 +161,12 @@ class Fps_Viewer_Token
                 break;
             case self::INTERPOLATION_END_TYPE:
                 $name = 'INTERPOLATION_END_TYPE';
+                break;
+            case self::URL_START_TYPE:
+                $name = 'URL_START_TYPE';
+                break;
+            case self::URL_END_TYPE:
+                $name = 'URL_END_TYPE';
                 break;
             default:
                 throw new Exception(sprintf('Token of type "%s" does not exist.', $type), $line);

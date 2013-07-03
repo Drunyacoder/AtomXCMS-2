@@ -25,6 +25,7 @@ class Fps_Viewer_TokensParser
     const STATE_BLOCK           = 1;
     const STATE_VAR             = 2;
     const STATE_STRING          = 3;
+    const STATE_URL          	= 4;
 
     const REGEX_NAME            = '/[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*/uA';
     const REGEX_NUMBER          = '/[0-9]+(?:\.[0-9]+)?/uA';
@@ -42,12 +43,14 @@ class Fps_Viewer_TokensParser
 		$this->delimiters = array(
 			'tag_var' => array('{{', '}}'),
 			'tag_block' => array('{%', '%}'),
+			'tag_url' => array('[~', '~]'),
 		);
 		
 		$this->regexes = array(
 			'lex_var' => '#\s+' . preg_quote($this->delimiters['tag_var'][1], '/') . '#uA',
+			'lex_url' => '#\s+' . preg_quote($this->delimiters['tag_url'][1], '/') . '#uA',
 			'lex_block' => '#\s+(?:' . preg_quote($this->delimiters['tag_block'][1]) . '|' . preg_quote($this->delimiters['tag_block'][1]) . ')#uA',
-			'lex_start' => '#(' . preg_quote($this->delimiters['tag_var'][0]) . '|' . preg_quote($this->delimiters['tag_block'][0]) . ')\s#us',
+			'lex_start' => '#(' . preg_quote($this->delimiters['tag_var'][0]) . '|' . preg_quote($this->delimiters['tag_block'][0]) . '|' . preg_quote($this->delimiters['tag_url'][0]) . ')\s#us',
 			'operators' => '#not in(?=[\s()])|and(?=[\s()])|not(?=[\s()])|in(?=[\s()])|\<\=|\>\=|\=\=|or(?=[\s()])|\!\=|%|\>|\+|-|\<|\=|\*#uA',
 		);
 	}
@@ -72,6 +75,7 @@ class Fps_Viewer_TokensParser
         // find all token starts in one go
         preg_match_all($this->regexes['lex_start'], $this->code, $matches, PREG_OFFSET_CAPTURE);
         $this->positions = $matches;
+		
 		while ($this->cursor < $this->end) {
 			switch ($this->state) {
 				case self::STATE_DATA:
@@ -90,8 +94,12 @@ class Fps_Viewer_TokensParser
 					$this->lexString();
 					break;
 
+				case self::STATE_URL:
+					$this->lexUrl();
+					break;
 			}
 		}
+
         $this->pushToken(Fps_Viewer_Token::EOF_TYPE);
 		
         if (!empty($this->brackets)) {
@@ -134,9 +142,21 @@ class Fps_Viewer_TokensParser
 	
 	
 	
+    protected function lexUrl()
+    {
+        if (empty($this->brackets) && preg_match($this->regexes['lex_url'], $this->code, $match, null, $this->cursor)) {
+            $this->pushToken(Fps_Viewer_Token::URL_END_TYPE);
+            $this->moveCursor($match[0]);
+            $this->popState();
+        } else {
+            $this->lexExpression();
+        }
+    }
+	
+	
 	
     protected function lexVar()
-    {
+    { 
         if (empty($this->brackets) && preg_match($this->regexes['lex_var'], $this->code, $match, null, $this->cursor)) {
             $this->pushToken(Fps_Viewer_Token::VAR_END_TYPE);
             $this->moveCursor($match[0]);
@@ -190,6 +210,11 @@ class Fps_Viewer_TokensParser
                 $this->pushToken(Fps_Viewer_Token::VAR_START_TYPE);
                 $this->pushState(self::STATE_VAR);
                 break;
+				
+            case $this->delimiters['tag_url'][0]:
+                $this->pushToken(Fps_Viewer_Token::URL_START_TYPE);
+                $this->pushState(self::STATE_URL);
+                break;
         }
 	}
 	
@@ -217,10 +242,10 @@ class Fps_Viewer_TokensParser
             $this->moveCursor($match[0]);
 
             if ($this->cursor >= $this->end) {
-                throw new Exception(sprintf('Unexpected end of file: Unclosed "%s"', $this->state === self::STATE_BLOCK ? 'block' : 'variable'));
+                throw new Exception(sprintf('Unexpected end of file: Unclosed "%s"', $this->state === self::STATE_BLOCK ? 'block' : 'variable or url'));
             }
         }
-
+		
         // operators
         if (preg_match($this->regexes['operators'], $this->code, $match, null, $this->cursor)) {
             $this->pushToken(Fps_Viewer_Token::OPERATOR_TYPE, $match[0]);
@@ -237,6 +262,7 @@ class Fps_Viewer_TokensParser
             if (ctype_digit($match[0]) && $number <= PHP_INT_MAX) {
                 $number = (int) $match[0]; // integers lower than the maximum
             }
+			
             $this->pushToken(Fps_Viewer_Token::NUMBER_TYPE, $number);
             $this->moveCursor($match[0]);
         }
