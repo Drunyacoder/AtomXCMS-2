@@ -400,7 +400,7 @@ toggle:function (){
 		var _0x9e20x16=this["\x24\x65\x6C"]["\x76\x61\x6C"]();
 		
 		
-		if (_0x9e20x16.match(/(<script[^>]*>.*<\/script>)/gi)) {
+		if (_0x9e20x16.match(/(<script[^>]*>[\S\s]*<\/script>)/gi)) {
 			return alert('This page contain script tags. Visual mode remove their.');
 		}
 		
