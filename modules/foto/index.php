@@ -4,12 +4,12 @@
 | @Author:       Andrey Brykin (Drunya)          |
 | @Email:        drunyacoder@gmail.com           |
 | @Site:         http://fapos.net                |
-| @Version:      1.5.6                           |
+| @Version:      1.5.7                           |
 | @Project:      CMS                             |
 | @package       CMS Fapos                       |
 | @subpackege    Foto Module  			 		 |
 | @copyright     ©Andrey Brykin 2010-2013        |
-| @last  mod     2013/04/24                      |
+| @last  mod     2013/07/05                      |
 \-----------------------------------------------*/
 
 /*-----------------------------------------------\
@@ -664,6 +664,10 @@ Class FotoModule extends Module {
 		
 		$resample = resampleImage($save_path, $save_sempl_path, 150);
 		if ($resample) chmod($save_sempl_path, 0644);
+		
+		
+		// hook for plugins
+		Plugins::intercept('new_foto', $entity);
 		
 		//clean cache
 		$this->Cache->clean(CACHE_MATCHING_TAG, array('module_foto'));

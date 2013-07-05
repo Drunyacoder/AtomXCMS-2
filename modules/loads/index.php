@@ -4,12 +4,12 @@
 | @Author:       Andrey Brykin (Drunya)        |
 | @Email:        drunyacoder@gmail.com         |
 | @Site:         http://fapos.net              |
-| @Version:      1.9.1                         |
+| @Version:      1.9.2                         |
 | @Project:      CMS                           |
 | @package       CMS Fapos                     |
 | @subpackege    Loads Module                  |
 | @copyright     ©Andrey Brykin 2010-2013      |
-| @last mod.     2013/04/24                    |
+| @last mod.     2013/07/05                    |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
@@ -900,6 +900,10 @@ Class LoadsModule extends Module {
         }
 
         downloadAttaches($this->module, $last_id);
+		
+		
+		// hook for plugins
+		Plugins::intercept('new_loads', $entity);
 
         //clear cache
         $this->Cache->clean(CACHE_MATCHING_ANY_TAG, array('module_' . $this->module));

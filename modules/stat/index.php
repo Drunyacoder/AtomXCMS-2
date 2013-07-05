@@ -4,12 +4,12 @@
 | @Author:       Andrey Brykin (Drunya)        |
 | @Email:        drunyacoder@gmail.com         |
 | @Site:         http://fapos.net              |
-| @Version:      1.8.1                         |
+| @Version:      1.8.2                         |
 | @Project:      CMS                           |
 | @Package       CMS Fapos                     |
 | @Subpackege    News Module                   |
 | @Copyright     ©Andrey Brykin 2010-2013      |
-| @Last mod      2013/04/24                    |
+| @Last mod      2013/07/05                    |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
@@ -828,6 +828,9 @@ Class StatModule extends Module {
 		
 		downloadAttaches($this->module, $last_id);
 		
+		
+		// hook for plugins
+		Plugins::intercept('new_' . $this->module, $new);
 		
 		//clean cache
 		$this->Register['Cache']->clean(CACHE_MATCHING_TAG, array('module_' . $this->module));
