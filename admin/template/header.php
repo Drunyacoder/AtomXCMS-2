@@ -21,9 +21,6 @@
 	<script type="text/javascript" src="../sys/js/jquery.cookie.js"></script>
 	<script type="text/javascript" src="../sys/js/jquery.hotkeys.js"></script>
 	<script type="text/javascript" src="../sys/js/jstree/jstree.min.js"></script>
-	<link type="text/css" rel="StyleSheet" href="../sys/js/jstree/_docs/syntax/!style.css" />
-	<link type="text/css" rel="StyleSheet" href="../sys/js/jstree/_docs/!style.css" />
-	<script type="text/javascript" src="../sys/js/jstree/_docs/syntax/!script.js"></script>
 	
 
 	
