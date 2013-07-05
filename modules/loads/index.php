@@ -903,7 +903,10 @@ Class LoadsModule extends Module {
 		
 		
 		// hook for plugins
-		Plugins::intercept('new_loads', $entity);
+		Plugins::intercept('new_entity', array(
+			'entity' => $entity,
+			'module' => $this->module,
+		));
 
         //clear cache
         $this->Cache->clean(CACHE_MATCHING_ANY_TAG, array('module_' . $this->module));

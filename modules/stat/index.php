@@ -830,7 +830,10 @@ Class StatModule extends Module {
 		
 		
 		// hook for plugins
-		Plugins::intercept('new_' . $this->module, $new);
+		Plugins::intercept('new_entity', array(
+			'entity' => $new,
+			'module' => $this->module,
+		));
 		
 		//clean cache
 		$this->Register['Cache']->clean(CACHE_MATCHING_TAG, array('module_' . $this->module));

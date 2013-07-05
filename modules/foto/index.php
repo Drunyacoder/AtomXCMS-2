@@ -667,7 +667,10 @@ Class FotoModule extends Module {
 		
 		
 		// hook for plugins
-		Plugins::intercept('new_foto', $entity);
+		Plugins::intercept('new_entity', array(
+			'entity' => $entity,
+			'module' => $this->module,
+		));
 		
 		//clean cache
 		$this->Cache->clean(CACHE_MATCHING_TAG, array('module_foto'));
