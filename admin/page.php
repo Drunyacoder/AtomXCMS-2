@@ -226,12 +226,13 @@ class PagesAdminController {
 			$lowest = false;
 			foreach ($pages as $pk => $pv) {
 				$path = $pv->getPath();
-				if (false === $lowest || substr_count($path, '.') < $lowest) {
+
+				if (false === $lowest || substr_count($path, '.') < substr_count($lowest, '.')) {
 					$lowest = $path;
 				}
 			}
 			
-			
+
 			if (false !== $lowest) {
 				foreach ($pages as $k => $page) {
 					if ($lowest === $page->getPath()) {

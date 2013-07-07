@@ -2,12 +2,12 @@
 /*-----------------------------------------------\
 | 												 |
 |  @Author:       Andrey Brykin (Drunya)         |
-|  @Version:      1.5.6                          |
+|  @Version:      1.5.7                          |
 |  @Project:      CMS                            |
 |  @package       CMS Fapos                      |
 |  @subpackege    Pages Module                   |
 |  @copyright     ©Andrey Brykin 2010-2013       |
-|  @last mod      2013/04/07                     |
+|  @last mod      2013/07/07                     |
 \-----------------------------------------------*/
 
 /*-----------------------------------------------\
@@ -55,7 +55,7 @@ Class PagesModule extends Module {
 				
 				
 			} else {
-				if (!preg_match('#^[\da-z_\-.]+$#i', $id))  redirect('/pages/');
+				if (!preg_match('#^[\da-z_\-./]+$#i', $id))  redirect('/pages/');
 			
 				$page = $this->Model->getByUrl($id);
 				if (empty($page)) return $this->showInfoMessage(__('Can not find this page'), '/');
@@ -86,7 +86,10 @@ Class PagesModule extends Module {
 				
 				if (!empty($pages) && is_array($pages)) {
 					foreach($pages as $p) {
-						$navi['navigation'] .= __('Separator') . get_link(__($p->getName()), '/' . $p->getId());
+						$navi['navigation'] .= __('Separator') . get_link(
+							__($p->getName()), 
+							'/' . $this->Model->buildUrl($p->getId())
+						);
 					}
 				}
 			}

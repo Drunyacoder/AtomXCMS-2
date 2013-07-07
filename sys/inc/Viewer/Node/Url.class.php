@@ -6,21 +6,20 @@ class Fps_Viewer_Node_Url
 {
 
 	private $value;
-	static private $pages = array();
+	private static $pagesModel;
 
 	
 	
 	public function __construct($value)
 	{
 		$this->value = $value;
-		if (empty(self::$pages)) $this->getPages();
+		if (empty(self::$pagesModel)) $this->__setPagesModel();
 	}
 	
 	
-	private function getPages()
+	private function __setPagesModel()
 	{
-		$pagesModel = Register::getInstance()['ModManager']->getModelInstance('Pages');
-		self::$pages = $pagesModel->getCollection(array('`id` > 1'), array('fields' => array('id', 'url')));
+		self::$pagesModel = Register::getInstance()['ModManager']->getModelInstance('Pages');
 	}
 
 
@@ -30,19 +29,12 @@ class Fps_Viewer_Node_Url
 		return $this->value;
 	}
 	
-	
 
+	
     public function compile(Fps_Viewer_CompileParser $compiler)
     {
-		if (is_array(self::$pages) && count(self::$pages)) {
-			foreach (self::$pages as $page) {
-				if ($this->value == $page->getId() && $page->getUrl()) {
-					$compiler->write('"'.get_url('/'.$page->getUrl()).'"');
-					return;
-				}
-			}
-		}
-        $compiler->write('"'.get_url('/'.$this->value).'"');
+		$url = self::$pagesModel->buildUrl($this->value);
+        $compiler->write('"'.get_url('/'.$url).'"');
     }
 
 	
