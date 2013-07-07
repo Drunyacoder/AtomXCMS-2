@@ -130,7 +130,7 @@ Class Pather {
 			}
 			
 		
-		// inserted pages url
+		// inserted URL for Pages module
 		} else if (count($pathParams) >= 3 && !file_exists(ROOT . '/modules/' . $pathParams[0])) {
 			$pathParams = array(
 				0 => 'pages',
