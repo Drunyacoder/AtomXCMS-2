@@ -131,7 +131,7 @@ Class Pather {
 			
 		
 		// inserted URL for Pages module
-		} else if (count($pathParams) >= 3 && !file_exists(ROOT . '/modules/' . $pathParams[0])) {
+		} else if (count($pathParams) >= 1 && !file_exists(ROOT . '/modules/' . $pathParams[0])) {
 			$pathParams = array(
 				0 => 'pages',
 				1 => 'index',

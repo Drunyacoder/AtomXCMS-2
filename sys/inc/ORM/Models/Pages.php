@@ -2,12 +2,12 @@
 /*---------------------------------------------\
 |											   |
 | @Author:       Andrey Brykin (Drunya)        |
-| @Version:      1.0                           |
+| @Version:      1.1                           |
 | @Project:      CMS                           |
 | @package       CMS Fapos                     |
 | @subpackege    Pages Model                   |
-| @copyright     ©Andrey Brykin 2010-2012      |
-| @last mod      2012/08/12                    |
+| @copyright     ©Andrey Brykin 2010-2013      |
+| @last mod      2013/07/07                    |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
@@ -121,7 +121,7 @@ class PagesModel extends FpsModel
 					'cond' => array("`b`.`id` = '" . $id . "'"),
 				),
 			),
-			'cond' => array("`a`.`path` LIKE CONCAT(`b`.`path`, '%')"),
+			'cond' => array("`a`.`path` LIKE CONCAT(`b`.`path`, `b`.`id`,'.%')"),
 			'alias' => 'a',
 			'order' => '`a`.`path`',
 			'fields' => $fields,
