@@ -2,12 +2,12 @@
 /*---------------------------------------------\
 |											   |
 | @Author:       Andrey Brykin (Drunya)        |
-| @Version:      1.1                           |
+| @Version:      1.2                           |
 | @Project:      CMS                           |
 | @package       CMS Fapos                     |
 | @subpackege    Pages Model                   |
 | @copyright     ©Andrey Brykin 2010-2013      |
-| @last mod      2013/07/07                    |
+| @last mod      2013/07/16                    |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
@@ -49,26 +49,53 @@ class PagesModel extends FpsModel
 	
 	public function buildUrl($page_id, $pages = null, $prefix = '') 
 	{ 
+		$url = '';
 		if ($pages === null) $pages = self::$pages;
-	
-		if (is_array($pages) && count($pages)) {
-			foreach ($pages as $page) {
-				if ($page_id == $page->getId()) {
-					$url = ($page->getUrl()) ? $page->getUrl() : $page->getId();
-					return (!empty($prefix)) ? $prefix . '/' . $url : $url;
+		$targ_page = $this->getById($page_id);
+		
+		
+		if ($targ_page) {
+			$page_path = $targ_page->getPath();
+			$ids = explode('.', $page_path);
+			
+			
+			foreach ($ids as $k => $v) {
+				if ($v == 1 || empty($v)) unset($ids[$k]);
+			}
+			
+			
+			
+			if (!empty($ids)) {
+				foreach ($ids as $id) {
+					$need_page = $this->getPageById($id, $pages);
+					if ($need_page) $url .= '/' . $need_page->getUrl();
 				}
+			}
+		}
+		return (!empty($url)) ? trim($url, '/') . '/' . $targ_page->getUrl() : $page_id;
+	}
+	
+	
+	/**
+	 * Recursive
+	 */
+	private function getPageById($id, $pages) {
+		
+		if (!empty($pages)) {
+			foreach ($pages as $page) {
+				
+				if ($id == $page->getId()) {
+					return $page;
+				}
+				
 				
 				$sub = $page->getSub();
 				if (empty($sub)) continue;
-				
-				$prefix .= '/' . (($page->getUrl()) ? $page->getUrl() : $page->getId());
-				$url = $this->buildUrl($page_id, $sub, $prefix);
-				
-
-				return trim($url, '/');
+				$need_page = $this->getPageById($id, $sub);
+				if ($need_page) return $need_page;
 			}
 		}
-		return $page_id;
+		return false;
 	}
 
 
@@ -79,8 +106,9 @@ class PagesModel extends FpsModel
 	public function getByUrl($url)
 	{
 		$page_id = $this->searchInTreeByUrl($url, self::$pages);
-	
+		
         $page = $this->getById($page_id);
+		
 		return $page;
 	}
 	
@@ -112,6 +140,7 @@ class PagesModel extends FpsModel
 	
 	public function getTree($id, $fields = array('`a`.*'))
 	{
+		if (empty($fields)) $fields = array('`a`.*');
 		$params = array(
 			'joins' => array(
 				array(
