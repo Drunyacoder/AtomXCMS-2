@@ -820,7 +820,7 @@ endif;
 ?>
 
 
-
+<div class="clear"></div>
 <ul class="markers">
 	<li><div class="global-marks">{{ content }}</div> - Основной контент страницы</li>
 	<li><div class="global-marks">{{ title }}</div> - Заголовок страницы</li>

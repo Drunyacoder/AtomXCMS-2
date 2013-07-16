@@ -98,12 +98,12 @@ include_once ROOT . '/admin/template/header.php';
 
 
 <?php foreach ($acl_rules as $mod => $_rules): ?>
-	<tr><td colspan="<?php echo count($acl_groups) + 2 ?>" class="group"> - <?php echo getAddModTitle($mod); ?></td></tr>
+	<tr><td colspan="<?php echo count($acl_groups) + 2 ?>" class="group"> - <?php echo __($mod); ?></td></tr>
 	<?php foreach ($_rules as $title => $rules): ?>
 	<tr>
 	
 	
-		<td class="left"><?php echo getAddTitle($title); ?></td>
+		<td class="left"><?php echo __($title); ?></td>
 		<?php foreach ($acl_groups as $id => $gr): ?>
 		<?php  $ch_id = $mod . '_' . $id . '_' . $title; ?>
 		<td class="right">
@@ -126,83 +126,3 @@ include_once ROOT . '/admin/template/header.php';
 
 
 <?php include_once ROOT . '/admin/template/footer.php'; ?>
-<?php
-function getAddModTitle($title) {
-	$add_titles = array(
-		'users' => 'Пользователи',						
-		'loads' => 'Файлы',						
-		'stat' => 'Статьи',						
-		'foto' => 'Каталог фото',						
-		'forum' => 'Форум',						
-		'panel' => 'Админка',						
-		'chat' => 'Чат',						
-		'other' => 'Разное',						
-		'news' => 'Новости',						
-		'bbcodes' => 'BB коды в подписи',						
-	);
-
-	return (isset($add_titles[$title])) ? h($add_titles[$title]) : h($title);
-}
-function getAddTitle($title) {
-	$add_titles = array(
-		'view_list' => 'Смотреть список материалов',						
-		'view_materials' => 'Просматривать материалы', 						
-		'add_materials' => 'Добавлять материалы', 						
-		'edit_mine_materials' => 'Редактировать свои материалы', 						
-		'edit_materials' => 'Редактировать все материалы', 						
-		'delete_mine_materials' => 'Удалять свои материалы',						
-		'delete_materials' => 'Удалять все материалы', 						
-		'up_materials' => 'Поднимать материалы в списке', 						
-		'on_home' => 'Выводить материалы на главную', 						
-		'view_comments' => 'Просматривать комментарии', 						
-		'add_comments' => 'Добавлять комментарии', 						
-		'edit_comments' => 'Редактировать комментарии', 						
-		'delete_comments' => 'Удалять комментарии', 						
-		'hide_material' => 'Скрывать материалы', 						
-		'record_comments_management' => 'Разрешать/запрещать комментирование', 						
-
-		'view_forums_list' => 'Просматривать список форумов', 						
-		'view_forums' => 'Просматривать форумы', 						
-		'view_themes' => 'Просматривать темы', 						
-		'add_themes' => 'Добавлять темы', 						
-		'edit_themes' => 'Редактирова темы', 						
-		'edit_mine_themes' => 'Редактировать свои темы', 						
-		'delete_themes' => 'Удалять темы', 						
-		'delete_mine_themes' => 'Удалять свои темы', 						
-		'close_themes' => 'Закрывать темы', 						
-		'important_themes' => 'Ставить флаг "Важно"', 						
-		'add_posts' => 'Добавлять посты', 						
-		'edit_posts' => 'Редактировать посты', 						
-		'edit_mine_posts' => 'Редактировать свои посты', 						
-		'delete_posts' => 'Удалять посты', 						
-		'delete_mine_posts' => 'Удалять свои посты', 						
-		'add_forums' => 'Добавлять форумы', 						
-		'edit_forums' => 'Редактировать форумы', 						
-		'delete_forums' => 'Удалять форумы', 						
-		'replace_forums' => 'Перемещать форумы', 
-							
-		'view_users' => 'Просматривать анкеты', 						
-		'edit_users' => 'Редактировать анкеты', 						
-		'edit_mine' => 'Редактировать свой профиль', 						
-		'ban_users' => 'Банить пользователей', 						
-		'set_rating' => 'Менять рейтинг/голосовать', 						
-		'delete_rating_comments' => 'Удалять голоса/рейтинг', 						
-		'bb_s' => 'Зачеркнутый текст', 						
-		'bb_u' => 'Подчеркивание', 						
-		'bb_b' => 'Жирный текст', 						
-		'bb_i' => 'Наклонный текст', 						
-		'bb_img' => 'Картинки', 						
-		'bb_url' => 'Ссылки', 						
-		'html' => 'Поддержка HTML', 						
-		'users_warnings' => 'Выдавать предупреждения', 						
-		'delete_warnings' => 'Удалять предупреждения', 						
-
-		'entry' => 'Вход в панель управления', 						
-
-		'can_see_hidden' => 'Могут видеть скрытые материалы', 						
-		'no_captcha' => 'Не выводить каптчу', 						
-
-	);
-
-	return (isset($add_titles[$title])) ? h($add_titles[$title]) : h($title);
-}

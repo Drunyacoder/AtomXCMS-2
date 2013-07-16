@@ -9,6 +9,7 @@ $menuInfo = array(
         'design.php?m=stat' => 'Дизайн',
         'category.php?mod=stat' => 'Управление категориями',
         'additional_fields.php?m=stat' => 'Дополнительные поля',
+		'premoder.php?m=stat' => 'Премодерация',
 	),
 );
 

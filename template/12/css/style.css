@@ -503,7 +503,7 @@ strong.pages {background-color: #A1BD55;border-radius:3px;-moz-border-radius:3px
 	padding-bottom: 18px;
 	background: url('../img/bgnewsb.png') bottom no-repeat #fff;
 }
-.mod-panel {position:relative;top:-20px;right:-387px;width:120px; height:16px;}
+.mod-panel {position:relative;top:-18px;right:-380px;width:136px; height:16px;}
 .material .title {
 	height: 33px;
 	width: 530;
@@ -1222,19 +1222,21 @@ background-image: -ms-linear-gradient(left , rgb(0,170,43) 0%, rgb(0,255,0) 100%
 background-image: -webkit-gradient(linear,left bottom,right bottom,color-stop(0, rgb(0,170,43)),color-stop(1, rgb(0,255,0))); box-shadow: 0 0 3px #4FFF4F; -moz-box-shadow: 0 0 3px #4FFF4F; -webkit-box-shadow: 0 0 3px #4FFF4F;}
 
 
-.fps-edit, .fps-delete, .fps-add, .fps-up, .fps-down, .fps-star, .fps-ip, .fps-on, .fps-off, .fps-close, .fps-open, .fps-like, .fps-unlike, .fps-fix, .fps-unfix {width:16px; height:16px; display:block; float:left; margin:0px 2px; background:url('../img/fps-icons-sprite.png') no-repeat;}
+.fps-edit, .fps-delete, .fps-add, .fps-up, .fps-down, .fps-star, .fps-ip, .fps-on, .fps-off, .fps-close, .fps-open, .fps-like, .fps-unlike, .fps-fix, .fps-unfix, .fps-premoder-confirm, .fps-premoder-reject {width:14px; height:14px; display:block; float:left; margin:0px 1px; background:url('../img/fps-icons-sprite.png') no-repeat;}
 .fps-delete {background-position:0px 0px;}
-.fps-down {background-position:0px -16px;}
-.fps-up {background-position:0px -32px;}
-.fps-edit {background-position:0px -48px;}
-.fps-close {background-position:0px -64px;}
-.fps-open {background-position:0px -80px;}
-.fps-unfix {background-position:0px -96px;}
-.fps-fix {background-position:0px -112px;}
-.fps-off {background-position:0px -128px;}
-.fps-on {background-position:0px -144px;}
-.fps-star {background-position:0px -160px;}
-.fps-ip {background-position:0px -176px;}
-.fps-like {background-position:0px -192px;}
-.fps-unlike {background-position:0px -208px;}
+.fps-down {background-position:0px -14px;}
+.fps-up {background-position:0px -28px;}
+.fps-edit {background-position:0px -42px;}
+.fps-close {background-position:0px -56px;}
+.fps-open {background-position:0px -70px;}
+.fps-unfix {background-position:0px -84px;}
+.fps-fix {background-position:0px -98px;}
+.fps-off {background-position:0px -112px;}
+.fps-on {background-position:0px -126px;}
+.fps-star {background-position:0px -140px;}
+.fps-ip {background-position:0px -154px;}
+.fps-like {background-position:0px -168px;}
+.fps-unlike {background-position:0px -182px;}
+.fps-premoder-confirm {background-position:0px -210px;}
+.fps-premoder-reject {background-position:0px -196px;}
 /* ---------- END FAPOS CMS SYSTEM ---- */

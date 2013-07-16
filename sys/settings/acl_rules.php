@@ -23,6 +23,12 @@ $acl_rules = array (
       1 => 2,
       2 => 3,
       3 => 4,
+      4 => 1,
+    ),
+    'materials_require_premoder' => 
+    array (
+      1 => 0,
+      2 => 1,
     ),
     'edit_mine_materials' => 
     array (
@@ -115,6 +121,11 @@ $acl_rules = array (
       1 => 2,
       3 => 4,
       4 => 3,
+    ),
+    'materials_require_premoder' => 
+    array (
+      1 => 0,
+      2 => 1,
     ),
     'edit_mine_materials' => 
     array (
@@ -593,6 +604,11 @@ $acl_rules = array (
       4 => 3,
       2 => 2,
       5 => 1,
+    ),
+    'can_premoder' => 
+    array (
+      0 => 4,
+      1 => 5,
     ),
   ),
   'chat' => 

@@ -85,7 +85,7 @@
 			<?php echo (!empty($pageNav)) ? $pageNav : ''; ?>
 		</div>
 	</div>
-	<div class="side-menu">
+	<div id="side-menu" class="side-menu">
 		<div class="search">
 			<form>
 				<div class="input"><input type="text" name="search" placeholder="Search..." /></div>
@@ -146,6 +146,24 @@
 		<?php endforeach; ?>
 		</ul>
 		<div class="clear"></div>
+	</div>
+	<script>
+		var FpsAdmPanel = {};
+		FpsAdmPanel.sidePanel = 'visible';
+		function hideSide(){
+			if(FpsAdmPanel.sidePanel == 'visible') {
+				$('#side-menu').animate({left:'-300px'}, 500); 
+				$('#side-menu-td').animate({width:'0px'}, 500);
+				FpsAdmPanel.sidePanel = 'hidden';
+			} else {
+				$('#side-menu').animate({left:'3%'}, 500); 
+				$('#side-menu-td').animate({width:'237px'}, 500);
+				FpsAdmPanel.sidePanel = 'visible';
+			}
+		}
+	</script>
+	<div id="side-menu-label" style="width:65px; height:10px; position:fixed; top:330px; left:-30px; border:1px solid #C8C7C7; -webkit-border-radius:3px 3px 0px 0px; border-radius:3px 3px 0px 0px; background:#3C3C3D; color:#96C703; z-index:999; border-bottom:none; padding:2px 5px; -webkit-transform: rotate(90deg); transform: rotate(90deg); letter-spacing:5px; text-align: center;" onClick="hideSide();">
+		Hide
 	</div>
 	<div id="wrapper">
 
@@ -244,7 +262,7 @@
 		
 			<table class="side-separator" cellpadding="0" cellspacing="0" width="100%" >
 				<tr>
-					<td width="237" min-height="100%">
+					<td id="side-menu-td" width="237" min-height="100%">
 
 					</td>
 					<td style="position:relative;">

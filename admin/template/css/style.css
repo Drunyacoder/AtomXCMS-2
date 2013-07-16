@@ -102,6 +102,7 @@ table.side-separator, table.side-separator tr td {vertical-align:top; min-height
 .list > .level1 > .items > .level2 .buttons {height:20px; padding:10px; float:right; border-left:1px solid #e1e1e1; text-align:center;}
 
 .list > .level1 > .items > .level2 .buttons, .list > .level1 > .head > .buttons {width:140px; padding-right:90px; text-align:right;}
+.setting-item > .buttons {width:140px; padding-right:90px; text-align:right; border-left:1px solid #bebdbd; float:right;}
 .cat-indent {display:inline-block; padding-right:10px;}
 .cat-indent:after {content:" - ";}
 
@@ -121,6 +122,9 @@ table.side-separator, table.side-separator tr td {vertical-align:top; min-height
 .list > .level1 > .items > .setting-item .center h3 {-moz-text-shadow:none; -webkit-text-shadow:none; text-shadow:none; color:#96C703;}
 .yes {width:23px; height:23px; background:url('../img/icons-sprite2.png') no-repeat;}
 .no {width:23px; height:23px; background:url('../img/icons-sprite2.png') 0px -67px no-repeat;}
+
+.list > .level1 > .items > .setting-item > .title {height:13px; padding:20px; color:#717171; font-size:13px; font-weight:bold; border-bottom:1px solid #c7c7c7; -moz-background:linear-gradient(#c2c1c1, #ececec); -ms-background:linear-gradient(#c2c1c1, #ececec); -webkit-background:linear-gradient(#c2c1c1, #ececec); background:linear-gradient(#c2c1c1, #ececec); -moz-text-shadow:0px 1px 1px #fff; -webkit-text-shadow:0px 1px 1px #fff; text-shadow:0px 1px 1px #fff;}
+
 
 .list .level1:last-child {border-radius:0 0 4px 4px;}
 

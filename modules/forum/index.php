@@ -2,12 +2,12 @@
 /*-----------------------------------------------\
 | 												 |
 |  @Author:       Andrey Brykin (Drunya)         |
-|  @Version:      1.6.71                         |
+|  @Version:      1.6.72                         |
 |  @Project:      CMS                            |
 |  @package       CMS Fapos                      |
 |  @subpackege    Forum Module                   |
 |  @copyright     ©Andrey Brykin 2010-2013       |
-|  @last mod.     2013/06/15                     |
+|  @last mod.     2013/06/30                     |
 \-----------------------------------------------*/
 
 /*-----------------------------------------------\

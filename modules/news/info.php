@@ -8,6 +8,7 @@ $menuInfo = array(
         'design.php?m=news' => 'Дизайн',
         'category.php?mod=news' => 'Управление категориями',
         'additional_fields.php?m=news' => 'Дополнительные поля',
+        'premoder.php?m=news' => 'Премодерация',
 	),
 );
 
@@ -42,6 +43,8 @@ $settingsInfo = array(
 		'description' => '',
 		'help' => 'Единиц',
 	),
+
+	
 	
 	
 	'Изображения' => 'Изображения',
@@ -75,7 +78,7 @@ $settingsInfo = array(
 		'description' => '',
 		'help' => 'Единиц',
 	),
-	
+
 	
 	'Поля обязательные для заполнения' => 'Поля обязательные для заполнения',
 	'category_field' => array(
@@ -156,6 +159,7 @@ $settingsInfo = array(
 		'value' => '1',
 		'checked' => '1',
 	),
+
 	
 	
 	'Прочее' => 'Прочее',

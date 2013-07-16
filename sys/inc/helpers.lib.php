@@ -21,6 +21,24 @@
 
 
 
+
+	
+/**
+ * Replace image marker
+ */
+function insertImageAttach($message, $filename, $number, $module = null)
+{
+	if (!isset($module)) return $message;
+	
+	
+	return str_replace('{IMAGE'.$number.'}'
+		, '<a class="gallery" href="' . get_url('/sys/files/' . $module . '/' . $filename) 
+		. '"><img src="' . get_url('/image/' . $module . '/' . $filename) . '" /></a>'
+		, $message);
+}
+
+
+
 /**
  *
  */
