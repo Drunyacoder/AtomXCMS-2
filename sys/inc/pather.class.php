@@ -91,9 +91,10 @@ Class Pather {
 		}
 		
 
-		foreach ($pathParams as $key => $val) {
-			$pathParams[$key] = trim($val);
-		}
+		// sort array(keys begins from 0)
+		$pathParams_ = array();
+		foreach ($pathParams as $key => $val) $pathParams_[] = trim($val);
+		$pathParams = $pathParams_;
 
 
 		if (empty($pathParams)) {

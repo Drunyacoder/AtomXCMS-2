@@ -110,7 +110,7 @@ class PagesModel extends FpsModel
 	}
 	
 	
-	public function getTree($id, $fields = "`a`.*")
+	public function getTree($id, $fields = array('`a`.*'))
 	{
 		$params = array(
 			'joins' => array(
