@@ -70,9 +70,14 @@ class PagesModel extends FpsModel
 					$need_page = $this->getPageById($id, $pages);
 					if ($need_page) $url .= '/' . $need_page->getUrl();
 				}
+			} else {
+				$url = '/';
 			}
 		}
-		return (!empty($url)) ? trim($url, '/') . '/' . $targ_page->getUrl() : $page_id;
+		
+		$url = (!empty($url)) ? trim($url, '/') . '/' . $targ_page->getUrl() : $page_id;
+		
+		return trim($url, '/');
 	}
 	
 	
