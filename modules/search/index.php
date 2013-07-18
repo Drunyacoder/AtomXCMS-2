@@ -182,7 +182,7 @@ class SearchModule extends Module {
 			)));
 			unset($_SESSION['errorForm']);
 		}
-		$markers['search'] = $_SESSION['search_query'];
+		$markers['search'] = h($_SESSION['search_query']);
 
 			
 		$source = $this->render('search_form.html', array('context' => $markers));
