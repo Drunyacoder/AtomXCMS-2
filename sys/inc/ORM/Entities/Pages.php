@@ -2,12 +2,12 @@
 /*---------------------------------------------\
 |											   |
 | @Author:       Andrey Brykin (Drunya)        |
-| @Version:      1.1                           |
+| @Version:      1.2                           |
 | @Project:      CMS                           |
 | @package       CMS Fapos                     |
 | @subpackege    Pages Entity                  |
 | @copyright     ©Andrey Brykin 2010-2013      |
-| @last mod      2013/04/03                    |
+| @last mod      2013/07/20                    |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
@@ -29,14 +29,18 @@ class PagesEntity extends FpsEntity
 	
 	protected $id;
 	protected $name;
+	protected $title;
 	protected $template;
 	protected $content;
 	protected $url;
+	protected $meta_title;
 	protected $meta_keywords;
 	protected $meta_description;
 	protected $parent_id;
 	protected $path;
 	protected $visible;
+	protected $position;
+	protected $publish;
 
 
 	
@@ -45,14 +49,18 @@ class PagesEntity extends FpsEntity
 	{
 		$params = array(
 			'name' => $this->name,
+			'title' => $this->title,
 			'template' => $this->template,
 			'content' => $this->content,
 			'url' => $this->url,
+			'meta_title' => $this->meta_title,
 			'meta_keywords' => $this->meta_keywords,
 			'meta_description' => $this->meta_description,
 			'parent_id' => intval($this->parent_id),
 			'path' => $this->path,
 			'visible' => (!empty($this->visible)) ? '1' : new Expr("'0'"),
+			'position' => $this->position,
+			'publish' => (!empty($this->publish)) ? '1' : new Expr("'0'"),
 		);
 		if ($this->id) $params['id'] = $this->id;
 		$Register = Register::getInstance();

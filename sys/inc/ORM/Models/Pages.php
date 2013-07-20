@@ -51,29 +51,31 @@ class PagesModel extends FpsModel
 	{ 
 		$url = '';
 		if ($pages === null) $pages = self::$pages;
+		
 		$targ_page = $this->getById($page_id);
+		if (empty($targ_page) || !$targ_page->getPublish()) return $page_id;
 		
 		
-		if ($targ_page) {
-			$page_path = $targ_page->getPath();
-			$ids = explode('.', $page_path);
-			
-			
-			foreach ($ids as $k => $v) {
-				if ($v == 1 || empty($v)) unset($ids[$k]);
-			}
-			
-			
-			
-			if (!empty($ids)) {
-				foreach ($ids as $id) {
-					$need_page = $this->getPageById($id, $pages);
-					if ($need_page) $url .= '/' . $need_page->getUrl();
-				}
-			} else {
-				$url = '/';
-			}
+		
+		$page_path = $targ_page->getPath();
+		$ids = explode('.', $page_path);
+		
+		
+		foreach ($ids as $k => $v) {
+			if ($v == 1 || empty($v)) unset($ids[$k]);
 		}
+		
+		
+		
+		if (!empty($ids)) {
+			foreach ($ids as $id) {
+				$need_page = $this->getPageById($id, $pages);
+				if ($need_page) $url .= '/' . $need_page->getUrl();
+			}
+		} else {
+			$url = '/';
+		}
+		
 		
 		$url = (!empty($url)) ? trim($url, '/') . '/' . $targ_page->getUrl() : $page_id;
 		
@@ -112,7 +114,12 @@ class PagesModel extends FpsModel
 	{
 		$page_id = $this->searchInTreeByUrl($url, self::$pages);
 		
-        $page = $this->getById($page_id);
+        $page = $this->getCollection(array(
+			'id' => $page_id,
+			'publish' => 1,
+		));
+		
+		$page = (!empty($page)) ? $page[0] : false;
 		
 		return $page;
 	}
@@ -174,7 +181,10 @@ class PagesModel extends FpsModel
 	
 	public function getAllTree($fields = "*")
 	{
-		$tree = $this->getCollection(array("`id` != 1"), $fields);
+		$tree = $this->getCollection(array(
+			"`id` != 1",
+			"publish" => 1,
+		), $fields);
 		
 		if (!empty($tree)) {
 			$tree = $this->buildTree($tree);

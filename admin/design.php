@@ -93,6 +93,7 @@ $allowedFiles = array(
     'default' => array(
         'main',
     ),
+	'custom' => array(),
 );
 
 
@@ -120,6 +121,34 @@ $entities = array(
     'search_row' 		=> __('Search results'),
 );
 
+
+
+
+
+if (!empty($_GET['ac']) && $_GET['ac'] === 'add_template') {
+	$title = preg_replace('#[^a-z0-9_\-]#', '', (!empty($_POST['title'])) ? $_POST['title'] : '');
+	$code = (!empty($_POST['code'])) ? $_POST['code'] : '';
+	
+	if (empty($title) || empty($code)) redirect('/admin/design.php?m=default&t=main', false);
+	
+	
+	$path = ROOT . '/template/' . $Register['Config']->read('template') . '/html/' . $title;
+	$path2 = ROOT . '/template/' . $Register['Config']->read('template') . '/html/' . $title . '/main.html';
+	
+	if (file_exists($path) && is_dir($path)) {
+		$_SESSION['info_message'] = 'Такой шаблон уже существует';
+	
+	} else {
+		mkdir($path, 0777);
+	
+		file_put_contents($path2, $code);
+		$_SESSION['info_message'] = 'Шаблон создан';
+	}	
+}
+
+
+
+
 if (empty($_GET['m']) || !is_string($_GET['m'])) $_GET['m'] = 'default';
 if (empty($_GET['t']) || !is_string($_GET['t'])) $_GET['t'] = 'main';
 if (empty($_GET['d']) || !is_string($_GET['d'])) $_GET['d'] = 'default';
@@ -136,16 +165,45 @@ if (!array_key_exists($_GET['m'], $allowedFiles)) {
 }
 
 
+
+
+// custom templates
+$custom_tpl = array();
+
+$pathes = glob(ROOT . '/template/' . $Register['Config']->read('template') . '/html/*', GLOB_ONLYDIR);
+if (!empty($pathes)) {
+	foreach ($pathes as $path) {
+		$name = substr(strrchr($path, '/'), 1);
+		if (!array_key_exists($name, $allowedFiles)) {
+			$custom_tpl[] = $name;
+		}
+	}
+}
+
+
+
+
+$tmp_file = $_GET['t'];
+
+// path formating
 $module = (array_key_exists($_GET['m'], $allowedFiles)) ? $_GET['m'] : 'default';
 $filename = (in_array($_GET['t'], $allowedFiles[$module])) ? $_GET['t'] : 'main';
 $type = (in_array($_GET['d'], array('css', 'default'))) ? $_GET['d'] : 'default';
 if ('css' == $type) $file = 'style';
 
 
+if ($module === 'custom') {
+	$module = $tmp_file;
+	$filename = 'main';
+}
+
+
+
+
 
 if(isset($_POST['send']) && isset($_POST['templ'])) {
 	if ($type == 'css') {
-		$template_file = ROOT . '/template/' . $Register['Config']::read('template') . '/css/style.css';
+		$template_file = ROOT . '/template/' . $Register['Config']->read('template') . '/css/style.css';
 		if (!is_file($template_file . '.stand')) {
 			copy($template_file, $template_file . '.stand');
 		}
@@ -154,7 +212,7 @@ if(isset($_POST['send']) && isset($_POST['templ'])) {
 
 	} else {
 		 
-		$template_file = ROOT . '/template/' . $Register['Config']::read('template') . '/html/' . $module . '/' . $filename . '.html';
+		$template_file = ROOT . '/template/' . $Register['Config']->read('template') . '/html/' . $module . '/' . $filename . '.html';
 		
 		
 		
@@ -219,6 +277,13 @@ if(isset($mess) && $mess != NULL) {
 	<div class="pages-tree">
 		<div class="title">Страницы</div>
 		<div class="wrapper">
+			<div class="tbn">Ваши шаблоны</div>
+				<?php foreach ($custom_tpl as $file): ?>
+				<div class="tba1">
+				<a href="design.php?d=default&t=<?php echo $file; ?>&m=custom"><?php echo $file; ?></a>
+				</div>
+				<?php endforeach; ?>
+			
 			<?php foreach ($allowedFiles as $mod => $files):
 				$title = ('default' == $mod) ? __('Default') : Config::read('title', $mod);
 				if (!empty($title)):
@@ -248,6 +313,8 @@ if(isset($mess) && $mess != NULL) {
 	
 	<div class="list pages-form">
 		<div class="title">Редактор шаблонов</div>
+		<div class="add-cat-butt" onClick="openPopup('sec');"><div class="add"></div>Добавить шаблон</div>
+		
 		<div class="level1">
 			<div class="items">
 				<div class="setting-item">
@@ -271,6 +338,40 @@ if(isset($mess) && $mess != NULL) {
 	<div class="clear"></div>
 </div>
 </form>
+<div id="sec" class="popup">
+<div class="top">
+	<div class="title">Добавление шаблона</div>
+	<div onClick="closePopup('sec');" class="close"></div>
+</div>
+<form action="design.php?ac=add_template" method="POST">
+<div class="items">
+	<div class="item">
+		<div class="left">
+			Название
+		</div>
+		<div class="right"><input type="text" name="title" /></div>
+		<div class="clear"></div>
+	</div>
+	<div class="item">
+		<div class="left">
+			Код(HTML)
+		</div>
+		<div class="right">
+			<br />
+			<textarea name="code" style="height:400px; width:450px; overflow:auto;"></textarea>
+		</div>
+		<div class="clear"></div>
+	</div>
+	<div class="item submit">
+		<div class="left"></div>
+		<div class="right" style="float:left;">
+			<input type="submit" value="send" name="send" class="save-button" />
+		</div>
+		<div class="clear"></div>
+	</div>
+</div>
+</form>
+</div>
 
 
 

@@ -2,12 +2,12 @@
 /*-----------------------------------------------\
 | 												 |
 |  @Author:       Andrey Brykin (Drunya)         |
-|  @Version:      1.5.7                          |
+|  @Version:      1.5.6                          |
 |  @Project:      CMS                            |
 |  @package       CMS Fapos                      |
 |  @subpackege    Pages Module                   |
 |  @copyright     ©Andrey Brykin 2010-2013       |
-|  @last mod      2013/07/07                     |
+|  @last mod      2013/07/20                     |
 \-----------------------------------------------*/
 
 /*-----------------------------------------------\
@@ -44,14 +44,16 @@ Class PagesModule extends Module {
 	* default action
 	*/
 	function index($id = null, $s =null, $x = null) {
-
-		//if isset ID - we need load page with this ID
+		
+		// if isset ID - we need load page with this ID
 		if (!empty($id)) {
 			if (is_int($id)) {
 				$id = (int)$id;
 				if ($id < 2)  redirect('/pages/');
 				
 				$page = $this->Model->getById($id);
+				if (empty($page) || !$page->getPublish())
+					return $this->showInfoMessage(__('Can not find this page'), '/');
 				
 				
 			} else {
@@ -60,11 +62,11 @@ Class PagesModule extends Module {
 				$page = $this->Model->getByUrl($id);
 				if (empty($page)) return $this->showInfoMessage(__('Can not find this page'), '/');
 			}
-		
+			
 		
 			
 			
-			$this->page_title = $page->getName();
+			$this->page_title = $page->getMeta_title();
 			$this->page_meta_keywords = $page->getMeta_keywords();
 			$this->page_meta_description = $page->getMeta_description();
 			$this->template = ($page->getTemplate()) ? $page->getTemplate() : 'default';
@@ -122,7 +124,7 @@ Class PagesModule extends Module {
 					return $this->_view($html);
 				}
 
-
+				
 				//create SQL query
                 $entities = $this->Model->getEntitiesByHomePage($latest_on_home);
 				
