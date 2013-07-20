@@ -97,6 +97,15 @@ if (!empty($_SESSION['clean_cache'])):
 endif;
 ?>
 
+<?php
+if (!empty($_SESSION['message'])):
+?>
+<script type="text/javascript">showHelpWin('<?php echo h($_SESSION['message']) ?>', '<?php echo __('Message') ?>');</script>
+<?php
+	unset($_SESSION['message']);
+endif;
+?>
+
 
 
 <!--************ GENERAL **********-->							

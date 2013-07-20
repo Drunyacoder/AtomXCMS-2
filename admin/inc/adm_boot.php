@@ -2,12 +2,12 @@
 ##################################################
 ##												##
 ## @Author:       Andrey Brykin (Drunya)        ##
-## @Version:      1.2                           ##
+## @Version:      1.3                           ##
 ## @Project:      CMS                           ##
 ## @package       CMS Fapos                     ##
 ## @subpackege    Admin module                  ##
-## @copyright     ©Andrey Brykin 2010-2011      ##
-## @Last mod.     2012/02/08                    ##
+## @copyright     ©Andrey Brykin 2010-2013      ##
+## @Last mod.     2013/07/17                    ##
 ##################################################
 
 
@@ -87,7 +87,6 @@ if (!isset($_SESSION['adm_panel_authorize']) || $_SESSION['adm_panel_authorize']
     $pageTitle = 'Авторизация в панели Администрирования';
     $pageNav = '';
     $pageNavr = '';
-    //include_once ROOT . '/admin/template/header.php';
 ?>
 
 
@@ -141,6 +140,21 @@ if (!isset($_SESSION['adm_panel_authorize']) || $_SESSION['adm_panel_authorize']
 	
 } else if (!empty($_SESSION['adm_panel_authorize'])) {
 	$_SESSION['adm_panel_authorize'] = (time() + Config::read('session_time', 'secure'));
+	
+	
+	if (!empty($ACL)) $ACL = $Register['ACL'];
+	
+	if ($ACL->turn(array('panel', 'restricted_access'), false)) {
+	
+		$url = preg_replace('#^.*/([^/]+)\.\w{2,5}$#i', "$1", $_SERVER['SCRIPT_NAME']);
+		//var_dump($url);
+		if (!empty($url) && $url != 'index') {
+			if (!$ACL->turn(array('panel', 'restricted_access_' . $url), false)) {
+				$_SESSION['message'] = __('Permission denied');
+				redirect('/admin/');
+			}
+		}
+	}
 }
 
 

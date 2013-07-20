@@ -85,20 +85,22 @@ include_once ROOT . '/admin/template/header.php';
 
 <form action="users_rules.php" method="POST">
 <div class="list">
-<div class="title"></div>
+<div class="title">Права групп</div>
 <table cellspacing="0" class="grid" style="min-width:100%">
-<tr>
-	<td>Действие</td>
-	<?php foreach ($acl_groups as $id => $gr): ?>
-	<td style="width:60px;">
-		<?php echo h($gr['title']); ?>
-	</td>
-	<?php endforeach; ?>
-</tr>
+
 
 
 <?php foreach ($acl_rules as $mod => $_rules): ?>
-	<tr><td colspan="<?php echo count($acl_groups) + 2 ?>" class="group"> - <?php echo __($mod); ?></td></tr>
+	<tr>
+		<th class="group"><div class="title"><?php echo __($mod); ?></div></th>
+		<?php foreach ($acl_groups as $id => $gr): ?>
+		<th style="width:60px;">
+			<?php echo h($gr['title']); ?>
+		</th>
+		<?php endforeach; ?>
+	</tr>
+	
+	
 	<?php foreach ($_rules as $title => $rules): ?>
 	<tr>
 	

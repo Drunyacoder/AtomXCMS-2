@@ -590,6 +590,15 @@ $acl_rules = array (
       0 => 3,
       1 => 4,
     ),
+	'restricted_access' => array(
+
+	),
+	'restricted_access_page' => array(
+
+	),
+	'restricted_access_snippets' => array(
+
+	),
   ),
   'other' => 
   array (

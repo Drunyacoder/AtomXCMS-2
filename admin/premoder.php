@@ -122,7 +122,7 @@ if (in_array($module, array('news', 'stat', 'loads'))) {
 			</div>';
 		}
 	} else {
-		$_SESSION['message'] = __('Not found material for premoderation');
+		if (empty($_SESSION['message'])) $_SESSION['message'] = __('Not found material for premoderation');
 	}
 
 } else {
