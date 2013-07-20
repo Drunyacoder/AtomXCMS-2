@@ -114,7 +114,7 @@ table.side-separator, table.side-separator tr td {vertical-align:top; min-height
 .list > .level1 > .items > .setting-item {color:#3a3a3a; font-size:13px; text-shadow:0px 0px 1px #777;}
 .list > .level1 > .items > .setting-item .left, .list > .level1 > .items > .setting-item .right {padding:20px;}
 .list > .level1 > .items > .setting-item .left {width:23%; float:left; border-right:1px solid #e1e1e1;}
-.list > .level1 > .items .comment {display:block; color:#939393; padding:5px 0px; font-size:11px; font-style:italic; -moz-text-shadow:none; -webkit-text-shadow:none; text-shadow:none;}
+
 .list > .level1 > .items .comment2 {color:#939393; padding:0px 5px; font-size:11px; font-style:italic; -moz-text-shadow:none; -webkit-text-shadow:none; text-shadow:none;}
 .list > .level1 > .items > .setting-item .right {float:left; border-left:1px solid #e1e1e1; margin-left:-1px; vertical-align:center;}
 .list > .level1 > .items > .setting-item .right input[type="text"], select, textarea, .collection {width:390px;}
@@ -124,7 +124,7 @@ table.side-separator, table.side-separator tr td {vertical-align:top; min-height
 .no {width:23px; height:23px; background:url('../img/icons-sprite2.png') 0px -67px no-repeat;}
 
 .list > .level1 > .items > .setting-item > .title {height:13px; padding:20px; color:#717171; font-size:13px; font-weight:bold; border-bottom:1px solid #c7c7c7; -moz-background:linear-gradient(#c2c1c1, #ececec); -ms-background:linear-gradient(#c2c1c1, #ececec); -webkit-background:linear-gradient(#c2c1c1, #ececec); background:linear-gradient(#c2c1c1, #ececec); -moz-text-shadow:0px 1px 1px #fff; -webkit-text-shadow:0px 1px 1px #fff; text-shadow:0px 1px 1px #fff;}
-
+.list > .level1 > .items .comment {display:block; color:#939393; padding:5px 0px; font-size:11px; font-style:italic; -moz-text-shadow:none; -webkit-text-shadow:none; text-shadow:none;}
 
 .list .level1:last-child {border-radius:0 0 4px 4px;}
 
