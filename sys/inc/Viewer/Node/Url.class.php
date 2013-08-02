@@ -19,7 +19,8 @@ class Fps_Viewer_Node_Url
 	
 	private function __setPagesModel()
 	{
-		self::$pagesModel = Register::getInstance()['ModManager']->getModelInstance('Pages');
+		$Register = Register::getInstance();
+		self::$pagesModel = $Register['ModManager']->getModelInstance('Pages');
 	}
 
 
