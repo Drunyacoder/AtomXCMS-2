@@ -4,12 +4,12 @@
 | @Author:       Andrey Brykin (Drunya)        |
 | @Email:        drunyacoder@gmail.com         |
 | @Site:         http://fapos.net              |
-| @Version:      1.9.2                         |
+| @Version:      1.9.3                         |
 | @Project:      CMS                           |
 | @package       CMS Fapos                     |
 | @subpackege    Loads Module                  |
 | @copyright     ©Andrey Brykin 2010-2013      |
-| @last mod.     2013/07/05                    |
+| @last mod.     2013/08/06                    |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
@@ -975,11 +975,11 @@ Class LoadsModule extends Module {
             'download_url_size' => '',
         );
         $markers = Validate::getCurrentInputsValues($entity, $data);
-        $markers->setMainText($data->getMaintext());
+        $markers->setMainText($data['mainText']);
 
 
-        $data->setPreview($this->Parser->getPreview($markers->getMain()));
-        $data->setErrors($this->Parser->getErrors());
+        $markers->setPreview($this->Parser->getPreview($markers->getMain()));
+        $markers->setErrors($this->Parser->getErrors());
         if (isset($_SESSION['viewMessage'])) unset($_SESSION['viewMessage']);
         if (isset($_SESSION['FpsForm'])) unset($_SESSION['FpsForm']);
 
