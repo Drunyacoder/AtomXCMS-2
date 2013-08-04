@@ -9,7 +9,7 @@
 | @package       CMS Fapos                     |
 | @subpackege    Loads Module                  |
 | @copyright     ©Andrey Brykin 2010-2013      |
-| @last mod.     2013/08/06                    |
+| @last mod.     2013/08/04                    |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
