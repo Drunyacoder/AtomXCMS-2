@@ -2,12 +2,12 @@
 /*---------------------------------------------\
 |											   |
 | @Author:       Andrey Brykin (Drunya)        |
-| @Version:      1.1                           |
+| @Version:      1.0                           |
 | @Project:      CMS                           |
 | @package       CMS Fapos                     |
-| @subpackege    Data Base library             |
+| @subpackege    Fps PDO library               |
 | @copyright     ©Andrey Brykin 2010-2013      |
-| @last mod.     2013/10/30                    |
+| @last mod.     2013/10/10                    |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
@@ -30,7 +30,7 @@ if (!defined('DB_COUNT')) define ('DB_COUNT', 'DB_COUNT');
  * @author        Andrey Brykin
  * @url           http://fapos.net
  */
-class FpsDataBase {
+class FpsPDO {
 
 	/**
 	 * Alias for SQL query
@@ -62,7 +62,12 @@ class FpsDataBase {
 	 */
 	static public $instance = false;
 	
+	/**
+	 *
+	 */
+	private $dbh;
 	
+	private $queryParams = array();
 	
 	
 	public function __construct()
@@ -72,23 +77,18 @@ class FpsDataBase {
         $dbpasswd = Config::read('pass', 'db');
         $dbname = Config::read('name', 'db');
 
-
-        //Подключение к базе данных
-        $dbcnx = mysql_connect($dblocation,$dbuser,$dbpasswd) or die(mysql_error());
-
-        if (!$dbcnx) {
-             echo("<p>В настоящий момент сервер базы данных не доступен, поэтому корректное отображение страницы невозможно.</p>");
-             exit();
-        }
-
-        if (!mysql_select_db($dbname, $dbcnx)) {
-             echo( "<p>В настоящий момент база данных не доступна, поэтому корректное отображение страницы невозможно.</p>" );
-             exit();
-         }
-         mysql_query("SET NAMES 'utf8'");
-         mysql_set_charset('UTF-8');
+		
+		try {
+			$this->dbh = new PDO("mysql:host=$dblocation;dbname=$dbname", $dbuser, $dbpasswd);
+		} catch (PDOException $e) {
+			print "Error!: " . $e->getMessage() . "<br/>";
+			die();
+		}
+		
+		$this->dbh->query("SET NAMES 'utf8'");
 	}
 
+	
 	/**
 	* for SELECT querys...
 	*
@@ -98,7 +98,10 @@ class FpsDataBase {
 	* access public
 	*/
 	public function select ($table, $type, $params = array()) {
+		$this->queryParams = array();
 		if (in_array($type, array('DB_FIRST', 'DB_ALL', 'DB_COUNT'))) $this->DB_TYPE = $type;
+		
+		
 		$params = array_merge(array(
 			'cond' => array(), 
 			'limit' => null, 
@@ -109,9 +112,11 @@ class FpsDataBase {
 			'alias' => null, 
 			'joins' => array()), $params);
 
+			
 		if (!is_numeric($params['page']) || intval($params['page']) < 1) {
 			$params['page'] = 1;
 		}
+		
 		if ($params['page'] > 1 && !empty($params['limit'])) {
 			$params['offset'] = ($params['page'] - 1) * $params['limit'];
 		} else {
@@ -120,6 +125,7 @@ class FpsDataBase {
 		
 		
 		$query = $this->__buildQuery($params, $table);
+
 		// trying cache querys 
 		if (Config::read('cache_querys') == 1) {
 			if ($this->turnSqlCache($query)) {
@@ -129,30 +135,32 @@ class FpsDataBase {
 		
 		
 		$start = getMicroTime();
-		$data = mysql_query($query);
+		$data = $this->runQuery($query);
 		$took = getMicroTime() - $start;
+		
+		
 		// querys list 
 		$redirect = true;
 		if (Config::read('debug_mode') == 1) {
-			$_SESSION['db_querys'][] = $query . ' &nbsp; [ ' . $took . ' ]';
+			$_SESSION['db_querys'][] = str_replace(array_keys($this->queryParams), $this->queryParams, $query) . ' &nbsp; [ ' . $took . ' ]';
 			$redirect = false;
 		}
 		if (!$data) {
-			showErrorMessage('Произошла ошибка при запросе к базе данных!', 
-			mysql_error() . '<br /><br />' . $query, $redirect, '/');
+			showErrorMessage('Произошла ошибка при запросе к базе данных!'. 
+			'<br /><br />' . $query, $redirect, '/');
 			die();
 		}
-		// compact results 
+		
+		
+		// compact results  
 		if ($data) {
 			if ($type == 'DB_COUNT') { 		//if type is COUNT
-				$_result = mysql_result($data, 0);
+				$_result = $data->fetchColumn();
 			} else { 					//if type not COUNT
-				$_result = array();
-				while ($result = mysql_fetch_assoc($data)) {
-					$_result[] = $result;
-				}
+				$_result = $data->fetchAll();
 			}
 		}
+		
 		// write cache 
 		if (Config::read('cache_querys') == 1) {
 			$this->writeSqlCache($query, $_result);
@@ -169,8 +177,11 @@ class FpsDataBase {
 	* @param array $params [$cond (array), $limit (int), $page(int), $fields(array), $order(str), group(str)]
 	*/
 	public function save($table, $values, $params = array(), $cache = false) {
+		$this->queryParams = array();
         $Register = Register::getInstance();
 		if ($cache) $this->cleanSqlCache();
+		
+		
 		$query = array('alias' => null, 'table' => null, 'cond' => null, 'fields' => null);
 		$query['table'] = $this->getFullTableName($table);
 		
@@ -192,7 +203,7 @@ class FpsDataBase {
 					$valueInsert[] = $values[$i];
 					continue;
 				}
-				$valueInsert[] = $this->__name($fields[$i]) . ' = ' . $this->__value($values[$i]);
+				$valueInsert[] = $this->__name($fields[$i]) . ' = ' . $this->__value($values[$i], $fields[$i]);
 			}
 			$query['fields'] = implode(', ', $valueInsert);
 			$query = $this->__renderQuery('update', $query);
@@ -206,7 +217,7 @@ class FpsDataBase {
 			$count = count($values);
 			
 			for ($i = 0; $i < $count; $i++) {
-				$valueInsert[] = $this->__value($values[$i]);
+				$valueInsert[] = $this->__value($values[$i], $fields[$i]);
 			}
 			for ($i = 0; $i < $count; $i++) {
 				$fieldInsert[] = $this->__name($fields[$i]);
@@ -215,21 +226,28 @@ class FpsDataBase {
 			$query['values'] = implode(', ', $valueInsert);
 			$query = $this->__renderQuery('insert', $query);
 			
-			if ($Register['Config']->read('debug_mode') == 1) $_SESSION['db_querys'][] = $query;
 			
-			mysql_query($query);
+			if ($Register['Config']->read('debug_mode') == 1) 
+				$_SESSION['db_querys'][] = str_replace(array_keys($this->queryParams), $this->queryParams, $query);
 			
-			return mysql_insert_id();
+			
+			$this->runQuery($query);
+			return $this->dbh->lastInsertId(); 
 		}
-		if ($Register['Config']->read('debug_mode') == 1) $_SESSION['db_querys'][] = $query;
 		
-		return mysql_query($query);
+		if ($Register['Config']->read('debug_mode') == 1) 
+			$_SESSION['db_querys'][] = str_replace(array_keys($this->queryParams), $this->queryParams, $query);
+		
+		
+		return $this->runQuery($query);
 	}
 	
 	
-	
 	public function query($data, $cached = false) {
+		$this->queryParams = array();
 		if (empty($data)) die('argunent for query must not be NULL ');
+		
+		
 		/* trying cache querys */
 		if (Config::read('cache_querys') == 1 && $cached) {
 			if ($this->turnSqlCache($data)) {
@@ -241,15 +259,15 @@ class FpsDataBase {
 
 		
 		$start = getMicroTime();
-		$sql = mysql_query($data);
+		$sql = $this->runQuery($data);
 		$took = getMicroTime() - $start;
-		if (Config::read('debug_mode') == 1) $_SESSION['db_querys'][] = $data . ' &nbsp; [ ' . $took . ' ]';
+		if (Config::read('debug_mode') == 1) 
+			$_SESSION['db_querys'][] = str_replace(array_keys($this->queryParams), $this->queryParams, $data) . ' &nbsp; [ ' . $took . ' ]';
 		
 		if ($sql !== true) {
 			if (!empty($sql)) {
-				while ( $record = mysql_fetch_assoc($sql)) {
-					$result[] = $record;
-				}
+				$result = $sql->fetchAll();
+				
 			}
 		}
 		/* write cache */
@@ -260,10 +278,12 @@ class FpsDataBase {
 	}
 	
 	
-	
 	public function delete($table, $params)
 	{
+		$this->queryParams = array();
 		$cond = array();
+		
+		
 		foreach ($params as $field => $value) {
 			if (is_int($field)) {
 				$cond[] = $value;
@@ -280,11 +300,19 @@ class FpsDataBase {
 		
 		
 		$start = getMicroTime();
-		mysql_query($query);
+		$this->runQuery($query);
 		$took = getMicroTime() - $start;
-		if (Config::read('debug_mode') == 1) $_SESSION['db_querys'][] = $query . ' &nbsp; [ ' . $took . ' ]';
+		if (Config::read('debug_mode') == 1) 
+			$_SESSION['db_querys'][] = str_replace(array_keys($this->queryParams), $this->queryParams, $query) . ' &nbsp; [ ' . $took . ' ]';
 	}
 	
+	
+	private function runQuery($query) 
+	{
+		$statement = $this->dbh->prepare($query);
+		$statement->execute($this->queryParams);
+		return $statement;
+	}
 	
 	
 	/**
@@ -307,7 +335,6 @@ class FpsDataBase {
 	}
 	
 	
-	
 	/**
 	 * Renders a final SQL JOIN statement
 	 *
@@ -318,7 +345,6 @@ class FpsDataBase {
 		extract($params);
 		return trim("{$type} JOIN {$table} {$alias} ON ({$cond})");
 	}
-	
 	
 	
 	/**
@@ -336,6 +362,7 @@ class FpsDataBase {
 				}
 			}
 		}
+
 		return $this->__renderQuery('select', array(
 			'conditions' => $this->__conditions($params['cond'], true, true),
 			'fields' => $this->__fields($params['fields']),
@@ -347,9 +374,6 @@ class FpsDataBase {
 			'group' => $this->__group($params['group'])
 		));
 	}
-	
-	
-	
 	
 	
 	/**
@@ -401,8 +425,6 @@ class FpsDataBase {
 	}
 	
 	
-	
-
 	/**
 	 * Parse fields and return string SQL fragment
 	 *
@@ -423,7 +445,6 @@ class FpsDataBase {
 		}
 		return $out;
 	}
-	
 	
 	
 	/**
@@ -473,7 +494,6 @@ class FpsDataBase {
 	}
 	
 	
-	
 	/**
 	 * @param array $conditions conditions for query
 	 *
@@ -482,8 +502,6 @@ class FpsDataBase {
 	private function __renderConditions($conditions) {
 		
 	}
-	
-	
 	
 	
 	/**
@@ -523,7 +541,6 @@ class FpsDataBase {
 		return $conditions; 
 	}
 
-	
 	
 	/**	
 	 * @param array $conditions Array or string of conditions
@@ -579,7 +596,7 @@ class FpsDataBase {
 							$data = $this->__quoteFields($key) . ' IN (';
 						}
 						if ($quoteValues) {
-							$data .= implode(', ', $this->__value($value, $columnType));
+							$data .= implode(', ', $this->__value($value, $key));
 						}
 						$data .= ')';
 					} else {
@@ -606,18 +623,16 @@ class FpsDataBase {
 	}
 
 	
-	
 	/**
 	 * @param string $key
 	 * @param mixed $value
 	 * @return string 
 	 */
 	private function __parseKey($key, $value) {
-		$value = $this->__value($value);
+		$value = $this->__value($value, $key);
 		$key = $this->__name($key);
 		return  $key . ' = ' . $value;
 	}
-	
 	
 	
 	/**
@@ -625,22 +640,26 @@ class FpsDataBase {
 	 *
 	 * @param mixed $value
 	 */
-	private function __value($value) {
+	private function __value($value, $key = null) {
 		if (empty($value) && is_int($value)) return '0';
 		if (empty($value)) return "''";
+		
 		if (is_array($value) && !empty($value)) {
 			foreach ($value as $k => $v) {
-				$value[$k] = $this->__value($v);
+				$value[$k] = $this->__value($v, $key);
 			}
+			
 		} else {
 			if ($value instanceof Expr) {
 				return (string)$value;
 			}
-			return '\'' . mysql_real_escape_string($value) . '\'';
+			
+			
+			$this->queryParams[":$key"] = $value;
+			return ":$key";
 		}
 		return $value;
 	}
-	
 	
 	
 	/**
@@ -672,7 +691,6 @@ class FpsDataBase {
 	}
 	
 
-	
 	/**
 	 * Auxiliary function to quote matches `Model.fields` from a preg_replace_callback call
 	 *
@@ -685,8 +703,6 @@ class FpsDataBase {
 		}
 		return $this->__name($match[0]);
 	}
-	
-	
 	
 	
 	/**	
@@ -729,8 +745,6 @@ class FpsDataBase {
 		}
 		return $data;
 	}
-	
-	
 	
 	
 	/**
@@ -816,8 +830,6 @@ class FpsDataBase {
 		return;
 	} 
 
-
-	
 	
 	/**
 	 * Uses for singlton
@@ -825,7 +837,7 @@ class FpsDataBase {
 	 */
 	public static function get() {
 		if (!self::$instance) {
-			self::$instance = new FpsDataBase;
+			self::$instance = new FpsPDO;
 		}
 		return self::$instance;
 	}

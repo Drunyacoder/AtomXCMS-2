@@ -40,7 +40,7 @@ class Bootstrap
 
         $this->touchStartTime();
 
-        $this->Register['DB'] = FpsDataBase::get();
+        $this->Register['DB'] = (class_exists('PDO') && Config::read('use_pdo')) ? FpsPDO::get() : FpsDataBase::get();
         $this->Register['DocParser'] = new Document_Parser;
         $this->Register['ACL'] = new ACL(ROOT . '/sys/settings/');
         $this->Register['Cache'] = new Cache;
