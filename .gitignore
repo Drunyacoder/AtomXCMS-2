@@ -1,7 +1,9 @@
-install_/*
-install/*
-sys/cache/*
-sys/tmp/*
-sys/logs/*
-sys/avatars/*
-sys/files/*
+/install_/*
+/install/*
+/sys/cache/*
+/sys/tmp/*
+/sys/logs/*
+/sys/avatars/*
+/sys/files/*
+/sys/settings/config.php
+/sitemap.xml
