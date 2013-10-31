@@ -191,6 +191,7 @@ $language = array(
 	'Empty field "material"' 		=> 'не заполнено поле "Текст материала"',
 	'Very big "material"'	 		=> 'Текст материала превышает %d символов',
 	'Very small "material"'	 		=> 'Текст материала меньше %d символов',
+	'Fields are differend'	 		=> 'Поле "%s" не совпадает',
 	'Wrong chars in "tags"'	 		=> 'Не допустимые символы в поле "Теги"',
 	'Wrong chars in "sourse"' 		=> 'Не допустимые символы в поле "Источник"',
 	'Wrong chars in "email"' 		=> 'Поле "E-Mail источника" не соответствует формату',

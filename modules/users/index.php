@@ -249,53 +249,74 @@ Class UsersModule extends Module {
 			'add' => array(
 				'login' => array(
 					'required' => true,
-					'max_length' => 250,
-					'pattern' => V_TITLE,
+					'max_length' => 20,
+					'min_length' => 3,
+					'pattern' => V_LOGIN,
 				),
 				'password' => array(
+					'min_length' => Config::read('min_password_lenght'),
 					'required' => true,
+					'pattern' => V_LOGIN,
 				),
 				'confirm' => array(
+					'compare' => 'password',
 					'required' => true,
+					'pattern' => V_LOGIN,
 				),
 				'email' => array(
 					'required' => true,
+					'pattern' => V_MAIL,
 				),
 				'keystring' => array(
 					'required' => true,
+					'pattern' => V_CAPTCHA,
 				),
 				'icq' => array(
 					'required' => 'editable',
+					'pattern' => V_INT,
 				),
 				'jabber' => array(
 					'required' => 'editable',
+					'pattern' => V_MAIL,
 				),
 				'pol' => array(
 					'required' => 'editable',
 				),
 				'city' => array(
 					'required' => 'editable',
+					'pattern' => V_LOGIN,
 				),
 				'telephone' => array(
 					'required' => 'editable',
+					'pattern' => V_INT,
 				),
 				'byear' => array(
 					'required' => 'editable',
+					'pattern' => V_INT,
 				),
 				'bmonth' => array(
 					'required' => 'editable',
+					'pattern' => V_INT,
 				),
 				'bday' => array(
 					'required' => 'editable',
+					'pattern' => V_INT,
 				),
 				'url' => array(
 					'required' => 'editable',
+					'pattern' => V_URL,
 				),
 				'about' => array(
 					'required' => 'editable',
+					'pattern' => V_TEXT,
 				),
 				'signature' => array(
 					'required' => 'editable',
+					'pattern' => V_TEXT,
+				),
+				'files__avatar' => array(
+					'type' => 'image',
+					'max_size' => Config::read('max_avatar_size', 'users'),
 				),
 			),
 		);
@@ -321,12 +342,7 @@ Class UsersModule extends Module {
 
 		
 		foreach ($fields as $field) {
-			if (empty($_POST[$field]) && in_array($field, $fields_settings)) {
-				$$field = null;
-				
-			} else {
-				$$field = (isset($_POST[$field])) ? trim($_POST[$field]) : '';
-			}
+			$$field = (isset($_POST[$field])) ? trim($_POST[$field]) : '';
 		}
 		
 		
@@ -334,7 +350,6 @@ Class UsersModule extends Module {
 		else if ('2' === $pol) $pol = 'f';
 		else $pol = '';
 
-		
 	
 		// Обрезаем переменные до длины, указанной в параметре maxlength тега input
 		$name    	  = mb_substr($login, 0, 30);
@@ -353,32 +368,18 @@ Class UsersModule extends Module {
 		$signature    = mb_substr($signature, 0, 500);
 
 
-
+		$errors = $this->Register['Validate']->check($this->getValidateRules());
+		
 		// Проверяем, заполнены ли обязательные поля
 		// Additional fields checker
 		if (is_object($this->AddFields)) {
 			$_addFields = $this->AddFields->checkFields();
-			if (is_string($_addFields)) $error .= $_addFields; 
+			if (is_string($_addFields)) $errors .= $_addFields; 
 		}
 
-		
-		// check login
-		if (!empty($name) and mb_strlen($name) < 3 || mb_strlen($name) > 20)
-			$error = $error.'<li>' . __('Wrong "name" lenght') . '</li>'."\n";
-			
-		// Проверяем, не слишком ли короткий пароль
-		if (!empty($password) and mb_strlen($password) < $this->Register['Config']->read('min_password_lenght'))
-			$error = $error.'<li>' . sprintf(__('Very short pass'), $this->Register['Config']->read('min_password_lenght')) . '</li>'."\n";
-		// Проверяем, совпадают ли пароли
-		if (!empty($password) and !empty($confirm) and $password != $confirm)
-			$error = $error.'<li>' . __('Passwords are different') . '</li>'."\n";
 	
 	// Проверяем поле "код"
-		if (!empty($keystring)) {
-			// Проверяем поле "код" на недопустимые символы
-			if (!$valobj->cha_val($keystring, V_CAPTCHA))
-				$error = $error.'<li>' . __('Wrong chars in field "code"') . '</li>'."\n";
-													
+		if (!empty($keystring)) {									
 			if (!isset($_SESSION['captcha_keystring'])) {
 				if (file_exists(ROOT . '/sys/logs/captcha_keystring_' . session_id() . '-' . date("Y-m-d") . '.dat')) {
 					$_SESSION['captcha_keystring'] = file_get_contents(ROOT . '/sys/logs/captcha_keystring_'
@@ -386,76 +387,30 @@ Class UsersModule extends Module {
 				}
 			}
 			if (!isset($_SESSION['captcha_keystring']) || $_SESSION['captcha_keystring'] != $keystring)
-				$error = $error.'<li>' . __('Wrong protection code') . '</li>'."\n";
+				$errors .= '<li>' . __('Wrong protection code') . '</li>'."\n";
 		}
 		unset($_SESSION['captcha_keystring']);
 
-		
-		// Проверяем поля формы на недопустимые символы
-		if (!empty($name) and !$valobj->cha_val($name, V_LOGIN))          
-			$error = $error.'<li>' . __('Wrong chars in field "login"') . '</li>'."\n";
-		if (!empty($password) and !$valobj->cha_val($password, V_LOGIN))  
-			$error = $error.'<li>' . __('Wrong chars in field "password"') . '</li>'."\n";
-		if (!empty($confirm) and !$valobj->cha_val($confirm, V_LOGIN))   
-			$error = $error.'<li>' . __('Wrong chars in field "confirm"') . '</li>'."\n";
-		if (!empty($icq) and !$valobj->cha_val($icq, V_INT))              
-			$error = $error.'<li>' . __('Wrong chars in field "ICQ"') . '</li>'."\n";
-		if (!empty($about) and !$valobj->cha_val($about, V_TEXT))         
-			$error = $error.'<li>' . __('Wrong chars in field "interes"') . '</li>'."\n";
-		if (!empty($signature) and !$valobj->cha_val($signature, V_TEXT)) 
-			$error = $error.'<li>' . __('Wrong chars in field "gignature"') . '</li>'."\n";
-		// Проверяем корректность e-mail
-		if (!empty($email) and !$valobj->cha_val($email, V_MAIL))
-			$error = $error.'<li>' . __('Wrong chars in filed "e-mail"') . '</li>'."\n";
-		// Проверяем корректность URL домашней странички
-		if (!empty($url) and !$valobj->cha_val($url, V_URL))
-			$error = $error.'<li>' . __('Wrong chars in filed "URL"') . '</li>'."\n";
-		if (!empty($jabber) && !$valobj->cha_val($jabber, V_MAIL))
-			$error = $error.'<li>' . __('Wrong chars in field "jabber"') . '</li>'."\n";
-		if (!empty($city) && !$valobj->cha_val($city, V_LOGIN))
-			$error = $error.'<li>' . __('Wrong chars in field "city"') . '</li>'."\n";
-		if (!empty($telephone) && !$valobj->cha_val($telephone, V_INT))
-			$error = $error.'<li>' . __('Wrong chars in field "telephone"') . '</li>'."\n";
-		if (!empty($byear) && !$valobj->cha_val($byear, V_INT))
-			$error = $error.'<li>' . __('Wrong chars in field "byear"') . '</li>'."\n";
-		if (!empty($bmonth) && !$valobj->cha_val($bmonth, V_INT))
-			$error = $error.'<li>' . __('Wrong chars in field "bmonth"') . '</li>'."\n";
-		if (!empty($bday) && !$valobj->cha_val($bday, V_INT))
-			$error = $error.'<li>' . __('Wrong chars in field "bday"') . '</li>'."\n";
-			
 
 
 		$new_name = preg_replace( "#[^- _0-9a-zА-Яа-я]#i", "", $name );
 		// Формируем SQL-запрос
         $res = $this->Model->getSameNics($new_name);
-
-
-		if (count($res) > 0) $error = $error.'<li>' . sprintf(__('Name already exists'), $new_name) . '</li>'."\n";
+		if (count($res) > 0) $errors .= '<li>' . sprintf(__('Name already exists'), $new_name) . '</li>'."\n";
+		
 		
 		/* check avatar */
 		$tmp_key = rand(0, 9999999);
 		if (!empty($_FILES['avatar']['name'])) {
 			$path = ROOT . '/sys/tmp/images/' . $tmp_key . '.jpg';
-			$ext = strrchr( $_FILES['avatar']['name'], "." );
-			$extensions = array( ".jpg", ".gif", ".bmp", ".png", '.JPG', ".GIF", ".BMP", ".PNG");
-			if (!in_array(strtolower($ext), $extensions)) {
-				$error = $error.'<li>' . __('Wrong avatar') . '</li>'."\n";
-				$check_image = true;
-			}
-			if ($_FILES['avatar']['size'] > $this->Register['Config']->read('max_avatar_size', 'users')) {
-				$error = $error.'<li>'. sprintf(__('Avatar is very big')
-				, ($this->Register['Config']->read('max_avatar_size', 'users') / 1024)) .'</li>'."\n";
-				$check_image = true;
-			}
-			if (!isset($check_image) && move_uploaded_file($_FILES['avatar']['tmp_name'], $path)) {
+
+			if (move_uploaded_file($_FILES['avatar']['tmp_name'], $path)) {
 				chmod($path, 0644);
 				@$sizes = resampleImage($path, $path, 100);
 				if (!$sizes) {
 					@unlink($path);
-					$error = $error.'<li>' . __('Some error in avatar') . '</li>'."\n";
+					$errors .= '<li>' . __('Some error in avatar') . '</li>'."\n";
 				}
-			} else {
-				$error = $error.'<li>' . __('Some error in avatar') . '</li>'."\n";
 			}
 		}
 
@@ -463,10 +418,10 @@ Class UsersModule extends Module {
 		if ( $timezone < -12 or $timezone > 12 ) $timezone = 0;
 
 		// Если были допущены ошибки при заполнении формы - перенаправляем посетителя на страницу регистрации
-		if (!empty($error)) {
+		if (!empty($errors)) {
 			$_SESSION['FpsForm'] = array_merge(array('login' => null, 'email'=> null, 'timezone' => null, 'icq' => null, 'url' => null, 'about' => null, 'signature' => null, 'pol' => $pol, 'telephone' => null, 'city' => null, 'jabber' => null, 'byear' => null, 'bmonth' => null, 'bday' => null), $_POST);
 			$_SESSION['FpsForm']['error'] 	= '<p class="errorMsg">' . __('Some error in form') . '</p>'.
-			"\n".'<ul class="errorMsg">'."\n".$error.'</ul>'."\n";
+			"\n".'<ul class="errorMsg">'."\n".$errors.'</ul>'."\n";
 			redirect('/users/add_form/yes');
 		}
 

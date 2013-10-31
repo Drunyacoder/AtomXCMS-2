@@ -107,8 +107,10 @@ class Validate {
 					} else if (!empty($params['required']) && $params['required'] === 'editable') {
 						$fields_settings = $Register['Config']->read('fields', $this->pathParams[0]);
 						
-						if (empty($_POST[$title]) && in_array($title, $fields_settings)) 
+						if (empty($_POST[$title]) && in_array($title, $fields_settings)) { 
 							$errors .= $this->getErrorMessage('required', $params, $title);
+							continue;
+						}
 					}
 				
 				
@@ -116,7 +118,19 @@ class Validate {
 					if (!empty($params['max_length'])) {
 						if (!empty($request[$title]) && mb_strlen($request[$title]) > $params['max_length']) 
 							$errors .= $this->getErrorMessage('max_length', $params, $title);
-					}	
+					}
+
+					// min length
+					if (!empty($params['min_length'])) {
+						if (!empty($request[$title]) && mb_strlen($request[$title]) < $params['min_length']) 
+							$errors .= $this->getErrorMessage('min_length', $params, $title);
+					}
+
+					// compare
+					if (!empty($params['compare'])) {
+						if (!empty($request[$title]) && $request[$title] != @$_POST[$params['compare']]) 
+							$errors .= $this->getErrorMessage('compare', $params, $title);
+					}					
 					
 					// pattern
 					if (!empty($params['pattern'])) {
@@ -230,6 +244,14 @@ class Validate {
 				
 			case 'max_length':
 				$message = sprintf(__('Very big "material"'), $params['max_length']);
+				break;
+				
+			case 'min_length':
+				$message = sprintf(__('Very small "material"'), $params['min_length']);
+				break;
+				
+			case 'compare':
+				$message = sprintf(__('Fields are differend'), $params['compare']);
 				break;
 				
 			case 'pattern':
