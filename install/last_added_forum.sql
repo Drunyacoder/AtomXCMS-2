@@ -1,0 +1,2 @@
+$last_added_posts = $FpsDB->select(\'themes\', DB_ALL, array(\'limit\' => 10, \'order\' => \'last_post DESC\'));\nif (!empty($last_added_posts)) {\n    echo \'<ul>\';\n    foreach ($last_added_posts as $last_post) {\n        echo \'<li class=\"point\"><a style=\"font-weight:400;\" href=\"/\' . R . \'forum/view_theme/\' . $last_post[\'id\'] . \'\">\' . $last_post[\'title\'] . \'</a> » <span style=\"color:#D6C39B;\">\' . $last_post[\'last_post\'] . \'</span></li>\';\n    }\n    echo \'</ul>\';\n} else {\n    echo \'\';\n}
+
