@@ -2,12 +2,12 @@
 /*---------------------------------------------\
 |											   |
 | @Author:       Andrey Brykin (Drunya)        |
-| @Version:      1.5.5                         |
+| @Version:      1.6.0                         |
 | @Project:      CMS                           |
 | @package       CMS Fapos                     |
 | @subpackege    Users Module                  |
 | @copyright     ©Andrey Brykin 2010-2013      |
-| @last mod      2013/02/22                    |
+| @last mod      2013/10/19                    |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
@@ -205,7 +205,7 @@ Class UsersModule extends Module {
 		else $markers['error'] = '';
 		
 
-        $markers['captcha'] = get_url('/sys/inc/kcaptcha/kc.php?'.session_name().'='.session_id());
+        $markers['captcha'] = get_url('/sys/inc/kcaptcha/kc.php?'.rand(0, 999999));
         $markers['name']    = $data['login'];
         $markers['fpol']  	= (!empty($data['pol']) && $data['pol'] === 'f') ? ' checked="checked"' : '';
         $markers['mpol']  	= (!empty($data['pol']) && $data['pol'] === 'm') ? ' checked="checked"' : '';
@@ -248,41 +248,12 @@ Class UsersModule extends Module {
 	 */
 	public function add()
     {
-        error_reporting(E_ALL);
-        ini_set('display_errors', '1');
 		if (!empty($_SESSION['user']['id'])) redirect('/');
-	
-		// Если не переданы данные формы - значит функция была вызвана по ошибке
-		if ( !isset($_POST['login']) or
-			!isset($_POST['password']) or
-			!isset($_POST['confirm']) or
-			!isset($_POST['email']) or
-			!isset($_POST['keystring'])
-		) {
-			redirect('/users/add_form/yes');
-		}
-        $error = '';
 
 
 		// Обрезаем переменные до длины, указанной в параметре maxlength тега input
-		$fields = array(
-			'login', 
-			'password', 
-			'confirm', 
-			'email', 
-			'icq', 
-			'jabber', 
-			'pol', 
-			'city', 
-			'telephone', 
-			'byear', 
-			'bmonth', 
-			'bday', 
-			'url', 
-			'about', 
-			'signature', 
-			'keystring'
-		);
+		$fields = array('login', 'password', 'confirm', 'email', 'icq', 'jabber', 'pol', 'city', 'telephone', 
+			'byear', 'bmonth', 'bday', 'url', 'about', 'signature', 'keystring');
 		
 		$fields_settings = (array)$this->Register['Config']->read('fields', 'users');
 		$fields_settings = array_merge($fields_settings, array('email', 'login', 'password', 'confirm'));
@@ -290,7 +261,6 @@ Class UsersModule extends Module {
 		
 		foreach ($fields as $field) {
 			if (empty($_POST[$field]) && in_array($field, $fields_settings)) {
-				$error = $error.'<li>' . __('Empty field "'.$field.'"') . '</li>'."\n";
 				$$field = null;
 				
 			} else {
@@ -329,22 +299,7 @@ Class UsersModule extends Module {
 			$_addFields = $this->AddFields->checkFields();
 			if (is_string($_addFields)) $error .= $_addFields; 
 		}
-		
-		
-		$valobj = $this->Register['Validate'];
-		
-		/*
-		if ( empty( $name ) )               		
-			$error = $error.'<li>' . __('Empty field "login"') . '</li>'."\n";
-		if ( empty( $password ) )                 
-			$error = $error.'<li>' . __('Empty field "password"') . '</li>'."\n";
-		if ( empty( $confirm ) )                  	
-			$error = $error.'<li>' . __('Empty field "confirm"') . '</li>'."\n";
-		if ( empty( $email ) )                    	
-			$error = $error.'<li>' . __('Empty field "email"') . '</li>'."\n";
-		if ( empty( $keystring ) ) 					
-			$error = $error.'<li>' . __('Empty field "code"') . '</li>'."\n";
-		*/
+
 		
 		// check login
 		if (!empty($name) and mb_strlen($name) < 3 || mb_strlen($name) > 20)
@@ -2985,6 +2940,68 @@ Class UsersModule extends Module {
 		$this->_globalize($navi);
 
 		return $this->_view('');
+	}
+	
+	
+	
+	public function getValidateRules() 
+	{	
+		$rules = array(
+			'add' => array(
+				'login' => array(
+					'required' => true,
+					'max_length' => 250,
+					'pattern' => V_TITLE,
+				),
+				'password' => array(
+					'required' => true,
+				),
+				'confirm' => array(
+					'required' => true,
+				),
+				'email' => array(
+					'required' => true,
+				),
+				'keystring' => array(
+					'required' => true,
+				),
+				'icq' => array(
+					'required' => 'editable',
+				),
+				'jabber' => array(
+					'required' => 'editable',
+				),
+				'pol' => array(
+					'required' => 'editable',
+				),
+				'city' => array(
+					'required' => 'editable',
+				),
+				'telephone' => array(
+					'required' => 'editable',
+				),
+				'byear' => array(
+					'required' => 'editable',
+				),
+				'bmonth' => array(
+					'required' => 'editable',
+				),
+				'bday' => array(
+					'required' => 'editable',
+				),
+				'url' => array(
+					'required' => 'editable',
+				),
+				'about' => array(
+					'required' => 'editable',
+				),
+				'signature' => array(
+					'required' => 'editable',
+				),
+			),
+		);
+		
+		return array($this->module => $rules);
 	}
 }
 

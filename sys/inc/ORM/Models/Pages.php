@@ -41,21 +41,57 @@ class PagesModel extends FpsModel
 	}
 	
 	
+	
+	/**
+	 * Geting all published pages for build URL
+	 */
 	private function getPages()
 	{
-		self::$pages = $this->getAllTree(array('id', 'url', 'path'));
+		self::$pages = $this->getAllTree(array('id', 'url', 'path', 'publish'));
 	}
 	
 	
+	/**
+	 * Recursive
+	 * Search page by ID in published pages for URL builder
+	 *
+	 * @return object $page
+	 */
+	private function searchPageById($id, $pages)
+	{
+		if (!empty($pages)) {
+			foreach ($pages as $page) {
+			
+				if ($page->getId() == $id) {
+					return $page;
+					
+				} else if ($page->getSub()) {
+					$target = $this->searchPageById($id, $page->getSub());
+					if ($target) return $target;
+				} 
+			}
+		}
+		return false;
+	}
+	
+	
+	/**
+	 * Build URL for published pages
+	 */
 	public function buildUrl($page_id, $pages = null, $prefix = '') 
 	{ 
+		
+
+		
 		$url = '';
 		if ($pages === null) $pages = self::$pages;
 		
-		$targ_page = $this->getById($page_id);
-		if (empty($targ_page) || !$targ_page->getPublish()) return $page_id;
+
 		
 		
+		$targ_page = $this->searchPageById($page_id, $pages);
+		if (empty($targ_page)) return $page_id;
+
 		
 		$page_path = $targ_page->getPath();
 		$ids = explode('.', $page_path);
@@ -184,7 +220,7 @@ class PagesModel extends FpsModel
 		$tree = $this->getCollection(array(
 			"`id` != 1",
 			"publish" => 1,
-		), $fields);
+		), array('fields' => $fields));
 		
 		if (!empty($tree)) {
 			$tree = $this->buildTree($tree);

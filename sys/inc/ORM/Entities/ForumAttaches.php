@@ -53,7 +53,7 @@ class ForumAttachesEntity extends FpsEntity
 		);
 		if ($this->id) $params['id'] = $this->id;
 		$Register = Register::getInstance();
-		$Register['DB']->save('forum_attaches', $params);
+		return $Register['DB']->save('forum_attaches', $params);
 	}
 	
 	

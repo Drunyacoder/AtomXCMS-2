@@ -3,7 +3,9 @@
 $this->ACL->turn(array($this->module, 'edit_comments'));
 $id = (!empty($id)) ? (int)$id : 0;
 if ($id < 1) redirect('/' . $this->module);
-$error = '';
+
+
+$errors = '';
 
 
 $commModel = $this->Register['ModManager']->getModelInstance('Comments');
@@ -19,29 +21,27 @@ $message = trim($message);
 /* cut and trim values */
 if ($comment->getUser_id() > 0) {
 	$name = $comment->getName();
+	
+	// for validation
+	$_POST['login'] = $name;
 } else {
 	$name = mb_substr($_POST['login'], 0, 70);
 	$name = trim($name);
 }
 
 
-$valobj = $this->Register['Validate'];
-if ($comment->getUser_id()) {
-	
-	if (empty($name)) {
-		$error = $error . '<li>' . __('Empty field "login"') . '</li>' . "\n";
-	} elseif (!$valobj->cha_val($name, V_TITLE)) {
-		$error = $error . '<li>' . __('Wrong chars in field "login"') . '</li>' . "\n";
-	}
+if (!$comment->getUser_id()) {
+	$this->Register['Validate']->disableFieldCheck('login');
 }
-if (empty($message))  $error = $error.'<li>' . __('Empty field "text"') . '</li>'."\n";
+
+$errors .= $this->Register['Validate']->check($this->getValidateRules());
 
 	
 /* if an error */
-if (!empty( $error )) {
+if (!empty( $errors )) {
 	$_SESSION['editCommentForm'] = array();
 	$_SESSION['editCommentForm']['error'] = '<p class="errorMsg">' . __('Some error in form') . '</p>'
-		."\n".'<ul class="errorMsg">'."\n".$error.'</ul>'."\n";
+		."\n".'<ul class="errorMsg">'."\n".$errors.'</ul>'."\n";
 	$_SESSION['editCommentForm']['message'] = $message;
 	$_SESSION['editCommentForm']['name'] = $name;
 	redirect('/' . $this->module . '/edit_comment_form/' . $id );

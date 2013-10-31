@@ -2,12 +2,12 @@
 /*---------------------------------------------\
 |											   |
 | @Author:       Andrey Brykin (Drunya)        |
-| @Version:      1.4.9                         |
+| @Version:      1.5.0                         |
 | @Project:      CMS                           |
 | @package       CMS Fapos                     |
 | @subpackege    Chat Module                   |
 | @copyright     ©Andrey Brykin 2010-2013      |
-| @last mod      2013/01/22                    |
+| @last mod      2013/08/04                    |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
@@ -74,7 +74,7 @@ class ChatModule extends Module {
 				
 				foreach ($data as $key => &$record) {
 				
-					$record['message'] = $this->Register['PrintText']->smile($record['message']);
+					$record['message'] = $this->Register['PrintText']->smile(h($record['message']));
 				
 					/* view ip adres if admin */
 					if ($this->ACL->turn(array('chat', 'delete_materials'), false)) {
@@ -143,16 +143,16 @@ class ChatModule extends Module {
 				// Проверяем поле "код" на недопустимые символы
 				if (!$valobj->cha_val($keystring, V_CAPTCHA))
 					$error = $error . '<li>' . __('Wrong chars in field "code"') . '</li>' . "\n";					
-				if (!isset($_SESSION['captcha_keystring'])) {
+				if (!isset($_SESSION['chat_captcha_keystring'])) {
 					if (file_exists(ROOT . '/sys/logs/captcha_keystring_' . session_id() . '-' . date("Y-m-d") . '.dat')) {
-						$_SESSION['captcha_keystring'] = file_get_contents(ROOT . '/sys/logs/captcha_keystring_' . session_id() . '-' . date("Y-m-d") . '.dat');
+						$_SESSION['chat_captcha_keystring'] = file_get_contents(ROOT . '/sys/logs/captcha_keystring_' . session_id() . '-' . date("Y-m-d") . '.dat');
 						@_unlink(ROOT . '/sys/logs/captcha_keystring_' . session_id() . '-' . date("Y-m-d") . '.dat');
 					}
 				}
-				if (!isset($_SESSION['captcha_keystring']) || $_SESSION['captcha_keystring'] != $keystring)
+				if (!isset($_SESSION['chat_captcha_keystring']) || $_SESSION['chat_captcha_keystring'] != $keystring)
 					$error = $error . '<li>' . __('Wrong protection code') . '</li>' . "\n";
 			}
-			unset($_SESSION['captcha_keystring']);
+			unset($_SESSION['chat_captcha_keystring']);
 		}
 		
 		
@@ -235,7 +235,7 @@ class ChatModule extends Module {
 
 		$kcaptcha = '';
 		if (!$ACL->turn(array('other', 'no_captcha'), false)) {
-			$kcaptcha = getCaptcha();
+			$kcaptcha = getCaptcha('chat_captcha_keystring');
 		}
 		$markers['action'] = get_url('/chat/add/');
 		$markers['login'] = h($name);

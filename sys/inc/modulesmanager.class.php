@@ -129,4 +129,19 @@ class ModulesManager
         $str = implode('', $str);
         return $str;
     }
+	
+	
+	public function getModulesList()
+	{
+		$modules = array();
+		
+		$pathes = glob(ROOT . '/modules/*', GLOB_ONLYDIR);
+		if (!empty($pathes)) {
+			foreach ($pathes as $path) {
+				$modules[] = substr(strrchr($path, '/'), 1);
+			}
+		}
+		
+		return $modules;
+	}
 }

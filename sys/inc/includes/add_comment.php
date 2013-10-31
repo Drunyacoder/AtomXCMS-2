@@ -30,27 +30,20 @@ $keystring = (isset($_POST['captcha_keystring'])) ? trim($_POST['captcha_keystri
 
 
 // Check fields
-$error  = '';
-$valobj = $this->Register['Validate'];
-if (empty($name))                          
-	$error = $error . '<li>' . __('Empty field "login"') . '</li>' . "\n";
-elseif (!$valobj->cha_val($name, V_TITLE))  
-	$error = $error . '<li>' . __('Wrong chars in field "login"') . '</li>' . "\n";
-if (empty($message))                       
-	$error = $error . '<li>' . __('Empty field "text"') . '</li>' . "\n";
+$errors  = '';
+$errors .= $this->Register['Validate']->check($this->getValidateRules());
+
 
 
 // Check captcha if need exists	 
 if (!$this->ACL->turn(array('other', 'no_captcha'), false)) {
 	if (empty($keystring))                      
-		$error = $error . '<li>' . __('Empty field "code"') . '</li>' . "\n";
+		$errors = $errors . '<li>' . __('Empty field "code"') . '</li>' . "\n";
 
 	
 	// Проверяем поле "код"
 	if (!empty($keystring)) {
-		// Проверяем поле "код" на недопустимые символы
-		if (!$valobj->cha_val($keystring, V_CAPTCHA))
-			$error = $error.'<li>' . __('Wrong chars in field "code"') . '</li>'."\n";									
+		// Проверяем поле "код" на недопустимые символы									
 		if (!isset($_SESSION['captcha_keystring'])) {
 			if (file_exists(ROOT . '/sys/logs/captcha_keystring_' . session_id() . '-' . date("Y-m-d") . '.dat')) {
 				$_SESSION['captcha_keystring'] = file_get_contents(ROOT . '/sys/logs/captcha_keystring_' . session_id() . '-' . date("Y-m-d") . '.dat');
@@ -65,10 +58,10 @@ if (!$this->ACL->turn(array('other', 'no_captcha'), false)) {
 
 
 /* if an errors */
-if (!empty($error)) {
+if (!empty($errors)) {
 	$_SESSION['addCommentForm'] = array();
 	$_SESSION['addCommentForm']['error'] = '<p class="errorMsg">' . __('Some error in form') . '</p>' .
-		"\n" . '<ul class="errorMsg">' . "\n" . $error . '</ul>' . "\n";
+		"\n" . '<ul class="errorMsg">' . "\n" . $errors . '</ul>' . "\n";
 	$_SESSION['addCommentForm']['name'] = $name;
 	$_SESSION['addCommentForm']['message'] = $message;
 	redirect('/' . $this->module . '/view/' . $id);

@@ -382,8 +382,9 @@ function translit($str) {
  * security code.
  *
  */
-function getCaptcha() {
-	$kcaptcha = '/sys/inc/kcaptcha/kc.php?' . session_name() . '=' . session_id() . '&' . rand(rand(0, 1000), 999999);
+function getCaptcha($name = false) {
+	$kcaptcha = '/sys/inc/kcaptcha/kc.php?' . rand(rand(0, 1000), 999999);
+	if (!empty($name)) $kcaptcha .= '&name=' . $name;
 	$tpl = file_get_contents(ROOT . '/template/' . Config::read('template') . '/html/default/captcha.html');
 	return str_replace('{CAPTCHA}', $kcaptcha, $tpl);
 }

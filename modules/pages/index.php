@@ -63,7 +63,7 @@ Class PagesModule extends Module {
 				if (empty($page)) return $this->showInfoMessage(__('Can not find this page'), '/');
 			}
 			
-		
+			$this->Register['active_page_id'] = $page->getId();
 			
 			
 			$this->page_title = $page->getMeta_title();
@@ -72,7 +72,7 @@ Class PagesModule extends Module {
 			$this->template = ($page->getTemplate()) ? $page->getTemplate() : 'default';
 			$source = $page->getContent();
 			$source = $this->renderString($source, array('entity' => $page));
-		
+			
 		
 			// Tree line
 			$navi['navigation'] = get_link(__('Home'), '/');

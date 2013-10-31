@@ -1,8 +1,13 @@
 <?php
 include( 'kcaptcha.php' );
+
+
+$name = (!empty($_GET['name'])) ? trim($_GET['name']) : 'captcha_keystring';
+
+
 session_start();
 $captcha = new KCAPTCHA();
-$_SESSION['captcha_keystring'] = $captcha->getKeyString();
+$_SESSION[$name] = $captcha->getKeyString();
 
 /**
 * SESSION may be work incorrect

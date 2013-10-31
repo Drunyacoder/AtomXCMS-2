@@ -1,0 +1,430 @@
+<!doctype html>
+<html>
+<head>
+	<title>{{ title }}</title>
+
+	<meta name="description" content="{{ meta_description }}" />
+	<meta name="keywords" content="{{ meta_keywords }}" />
+	<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+
+	<meta name='author' content='Andrey Brykin' />
+	<meta name='robots' content='index, follow' />
+	<meta name='rating' content='general' />
+	<meta name='generator' content='Fapos CMS 2.1' />
+
+	<link rel="icon" href="{{ www_root }}/sys/img/favicon.ico" type="image/x-icon" />
+	<link rel="shortcut icon" href="{{ www_root }}/sys/img/favicon.ico" type="image/x-icon" />
+	<link type="text/css" rel="StyleSheet" href="{{ template_path }}/css/style.css" />
+	<script language="JavaScript" type="text/javascript" src="{{ www_root }}/sys/js/jquery.js"></script>
+	<script language="JavaScript" type="text/javascript" src="{{ www_root }}/sys/js/send_message.js"></script>
+	{{ editor_head }}
+	<!--<script language="JavaScript" type="text/javascript" src="{{ www_root }}/sys/js/textarearesizer.js"></script>-->
+	<script type="text/javascript">
+	{% if fps_user_id %}
+		check_pm('{{ fps_user_id }}');
+	{% endif %}
+
+	
+	/*
+	$(document).ready(function() {
+	$('textarea.text-area:not(.processed)').TextAreaResizer();
+	});
+	*/
+	</script>
+	<!-- FancyBOX -->
+	<link type="text/css" rel="StyleSheet" href="{{ www_root }}/sys/js/fancybox/css/fancy.css" />
+	<script type="text/javascript" src="{{ www_root }}/sys/js/fancybox/jquery.fancybox.js"></script>
+	<script type="text/javascript">
+	$(document).ready(function() {
+		$("a.gallery").fancybox();
+	});
+	</script>
+	<!--/FancyBOX -->
+</head>
+
+
+<body>
+
+<div class="body">
+<img src="{{ template_path }}/img/ltm.png" alt="" class="imgg"/>
+<div class="topmenu"><img src="{{ template_path }}/img/listtm.png" alt="" class="gran"/>
+<ul>
+	<li>
+		<a href="{{ www_root }}/">Главная</a>
+		{% if fps_user_id %}
+			<a href="{{ www_root }}/users/info/{{ fps_user_id }}">Мой профиль</a>
+			<a href="{{ www_root }}/users/logout">Выход</a>
+		{% else %}
+			<a href="{{ www_root }}/users/login_form">Вход</a>
+			<a href="{{ www_root }}/users/add_form">Регистрация</a>
+		{% endif %}
+
+		<a href="{{ www_root }}/users">Пользователи</a>
+		<a href="{{ www_root }}/search">Поиск</a>
+		{% if fps_admin_access == 1 %}<a target="_blank" href="{{ www_root }}/admin">Админка</a>{% endif %}
+	</li>
+</ul>
+</div>
+<img src="{{ template_path }}/img/rtm.png" alt="" style="float:right;"/>
+
+<div class="header">
+	<a href="{{ www_root }}/"><img src="{{ template_path }}/img/logo.png" alt="Шаблон UkrTor" style="float:left;position:absolute;"/></a>
+	<div class="feed">
+		<a href="{{ www_root }}/"><span class="home"></span></a>
+		<img src="{{ template_path }}/img/listtm.png" alt="" class="gran2"/>
+		<a href="#"><span class="feedback"></span></a>
+		<img src="{{ template_path }}/img/listtm.png" alt="" class="gran2"/>
+
+		<a href="{{ www_root }}/sitemap.xml"><span class="map"></span></a>
+	</div>
+	<div class="info1"></div>
+	<div class="info2"></div>
+	<div class="follow">
+		<noindex><a rel="nofollow" href="http://vkontakte.ru/fapos"><span class="twit"></span></a></noindex>
+		<img src="{{ template_path }}/img/listtm.png" alt="" class="gran3"/>
+		<a href="{{ www_root }}/news/rss"><span class="rss"></span></a>
+	</div>
+	<div class="mouse">
+		<div class="slide-help" id="disign" style="display:none;margin-left:170px;margin-top:-50px;">
+			<div class="top"></div>
+			<div class="center">
+				Шаблоны - это готовые  <br />
+				дизайны на любой вкус  <br />
+				и тематику,которые вы <br />
+				можете бесплатно скачать.
+			</div>
+			<div class="bottom"></div>
+		</div>
+		<a onMouseOver="$('#disign').slideDown('fast');" onMouseOut="$('#disign').slideUp('fast');" href="#"><span class="disign"></span></a>
+		
+		<div class="slide-help" id="documentaciya" style="display:none;margin-left:170px;margin-top:70px;">
+			<div class="top"></div>
+			<div class="center">
+				Документация позволит вам <br />
+				быстрее освоить систему. <br />
+				Настоятельно рекомендуем <br />
+				ее изучить.
+			</div>
+			<div class="bottom"></div>
+		</div>
+		<a onMouseOver="$('#documentaciya').slideDown('fast');" onMouseOut="$('#documentaciya').slideUp('fast');" href="{{ www_root }}/documa"><span class="documentaciya"></span></a>
+		
+		<div class="slide-help" id="modules" style="display:none;margin-left:624px;margin-top:-66px;">
+			<div class="top"></div>
+			<div class="center">
+				Модули Fapos - это блоки <br />
+				из которых выстраивается <br />
+				функционал сайта. Например <br />
+				Форум, галерея, новости ...
+			</div>
+			<div class="bottom"></div>
+		</div>
+		<a onMouseOver="$('#modules').slideDown('fast');" onMouseOut="$('#modules').slideUp('fast');" href="#"><span class="modules"></span></a>
+		
+		<div class="slide-help" id="plugins" style="display:none;margin-left:624px;margin-top:44px;">
+			<div class="top"></div>
+			<div class="center">
+				Плагины и сниппеты позволя-<br />
+				ют расширять стандартные<br /> 
+				возможности. И тут предел<br />
+				лишь ваша фантазия
+			</div>
+			<div class="bottom"></div>
+		</div>
+		<a onMouseOver="$('#plugins').slideDown('fast');" onMouseOut="$('#plugins').slideUp('fast');" href="#"><span class="plugins"></span></a>
+	</div>
+	<div class="big-download-but"></div>
+</div>
+<div class="menut">
+	<div style="width:470px;float:left;">
+	    <div class="searchbg"> 
+	    <form method="POST" action="{{ www_root }}/search/"> 
+            <input type="hidden" name="subaction" value="search" /> 
+            <input name="search" value="поиск по сайту..." onBlur="if(this.value=='') this.value='поиск по сайту...';" onFocus="if(this.value=='поиск по сайту...') this.value='';" type="text" class="search_input" /> 
+            <input  class="search_but" value="" type="submit" name="send" /> 
+        </form> 
+		</div> 
+		
+		{% if fps_user_id %}
+		<div class="profile">
+			<div class="logined-info">
+			<a href="{{ personal_page_link }}">{{ fps_user_name }}</a>
+			&nbsp; / &nbsp;
+			{{ fps_user_group }}
+			</div>
+		</div>
+		{% else %}
+		<div class="profile">
+			<a title="Всплывающее окно" onclick="document.getElementById('wind').style.display='block'; return false;" href="#"><span class="login"></span></a>
+			<a href="{{ www_root }}/users/add_form"><span class="reg"></span></a>
+		</div>
+		<div id="wind" style="display:none;">
+			<div class="profile2">
+				<img align="left" alt="" src="{{ template_path }}/img/panel.gif">
+				<div class="strtelo">
+					<a onclick="document.getElementById('loginForm').submit();" href="#"><span class="strelka1"></span></a>
+					<a onclick="document.getElementById('wind').style.display='none'; return false;" href="#"><span class="strelka2"></span></a>
+				</div>
+				<form action="{{ www_root }}/users/login/" id="loginForm" method="post">
+					<input type="text" class="pole1" id="login_name" name="username">
+					<input type="password" class="pole2" id="login_password" name="password">
+					<button type="submit" onclick="submit();" class="fbutton2"></button>
+					<input type="hidden" value="submit" id="login" name="submitForm">
+				</form>
+			</div>
+		</div>
+		{% endif %}
+		
+	</div>
+	<div class="rek">
+	<img src="{{ template_path }}/img/rek.png" alt=""/>
+	</div>
+	<a  class="reklama-top" href="/2"></a>
+</div>
+
+<div class="spedbar">
+	<img src="{{ template_path }}/img/zsb.png" alt=""/>
+	<div style="float:left; width:80%;">
+		<div>
+		{{ navigation }}
+		</div>
+	</div>
+	<div style="float:right;margin-right:10px;">{{ add_link }}</div>
+	<div style="clear:both;"></div>
+</div>
+<div class="telo">
+	<table class="telo-tb">
+		<tr>
+		<td class="s1">
+			<div class="blocktop">НАВИГАЦИЯ</div>
+			<div class="conmenu2">
+
+ 
+					<div class="dcont"> 
+						<ul class="reset"> 
+							{{ mainmenu }}
+						</ul> 
+					</div> 
+
+
+
+			</div>
+			<div class="blockb"></div>
+			
+			<div class="blocktop">Реклама</div>
+			<div class="conmenu2">
+				<div class="reklama"><img src="{{ template_path }}/img/reklama.png" alt=""/></div>
+			</div>
+
+			<div class="blockb"></div>
+			
+			<div class="blocktop">Статистика</div>
+			<div class="conmenu2">
+				<div class="topbo">
+					<div style="text-align:center;">
+						<img src="{{ counter }}" /><br />
+						Сейчас online: {{ all_online }}<br />
+						Юзеров: {{ users_online }}<br />
+						Гостей: {{ guests_online }}<br />
+					</div>
+				</div>
+			</div>
+			<div class="blockb"></div>
+			
+			<div class="blocktop">Последние комментарии</div>
+				{{ last_comments }}
+			<div class="blockb"></div>
+			
+			<div class="blocktop">ТОП юзеров</div>
+			<div class="conmenu2">
+				<div class="topbo">
+					{{ users_rating }}
+				</div>
+			</div>
+			<div class="blockb"></div>
+			
+			<div class="blocktop">ТОП новостей</div>
+			<div class="conmenu2">
+				<div class="popnews">
+					<ul>
+					{{ pop_news }}
+					</ul>
+				</div>
+			</div>
+			<div class="blockb"></div>
+
+		</td>
+		<td class="s2">
+
+		<table class="center-telo-tb" style="height:auto !important;">
+			<tr>
+				<td>
+				<div  class="content-block">
+					<div id="nav-block">
+						<div style="float:left; width:45%; text-align:left;">
+							<div class="add">{{ meta }}</div>
+						</div>
+						<div style="float:right; width:45%; text-align:right;">
+							<div style=" margin:2px;">{{ pagination }}</div>
+						</div>
+						<div style="clear:both;"></div>
+					</div>
+					{{ content }}
+					{{ comments_form }} 
+
+					<div style="clear:both;"></div>
+					
+					
+<div class="bgnav"></div>
+<div class="nav">
+	<div class="nav2">
+		&nbsp;{{ pagination }} 
+	</div>
+	<div class="ucaza">
+        {% if fps_pagescnt >= 2 %}
+        <a id="prev_link" href=""><span class="ucaz1"></span></a>
+        <script type="text/javascript">
+        var page = {{ fps_curr_page }} - 1;
+        if (page < 1) page = 1;
+        document.getElementById('prev_link').href = '?page=' + page;
+        </script>
+
+        <a id="next_link" href=""><span class="ucaz2"></span></a>
+        <script type="text/javascript">
+        var page = {{ fps_curr_page }} + 1;
+        if (page > {{ fps_pagescnt }}) page = {{ fps_pagescnt }};
+        document.getElementById('next_link').href = '?page=' + page;
+        </script>
+        {% endif %}
+	</div>
+</div>
+<!--<div class="navbot"></div>-->
+
+					<div class="comm-pagi">{{ comments_pagination }}</div>
+					{{ comments }}
+					
+				</div>
+				</td>
+			</tr>
+			<!--<tr>
+				<td style="vertical-align:bottom">
+				<div class="bannerbottom">
+				<img src="{{ template_path }}/img/rek.png" alt=""/>
+				</div>
+				<div class="bannerbottom2">
+				</div>
+				</td>
+
+			</tr>-->
+		</table>
+		</td>
+		<td class="s3">
+				<div class="rsb"><div class="rst"></div>
+			
+			<div style="padding-left:5px;">
+				<div class="blocktopr">Чат</div>
+				<div class="conmenur">
+				{{ fps_chat }}
+				</div>
+				<div class="blockbr"></div>
+				
+				<div class="blocktopr">Категории</div>
+				<div class="conmenur">
+					<ul>
+					{{ categories }}
+					</ul>
+				</div>
+				<div class="blockbr"></div>
+				
+				<div class="blocktopr">Каналы RSS</div>
+				<div class="conmenur">
+						{{ fps_rss }}
+				</div>
+				<div class="blockbr"></div>
+
+			</div>
+		</div>
+		</td>
+		</tr>
+	</table>
+	<div class="bottomborder"></div>
+	<div class="menubottom">
+	<img src="{{ template_path }}/img/listtm.png" alt="" class="gran5"/>
+	<ul>
+		<li><a href="{{ www_root }}/">Главная</a></li>
+		<li><a href="{{ www_root }}/forum">Форум</a></li>
+		<li><a href="{{ www_root }}/users/add_form">Правила сайта</a></li>
+		<li><a href="{{ www_root }}/2">Заказать рекламу</a></li>
+		<li><a href="{{ www_root }}/sitemap.xml">Карта сайта</a></li>
+	</ul>
+	<a href="#"><img src="{{ template_path }}/img/vverx.png" alt="" class="vverx"/></a>
+	</div>
+	<div class="telofoot">
+	<table class="footmenu">
+	<tr>
+
+	<td valign="top" class="img"><img src="{{ template_path }}/img/fpstempl-text.png" alt="" />
+	<ul>
+	Шаблоны позволяют менять дизайн сайта всего одним кликом, без каких либо усилий. Все, что надо сделать - это скачать шаблон и "залить" его к себе на сайт. Fapos CMS обладает большим количеством готовых и бесплатных шаблонов.
+	</ul>
+	</td>
+
+	<td class="img">
+		<!--<object width="195" height="170" id="yui-gen54" class="restrain" type="application/x-shockwave-flash" data="http://youtube.com/v/MwXgd4_9S-k"><param name="movie" value="http://youtube.com/v/MwXgd4_9S-k"><param name="wmode" value="transparent"></object>-->
+	</td>
+
+	<td class="img">
+
+	</td>
+
+	<td>
+
+	</td>
+
+	</tr>
+	</table>
+	<img src="{{ template_path }}/img/lastnews.png" alt="" class="footlast"/>
+	</div>
+	<div class="bgfootmenubottom"></div>
+	
+	<div class="infofooter">
+		<p align="justify">
+			Мы рады предоставить вам бесплатную CMS - Fapos. Это инструмент для создания и управления сайтами любой сложности и компановки. Боьлшое количество модулей и шаблонов, а так же поддержка плагинов, вместе с мощьным шаблонизатором позволяет создавать сайты ограниченные лишь вашей фантазией. А теперь самое главное - это все совершенно БЕСПЛАТНО!
+		</p>
+	</div>
+	
+	<div class="footer">
+	<img src="{{ template_path }}/img/cnopka.png" alt=""/>
+	<img src="{{ template_path }}/img/cnopka.png" alt=""/>
+	<div class="fo2">
+	<img src="{{ template_path }}/img/cnopka.png" alt=""/>
+	<img src="{{ template_path }}/img/cnopka.png" alt=""/>
+	</div>
+	</div>
+</div>
+	
+	<a href="{{ www_root }}/"><img src="{{ template_path }}/img/kopy.png" alt="" class="kopy"/></a>
+	
+	<div class="follow2">
+		<noindex><a rel="nofollow" href="http://vkontakte.ru/fapos"><span class="twit2"></span></a></noindex>
+		<img src="{{ template_path }}/img/listtm.png" alt="" class="gran32"/>
+		<a href="{{ www_root }}/news/rss"><span class="rss2"></span></a>
+
+	<div class="prava">
+Сайт управляется <a href="http://fapos.net" >Бесплатной CMS {{ powered_by }}</a> <br> Adapted by <a href="http://fapos.net/users/info/179" title="Adapted">ARMI</a>
+	<br />{{ boot_time }}
+    </div>
+
+	</div>
+	<script type="text/javascript">
+	var links = $('.fps-show-mat');
+	for (var key in links) {
+		if(!links.hasOwnProperty(key)) continue;
+	
+		links[key].innerHTML = '';
+	}
+	</script>
+
+</div>
+</body>
+</html>

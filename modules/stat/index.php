@@ -600,6 +600,139 @@ Class StatModule extends Module {
 	}
 
 
+
+	
+	public function getValidateRules() 
+	{
+		$max_attach = $this->Register['Config']->read('max_attaches', $this->module);
+		if (empty($max_attach) || !is_numeric($max_attach)) $max_attach = 5;
+		$rules = array(
+			'add' => array(
+				'title' => array(
+					'required' => true,
+					'max_length' => 250,
+					'title' => 'Title',
+				),
+				'mainText' => array(
+					'required' => true,
+					'max_length' => $this->Register['Config']->read('max_lenght', $this->module),
+					'title' => 'Text',
+				),
+				'cats_selector' => array(
+					'required' => true,
+					'pattern' => V_INT,
+					'max_length' => 11,
+					'title' => 'Category',
+				),
+				'description' => array(
+					'required' => 'editable',
+				),
+				'tags' => array(
+					'required' => 'editable',
+					'pattern' => V_TITLE,
+				),
+				'sourse' => array(
+					'required' => 'editable',
+					'pattern' => V_TITLE,
+				),
+				'sourse_email' => array(
+					'required' => 'editable',
+					'pattern' => V_MAIL,
+				),
+				'sourse_site' => array(
+					'required' => 'editable',
+					'pattern' => V_URL,
+				),
+				'files__attach' => array(
+					'for' => array(
+						'from' => 1,
+						'to' => $max_attach,
+					),
+					'type' => 'image',
+					'max_size' => $this->Register['Config']->read('max_attaches_size', $this->module),
+				),
+				'commented' => array(),
+				'available' => array(),
+			),
+			'update' => array(
+				'title' => array(
+					'required' => true,
+					'max_length' => 250,
+					'title' => 'Title',
+				),
+				'mainText' => array(
+					'required' => true,
+					'max_length' => $this->Register['Config']->read('max_lenght', $this->module),
+					'title' => 'Text',
+				),
+				'cats_selector' => array(
+					'required' => true,
+					'pattern' => V_INT,
+					'max_length' => 11,
+					'title' => 'Category',
+				),
+				'description' => array(
+					'required' => 'editable',
+				),
+				'tags' => array(
+					'required' => 'editable',
+					'pattern' => V_TITLE,
+				),
+				'sourse' => array(
+					'required' => 'editable',
+					'pattern' => V_TITLE,
+				),
+				'sourse_email' => array(
+					'required' => 'editable',
+					'pattern' => V_MAIL,
+				),
+				'sourse_site' => array(
+					'required' => 'editable',
+					'pattern' => V_URL,
+				),
+				'files__attach' => array(
+					'for' => array(
+						'from' => 1,
+						'to' => $max_attach,
+					),
+					'type' => 'image',
+					'max_size' => $this->Register['Config']->read('max_attaches_size', $this->module),
+				),
+				'commented' => array(),
+				'available' => array(),
+			),
+			'add_comment' => array(
+				'login' => array(
+					'required' => true,
+					'pattern' => V_TITLE,
+					'max_length' => 40,
+				),
+				'message' => array(
+					'required' => true,
+				),
+				'captcha_keystring' => array(
+					'pattern' => V_CAPTCHA,
+					'title' => 'Kaptcha',
+				),
+			),
+			'update_comment' => array(
+				'login' => array(
+					'required' => true,
+					'pattern' => V_TITLE,
+					'max_length' => 40,
+				),
+				'message' => array(
+					'required' => true,
+				),
+				'captcha_keystring' => array(
+					'pattern' => V_CAPTCHA,
+					'title' => 'Kaptcha',
+				),
+			),
+		);
+		
+		return array($this->module => $rules);
+	}
 	
 
 	/**
@@ -679,28 +812,24 @@ Class StatModule extends Module {
     {
 		//turn access
 		$this->ACL->turn(array($this->module, 'add_materials'));
-		if (!isset($_POST['title']) 
-		|| !isset($_POST['mainText']) 
-		|| !isset($_POST['cats_selector'])
-		|| !is_numeric($_POST['cats_selector'])) {
-			redirect('/');
-		}
-		$error  = '';
+		$errors  = '';
 		
 		
 		// Check additional fields if an exists.
 		// This must be doing after define $error variable.
 		if (is_object($this->AddFields)) {
 			$_addFields = $this->AddFields->checkFields();
-			if (is_string($_addFields)) $error .= $_addFields; 
+			if (is_string($_addFields)) $errors .= $_addFields; 
 		}
+		
+		
+		$errors .= $this->Register['Validate']->check($this->getValidateRules());
 		
 		
 		$fields = array('description', 'tags', 'sourse', 'sourse_email', 'sourse_site');
 		$fields_settings = $this->Register['Config']->read('fields', $this->module);
 		foreach ($fields as $field) {
 			if (empty($_POST[$field]) && in_array($field, $fields_settings)) {
-				$error = $error . '<li>' . __('Empty field') . ' "' . $field . '"</li>' . "\n";
 				$$field = null;
 			} else {
 				$$field = trim($_POST[$field]);
@@ -722,74 +851,22 @@ Class StatModule extends Module {
 			redirect('/' . $this->module . '/add_form/');
 		}
 
-		// Check fields
-		$valobj = new Validate;
-		if (empty($in_cat))                     	
-			$error = $error . '<li>' . __('Category not selected') . '</li>'."\n";
-		if (empty($title))                       	
-			$error = $error.'<li>' . __('Empty field "title"') . '</li>'."\n";
-		elseif (!$valobj->cha_val($title, V_TITLE))  
-			$error = $error.'<li>' . __('Wrong chars in "title"') . '</li>'."\n";
-			
-			
-		$max_lenght = $this->Register['Config']->read('max_lenght', $this->module);
-		if ($max_lenght <= 0) $max_lenght = 1000;
-			
-		if (empty($add))                    		 
-			$error = $error . '<li>' . __('Empty field "material"') . '</li>' . "\n";
-		else if (mb_strlen($add) > $max_lenght)
-			$error = $error . '<li>' . sprintf(__('Very big "material"'), $max_lenght) . '</li>' . "\n";
-		if (!empty($tags) && !$valobj->cha_val($tags, V_TITLE)) 
-			$error = $error . '<li>' . __('Wrong chars in "tags"') . '</li>' . "\n";
-		if (!empty($sourse) && !$valobj->cha_val($sourse, V_TITLE)) 
-			$error = $error . '<li>' . __('Wrong chars in "sourse"') . '</li>' . "\n";
-		if (!empty($sourse_email) && !$valobj->cha_val($sourse_email, V_MAIL)) 
-			$error = $error . '<li>' . __('Wrong chars in "email"') . '</li>' . "\n";
-		if (!empty($sourse_site) && !$valobj->cha_val($sourse_site, V_URL)) 
-			$error = $error . '<li>' . __('Wrong chars in "sourse site"') . '</li>' . "\n";
-
-			
-		// Check attaches size and format
-		$max_attach = $this->Register['Config']->read('max_attaches', $this->module);
-		if (empty($max_attach) || !is_numeric($max_attach)) $max_attach = 5;
-		$max_attach_size = $this->Register['Config']->read('max_attaches_size', $this->module);
-		if (empty($max_attach_size) || !is_numeric($max_attach_size)) $max_attach_size = 1000;
-		for ($i = 1; $i <= $max_attach; $i++) {
-			$attach_name = 'attach' . $i;
-			if (!empty($_FILES[$attach_name]['name'])) {
-			
-				$img_extentions = array('.png','.jpg','.gif','.jpeg', '.PNG','.JPG','.GIF','.JPEG');
-				$ext = strrchr($_FILES[$attach_name]['name'], ".");
-				
-				
-				if ($_FILES[$attach_name]['size'] > $max_attach_size) {
-					$error .= '<li>' . sprintf(__('Very big file'), $i, round(($max_attach_size / 1000), 2)) . '</li>'."\n";
-				}
-				if (($_FILES[$attach_name]['type'] != 'image/jpeg'
-				&& $_FILES[$attach_name]['type'] != 'image/jpg'
-				&& $_FILES[$attach_name]['type'] != 'image/gif'
-				&& $_FILES[$attach_name]['type'] != 'image/png')
-				|| !in_array(strtolower($ext), $img_extentions)) {
-					$error .= '<li>' . __('Wrong file format') . '</li>' . "\n";
-				}
-			}
-		}
 			
 			
 		if (!empty($in_cat)) {
 			$categoryModel = $this->Register['ModManager']->getModelInstance($this->module . 'Sections');
 			$cat = $categoryModel->getById($in_cat);
-			if (empty($cat)) $error .= '<li>' . __('Can not find category') . '</li>'."\n";
+			if (empty($cat)) $errors .= '<li>' . __('Can not find category') . '</li>'."\n";
 		}
 			
 			
 		// Errors
-		if (!empty($error)) {
+		if (!empty($errors)) {
 			$_SESSION['FpsForm'] = array_merge(array('title' => null, 'mainText' => null, 'in_cat' => $in_cat,
 				'description' => null, 'tags' => null, 'sourse' => null, 'sourse_email' => null, 
 				'sourse_site' => null, 'commented' => null, 'available' => null), $_POST);
 			$_SESSION['FpsForm']['error']   = '<p class="errorMsg">' . __('Some error in form') . '</p>'.
-				"\n".'<ul class="errorMsg">' . "\n" . $error . '</ul>' . "\n";
+				"\n".'<ul class="errorMsg">' . "\n" . $errors . '</ul>' . "\n";
 			redirect('/' . $this->module . '/add_form/');
 		}
 
@@ -815,7 +892,8 @@ Class StatModule extends Module {
 		//remove cache
 		$this->Register['Cache']->clean(CACHE_MATCHING_ANY_TAG, array('module_' . $this->module));
 		$this->DB->cleanSqlCache();
-		// Формируем SQL-запрос на добавление темы	
+		// Формируем SQL-запрос на добавление темы
+		$max_lenght = $this->Register['Config']->read('max_lenght', $this->module);
 		$add = mb_substr($add, 0, $max_lenght);
 		$res = array(
 			'title'        => $title,
@@ -993,15 +1071,9 @@ Class StatModule extends Module {
 	public function update($id = null)
     {
 		// Если не переданы данные формы - функция вызвана по ошибке
-		if (!isset($id) 
-		|| !isset($_POST['title']) 
-		|| !isset($_POST['mainText']) 
-		|| !isset($_POST['cats_selector'])) {
-			redirect('/');
-		}
 		$id = (int)$id;
 		if ($id < 1) redirect('/' . $this->module . '/');
-		$error = '';
+		$errors = '';
 		
 
 		$target = $this->Model->getById($id);
@@ -1020,8 +1092,11 @@ Class StatModule extends Module {
 		// This must be doing after define $error variable.
 		if (is_object($this->AddFields)) {
 			$_addFields = $this->AddFields->checkFields();
-			if (is_string($_addFields)) $error .= $_addFields; 
+			if (is_string($_addFields)) $errors .= $_addFields; 
 		}
+		
+		
+		$errors .= $this->Register['Validate']->check($this->getValidateRules());
 		
 		
 		$valobj = $this->Register['Validate'];
@@ -1029,7 +1104,6 @@ Class StatModule extends Module {
 		$fields_settings = $this->Register['Config']->read('fields', $this->module);
 		foreach ($fields as $field) {
 			if (empty($_POST[$field]) && in_array($field, $fields_settings)) {
-				$error = $error.'<li>' . __('Empty field') . '"' . $field . '"</li>'."\n";
 				$$field = '';
 			} else {
 				$$field = trim($_POST[$field]);
@@ -1051,84 +1125,26 @@ Class StatModule extends Module {
 				'sourse_site' => null, 'commented' => null, 'available' => null), $_POST);
 			redirect('/' . $this->module . '/edit_form/' . $id);
 		}
-		
-		
-		// Check fields
-		if (empty($in_cat))                     	
-			$error = $error . '<li>' . __('Category not selected') . '</li>'."\n";
-		if (empty($title))                   	
-			$error = $error.'<li>' . __('Empty field "title"') . '</li>'."\n";
-		else if (!$valobj->cha_val($title, V_TITLE))  	
-			$error = $error.'<li>' . __('Wrong chars in "title"') . '</li>'."\n";
-			
-			
-		$max_lenght = $this->Register['Config']->read('max_lenght', $this->module);
-		if ($max_lenght <= 0) $max_lenght = 10000;
-			
-		if (empty($edit))                 		
-			$error = $error . '<li>' . __('Empty field "material"') . '</li>' . "\n";
-		else if (mb_strlen($edit) > $max_lenght)
-			$error = $error . '<li>' . sprintf(__('Very big "material"'), $max_lenght) .'</li>' . "\n";
-		if (!empty($tags) && !$valobj->cha_val($tags, V_TITLE)) 
-			$error = $error . '<li>' . __('Wrong chars in "tags"') . '</li>' . "\n";
-		if (!empty($sourse) && !$valobj->cha_val($sourse, V_TITLE)) 
-			$error = $error . '<li>' . __('Wrong chars in "sourse"') . '</li>' . "\n";
-		if (!empty($sourse_email) && !$valobj->cha_val($sourse_email, V_MAIL)) 
-			$error = $error . '<li>' . __('Wrong chars in "email"') . '</li>' . "\n";
-		if (!empty($sourse_site) && !$valobj->cha_val($sourse_site, V_URL)) 
-			$error = $error . '<li>' . __('Wrong chars in "sourse site"') . '</li>' . "\n";
-		
+
 		
 		if (!empty($in_cat)) {
 			$catModel = $this->Register['ModManager']->getModelInstance($this->module . 'Sections');
 			$category = $catModel->getById($in_cat);
-			if (!$category) $error = $error . '<li>' . __('Can not find category') . '</li>' . "\n";
+			if (!$category) $errors = $errors . '<li>' . __('Can not find category') . '</li>' . "\n";
 		}
 		
 
-        // Check attaches size and format
-        $max_attach = $this->Register['Config']->read('max_attaches', $this->module);
-        if (empty($max_attach) || !is_numeric($max_attach)) $max_attach = 5;
-        $max_attach_size = $this->Register['Config']->read('max_attaches_size', $this->module);
-        if (empty($max_attach_size) || !is_numeric($max_attach_size)) $max_attach_size = 1000;
-        for ($i = 1; $i <= $max_attach; $i++) {
-            // Delete attaches. If need
-            $dattach = $i . 'dattach';
-            if (array_key_exists($dattach, $_POST)) {
-                deleteAttach($this->module, $id, $i);
-            }
-
-            $attach_name = 'attach' . $i;
-            if (!empty($_FILES[$attach_name]['name'])) {
-
-                $img_extentions = array('.png','.jpg','.gif','.jpeg', '.PNG','.JPG','.GIF','.JPEG');
-                $ext = strrchr($_FILES[$attach_name]['name'], ".");
-
-
-                if ($_FILES[$attach_name]['size'] > $max_attach_size) {
-                    $error .= '<li>' . sprintf(__('Very big file'), $i, round(($max_attach_size / 1000), 2)) . '</li>' . "\n";
-                }
-                if (($_FILES[$attach_name]['type'] != 'image/jpeg'
-                && $_FILES[$attach_name]['type'] != 'image/jpg'
-                && $_FILES[$attach_name]['type'] != 'image/gif'
-                && $_FILES[$attach_name]['type'] != 'image/png')
-                || !in_array(strtolower($ext), $img_extentions)) {
-                    $error .= '<li>' . __('Wrong file format') . '</li>' . "\n";
-                }
-            }
-        }
-        downloadAttaches($this->module, $id);
-		
-
 		// Errors
-		if (!empty($error)) {
+		if (!empty($errors)) {
 			$_SESSION['FpsForm'] = array_merge(array('title' => null, 'mainText' => null, 'in_cat' => $in_cat, 
 				'description' => null, 'tags' => null, 'sourse' => null, 'sourse_email' => null, 
 				'sourse_site' => null, 'commented' => null, 'available' => null), $_POST);
 			$_SESSION['FpsForm']['error']   = '<p class="errorMsg">' . __('Some error in form') . '</p>'
-				."\n".'<ul class="errorMsg">'."\n".$error.'</ul>'."\n";
+				."\n".'<ul class="errorMsg">'."\n".$errors.'</ul>'."\n";
 			redirect('/' . $this->module . '/edit_form/' . $id);
 		}
+		
+        downloadAttaches($this->module, $id);
 		
 
 		if (!$this->ACL->turn(array($this->module, 'record_comments_management'), false)) $commented = '1';
@@ -1147,6 +1163,7 @@ Class StatModule extends Module {
 			$tags = (!empty($tags) && is_array($tags)) ? implode(',', array_keys($tags)) : '';
 		}
 		
+		$max_lenght = $this->Register['Config']->read('max_lenght', $this->module);
 		$edit = mb_substr($edit, 0, $max_lenght);
 		$data = array(
 			'title' 	   => $title,

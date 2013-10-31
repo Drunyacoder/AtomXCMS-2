@@ -171,6 +171,9 @@ class Module {
         $this->Register['params'] = $params;
 		
 		
+		$this->Register['Validate']->setPathParams($this->Register['module'], $this->Register['action']);
+		
+		
 		// Use for templater (layout)
 		$this->template = $this->module;
 		
@@ -231,7 +234,6 @@ class Module {
 		if (empty($this->page_meta_description)) {
 			$this->page_meta_description = h($this->Register['Config']->read('meta_description'));
 		}
-		
 		
 		// 
 		//$this->Register['GlobalParams'] = $this->getGlobalMarkers();
@@ -390,6 +392,7 @@ class Module {
             'fps_curr_page' => (!empty($Register['page'])) ? intval($Register['page']) : 1,
             'fps_pagescnt' => (!empty($Register['pagescnt'])) ? intval($Register['pagescnt']) : 1,
             'fps_user' => (!empty($_SESSION['user'])) ? $_SESSION['user'] : array(),
+			'is_home_page' => $Register['is_home_page'] ? true : false,
         );
 		$markers = array_merge($markers1, $markers2);
         return $markers;

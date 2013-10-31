@@ -148,11 +148,11 @@ $settingsInfo = array(
         'value' => 'download_url_size',
         'checked' => '1',
     ),
-    'sub_require_file' => array(
+    'sub_attach_file' => array(
         'type' => 'checkbox',
         'title' => 'Файл',
         'fields' => 'fields',
-        'value' => 'require_file',
+        'value' => 'attach_file',
         'checked' => '1',
     ),
 

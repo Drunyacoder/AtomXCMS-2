@@ -1,0 +1,157 @@
+<div id="sec" class="popup">
+	<div class="top">
+		<div class="title">Добавление баннера</div>
+		<div onClick="closePopup('sec');" class="close"></div>
+	</div>
+	<form action="plugins.php?ac=edit&plac=add&dir={{ context.dir }}" method="POST" enctype="multipart/form-data">
+	<div class="items">
+		<div class="item">
+			<div class="left">
+				Картинка:
+			</div>
+			<div class="right">
+				<input type="file" style="width:230px" name="img" />
+			</div>
+			<div class="clear"></div>
+		</div>
+		<div class="item">
+			<div class="left">
+				Заголовок:
+			</div>
+			<div class="right">
+				<input type="text" style="width:230px" value="" name="title" />
+			</div>
+			<div class="clear"></div>
+		</div>
+		<div class="item">
+			<div class="left">
+				Текст:
+			</div>
+			<div class="right">
+				<textarea style="width:230px" name="description"></textarea>
+			</div>
+			<div class="clear"></div>
+		</div>
+		<div class="item">
+			<div class="left">
+				Целевой URL:
+			</div>
+			<div class="right">
+				<input type="text" style="width:230px" value="" name="url" />
+			</div>
+			<div class="clear"></div>
+		</div>
+		<div class="form-item2">
+			<div class="item submit">
+				<div class="left"></div>
+				<div class="right" style="float:left;">
+					<input type="submit" value="Save" name="send" class="save-button" />
+				</div>
+				<div class="clear"></div>
+			</div>
+		</div>
+	</div>
+	</form>
+</div>
+
+
+{% if context.message %}
+<div class="warning">{{ context.message }}</div>
+{% endif %}
+
+
+
+{% if context.banners != false %}
+{% for banner in context.banners %}
+<div id="{{ banner.id }}sec" class="popup">
+	<div class="top">
+		<div class="title">Добавление баннера</div>
+		<div onClick="closePopup('{{ banner.id }}sec');" class="close"></div>
+	</div>
+	<form action="plugins.php?ac=edit&plac=edit&dir={{ context.dir }}&id={{ banner.id }}" method="POST" enctype="multipart/form-data">
+	<div class="items">
+		<div class="item">
+			<div class="left">
+				Картинка:
+			</div>
+			<div class="right">
+				<input type="hidden" style="width:230px" name="id" value="{{ banner.id }}" />
+				<input type="file" style="width:230px" name="image" />
+			</div>
+			<div class="clear"></div>
+		</div>
+		<div class="item">
+			<div class="left">
+				Заголовок:
+			</div>
+			<div class="right">
+				<input type="text" style="width:230px" value="{{ banner.title }}" name="title" />
+			</div>
+			<div class="clear"></div>
+		</div>
+		<div class="item">
+			<div class="left">
+				Текст:
+			</div>
+			<div class="right">
+				<textarea style="width:230px"  name="description">{{ banner.description }}</textarea>
+			</div>
+			<div class="clear"></div>
+		</div>
+		<div class="item">
+			<div class="left">
+				Целевой URL:
+			</div>
+			<div class="right">
+				<input type="text" style="width:230px" value="{{ banner.url }}" name="url" />
+			</div>
+			<div class="clear"></div>
+		</div>
+		<div class="form-item2">
+			<div class="item submit">
+				<div class="left"></div>
+				<div class="right" style="float:left;">
+					<input type="submit" value="Save" name="send" class="save-button" />
+				</div>
+				<div class="clear"></div>
+			</div>
+		</div>
+	</div>
+	</form>
+</div>
+{% endfor %}
+{% endif %}
+
+
+
+<div class="list">
+	<div class="title">Управление баннерами</div>
+	<div onclick="openPopup('sec');" class="add-cat-butt"><div class="add"></div>Добавить баннер</div>
+	<table class="grid" width="100%" cellspacing="0">
+		<tr>
+			<th width="3%">ID</th>
+			<th width="">Картинка</th>
+			<th width="25%">Текст</th>
+			<th width="25%">Ссылка</th>
+			<th width="7%">Действие</th>
+		</tr>
+		{% if context.banners != false %}
+		{% for banner in context.banners %}
+		<tr>
+			<td>{{ banner.id }}</td>
+			<td>{{ banner.img }}</td>
+			<td>{{ banner.title }}</td>
+			<td>{{ banner.url }}</td>
+			<td>
+				<a class="edit" href="javascript:void(0)" onClick="openPopup('{{ banner.id }}sec')"></a>&nbsp;
+				<a class="delete" onClick="return confirm('Вы увеены?')" href="plugins.php?ac=edit&id={{ banner.id }}&dir={{ context.dir }}&plac=delete"></a>
+			</td>
+		</tr>
+		{% endfor %}
+		{% else %}
+			<td colspan="5">Баннеров пока нет</td>
+		{% endif %}
+	</table>
+</div>
+
+
