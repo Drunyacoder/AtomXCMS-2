@@ -185,8 +185,8 @@ $set = array (
   'db' => 
   array (
     'host' => 'localhost',
-    'name' => 'fapos',
-    'user' => 'root',
+    'name' => '',
+    'user' => '',
     'pass' => '',
     'prefix' => '',
   ),
