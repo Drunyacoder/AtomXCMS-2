@@ -112,7 +112,7 @@ class FpsPDO {
 			'alias' => null, 
 			'joins' => array()), $params);
 
-			
+				
 		if (!is_numeric($params['page']) || intval($params['page']) < 1) {
 			$params['page'] = 1;
 		}
@@ -184,7 +184,7 @@ class FpsPDO {
 		
 		$query = array('alias' => null, 'table' => null, 'cond' => null, 'fields' => null);
 		$query['table'] = $this->getFullTableName($table);
-		
+	
 		//if we have id of record
 		if ((array_key_exists('id', $values) && !empty($values['id'])) || !empty($params)) {
 			if (!empty($values['id'])) {
@@ -230,7 +230,7 @@ class FpsPDO {
 			if ($Register['Config']->read('debug_mode') == 1) 
 				$_SESSION['db_querys'][] = str_replace(array_keys($this->queryParams), $this->queryParams, $query);
 			
-			
+
 			$this->runQuery($query);
 			return $this->dbh->lastInsertId(); 
 		}
@@ -247,7 +247,6 @@ class FpsPDO {
 		$this->queryParams = array();
 		if (empty($data)) die('argunent for query must not be NULL ');
 		
-		
 		/* trying cache querys */
 		if (Config::read('cache_querys') == 1 && $cached) {
 			if ($this->turnSqlCache($data)) {
@@ -255,12 +254,13 @@ class FpsPDO {
 			}
 		}
 
-		$result = '';
-
 		
+		$result = '';
 		$start = getMicroTime();
 		$sql = $this->runQuery($data);
 		$took = getMicroTime() - $start;
+		
+		
 		if (Config::read('debug_mode') == 1) 
 			$_SESSION['db_querys'][] = str_replace(array_keys($this->queryParams), $this->queryParams, $data) . ' &nbsp; [ ' . $took . ' ]';
 		
@@ -284,21 +284,25 @@ class FpsPDO {
 		$cond = array();
 		
 		
+		$data = array();
 		foreach ($params as $field => $value) {
 			if (is_int($field)) {
 				$cond[] = $value;
 			} else {
-				$cond[] = "`{$field}` = '{$value}'";
+				$cond[] = "`$field` = :$field";
+				$data[":$field"] = $value;
 			}
 		}
 		$cond = implode(' AND ', $cond);
+		$this->queryParams = $data;
+		
 		
 		$query = $this->__renderQuery('delete', array(
 			'conditions' => $cond,
 			'table' => $table,
 		));
 		
-		
+
 		$start = getMicroTime();
 		$this->runQuery($query);
 		$took = getMicroTime() - $start;
@@ -640,25 +644,26 @@ class FpsPDO {
 	 *
 	 * @param mixed $value
 	 */
-	private function __value($value, $key = null) {
-		if (empty($value) && is_int($value)) return '0';
-		if (empty($value)) return "''";
+	private function __value($value, $key = null) 
+	{
+		if (empty($value) && is_int($value)) $this->queryParams[":$key"] = '0';
+		if (empty($value)) $this->queryParams[":$key"] = "''";
+
 		
 		if (is_array($value) && !empty($value)) {
 			foreach ($value as $k => $v) {
 				$value[$k] = $this->__value($v, $key);
 			}
 			
+			
 		} else {
 			if ($value instanceof Expr) {
 				return (string)$value;
 			}
 			
-			
 			$this->queryParams[":$key"] = $value;
-			return ":$key";
 		}
-		return $value;
+		return ":$key";
 	}
 	
 	

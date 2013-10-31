@@ -240,7 +240,68 @@ Class UsersModule extends Module {
 	}
 
 
-
+	
+	
+	
+	public function getValidateRules() 
+	{	
+		$rules = array(
+			'add' => array(
+				'login' => array(
+					'required' => true,
+					'max_length' => 250,
+					'pattern' => V_TITLE,
+				),
+				'password' => array(
+					'required' => true,
+				),
+				'confirm' => array(
+					'required' => true,
+				),
+				'email' => array(
+					'required' => true,
+				),
+				'keystring' => array(
+					'required' => true,
+				),
+				'icq' => array(
+					'required' => 'editable',
+				),
+				'jabber' => array(
+					'required' => 'editable',
+				),
+				'pol' => array(
+					'required' => 'editable',
+				),
+				'city' => array(
+					'required' => 'editable',
+				),
+				'telephone' => array(
+					'required' => 'editable',
+				),
+				'byear' => array(
+					'required' => 'editable',
+				),
+				'bmonth' => array(
+					'required' => 'editable',
+				),
+				'bday' => array(
+					'required' => 'editable',
+				),
+				'url' => array(
+					'required' => 'editable',
+				),
+				'about' => array(
+					'required' => 'editable',
+				),
+				'signature' => array(
+					'required' => 'editable',
+				),
+			),
+		);
+		
+		return array($this->module => $rules);
+	}
 
 
 	/**
@@ -2940,68 +3001,6 @@ Class UsersModule extends Module {
 		$this->_globalize($navi);
 
 		return $this->_view('');
-	}
-	
-	
-	
-	public function getValidateRules() 
-	{	
-		$rules = array(
-			'add' => array(
-				'login' => array(
-					'required' => true,
-					'max_length' => 250,
-					'pattern' => V_TITLE,
-				),
-				'password' => array(
-					'required' => true,
-				),
-				'confirm' => array(
-					'required' => true,
-				),
-				'email' => array(
-					'required' => true,
-				),
-				'keystring' => array(
-					'required' => true,
-				),
-				'icq' => array(
-					'required' => 'editable',
-				),
-				'jabber' => array(
-					'required' => 'editable',
-				),
-				'pol' => array(
-					'required' => 'editable',
-				),
-				'city' => array(
-					'required' => 'editable',
-				),
-				'telephone' => array(
-					'required' => 'editable',
-				),
-				'byear' => array(
-					'required' => 'editable',
-				),
-				'bmonth' => array(
-					'required' => 'editable',
-				),
-				'bday' => array(
-					'required' => 'editable',
-				),
-				'url' => array(
-					'required' => 'editable',
-				),
-				'about' => array(
-					'required' => 'editable',
-				),
-				'signature' => array(
-					'required' => 'editable',
-				),
-			),
-		);
-		
-		return array($this->module => $rules);
 	}
 }
 

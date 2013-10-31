@@ -43,6 +43,7 @@ $set = array (
   'blacklist_sites' => '*.ucoz.ru,*.ucoz.net',
   'whitelist_sites' => 'fapos.net,www.fapos.net',
   'url_delay' => '5',
+  'use_pdo' => 1,
   'latest_on_home' => 
   array (
     0 => 'news',
@@ -185,9 +186,9 @@ $set = array (
   'db' => 
   array (
     'host' => 'localhost',
-    'name' => '',
-    'user' => '',
-    'pass' => '',
+    'name' => 'fapos',
+    'user' => 'root',
+    'pass' => 'root',
     'prefix' => '',
   ),
   'news_on_home' => 1,

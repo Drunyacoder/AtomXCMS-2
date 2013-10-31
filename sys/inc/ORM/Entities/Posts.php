@@ -47,7 +47,7 @@ class PostsEntity extends FpsEntity
 			'attaches' => (!empty($this->attaches)) ? '1' : new Expr("'0'"),
 			'id_author' => intval($this->id_author),
 			'time' => $this->time,
-			'edittime' => $this->edittime,
+			'edittime' => ($this->edittime) ? $this->edittime : '0000-00-00 00:00:00',
 			'id_editor' => intval($this->id_editor),
 			'id_theme' => intval($this->id_theme),
 			'locked' => (!empty($this->locked)) ? '1' : new Expr("'0'"),

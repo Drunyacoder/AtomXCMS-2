@@ -52,7 +52,7 @@ class ThemesEntity extends FpsEntity
 			'id_author' 		=> intval($this->id_author),
 			'time' 				=> $this->time,
 			'id_last_author' 	=> intval($this->id_last_author),
-			'last_post' 		=> $this->last_post,
+			'last_post' 		=> ($this->last_post) ? $this->last_post : $this->time,
 			'id_forum' 			=> intval($this->id_forum),
 			'locked' 			=> intval($this->locked),
 			'posts' 			=> intval($this->posts),

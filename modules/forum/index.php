@@ -1751,8 +1751,7 @@ Class ForumModule extends Module {
 		);
 		
 		$theme = new ThemesEntity($data);
-		$theme->save();
-		$id_theme = mysql_insert_id();
+		$id_theme = $theme->save();
 		$theme->setId($id_theme);
 
 		
@@ -1769,8 +1768,7 @@ Class ForumModule extends Module {
 			'id_theme'       => $id_theme 
 		);
 		$post = new PostsEntity($postData);
-		$post->save();
-		$post_id = mysql_insert_id();
+		$post_id = $post->save();
 		
 		
 		/***** END ATTACH *****/
@@ -2366,7 +2364,7 @@ Class ForumModule extends Module {
 		}		
 
 		
-		$message = mb_substr($message, 0, $this->Register['Config']->read('max_post_lenght', 'forum'));
+		$message = mb_substr($message, 0, Config::read('max_post_lenght', 'forum'));
 		$id_user = (!empty($_SESSION['user'])) ? $_SESSION['user']['id'] : 0;
 		// Защита от того, чтобы один пользователь не добавил
 		// 100 сообщений за одну минуту
@@ -2389,7 +2387,7 @@ Class ForumModule extends Module {
 			}
 			
 			if (empty($prev_post_author)) $gluing = false;
-			if ((mb_strlen($prev_post[0]->getMessage() . $message)) > $this->Register['Config']->read('max_post_lenght', 'forum')) $gluing = false;
+			if ((mb_strlen($prev_post[0]->getMessage() . $message)) > Config::read('max_post_lenght', 'forum')) $gluing = false;
 			if ($prev_post_author != $id_user || empty($id_user)) $gluing = false;
 		}		
 		
@@ -2420,10 +2418,10 @@ Class ForumModule extends Module {
 				'time'      => new Expr('NOW()'),
 				'id_theme'  => $id_theme
 			);
+
 			$post = new PostsEntity($post_data);
-			$post->save();
-			
-			$post_id = mysql_insert_id();
+			$post_id = $post->save();
+
 			if (empty($post_id)) return $this->showInfoMessage(__('Some error occurred'), '/forum/');
 			$post->setId($post_id);
 			
@@ -2433,14 +2431,18 @@ Class ForumModule extends Module {
 			$extentions = $this->denyExtentions;
 			$img_extentions = array('.png','.jpg','.gif','.jpeg', '.PNG','.JPG','.GIF','.JPEG');
 			$file_types = array('image/jpeg','image/jpg','image/gif','image/png');
+			
 			/* delete collizions if exists */
 			$this->deleteCollizions($post, true);
 			for ($i = 1; $i < 6; $i++) {
+			
 				$attach_name = 'attach' . $i;
 				if (!empty($_FILES[$attach_name]['name'])) {
+				
 					// Извлекаем из имени файла расширение
 					$ext = strrchr($_FILES[$attach_name]['name'], ".");
                     $ext = strtolower($ext);
+					
 					// Формируем путь к файлу
 					if (in_array(strtolower($ext), $extentions) || empty($ext)) {
 						$file = $post_id . '-' . $i . '-' . date("YmdHi") . '.txt';
@@ -2448,6 +2450,7 @@ Class ForumModule extends Module {
 						$file = $post_id . '-' . $i . '-' . date("YmdHi") . $ext;
 					}
 
+					
 					$is_image = '0';
 					if (in_array($_FILES[$attach_name]['type'], $file_types)) {
 						$is_image = '1';
@@ -2484,6 +2487,7 @@ Class ForumModule extends Module {
 			
 			$cnt_posts_from_theme = $postsModel->getTotal(array('cond' => array('id_theme' => $id_theme)));
 			$theme->setPosts(($cnt_posts_from_theme - 1));
+			$theme->setLast_post(new Expr('NOW()'));
 			$theme->setId_last_author($id_user);
 			$theme->save();
 
@@ -2883,6 +2887,7 @@ Class ForumModule extends Module {
 
 		}
 
+		
 		//clean cache
 		$cahceKey = array('post_id_' . $id);
 		if (isset($deleteTheme)) $cahceKey[] = 'theme_id_' . $post->getId_theme();
@@ -3381,7 +3386,7 @@ Class ForumModule extends Module {
 						'from' => 1,
 						'to' => $max_attach,
 					),
-					'type' => 'file',
+					'type' => 'image',
 					'max_size' => Config::read('max_file_size'),
 				),
 			),
@@ -3395,7 +3400,7 @@ Class ForumModule extends Module {
 						'from' => 1,
 						'to' => $max_attach,
 					),
-					'type' => 'file',
+					'type' => 'image',
 					'max_size' => Config::read('max_file_size'),
 				),
 			),
