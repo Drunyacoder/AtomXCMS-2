@@ -71,9 +71,12 @@
 				$new_ver = (!empty($new_ver) && $new_ver != FPS_VERSION) 
 				? '<a href="http://home.develdo.com/downloads.php" title="Last version">' . h($new_ver) . '</a>' 
 				: '';
+				
+				$group_info = $Register['ACL']->get_user_group($_SESSION['user']['status']);
+				$group_title = $group_info['title'];
 				?>
 				<div class="ava"><img src="<?php echo $ava_path; ?>" alt="user ava" title="user ava" /></div>
-				<div class="name"><a href="#"><?php echo h($_SESSION['user']['name']); ?></a><span>Admin</span></div>
+				<div class="name"><a href="#"><?php echo h($_SESSION['user']['name']); ?></a><span><?php echo h($group_title) ?></span></div>
 				<a href="exit.php" class="exit"></a>
 			</div>
 			<div class="clear"></div>

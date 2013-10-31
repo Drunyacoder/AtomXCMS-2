@@ -2,12 +2,12 @@
 ##################################################
 ##												##
 ## Author:       Andrey Brykin (Drunya)         ##
-## Version:      1.5.1                          ##
+## Version:      1.6.1                          ##
 ## Project:      CMS                            ##
 ## package       CMS Fapos                      ##
 ## subpackege    Admin Panel module             ##
 ## copyright     ©Andrey Brykin 2010-2013       ##
-## @last mod.     2013/04/05                    ##
+## @last mod.     2013/07/20                    ##
 ##################################################
 
 
@@ -134,6 +134,7 @@ class PagesAdminController {
 			$data = array(
 				'path' => $path . $parent->getId() . '.',
 				'name' => $params['title'],
+				'title' => $params['title'],
 				'visible' => '1',
 				'parent_id' => $params['id'],
 				'template' => $template,
@@ -271,11 +272,15 @@ class PagesAdminController {
 			$entity = $this->Model->getById(intval($params['id']));
 			if (empty($entity)) return json_encode(array('status' => '0'));
 
-			$entity->setName($params['title']);
+			$entity->setName($params['name']);
+			$entity->setTitle($params['title']);
 			$entity->setUrl($params['url']);
+			$entity->setPosition($params['position']);
 			$entity->setVisible(!empty($params['visible']) ? '1' : '0');
+			$entity->setMeta_title($params['meta_title']);
 			$entity->setMeta_keywords($params['meta_keywords']);
 			$entity->setMeta_description($params['meta_description']);
+			$entity->setPublish(!empty($params['publish']) ? '1' : '0');
 			$entity->setTemplate($params['template']);
 			$entity->setContent($params['content']);
 			$entity->save();
@@ -283,12 +288,17 @@ class PagesAdminController {
 			
 		} else {
 			$data = array(
-				'name' => $params['title'],
+				'name' => $params['name'],
+				'title' => $params['title'],
 				'template' => $params['template'],
+				'visible' => (!empty($params['visible'])) ? '1' : '0',
+				'position' => $params['position'],
+				'meta_title' => $params['meta_title'],
 				'meta_keywords' => $params['meta_keywords'],
 				'meta_description' => $params['meta_description'],
 				'content' => $params['content'],
 				'url' => $params['url'],
+				'publish' => (!empty($params['publish'])) ? '1' : '0',
 				'template' => $params['template'],
 			);
 			$id = $this->Model->add($data);
@@ -366,6 +376,16 @@ include_once ROOT . '/admin/template/header.php';
 			<div class="items">
 				<div class="setting-item">
 					<div class="left">
+						Страница
+					</div>
+					<div class="right">
+						<input type="text" name="name" value="">
+						<input type="hidden" name="id" value="">
+					</div>
+					<div class="clear"></div>
+				</div>
+				<div class="setting-item">
+					<div class="left">
 						Заголовок
 					</div>
 					<div class="right">
@@ -395,19 +415,47 @@ include_once ROOT . '/admin/template/header.php';
 				</div>
 				<div class="setting-item">
 					<div class="left">
-						Keywords
+						Позиция в меню<span class="comment">Определяет приоритет вывода</span>
 					</div>
 					<div class="right">
-						<input type="text" name="meta_keywords" value="">
+						<input style="width:40px;" type="text" name="position" value="">
 					</div>
 					<div class="clear"></div>
 				</div>
 				<div class="setting-item">
 					<div class="left">
-						Description
+						Meta title
 					</div>
 					<div class="right">
-						<input type="text" name="meta_description" value="">
+						<input type="text" name="meta_title" value="">
+					</div>
+					<div class="clear"></div>
+				</div>
+				<div class="setting-item">
+					<div class="left">
+						Meta keywords
+					</div>
+					<div class="right">
+						<textarea style="height:50px;" name="meta_keywords"></textarea>
+					</div>
+					<div class="clear"></div>
+				</div>
+				<div class="setting-item">
+					<div class="left">
+						Meta description
+					</div>
+					<div class="right">
+						<textarea style="height:50px;" name="meta_description"></textarea>
+					</div>
+					<div class="clear"></div>
+				</div>
+				<div class="setting-item">
+					<div class="left">
+						Статус<span class="comment">Опубликован/Не опубликован</span>
+					</div>
+					<div class="right">
+						<input id="checkbox2" type="checkbox" name="publish" value="1" checked="checked">
+						<label for="checkbox2"></label>
 					</div>
 					<div class="clear"></div>
 				</div>
@@ -425,7 +473,7 @@ include_once ROOT . '/admin/template/header.php';
 						Динамический тег <span class="comment">(для использования в шаблоне)</span>
 					</div>
 					<div class="right">
-						<input disabled="true" type="text" name="dinamic_tag" value="">
+						<input style="width:60px; text-align:center;" disabled="true" type="text" name="dinamic_tag" value="">
 					</div>
 					<div class="clear"></div>
 				</div>
@@ -490,14 +538,22 @@ $(document).ready(function(){
 			submitForm();
 		},
 		rules: {
-			title: {
+			name: {
 				required: true,
 				chars: true,
 				maxlength: 250,
 				minlength: 1,
 			},
+			title: {
+				maxlength: 1000,
+				minlength: 1,
+			},
 			url: {
 				chars: true,
+				maxlength: 250,
+				minlength: 1,
+			},
+			meta_title: {
 				maxlength: 250,
 				minlength: 1,
 			},
@@ -509,6 +565,19 @@ $(document).ready(function(){
 				maxlength: 250,
 				minlength: 1,
 				chars: true
+			},
+			position: {
+				maxlength: 11,
+				minlength: 1,
+				number: true
+			},
+			visible: {
+				max: 1,
+				number: true
+			},
+			publish: {
+				max: 1,
+				number: true
 			},
 			template: {
 				maxlength: 50,
@@ -756,15 +825,25 @@ function fillForm(id){
 	
 	$.get('page.php?operation=get&id='+id, function(data){
 		var status = data.status; data = data.data;
-		$(form).find('input[name="title"]').val(data.name);
+		$(form).find('input[name="name"]').val(data.name);
+		$(form).find('input[name="title"]').val(data.title);
 		$(form).find('input[name="id"]').val(data.id);
 		$(form).find('input[name="url"]').val(data.url);
+		
 		if (data.visible == 1)
 			$(form).find('input[name="visible"]').attr('checked', 'checked');
 		else
 			$(form).find('input[name="visible"]').attr('checked', false);
-		$(form).find('input[name="meta_keywords"]').val(data.meta_keywords);
-		$(form).find('input[name="meta_description"]').val(data.meta_description);
+			
+		if (data.publish == 1)
+			$(form).find('input[name="publish"]').attr('checked', 'checked');
+		else
+			$(form).find('input[name="publish"]').attr('checked', false);
+			
+		$(form).find('input[name="position"]').val(data.position);
+		$(form).find('input[name="meta_title"]').val(data.meta_title);
+		$(form).find('textarea[name="meta_keywords"]').html(data.meta_keywords);
+		$(form).find('textarea[name="meta_description"]').html(data.meta_description);
 		$(form).find('input[name="template"]').val(data.template);
 		$(form).find('input[name="dinamic_tag"]').val('[~ '+data.id+' ~]');
 		
@@ -820,7 +899,7 @@ endif;
 ?>
 
 
-<div class="clear"></div>
+
 <ul class="markers">
 	<li><div class="global-marks">{{ content }}</div> - Основной контент страницы</li>
 	<li><div class="global-marks">{{ title }}</div> - Заголовок страницы</li>

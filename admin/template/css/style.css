@@ -169,8 +169,8 @@ a.undo {background-position:-253px 0px;}
 
 /* Login page */
 #login-wrapper {position:relative;}
-#login-wrapper .shadow-mask {width:900px; height:750px; position:absolute; top:4px; left:356px; background:url('../img/shadow-mask.png') no-repeat;}
-#login-wrapper .form {width:488px; height:226px; background:url('../img/login-form-bg.png') no-repeat; position:absolute; top:250px; left:490px;}
+#login-wrapper .shadow-mask {width:900px; height:750px; top:4px; left:450px; position:absolute; background:url('../img/shadow-mask.png') no-repeat;}
+#login-wrapper .form {width:488px; height:226px; background:url('../img/login-form-bg.png') no-repeat; position:absolute; top:250px; left:0px; right:0px; margin:0 auto;}
 #login-wrapper .form .title {padding:17px 25px; color:#96c703; font-size:14px; font-weight:bold;}
 
 

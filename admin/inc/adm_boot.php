@@ -105,6 +105,27 @@ if (!isset($_SESSION['adm_panel_authorize']) || $_SESSION['adm_panel_authorize']
 	</script>
 </head>
 <body>
+	<script>
+	$(document).ready(function(){
+		var shmask = $('.shadow-mask');
+		if (typeof shmask != 'undefined') {
+		
+			var body = $('body').css('width');
+			var lpos = (parseInt(body) - 900) / 2;
+			if (lpos < 1) lpos = 0;
+			
+			var l = (lpos % 18);
+			l = lpos + (18 - l) + 51;
+			shmask.css({'left': l});
+			
+			/*
+			var t = (parseInt(shmask.css('top')) % 10);
+			t = parseInt(shmask.css('top')) + t;
+			shmask.css({'top': t});
+			*/
+		}
+	});
+	</script>
 	<div id="login-wrapper">
 		<div class="shadow-mask"></div>
 		<div class="form">
@@ -148,7 +169,7 @@ if (!isset($_SESSION['adm_panel_authorize']) || $_SESSION['adm_panel_authorize']
 	
 		$url = preg_replace('#^.*/([^/]+)\.\w{2,5}$#i', "$1", $_SERVER['SCRIPT_NAME']);
 		//var_dump($url);
-		if (!empty($url) && $url != 'index') {
+		if (!empty($url) && $url != 'index' && $url != 'exit') {
 			if (!$ACL->turn(array('panel', 'restricted_access_' . $url), false)) {
 				$_SESSION['message'] = __('Permission denied');
 				redirect('/admin/');
