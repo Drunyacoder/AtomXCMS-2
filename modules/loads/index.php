@@ -992,12 +992,11 @@ Class LoadsModule extends Module {
             'view_on_home' 	=> $section->getView_on_home(),
         );
         $entity = new LoadsEntity($data);
-        $entity->save();
+        $last_id = $entity->save();
 
 
         // Get last insert ID and save additional fields if an exists and activated.
         // This must be doing only after save main(parent) material
-        $last_id = mysql_insert_id();
         if (is_object($this->AddFields)) {
             $this->AddFields->save($last_id, $_addFields);
         }

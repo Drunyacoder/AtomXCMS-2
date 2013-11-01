@@ -786,12 +786,8 @@ Class NewsModule extends Module {
 		
 		$className = ucfirst($this->module) . 'Entity';
 		$new = new $className($res);
-		
-		$new->save();
-		
-		// Get last insert ID and save additional fields if an exists and activated.
-		// This must be doing only after save main(parent) material
-		$last_id = mysql_insert_id();
+		$last_id = $new->save();
+	
 
 		if (is_object($this->AddFields)) {
 			$this->AddFields->save($last_id, $_addFields);

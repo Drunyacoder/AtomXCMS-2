@@ -1526,11 +1526,11 @@ Class UsersModule extends Module {
         );
         $className = $this->Register['ModManager']->getEntityName('Messages');
         $message = new $className($data);
-        $message->save();
+        $last_id = $message->save();
 
 		/* clean DB cache */
 		$this->Register['DB']->cleanSqlCache();
-		if ($this->Log) $this->Log->write('adding pm message', 'message id(' . mysql_insert_id() . ')');
+		if ($this->Log) $this->Log->write('adding pm message', 'message id(' . $last_id . ')');
 		return $this->showInfoMessage(__('Message successfully send'), '/users/out_msg_box/' );
 	}
 
