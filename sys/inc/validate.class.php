@@ -243,15 +243,15 @@ class Validate {
 				break;
 				
 			case 'max_length':
-				$message = sprintf(__('Very big "material"'), $params['max_length']);
+				$message = sprintf(__('Very big "material"'), $publicTitle, $params['max_length']);
 				break;
 				
 			case 'min_length':
-				$message = sprintf(__('Very small "material"'), $params['min_length']);
+				$message = sprintf(__('Very small "material"'), $publicTitle, $params['min_length']);
 				break;
 				
 			case 'compare':
-				$message = sprintf(__('Fields are differend'), $params['compare']);
+				$message = sprintf(__('Fields are differend'), $publicTitle);
 				break;
 				
 			case 'pattern':

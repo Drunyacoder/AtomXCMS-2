@@ -413,10 +413,12 @@ Class UsersModule extends Module {
 				}
 			}
 		}
+		
 
 		$timezone = (int)$_POST['timezone'];
 		if ( $timezone < -12 or $timezone > 12 ) $timezone = 0;
 
+		
 		// Если были допущены ошибки при заполнении формы - перенаправляем посетителя на страницу регистрации
 		if (!empty($errors)) {
 			$_SESSION['FpsForm'] = array_merge(array('login' => null, 'email'=> null, 'timezone' => null, 'icq' => null, 'url' => null, 'about' => null, 'signature' => null, 'pol' => $pol, 'telephone' => null, 'city' => null, 'jabber' => null, 'byear' => null, 'bmonth' => null, 'bday' => null), $_POST);
@@ -424,6 +426,7 @@ Class UsersModule extends Module {
 			"\n".'<ul class="errorMsg">'."\n".$errors.'</ul>'."\n";
 			redirect('/users/add_form/yes');
 		}
+		
 
 		if (!empty($url) and substr($url, 0, 7) != 'http://') $url = 'http://' . $url;
 
@@ -456,8 +459,7 @@ Class UsersModule extends Module {
 		);
 
         $entity = new UsersEntity($data);
-        $entity->save();
-		$id = mysql_insert_id();
+        $id = $entity->save();
 		// Additional fields saver
 		if (is_object($this->AddFields)) {
 			$this->AddFields->save($id, $_addFields);

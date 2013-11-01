@@ -51,13 +51,16 @@ class UserAuth
         $password = preg_replace( "#[^0-9a-f]#i", '', $password );
 
 
-        // Выполняем запрос на получение данных пользователя из БД
-        $query = "SELECT *, UNIX_TIMESTAMP(last_visit) as unix_last_visit
-                FROM `" . $FpsDB->getFullTableName('users') . "`
-                WHERE `id`='".mysql_real_escape_string( $user_id )."'
-                AND `passw`='".mysql_real_escape_string( $password )."'
-                LIMIT 1";
-        $res = $FpsDB->query( $query );
+		$res = $FpsDB->select('users', DB_FIRST, array(
+			'cond' => array(
+				'id' => $user_id,
+				'passw' => $password,
+			),
+			'fields' => array(
+				'*',
+				'UNIX_TIMESTAMP(last_visit) as unix_last_visit',
+			),
+		));
 
 
         // Если пользователь с таким логином и паролем не найден -
