@@ -50,7 +50,7 @@ class NewsAttachesEntity extends FpsEntity
 		);
 		if($this->id) $params['id'] = $this->id;
 		$Register = Register::getInstance();
-		$Register['DB']->save('news_attaches', $params);
+		return $Register['DB']->save('news_attaches', $params);
 	}
 	
 	

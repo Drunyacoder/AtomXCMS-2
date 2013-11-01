@@ -43,7 +43,7 @@ class StatAddContentEntity extends FpsEntity
 		);
 		if ($this->id) $params['id'] = $this->id;
 		$Register = Register::getInstance();
-		$Register['DB']->save('stat_add_content', $params);
+		return $Register['DB']->save('stat_add_content', $params);
 	}
 	
 	

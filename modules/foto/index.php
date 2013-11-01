@@ -4,12 +4,12 @@
 | @Author:       Andrey Brykin (Drunya)          |
 | @Email:        drunyacoder@gmail.com           |
 | @Site:         http://fapos.net                |
-| @Version:      1.5.7                           |
+| @Version:      1.6.7                           |
 | @Project:      CMS                             |
 | @package       CMS Fapos                       |
 | @subpackege    Foto Module  			 		 |
 | @copyright     ©Andrey Brykin 2010-2013        |
-| @last  mod     2013/07/05                      |
+| @last  mod     2013/11/01                      |
 \-----------------------------------------------*/
 
 /*-----------------------------------------------\
@@ -148,8 +148,6 @@ Class FotoModule extends Module {
 	}
 
 
-	
-
 	 
 	public function category($id = null) {
 		//turn access
@@ -268,8 +266,6 @@ Class FotoModule extends Module {
 	  
 	  
 	  
-
-
 	/**
 	 *
 	 */
@@ -509,7 +505,7 @@ Class FotoModule extends Module {
 		$markers['action'] = get_url('/foto/add/');
 		$markers['cats_selector'] = $cats_change;
 		$markers['title'] = (!empty($title)) ? $title : '';
-		$markers['main_text'] = (!empty($description)) ? $description : '';
+		$markers['mainText'] = (!empty($data['description'])) ? $data['description'] : '';
 		
 		
 		// Navigation Panel
@@ -525,19 +521,10 @@ Class FotoModule extends Module {
 
 
 
-
-
 	// Функция добавляет новую новость (новую запись в таблицу БД TABLE_NEWS)
 	public function add() {
 		//turn access
 		$this->ACL->turn(array('foto', 'add_materials'));
-		
-		if (!isset($_POST['title']) 
-		|| !isset($_FILES['foto']) 
-		|| !isset($_POST['cats_selector'])
-		|| !is_numeric($_POST['cats_selector'])) {
-			redirect('/');
-		}
 
 
 		// Обрезаем переменные до длины, указанной в параметре maxlength тега input
@@ -547,39 +534,7 @@ Class FotoModule extends Module {
 
 
 		// Check fields
-		$error = '';
-		$valobj = $this->Register['Validate'];
-		if (empty($in_cat))                          
-			$error = $error.'<li>'.__('Category not selected').'</li>'."\n";
-		if (empty($title))                           
-			$error = $error.'<li>'.__('Empty field "title"').'</li>'."\n";
-		elseif (!$valobj->cha_val($title, V_TITLE))  
-			$error = $error.'<li>'.__('Wrong chars in "title"').'</li>'."\n";
-		if (empty($description) && $this->Register['Config']->read('description_requred', 'foto')) {
-			$error = $error.'<li>'.__('Empty field "description"').'</li>'."\n";
-		}
-		if (mb_strlen($description) > $this->Register['Config']->read('description_lenght', 'foto'))
-			$error = $error .'<li>'.sprintf(__('Very big "description"'), $this->Register['Config']->read('description_lenght', 'foto')).'</li>'."\n";
-		
-		
-		
-		/* check file */
-		if (empty($_FILES['foto']['name']))	{
-			$error = $error .'<li>'.__('Not attachment').'</li>'. "\n";
-		} else {
-			if ($_FILES['foto']['size'] > $this->Register['Config']->read('max_file_size', 'foto')) 
-				$error = $error .'<li>'. sprintf(__('Very big file2'), $this->Register['Config']->read('max_file_size', 'foto')/1000) .'</li>'."\n";
-			if ($_FILES['foto']['type'] != 'image/jpeg' &&
-			$_FILES['foto']['type'] != 'image/gif' &&
-			//$_FILES['foto']['type'] != 'image/bmp' &&
-			$_FILES['foto']['type'] != 'image/png') 
-				$error = $error .'<li>'.__('Wrong file format').'</li>'."\n";
-				
-			$ext = strrchr($_FILES['foto']['name'], ".");
-			$ext = strtolower($ext);
-			if (!in_array($ext, $this->allowedExtentions))
-				$error = $error .'<li>'.__('Wrong file format').'</li>'."\n";
-		}
+		$errors = $this->Register['Validate']->check($this->getValidateRules());
 		
 		
 		//categories list
@@ -587,15 +542,15 @@ Class FotoModule extends Module {
 		$catModel = new $className;
 		$sql = $catModel->getCollection(array('id' => $in_cat));
 
-		if (empty($sql)) $error = $error.'<li>'.__('Can not find category').'</li>'."\n";
+		if (empty($sql)) $errors .= '<li>'.__('Can not find category').'</li>'."\n";
 		
 
 		// errors
-		if (!empty($error)) {
-			$data = array('title' => null, 'description' => null, 'in_cat' => $in_cat);
+		if (!empty($errors)) {
+			$data = array('title' => null, 'description' => $description, 'in_cat' => $in_cat);
 			$data = array_merge($data, $_POST);
 			$data['error'] = '<p class="errorMsg">' . __('Some error in form') . '</p>'.
-				"\n".'<ul class="errorMsg">'."\n".$error.'</ul>'."\n";
+				"\n".'<ul class="errorMsg">'."\n".$errors.'</ul>'."\n";
 			$_SESSION['FpsForm'] = $data;
 			redirect('/foto/add_form/');
 		}
@@ -605,12 +560,10 @@ Class FotoModule extends Module {
 			return $this->showInfoMessage(__('Your message has been added'), '/foto/');
 		}
 		
-		
 
 		
-		
 		// Формируем SQL-запрос на добавление темы	
-		$description = mb_substr($description, 0, $this->Register['Config']->read('description_lenght', 'foto'));
+		$description = mb_substr($description, 0, Config::read('description_lenght', 'foto'));
 		$res = array(
 			'title'        => $title,
 			'description'  => $description,
@@ -621,10 +574,9 @@ Class FotoModule extends Module {
 		);
 		
 		$entity = new FotoEntity($res);
-		$entity->save();
+		$id = $entity->save();
 		
-		
-		$id = mysql_insert_id();
+	
 		$entity->setId($id);
 		$entity->save();
  
@@ -655,7 +607,7 @@ Class FotoModule extends Module {
 		
 		
 		// Create watermark and resample image
-		$watermark_path = ROOT . '/sys/img/' . ($this->Register['Config']->read('watermark_type') == '1' ? 'watermark_text.png' : $this->Register['Config']->read('watermark_img'));
+		$watermark_path = ROOT . '/sys/img/' . (Config::read('watermark_type') == '1' ? 'watermark_text.png' : Config::read('watermark_img'));
 		if ($this->Register['Config']->read('use_watermarks') && !empty($watermark_path) && file_exists($watermark_path)) {
 			$waterObj = new FpsImg;
 			$waterObj->createWaterMark($save_path, $watermark_path);
@@ -678,8 +630,6 @@ Class FotoModule extends Module {
 		if ($this->Log) $this->Log->write('adding foto', 'foto id(' . $id . ')');
 		return $this->showInfoMessage(__('Material successfully added'), '/foto/' );		  
 	}
-
-
 
 
 
@@ -744,15 +694,13 @@ Class FotoModule extends Module {
 		
 		$data->setAction(get_url('/foto/update/' . $id));
 		$data->setCats_selector($cats_change);
-		$data->setMain_text($this->Textarier->print_page($data->getDescription(), $data->getAuthor()->geteStatus()));
+		$data->setMainText($this->Textarier->print_page($data->getDescription(), $data->getAuthor()->geteStatus()));
 		
 		
 		$source = $this->render('editform.html', array('data' => $data));
 		
 		return $this->_view($html . $source);
 	}
-
-
 
 
 
@@ -766,12 +714,7 @@ Class FotoModule extends Module {
 	 */
 	public function update($id = null) {	
 		$id = (int)$id;
-		if (empty($id) 
-		|| !isset($_POST['title']) 
-		|| !isset($_POST['cats_selector']) 
-		|| !is_numeric($_POST['cats_selector'])) {
-			redirect('/');
-		}
+		if (empty($id) ) redirect('/');
 
 
 		$entity = $this->Model->getById($id);
@@ -785,37 +728,27 @@ Class FotoModule extends Module {
 		}
 		
 		
+		$errors = $this->Register['Validate']->check($this->getValidateRules());
+		
+		
 		// Обрезаем переменные до длины, указанной в параметре maxlength тега input
 		$title       = trim(mb_substr($_POST['title'], 0, 128));
 		$description = trim($_POST['mainText']);
 		$in_cat		 = intval($_POST['cats_selector']);
 		if (empty($in_cat)) $in_cat = $foto['category_id'];
-		
-		
-		// Check fields
-		$Validate = $this->Register['Validate'];
-		$error = '';
-		if (empty($title))                    
-			$error = $error.'<li>'.__('Empty field "title"').'</li>'."\n";
-		if (!$Validate->cha_val($title, V_TITLE))  
-			$error = $error.'<li>'.__('Wrong chars in "title"').'</li>'."\n";
-		if (empty($description) && $this->Register['Config']->read('description_requred', 'foto')) 
-			$error = $error.'<li>'.__('Empty field "description"').'</li>'."\n";
-		if (mb_strlen($description) > $this->Register['Config']->read('description_lenght', 'foto'))
-			$error = $error.'<li>'.sprintf(__('Very big "description"'), $this->Register['Config']->read('description_lenght', 'foto')).'</li>'."\n";
 			
 			
 		$className = $this->Register['ModManager']->getModelNameFromModule('fotoSections');
 		$catModel = new $className;
 		$cats = $catModel->getById($in_cat);	
-		if (!$cats) $error = $error .'<li>' . __('Can not find category') .'</li>'."\n";
+		if (!$cats) $errors .= '<li>' . __('Can not find category') .'</li>'."\n";
 
 		
 		// errors
-		if (!empty( $error )) {
+		if (!empty( $errors )) {
 			$data = array('title' => $title, 'description' => $description, 'in_cat' => $in_cat);
 			$data['error'] = '<p class="errorMsg">' . __('Some error in form') 
-			. '</p>'."\n".'<ul class="errorMsg">'."\n".$error.'</ul>'."\n";
+			. '</p>'."\n".'<ul class="errorMsg">'."\n".$errors.'</ul>'."\n";
 			$_SESSION['FpsForm'] = $data;
 			redirect('/foto/edit_form/' . $id );
 		}
@@ -833,8 +766,6 @@ Class FotoModule extends Module {
 		if ($this->Log) $this->Log->write('editing foto', 'foto id(' . $id . ')');
 		return $this->showInfoMessage(__('Operation is successful'), '/foto/' );
 	}
-
-
 
 
 
@@ -870,6 +801,7 @@ Class FotoModule extends Module {
 	}
 
 
+	
 	/**
 	* @param int $id - record ID
 	*
@@ -884,9 +816,6 @@ Class FotoModule extends Module {
 	}
 	
 
-	
-	
-	
 	
 	/**
 	* @param array $record - record from database
@@ -922,4 +851,69 @@ Class FotoModule extends Module {
 		return $moder_panel;
 	}	
 	
+
+	
+	public function getValidateRules() 
+	{
+		$max_attach = Config::read('max_attaches', $this->module);
+		if (empty($max_attach) || !is_numeric($max_attach)) $max_attach = 5;
+		$rules = array(
+			'add' => array(
+				'title' => array(
+					'required' => true,
+					'max_length' => 250,
+					'title' => 'Title',
+				),
+				'mainText' => array(
+					'required' => true,
+					'max_length' => Config::read('max_lenght', $this->module),
+					'title' => 'Text',
+				),
+				'cats_selector' => array(
+					'required' => true,
+					'pattern' => V_INT,
+					'max_length' => 11,
+					'title' => 'Category',
+				),
+				'mainText' => array(
+					'required' => 'editable',
+					'max_length' => Config::read('description_lenght', 'foto'),
+				),
+				'files__foto' => array(
+					'required' => true,
+					'type' => 'image',
+					'max_size' => Config::read('max_file_size', 'foto'),
+				),
+			),
+			'update' => array(
+				'title' => array(
+					'required' => true,
+					'max_length' => 250,
+					'title' => 'Title',
+				),
+				'mainText' => array(
+					'required' => true,
+					'max_length' => Config::read('max_lenght', $this->module),
+					'title' => 'Text',
+				),
+				'cats_selector' => array(
+					'required' => true,
+					'pattern' => V_INT,
+					'max_length' => 11,
+					'title' => 'Category',
+				),
+				'mainText' => array(
+					'required' => 'editable',
+					'max_length' => Config::read('description_lenght', 'foto'),
+				),
+				'files__foto' => array(
+					'required' => true,
+					'type' => 'image',
+					'max_size' => Config::read('max_file_size', 'foto'),
+				),
+			),
+		);
+		
+		return array($this->module => $rules);
+	}		
 }

@@ -55,7 +55,7 @@ class StatisticsEntity extends FpsEntity
 		);
 		if ($this->id) $params['id'] = $this->id;
 		$Register = Register::getInstance();
-		$Register['DB']->save('statistics', $params);
+		return $Register['DB']->save('statistics', $params);
 	}
 	
 	

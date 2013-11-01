@@ -47,6 +47,7 @@ class PollsEntity extends FpsEntity
 		$Register = Register::getInstance();
 		$id = $Register['DB']->save('polls', $params);
 		if($id) $this->setId($id);
+		return $id;
 	}
 	
 	

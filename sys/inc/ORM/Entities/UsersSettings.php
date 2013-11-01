@@ -42,7 +42,7 @@ class UsersSettingsEntity extends FpsEntity
 		);
 		if ($this->id) $params['id'] = $this->id;
 		$Register = Register::getInstance();
-		$Register['DB']->save('users_settings', $params);
+		return $Register['DB']->save('users_settings', $params);
 	}
 	
 	

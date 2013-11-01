@@ -50,7 +50,7 @@ class SearchEntity extends FpsEntity
 		);
 		if ($this->id) $params['id'] = $this->id;
 		$Register = Register::getInstance();
-		$Register['DB']->save('search_index', $params);
+		return $Register['DB']->save('search_index', $params);
 	}
 	
 	

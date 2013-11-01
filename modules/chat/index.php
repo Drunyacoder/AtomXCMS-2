@@ -2,12 +2,12 @@
 /*---------------------------------------------\
 |											   |
 | @Author:       Andrey Brykin (Drunya)        |
-| @Version:      1.5.0                         |
+| @Version:      1.6.0                         |
 | @Project:      CMS                           |
 | @package       CMS Fapos                     |
 | @subpackege    Chat Module                   |
 | @copyright     ©Andrey Brykin 2010-2013      |
-| @last mod      2013/08/04                    |
+| @last mod      2013/11/01                    |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
@@ -94,8 +94,6 @@ class ChatModule extends Module {
 	}
 	
 
-
-	
 	
 	/**
 	* add message form
@@ -123,26 +121,21 @@ class ChatModule extends Module {
 		
 		
 		// Check fields
-		$error  = '';
+		$errors = '';
+		
+		
 		$valobj = $this->Register['Validate'];
 		if (!empty($name) && !$valobj->cha_val($name, V_TITLE))  
-			$error = $error . '<li>' . __('Wrong chars in field "login"') . '</li>' . "\n";
-		if (empty($message))                       
-			$error = $error . '<li>' . __('Empty field "text"') . '</li>' . "\n";
+			$errors .= '<li>' . __('Wrong chars in field "login"') . '</li>' . "\n";
 			
 			
 			
 		// Check captcha if need exists	 
 		if (!$ACL->turn(array('other', 'no_captcha'), false)) {
-			if (empty($keystring))                      
-				$error = $error . '<li>' . __('Empty field "code"') . '</li>' . "\n";
 
 				
 			// Проверяем поле "код"
-			if (!empty($keystring)) {
-				// Проверяем поле "код" на недопустимые символы
-				if (!$valobj->cha_val($keystring, V_CAPTCHA))
-					$error = $error . '<li>' . __('Wrong chars in field "code"') . '</li>' . "\n";					
+			if (!empty($keystring)) {				
 				if (!isset($_SESSION['chat_captcha_keystring'])) {
 					if (file_exists(ROOT . '/sys/logs/captcha_keystring_' . session_id() . '-' . date("Y-m-d") . '.dat')) {
 						$_SESSION['chat_captcha_keystring'] = file_get_contents(ROOT . '/sys/logs/captcha_keystring_' . session_id() . '-' . date("Y-m-d") . '.dat');
@@ -150,20 +143,26 @@ class ChatModule extends Module {
 					}
 				}
 				if (!isset($_SESSION['chat_captcha_keystring']) || $_SESSION['chat_captcha_keystring'] != $keystring)
-					$error = $error . '<li>' . __('Wrong protection code') . '</li>' . "\n";
+					$errors .= '<li>' . __('Wrong protection code') . '</li>' . "\n";
 			}
 			unset($_SESSION['chat_captcha_keystring']);
+			
+			
+		} else {
+			$this->Register['Validate']->disableFieldCheck('keystring');
 		}
+		
+		$errors .= $this->Register['Validate']->check($this->getValidateRules());
 		
 		
 		/* remember name */
 		$_SESSION['chat_name'] = $name;
 		
 		/* if an errors */
-		if (!empty($error)) {
+		if (!empty($errors)) {
 			$_SESSION['addForm']            = array();
 			$_SESSION['addForm']['error']   = '<p class="errorMsg">' . __('Some error in form') . '</p>' . 
-				"\n" . '<ul class="errorMsg">' . "\n" . $error . '</ul>' . "\n";
+				"\n" . '<ul class="errorMsg">' . "\n" . $errors . '</ul>' . "\n";
 			$_SESSION['addForm']['name']    = $name;
 			$_SESSION['addForm']['message'] = $message;
 			die($_SESSION['addForm']['error']);
@@ -252,6 +251,23 @@ class ChatModule extends Module {
 		return $source;
 	}
 	
-
+	
+	
+	public function getValidateRules() 
+	{
+		$rules = array(
+			'add' => array(
+				'message' => array(
+					'required' => true,
+					'pattern' => V_LOGIN,
+				),
+				'keystring' => array(
+					'required' => true,
+					'pattern' => V_CAPTCHA,
+				),
+			),
+		);
+		return array($this->module => $rules);
+	}
 }
 

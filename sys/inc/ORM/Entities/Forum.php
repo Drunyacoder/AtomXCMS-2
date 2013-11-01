@@ -58,7 +58,7 @@ class ForumEntity extends FpsEntity
 		);
 		if ($this->id) $params['id'] = $this->id;
 		$Register = Register::getInstance();
-		return ($Register['DB']->save('forums', $params));
+		return $Register['DB']->save('forums', $params);
 	}
 	
 	

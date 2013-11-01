@@ -92,7 +92,7 @@ class UsersEntity extends FpsEntity
         );
         if ($this->id) $params['id'] = $this->id;
         $Register = Register::getInstance();
-        $Register['DB']->save('users', $params);
+        return $Register['DB']->save('users', $params);
     }
 	
 

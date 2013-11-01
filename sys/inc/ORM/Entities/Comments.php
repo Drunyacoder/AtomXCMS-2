@@ -52,7 +52,7 @@ class CommentsEntity extends FpsEntity
 		);
 		if($this->id) $data['id'] = $this->id;
 		$Register = Register::getInstance();
-		$Register['DB']->save('comments', $data);
+		return $Register['DB']->save('comments', $data);
 	}
 	
 	

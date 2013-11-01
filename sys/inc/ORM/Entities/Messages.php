@@ -52,7 +52,7 @@ class MessagesEntity extends FpsEntity
 		);
 		if ($this->id) $params['id'] = $this->id;
 		$Register = Register::getInstance();
-		$Register['DB']->save('messages', $params);
+		return $Register['DB']->save('messages', $params);
 	}
 	
 	

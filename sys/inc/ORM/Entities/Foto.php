@@ -55,7 +55,7 @@ class FotoEntity extends FpsEntity
 		);
 		if ($this->id) $params['id'] = $this->id;
 		$Register = Register::getInstance();
-		$Register['DB']->save('foto', $params);
+		return $Register['DB']->save('foto', $params);
 	}
 	
 	

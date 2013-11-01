@@ -666,140 +666,8 @@ Class NewsModule extends Module {
 		return $this->_view($source);
 	}
 
-	
-	public function getValidateRules() 
-	{
-		$max_attach = $this->Register['Config']->read('max_attaches', $this->module);
-		if (empty($max_attach) || !is_numeric($max_attach)) $max_attach = 5;
-		$rules = array(
-			'add' => array(
-				'title' => array(
-					'required' => true,
-					'max_length' => 250,
-					'title' => 'Title',
-				),
-				'mainText' => array(
-					'required' => true,
-					'max_length' => $this->Register['Config']->read('max_lenght', $this->module),
-					'title' => 'Text',
-				),
-				'cats_selector' => array(
-					'required' => true,
-					'pattern' => V_INT,
-					'max_length' => 11,
-					'title' => 'Category',
-				),
-				'description' => array(
-					'required' => 'editable',
-				),
-				'tags' => array(
-					'required' => 'editable',
-					'pattern' => V_TITLE,
-				),
-				'sourse' => array(
-					'required' => 'editable',
-					'pattern' => V_TITLE,
-				),
-				'sourse_email' => array(
-					'required' => 'editable',
-					'pattern' => V_MAIL,
-				),
-				'sourse_site' => array(
-					'required' => 'editable',
-					'pattern' => V_URL,
-				),
-				'files__attach' => array(
-					'for' => array(
-						'from' => 1,
-						'to' => $max_attach,
-					),
-					'type' => 'image',
-					'max_size' => $this->Register['Config']->read('max_attaches_size', $this->module),
-				),
-				'commented' => array(),
-				'available' => array(),
-			),
-			'update' => array(
-				'title' => array(
-					'required' => true,
-					'max_length' => 250,
-					'title' => 'Title',
-				),
-				'mainText' => array(
-					'required' => true,
-					'max_length' => $this->Register['Config']->read('max_lenght', $this->module),
-					'title' => 'Text',
-				),
-				'cats_selector' => array(
-					'required' => true,
-					'pattern' => V_INT,
-					'max_length' => 11,
-					'title' => 'Category',
-				),
-				'description' => array(
-					'required' => 'editable',
-				),
-				'tags' => array(
-					'required' => 'editable',
-					'pattern' => V_TITLE,
-				),
-				'sourse' => array(
-					'required' => 'editable',
-					'pattern' => V_TITLE,
-				),
-				'sourse_email' => array(
-					'required' => 'editable',
-					'pattern' => V_MAIL,
-				),
-				'sourse_site' => array(
-					'required' => 'editable',
-					'pattern' => V_URL,
-				),
-				'files__attach' => array(
-					'for' => array(
-						'from' => 1,
-						'to' => $max_attach,
-					),
-					'type' => 'image',
-					'max_size' => $this->Register['Config']->read('max_attaches_size', $this->module),
-				),
-				'commented' => array(),
-				'available' => array(),
-			),
-			'add_comment' => array(
-				'login' => array(
-					'required' => true,
-					'pattern' => V_TITLE,
-					'max_length' => 40,
-				),
-				'message' => array(
-					'required' => true,
-				),
-				'captcha_keystring' => array(
-					'pattern' => V_CAPTCHA,
-					'title' => 'Kaptcha',
-				),
-			),
-			'update_comment' => array(
-				'login' => array(
-					'required' => true,
-					'pattern' => V_TITLE,
-					'max_length' => 40,
-				),
-				'message' => array(
-					'required' => true,
-				),
-				'captcha_keystring' => array(
-					'pattern' => V_CAPTCHA,
-					'title' => 'Kaptcha',
-				),
-			),
-		);
-		
-		return array($this->module => $rules);
-	}
-	
 
+	
 	/**
 	 * 
 	 * Validate data and create a new record into 
@@ -1519,6 +1387,138 @@ Class NewsModule extends Module {
 		include_once ROOT . '/sys/inc/includes/rss.php';
     }
 	
+
 	
+	public function getValidateRules() 
+	{
+		$max_attach = Config::read('max_attaches', $this->module);
+		if (empty($max_attach) || !is_numeric($max_attach)) $max_attach = 5;
+		$rules = array(
+			'add' => array(
+				'title' => array(
+					'required' => true,
+					'max_length' => 250,
+					'title' => 'Title',
+				),
+				'mainText' => array(
+					'required' => true,
+					'max_length' => Config::read('max_lenght', $this->module),
+					'title' => 'Text',
+				),
+				'cats_selector' => array(
+					'required' => true,
+					'pattern' => V_INT,
+					'max_length' => 11,
+					'title' => 'Category',
+				),
+				'description' => array(
+					'required' => 'editable',
+				),
+				'tags' => array(
+					'required' => 'editable',
+					'pattern' => V_TITLE,
+				),
+				'sourse' => array(
+					'required' => 'editable',
+					'pattern' => V_TITLE,
+				),
+				'sourse_email' => array(
+					'required' => 'editable',
+					'pattern' => V_MAIL,
+				),
+				'sourse_site' => array(
+					'required' => 'editable',
+					'pattern' => V_URL,
+				),
+				'files__attach' => array(
+					'for' => array(
+						'from' => 1,
+						'to' => $max_attach,
+					),
+					'type' => 'image',
+					'max_size' => Config::read('max_attaches_size', $this->module),
+				),
+				'commented' => array(),
+				'available' => array(),
+			),
+			'update' => array(
+				'title' => array(
+					'required' => true,
+					'max_length' => 250,
+					'title' => 'Title',
+				),
+				'mainText' => array(
+					'required' => true,
+					'max_length' => Config::read('max_lenght', $this->module),
+					'title' => 'Text',
+				),
+				'cats_selector' => array(
+					'required' => true,
+					'pattern' => V_INT,
+					'max_length' => 11,
+					'title' => 'Category',
+				),
+				'description' => array(
+					'required' => 'editable',
+				),
+				'tags' => array(
+					'required' => 'editable',
+					'pattern' => V_TITLE,
+				),
+				'sourse' => array(
+					'required' => 'editable',
+					'pattern' => V_TITLE,
+				),
+				'sourse_email' => array(
+					'required' => 'editable',
+					'pattern' => V_MAIL,
+				),
+				'sourse_site' => array(
+					'required' => 'editable',
+					'pattern' => V_URL,
+				),
+				'files__attach' => array(
+					'for' => array(
+						'from' => 1,
+						'to' => $max_attach,
+					),
+					'type' => 'image',
+					'max_size' => Config::read('max_attaches_size', $this->module),
+				),
+				'commented' => array(),
+				'available' => array(),
+			),
+			'add_comment' => array(
+				'login' => array(
+					'required' => true,
+					'pattern' => V_TITLE,
+					'max_length' => 40,
+				),
+				'message' => array(
+					'required' => true,
+				),
+				'captcha_keystring' => array(
+					'pattern' => V_CAPTCHA,
+					'title' => 'Kaptcha',
+				),
+			),
+			'update_comment' => array(
+				'login' => array(
+					'required' => true,
+					'pattern' => V_TITLE,
+					'max_length' => 40,
+				),
+				'message' => array(
+					'required' => true,
+				),
+				'captcha_keystring' => array(
+					'pattern' => V_CAPTCHA,
+					'title' => 'Kaptcha',
+				),
+			),
+		);
+		
+		return array($this->module => $rules);
+	}	
 }
 

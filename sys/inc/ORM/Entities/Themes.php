@@ -66,7 +66,7 @@ class ThemesEntity extends FpsEntity
 		);
 		if ($this->id) $params['id'] = $this->id;
 		$Register = Register::getInstance();
-		$Register['DB']->save('themes', $params);
+		return $Register['DB']->save('themes', $params);
 	}
 	
 	

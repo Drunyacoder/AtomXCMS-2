@@ -85,7 +85,7 @@ class LoadsEntity extends FpsEntity
 		);
 		if ($this->id) $params['id'] = $this->id;
 		$Register = Register::getInstance();
-		$Register['DB']->save('loads', $params);
+		return $Register['DB']->save('loads', $params);
 	}
 	
 	
