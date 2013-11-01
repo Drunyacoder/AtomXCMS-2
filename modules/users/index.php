@@ -45,7 +45,7 @@ Class UsersModule extends Module {
 	public $module = 'users';
 	
 
-
+	
 
 	// Функция возвращает html списка пользователей форума
 	public function index()
@@ -135,7 +135,6 @@ Class UsersModule extends Module {
 
 
 
-	
 	/**
 	 * @param string $key
 	 * if exists, user say "YES" and ready to register
@@ -239,90 +238,6 @@ Class UsersModule extends Module {
 		return $this->_view($source);
 	}
 
-
-	
-	
-	
-	public function getValidateRules() 
-	{	
-		$rules = array(
-			'add' => array(
-				'login' => array(
-					'required' => true,
-					'max_length' => 20,
-					'min_length' => 3,
-					'pattern' => V_LOGIN,
-				),
-				'password' => array(
-					'min_length' => Config::read('min_password_lenght'),
-					'required' => true,
-					'pattern' => V_LOGIN,
-				),
-				'confirm' => array(
-					'compare' => 'password',
-					'required' => true,
-					'pattern' => V_LOGIN,
-				),
-				'email' => array(
-					'required' => true,
-					'pattern' => V_MAIL,
-				),
-				'keystring' => array(
-					'required' => true,
-					'pattern' => V_CAPTCHA,
-				),
-				'icq' => array(
-					'required' => 'editable',
-					'pattern' => V_INT,
-				),
-				'jabber' => array(
-					'required' => 'editable',
-					'pattern' => V_MAIL,
-				),
-				'pol' => array(
-					'required' => 'editable',
-				),
-				'city' => array(
-					'required' => 'editable',
-					'pattern' => V_LOGIN,
-				),
-				'telephone' => array(
-					'required' => 'editable',
-					'pattern' => V_INT,
-				),
-				'byear' => array(
-					'required' => 'editable',
-					'pattern' => V_INT,
-				),
-				'bmonth' => array(
-					'required' => 'editable',
-					'pattern' => V_INT,
-				),
-				'bday' => array(
-					'required' => 'editable',
-					'pattern' => V_INT,
-				),
-				'url' => array(
-					'required' => 'editable',
-					'pattern' => V_URL,
-				),
-				'about' => array(
-					'required' => 'editable',
-					'pattern' => V_TEXT,
-				),
-				'signature' => array(
-					'required' => 'editable',
-					'pattern' => V_TEXT,
-				),
-				'files__avatar' => array(
-					'type' => 'image',
-					'max_size' => Config::read('max_avatar_size', 'users'),
-				),
-			),
-		);
-		
-		return array($this->module => $rules);
-	}
 
 
 	/**
@@ -544,7 +459,6 @@ Class UsersModule extends Module {
 
 
 
-
 	/**
 	 * Return form to request new password
 	 *
@@ -577,17 +491,9 @@ Class UsersModule extends Module {
 
 
 
-
-
 	// Функция высылает на e-mail пользователя новый пароль
 	public function send_new_password()
     {
-
-		// Если не переданы методом POST логин и e-mail - перенаправляем пользователя
-		if ( !isset( $_POST['username'] ) || !isset( $_POST['email'])) {
-			redirect('/');
-		}
-
 		// Обрезаем переменные до длины, указанной в параметре maxlength тега input
 		$name  = mb_substr( $_POST['username'], 0, 30 );
 		$email = mb_substr( $_POST['email'], 0, 60 );
@@ -595,22 +501,12 @@ Class UsersModule extends Module {
 		$email = trim( $email );
 
 		// Проверяем, заполнены ли обязательные поля
-		$error = '';
-		$valobj = $this->Register['Validate'];
-		if (empty($name))  	
-			$error = $error.'<li>' . __('Empty field "login"') . '</li>'."\n";
-		if (empty($email)) 	
-			$error = $error.'<li>' . __('Empty field "email"') . '</li>'."\n";
-
-		// Проверяем поля формы на недопустимые символы
-		if (!empty($name) and !$valobj->cha_val($name, V_LOGIN) )
-			$error = $error.'<li>' . __('Wrong chars in field "login"') . '</li>'."\n";
-		// Проверяем корректность e-mail
-		if ( !empty( $email ) and !$valobj->cha_val($email, V_MAIL))
-			$error = $error.'<li>' . __('Wrong chars in filed "e-mail"') . '</li>'."\n";
+		$errors = $this->Register['Validate']->check($this->getValidateRules());
+		
+		
 		// Проверять существование такого пользователя есть смысл только в том
 		// случае, если поля не пустые и не содержат недопустимых символов
-		if ( empty( $error ) ) {
+		if ( empty( $errors ) ) {
 			touchDir(ROOT . '/sys/tmp/activate/');
 		
 			$res = $this->Model->getCollection(array('name' => $name, 'email' => $email));
@@ -674,24 +570,22 @@ Class UsersModule extends Module {
                 if ($this->Log) $this->Log->write('send new passw', 'name(' . $name . '), mail(' . $email . ')');
 				return $this->_view($source);
 			} else {
-				$error = $error.'<li>' . __('Wrong login or email') . '</li>'."\n";
+				$errors .= '<li>' . __('Wrong login or email') . '</li>'."\n";
 			}
 		}
 		
+		// Если были допущены ошибки при заполнении формы - перенаправляем посетителя
+		if (!empty($errors)) {
+			$_SESSION['newPasswordForm'] = array();
+			$_SESSION['newPasswordForm']['error'] = '<p class="errorMsg">' . __('Some error in form') . '</p>'."\n"
+                . '<ul class="errorMsg">' . "\n" . $errors . '</ul>' . "\n";
+			redirect('/users/new_password_form/');
+		}
 		
 		/* clean DB cache */
 		$this->Register['DB']->cleanSqlCache();
 		if ($this->Log) $this->Log->write('wrong send new passw', 'name(' . $name . '), mail(' . $email . ')');
-		// Если были допущены ошибки при заполнении формы - перенаправляем посетителя
-		if (!empty($error)) {
-			$_SESSION['newPasswordForm'] = array();
-			$_SESSION['newPasswordForm']['error'] = '<p class="errorMsg">' . __('Some error in form') . '</p>'."\n"
-                . '<ul class="errorMsg">' . "\n" . $error . '</ul>' . "\n";
-			redirect('/users/new_password_form/');
-		}
-
 	}
-
 
 
 
@@ -729,8 +623,6 @@ Class UsersModule extends Module {
 
 
 
-
-
 	// Функция возвращает случайно сгенерированный пароль
 	private function _getNewPassword()
     {
@@ -746,7 +638,6 @@ Class UsersModule extends Module {
 		}
 		return $password;
 	}
-
 
 
 
@@ -823,7 +714,7 @@ Class UsersModule extends Module {
         }
         $data->setUnlinkfile($unlinkfile);
        
-
+		
         $source = $this->render('edituserform.html', array('context' => $data));
 
 		
@@ -837,8 +728,7 @@ Class UsersModule extends Module {
 	}
 
 
-
-
+	
 	/**
 	 * Update record into Data Base
 	 */
@@ -849,50 +739,19 @@ Class UsersModule extends Module {
 		//turn access
 		$this->ACL->turn(array('users', 'edit_mine'));
 
-		// Если не переданы данные формы - функция вызвана по ошибке
-		if ( !isset( $_POST['password'] ) or
-			!isset( $_POST['newpassword'] ) or
-			!isset( $_POST['confirm'] ) or
-			!isset( $_POST['email'] ) or
-			!isset( $_POST['timezone'] )
-		) {
-			redirect('/');
-		}
-		
-		
-		$error = '';
+		$errors= '';
         $markers = array();
 		
-		
-		$fields = array(
-			'email', 
-			'icq', 
-			'jabber', 
-			'pol', 
-			'city', 
-			'telephone', 
-			'byear', 
-			'bmonth', 
-			'bday', 
-			'url', 
-			'about', 
-			'signature'
-		);
+		$fields = array('email', 'icq', 'jabber', 'pol', 'city', 'telephone', 'byear', 
+			'bmonth', 'bday', 'url', 'about', 'signature');
 		
 		$fields_settings = (array)$this->Register['Config']->read('fields', 'users');
 		$fields_settings = array_merge($fields_settings, array('email'));
 		
 		
 		foreach ($fields as $field) {
-			if (empty($_POST[$field]) && in_array($field, $fields_settings)) {
-				$error = $error.'<li>' . __('Empty field "'.$field.'"') . '</li>'."\n";
-				$$field = null;
-				
-			} else {
-				$$field = (isset($_POST[$field])) ? trim($_POST[$field]) : '';
-			}
+			$$field = (isset($_POST[$field])) ? trim($_POST[$field]) : '';
 		}
-		
 		
 		
 		if ('1' === $pol) $pol =  'm';
@@ -930,81 +789,50 @@ Class UsersModule extends Module {
 			if (is_string($_addFields)) $markers['error'] = $_addFields;
 		}
 		
-		$valobj = $this->Register['Validate'];
+		
 		// Если заполнено поле "Текущий пароль" - значит пользователь
 		// хочет изменить его или поменять свой e-mail
 		$changePassword = false;
 		$changeEmail = false;
 		if (!empty($password)) {
 			if ( md5($password) != $_SESSION['user']['passw'] ) 
-				$error = $error.'<li>' . __('Wrong current pass') . '</li>'."\n";
-			// Надо выяснить, что хочет сделать пользователь:
-			// поменять свой e-mail, изменить пароль или и то и другое
-			if (!empty($newpassword)) { // хочет изменить пароль
-				$changePassword = true;
-				if (empty($confirm)) 	
-					$error = $error.'<li>' . __('Empty field "confirm"') . '</li>'."\n";
-				if (strlen($newpassword) < $this->Register['Config']->read('min_password_lenght'))
-					$error = $error.'<li>'. sprintf(__('Very short pass'), Config::read('min_password_lenght')) . '</li>'."\n";
-				if (!empty($confirm) and $newpassword != $confirm)
-					$error = $error.'<li>' . __('Passwords are different') . '</li>'."\n";
-				if (!$valobj->cha_val($newpassword, V_LOGIN))
-					$error = $error.'<li>' . __('Wrong chars in field "password"') . '</li>'."\n";
-				if (!empty($confirm) and !$valobj->cha_val($confirm, V_LOGIN))
-					$error = $error.'<li>' . __('Wrong chars in field "confirm"') . '</li>'."\n";
-			}
-			if ($email != $_SESSION['user']['email']) { // хочет изменить e-mail
-				$changeEmail = true;
-				if (!empty($email) and !$valobj->cha_val($email, V_MAIL))
-					$error = $error.'<li>' . __('Wrong chars in filed "e-mail"') . '</li>'."\n";
-			}
+				$errors .= '<li>' . __('Wrong current pass') . '</li>'."\n";
+				
+				
+			// want to change password
+			if (!empty($newpassword)) $changePassword = true;
+
+			
+			// user want to change email
+			if ($email != $_SESSION['user']['email']) $changeEmail = true;
 		}
-		if (!empty($icq) and !$valobj->cha_val($icq, V_INT))
-			$error = $error.'<li>' . __('Wrong chars in field "ICQ"') . '</li>'."\n";
-		if (!empty($about) and !$valobj->cha_val($about, V_TEXT))
-			$error = $error.'<li>' . __('Wrong chars in field "interes"') . '</li>'."\n";
-		if (!empty($signature) and !$valobj->cha_val($signature, V_TEXT))
-			$error = $error.'<li>' . __('Wrong chars in field "gignature"') . '</li>'."\n";
-		if (!empty($url) and !$valobj->cha_val($url, V_URL))
-			$error = $error.'<li>' . __('Wrong chars in filed "URL"') . '</li>'."\n";
-		if (!empty($jabber) && !$valobj->cha_val($jabber, V_MAIL))
-			$error = $error.'<li>' . __('Wrong chars in field "jabber"') . '</li>'."\n";
-		if (!empty($city) && !$valobj->cha_val($city, V_LOGIN))
-			$error = $error.'<li>' . __('Wrong chars in field "city"') . '</li>'."\n";
-		if (!empty($telephone) && !$valobj->cha_val($telephone, V_INT))
-			$error = $error.'<li>' . __('Wrong chars in field "telephone"') . '</li>'."\n";
-		if (!empty($byear) && !$valobj->cha_val($byear, V_INT))
-			$error = $error.'<li>' . __('Wrong chars in field "byear"') . '</li>'."\n";
-		if (!empty($bmonth) && !$valobj->cha_val($bmonth, V_INT))
-			$error = $error.'<li>' . __('Wrong chars in field "bmonth"') . '</li>'."\n";
-		if (!empty($bday) && !$valobj->cha_val($bday, V_INT))
-			$error = $error.'<li>' . __('Wrong chars in field "bday"') . '</li>'."\n";
+		
+		
+		// if new and old emails are equal, we needn't check password
+		if ($email == $_SESSION['user']['email']) {
+			$this->Register['Validate']->disableFieldCheck('password');
+		}
+		
+		
+		$errors .= $this->Register['Validate']->check($this->getValidateRules());
 		
 		
 		$tmp_key = rand(0, 9999999);
 		if (!empty($_FILES['avatar']['name'])) {
-			touchDir(ROOT . '/sys/tmp/images/', 0777);
 		
+			touchDir(ROOT . '/sys/tmp/images/', 0777);
 			$path = ROOT . '/sys/tmp/images/' . $tmp_key . '.jpg';
-			$ext = strrchr( $_FILES['avatar']['name'], "." );
-			$extensions = array( ".jpg", ".gif", ".bmp", ".png", '.JPG', ".GIF", ".BMP", ".PNG");
-			if (!in_array($ext, $extensions)) {
-				$error = $error.'<li>' . __('Wrong avatar') . '</li>'."\n";
-				$check_image = true;
-			}
-			if ($_FILES['avatar']['size'] > $this->Register['Config']->read('max_avatar_size', 'users')) {
-				$error = $error.'<li>'. sprintf(__('Avatar is very big'), Config::read('max_avatar_size', 'users')).'</li>'."\n";
-				$check_image = true;
-			}
+			
+			
 			if (!isset($check_image) && move_uploaded_file($_FILES['avatar']['tmp_name'], $path)) {
 				chmod($path, 0644);
 				@$sizes = resampleImage($path, $path, 100);
 				if (!$sizes) {
 					@unlink($path);
-					$error = $error.'<li>' . __('Some error in avatar') . '</li>'."\n";
+					$errors .= '<li>' . __('Some error in avatar') . '</li>'."\n";
 				}
 			} else {
-				$error = $error.'<li>' . __('Some error in avatar') . '</li>'."\n";
+				$errors .= '<li>' . __('Some error in avatar') . '</li>'."\n";
 			}
 		}
 
@@ -1013,13 +841,14 @@ Class UsersModule extends Module {
 
 		
 		// if an Errors
-		if (!empty($error)) {
+		if (!empty($errors)) {
 			$_SESSION['FpsForm'] = array_merge(array('login' => null, 'email'=> null, 'timezone' => null, 'icq' => null, 'url' => null, 'about' => null, 'signature' => null, 'pol' => $pol, 'telephone' => null, 'city' => null, 'jabber' => null, 'byear' => null, 'bmonth' => null, 'bday' => null), $_POST);
 			$_SESSION['FpsForm']['error']     = '<p class="errorMsg">' . __('Some error in form') . '</p>'.
-			"\n".'<ul class="errorMsg">'."\n".$error.'</ul>'."\n";
+			"\n".'<ul class="errorMsg">'."\n".$errors.'</ul>'."\n";
 			redirect('/users/edit_form/');
 		}
 
+		
 		// Если выставлен флажок "Удалить загруженный ранее файл"
 		if (isset( $_POST['unlink']) and is_file(ROOT . '/sys/avatars/' . $_SESSION['user']['id'] . '.jpg')) {
 			unlink(ROOT . '/sys/avatars/' . $_SESSION['user']['id'] . '.jpg');
@@ -1038,7 +867,6 @@ Class UsersModule extends Module {
 
         $user = $this->Model->getById($_SESSION['user']['id']);
 
-		$user_data = array();
 		if ( $changePassword ) {
 			$user->setPassw(md5($newpassword));
 			$_SESSION['user']['passw'] = md5( $newpassword );
@@ -1047,6 +875,7 @@ Class UsersModule extends Module {
 			$user->setEmail($email);
 			$_SESSION['user']['email'] = $email;
 		}
+		
         $user->setTimezone($timezone);
         $user->setUrl($url);
         $user->setIcq($icq);
@@ -1068,9 +897,7 @@ Class UsersModule extends Module {
 		
 		
 		// Теперь надо обновить данные о пользователе в массиве $_SESSION['user']
-		if ( $changePassword ) $_SESSION['user']['passw'] = md5( $newpassword );
-		if ( $changeEmail ) $_SESSION['user']['email'] = $email;
-		//$_SESSION['user'] = array_merge($_SESSION['user'], $user_data);
+		$_SESSION['user'] = array_merge($_SESSION['user'], $user->asArray());
 		
 		
 		// ... и в массиве $_COOKIE
@@ -1083,7 +910,6 @@ Class UsersModule extends Module {
 		if ($this->Log) $this->Log->write('editing user', 'user id(' . $_SESSION['user']['id'] . ')');
 		return $this->showInfoMessage(__('Your profile has been changed'), getProfileUrl($_SESSION['user']['id']));
 	}
-
 
 
 
@@ -1211,7 +1037,6 @@ Class UsersModule extends Module {
 
 
 
-
 	// Функция обновляет данные пользователя (только для администратора форума)
 	public function update_by_admin($id = null)
     {
@@ -1225,18 +1050,6 @@ Class UsersModule extends Module {
 		// пользователь - функция вызвана по ошибке
 		if (!isset($_SESSION['user'])) redirect( '/');
 
-
-		
-		// Если не переданы данные формы - функция вызвана по ошибке
-		if (!isset( $_POST['status'] ) or
-			!isset( $_POST['email'] ) or
-			!isset( $_POST['oldEmail'] ) or
-			!isset( $_POST['newpassword'] ) or
-			!isset( $_POST['confirm'] )
-		) {
-			redirect('/');
-		}
-
 		
 		// Получаем данные о пользователе из БД
         $user = $this->Model->getById($id);
@@ -1247,34 +1060,15 @@ Class UsersModule extends Module {
         }
 
 
-
-		$error = '';
-		$fields = array(
-			'email', 
-			'oldEmail', 
-			'icq', 
-			'jabber', 
-			'pol', 
-			'city', 
-			'telephone', 
-			'byear', 
-			'bmonth',
-			'bday', 
-			'url', 
-			'about', 
-			'signature'
-		);
+		$errors = '';
+		$fields = array('login', 'email', 'oldEmail', 'icq', 'jabber', 'pol', 'city', 
+			'telephone', 'byear', 'bmonth', 'bday', 'url', 'about', 'signature');
 		
-		$fields_settings = (array)$this->Register['Config']->read('fields', 'users');
+		$fields_settings = (array)Config::read('fields', 'users');
 		$fields_settings = array_merge($fields_settings, array('email'));
 		
 		foreach ($fields as $field) {
-			if (empty($_POST[$field]) && in_array($field, $fields_settings)) {
-				$error = $error.'<li>' . __('Empty field "'.$field.'"') . '</li>'."\n";
-				$$field = null;
-			} else {
-				$$field = (isset($_POST[$field])) ? trim($_POST[$field]) : '';
-			}
+			$$field = (isset($_POST[$field])) ? trim($_POST[$field]) : '';
 		}
 		
 		
@@ -1282,16 +1076,13 @@ Class UsersModule extends Module {
 		else if ('2' === $pol) $pol = 'f';
 		else $pol = '';
 		
-
 		
 		// Обрезаем лишние пробелы
-		$password     = (!empty($_POST['password'])) ? trim($_POST['password']) : '';
 		$newpassword  = (!empty($_POST['newpassword'])) ? trim($_POST['newpassword']) : '';
 		$confirm      = (!empty($_POST['confirm'])) ? trim($_POST['confirm']) : '';
 
 		
 		// Обрезаем переменные до длины, указанной в параметре maxlength тега input
-		$password     = mb_substr($password, 0, 30);
 		$newpassword  = mb_substr($newpassword, 0, 30);
 		$confirm      = mb_substr($confirm, 0, 30);
 		$email        = mb_substr($email, 0, 60);
@@ -1308,88 +1099,51 @@ Class UsersModule extends Module {
 		$signature    = mb_substr($signature, 0, 500);
 		
 
-
 		// Additional fields
 		if (is_object($this->AddFields)) {
 			$_addFields = $this->AddFields->checkFields();
-			if (is_string($_addFields)) $error .= $_addFields; 
+			if (is_string($_addFields)) $errors .= $_addFields; 
 		}
 		
-		$valobj = $this->Register['Validate'];
-		// Надо выяснить, что хочет сделать администратор:
-		// поменять e-mail, изменить пароль или и то и другое
+		
+		
+		// Если заполнено поле "Текущий пароль" - значит пользователь
+		// хочет изменить его или поменять свой e-mail
 		$changePassword = false;
 		$changeEmail = false;
+			
+		// want to change password
+		if (!empty($newpassword)) $changePassword = true;
 
-		if ( !empty( $newpassword ) ) { // хочет изменить пароль
-			$changePassword = true;
-			if ( empty( $confirm ) )    
-				$error = $error.'<li>' . __('Empty field "confirm"') . '</li>'."\n";
-			if (strlen($newpassword) < $this->Register['Config']->read('min_password_lenght'))
-				$error = $error.'<li>' . sprintf(__('Very short pass'), $this->Register['Config']->read('min_password_lenght')).'</li>'."\n";
-			if (!empty($confirm) and $newpassword != $confirm)
-				$error = $error.'<li>' . __('Passwords are different') . '</li>'."\n";
-			if ( !$valobj->cha_val($newpassword, V_LOGIN))
-				$error = $error.'<li>' . __('Wrong chars in field "password"') . '</li>'."\n";
-			if (!empty($confirm) and !$valobj->cha_val($confirm, V_LOGIN))
-				$error = $error.'<li>' . __('Wrong chars in field "confirm"') . '</li>'."\n";
-		}
-		if (!empty($email) && $email != $oldEmail) { // хочет изменить e-mail
-			$changeEmail = true;
-			if (empty($email)) 		 	
-				$error = $error.'<li>' . __('Empty field "email"') . '</li>'."\n";
-			if ( !empty( $email ) and !$valobj->cha_val($email, V_MAIL))
-				$error = $error.'<li>' . __('Wrong chars in filed "e-mail"') . '</li>'."\n";
-		}
-
+		// user want to change email
+		if ($email != $oldEmail) $changeEmail = true;
 		
-		// Проверяем поля формы на недопустимые символы
-		if (!empty($icq) and !$valobj->cha_val($icq, V_INT))
-			$error = $error.'<li>' . __('Wrong chars in field "ICQ"') . '</li>'."\n";
-		if (!empty($about) and !$valobj->cha_val($about, V_TEXT))
-			$error = $error.'<li>' . __('Wrong chars in field "interes"') . '</li>'."\n";
-		if (!empty($signature) and !$valobj->cha_val($signature, V_TEXT))
-			$error = $error.'<li>' . __('Wrong chars in field "gignature"') . '</li>'."\n";
-		if (!empty($url) and !$valobj->cha_val($url, V_URL))
-			$error = $error.'<li>' . __('Wrong chars in filed "URL"') . '</li>'."\n";
-		if (!empty($jabber) && !$valobj->cha_val($jabber, V_MAIL))
-			$error = $error.'<li>' . __('Wrong chars in field "jabber"') . '</li>'."\n";
-		if (!empty($city) && !$valobj->cha_val($city, V_LOGIN))
-			$error = $error.'<li>' . __('Wrong chars in field "city"') . '</li>'."\n";
-		if (!empty($telephone) && !$valobj->cha_val($telephone, V_INT))
-			$error = $error.'<li>' . __('Wrong chars in field "telephone"') . '</li>'."\n";
-		if (!empty($byear) && !$valobj->cha_val($byear, V_INT))
-			$error = $error.'<li>' . __('Wrong chars in field "byear"') . '</li>'."\n";
-		if (!empty($bmonth) && !$valobj->cha_val($bmonth, V_INT))
-			$error = $error.'<li>' . __('Wrong chars in field "bmonth"') . '</li>'."\n";
-		if (!empty($bday) && !$valobj->cha_val($bday, V_INT))
-			$error = $error.'<li>' . __('Wrong chars in field "bday"') . '</li>'."\n";
+		
+		// if new and old emails are equal, we needn't check password
+		if ($email == $oldEmail) {
+			$this->Register['Validate']->disableFieldCheck('password');
+		}
+		
+		
+		$errors .= $this->Register['Validate']->check($this->getValidateRules());
 		
 		
 		$tmp_key = rand(0, 9999999);
 		if (!empty($_FILES['avatar']['name'])) {
-			touchDir(ROOT . '/sys/tmp/images/', 0777);
 		
+			touchDir(ROOT . '/sys/tmp/images/', 0777);
 			$path = ROOT . '/sys/tmp/images/' . $tmp_key . '.jpg';
-			$ext = strrchr( $_FILES['avatar']['name'], "." );
-			$extensions = array( ".jpg", ".gif", ".bmp", ".png", '.JPG', ".GIF", ".BMP", ".PNG");
-			if (!in_array(strtolower($ext), $extensions)) {
-				$error = $error.'<li>' . __('Wrong avatar') . '</li>'."\n";
-				$check_image = true;
-			}
-			if ($_FILES['avatar']['size'] > $this->Register['Config']->read('max_avatar_size', 'users')) {
-				$error = $error.'<li>'. sprintf(__('Avatar is very big'), $this->Register['Config']->read('max_avatar_size', 'users')).'</li>'."\n";
-				$check_image = true;
-			}
+
+			
 			if (!isset($check_image) && move_uploaded_file($_FILES['avatar']['tmp_name'], $path)) {
 				chmod($path, 0644);
 				@$sizes = resampleImage($path, $path, 100);
 				if (!$sizes) {
 					@unlink($path);
-					$error = $error.'<li>' . __('Some error in avatar') . '</li>'."\n";
+					$errors .= '<li>' . __('Some error in avatar') . '</li>'."\n";
 				}
 			} else {
-				$error = $error.'<li>' . __('Some error in avatar') . '</li>'."\n";
+				$errors .= '<li>' . __('Some error in avatar') . '</li>'."\n";
 			}
 		}
 
@@ -1399,7 +1153,7 @@ Class UsersModule extends Module {
 		if ( $timezone < -12 or $timezone > 12 ) $timezone = 0;
 
 		// Errors
-		if (!empty($error)) {
+		if (!empty($errors)) {
 			$_SESSION['FpsForm'] = array_merge(
                 array(
                     'name' => null,
@@ -1420,7 +1174,7 @@ Class UsersModule extends Module {
                 $_POST
             );
 			$_SESSION['FpsForm']['error'] = '<p class="errorMsg">' . __('Some error in form') . '</p>'.
-			"\n".'<ul class="errorMsg">'."\n".$error.'</ul>'."\n";
+			"\n".'<ul class="errorMsg">'."\n".$errors.'</ul>'."\n";
 			redirect('/users/edit_form_by_admin/' . $id );
 		}
 
@@ -1447,6 +1201,7 @@ Class UsersModule extends Module {
 		if (isset($_POST['activation'])) {
 			$user->setActivation('');
 		}
+        $user->setLogin($login);
         $user->setStatus($status);
         $user->setTimezone($timezone);
         $user->setUrl($url);
@@ -1471,7 +1226,6 @@ Class UsersModule extends Module {
 		if ($this->Log) $this->Log->write('editing user by adm', 'user id(' . $id . ') adm id(' . $_SESSION['user']['id'] . ')');
 		return $this->showInfoMessage(__('Operation is successful'), getProfileUrl($id));
 	}
-
 
 
 
@@ -1585,7 +1339,6 @@ Class UsersModule extends Module {
 
 
 
-
 	// Функция возвращает html формы для отправки личного сообщения
 	public function send_msg_form($id = null)
     {
@@ -1665,8 +1418,7 @@ Class UsersModule extends Module {
 		return $this->_view($source);
 	}
 
-
-
+	
 
 	// Отправка личного сообщения (добавляется новая запись в таблицу БД TABLE_MESSAGES)
 	public function send_message()
@@ -1675,25 +1427,13 @@ Class UsersModule extends Module {
 		if ( !isset( $_SESSION['user'] ) ) {
 			redirect('/');
 		}
-		// Если не переданы данные формы - функция вызвана по ошибке
-		if ( !isset( $_POST['toUser'] ) or
-		   !isset( $_POST['subject'] ) or
-		   !isset( $_POST['mainText'] ) )
-		{
-			redirect('/');
-		}
 
-		$msgLen = mb_strlen($_POST['mainText']);
-
-		// Обрезаем переменные до длины, указанной в параметре maxlength тега input
-		$toUser  = mb_substr($_POST['toUser'], 0, 30);
-		$subject = mb_substr($_POST['subject'], 0, 60);
-		$message = mb_substr($_POST['mainText'], 0, $this->Register['Config']->read('max_message_lenght', 'users') );
 		// Обрезаем лишние пробелы
-		$toUser  = trim($toUser);
-		$subject = trim($subject);
-		$message = trim($message);
+		$toUser  = trim($_POST['toUser']);
+		$subject = trim($_POST['subject']);
+		$message = trim($_POST['mainText']);
 
+		
 		// Если пользователь хочет посмотреть на сообщение перед отправкой
 		if (isset($_POST['viewMessage'])) {
 			$_SESSION['viewMessage']             = array();
@@ -1703,26 +1443,11 @@ Class UsersModule extends Module {
 			redirect('/users/send_msg_form/' );
 		}
 		
+		
 		// Проверяем, заполнены ли обязательные поля
-		$error = '';
-		$valobj = $this->Register['Validate'];
-		if (empty($toUser)) 		
-			$error = $error.'<li>' . __('Empty field "for"') . '</li>'."\n";
-		if (empty($subject))  		
-			$error = $error.'<li>' . __('Empty field "message title"') . '</li>'."\n";
-		if (empty($message))     	
-			$error = $error.'<li>' . __('Empty field "text"') . '</li>'."\n";
-		if ($msgLen > $this->Register['Config']->read('max_message_lenght', 'users') )
-			$error = $error.'<li>' . sprintf(__('Very big message'), $this->Register['Config']->read('max_message_lenght', 'users')) . '</li>'."\n";
-			
-			
-		// Проверяем поля формы на недопустимые символы
-		if (!empty($toUser) && !$valobj->cha_val($toUser, V_LOGIN))
-			$error = $error.'<li>' . __('Wrong chars in field "to"') . '</li>'."\n";
-		if (!empty($subject) && !$valobj->cha_val($subject, V_TEXT))
-			$error = $error.'<li>' . __('Wrong chars in field "subject"') . '</li>'."\n";
-			
-			
+		$errors = $this->Register['Validate']->check($this->getValidateRules());
+		
+		
 		// Проверяем, есть ли такой пользователь
 		if (!empty($toUser)) {
 			$to = preg_replace( "#[^- _0-9a-zА-Яа-я]#iu", '', $toUser );
@@ -1737,9 +1462,9 @@ Class UsersModule extends Module {
 
 
 			if (empty($res))
-				$error = $error.'<li>' . sprintf(__('No user with this name'), $to) . '</li>'."\n";
+				$errors .= '<li>' . sprintf(__('No user with this name'), $to) . '</li>'."\n";
 			if ((count($res) && is_array($res) ) && ($res[0]->getId() == $_SESSION['user']['id']) )
-				$error = $error.'<li>' . __('You can not send message to yourself') . '</li>'."\n";
+				$errors .= '<li>' . __('You can not send message to yourself') . '</li>'."\n";
 
 
 			//chek max count messages
@@ -1762,11 +1487,11 @@ Class UsersModule extends Module {
                 ));
 
 
-				if (!empty($cnt_to) && $cnt_to >= $this->Register['Config']->read('max_count_mess', 'users')) {
-					$error = $error.'<li>' . __('This user has full  messagebox') . '</li>'."\n";
+				if (!empty($cnt_to) && $cnt_to >= Config::read('max_count_mess', 'users')) {
+					$errors .= '<li>' . __('This user has full  messagebox') . '</li>'."\n";
 				}
-				if (!empty($cnt_from) && $cnt_from >= $this->Register['Config']->read('max_count_mess', 'users')) {
-					$error = $error.'<li>' . __('You have full  messagebox') . '</li>'."\n";
+				if (!empty($cnt_from) && $cnt_from >= Config::read('max_count_mess', 'users')) {
+					$errors .= '<li>' . __('You have full  messagebox') . '</li>'."\n";
 				}
 			}
 		}
@@ -1774,10 +1499,10 @@ Class UsersModule extends Module {
 		
 		
 		// Errors
-		if (!empty($error )) {
+		if (!empty($errors )) {
 			$_SESSION['sendMessageForm'] = array();
 			$_SESSION['sendMessageForm']['error'] = '<p class="errorMsg">' . __('Some error in form') . '</p>'.
-			"\n".'<ul class="errorMsg">'."\n".$error.'</ul>'."\n";
+			"\n".'<ul class="errorMsg">'."\n".$errors.'</ul>'."\n";
 			$_SESSION['sendMessageForm']['toUser'] = $toUser;
 			$_SESSION['sendMessageForm']['subject'] = $subject;
 			$_SESSION['sendMessageForm']['message'] = $message;
@@ -1808,8 +1533,6 @@ Class UsersModule extends Module {
 		if ($this->Log) $this->Log->write('adding pm message', 'message id(' . mysql_insert_id() . ')');
 		return $this->showInfoMessage(__('Message successfully send'), '/users/out_msg_box/' );
 	}
-
-
 
 
 
@@ -1903,7 +1626,6 @@ Class UsersModule extends Module {
 
 
 
-
 	// Папка личных сообщений (входящие)
 	public function in_msg_box()
     {
@@ -1942,7 +1664,6 @@ Class UsersModule extends Module {
 		$source = $this->render('vievinpm.html', array('messages' => $messages, 'context' => $markers));
 		return $this->_view($source);
 	}
-
 
 
 
@@ -1993,6 +1714,7 @@ Class UsersModule extends Module {
     {
 		$this->delete_message();
 	}
+	
 	
 
 	// Функция удаляет личное сообщение; ID сообщения передается методом GET
@@ -2068,7 +1790,6 @@ Class UsersModule extends Module {
 
 
 
-
 	// Функция возвращает меню для раздела "Личные сообщения"
 	private function _getMessagesMenu()
     {
@@ -2082,7 +1803,6 @@ Class UsersModule extends Module {
 
 		return $html;
 	}
-
 
 
 
@@ -2131,59 +1851,34 @@ Class UsersModule extends Module {
 
 	
 
-
 	// Отправка письма пользователю сайта
 	public function send_mail()
     {
-		if (!isset($_POST['toUser']) ||
-		   !isset($_POST['subject']) ||
-		   !isset($_POST['message']))
-		{
-			redirect('/');
-		}
 		if (!isset($_SESSION['user'])) redirect('/');
 		
-
-		// Обрезаем переменные до длины, указанной в параметре maxlength тега input
-		$toUser  = mb_substr( $_POST['toUser'], 0, 30 );
-		$subject = mb_substr( $_POST['subject'], 0, 60 );
-		$message = mb_substr( $_POST['message'], 0, $this->Register['Config']->read('max_mail_lenght', 'users'));
 		// Обрезаем лишние пробелы
-		$toUser  = trim( $toUser );
-		$subject = trim( $subject );
-		$message = trim( $message );
+		$toUser  = trim( $_POST['toUser'] );
+		$subject = trim( $_POST['subject'] );
+		$message = trim( $_POST['message'] );
 
 		
-		// Проверяем, заполнены ли обязательные поля
-		$error = '';
-		$valobj = $this->Register['Validate'];
-		if ( empty( $toUser ) ) 				
-			$error = $error.'<li>' . __('Empty field "for"') . '</li>'."\n";
-		if ( empty( $subject ) ) 				
-			$error = $error.'<li>' . __('Empty field "message title"') . '</li>'."\n";
-		if ( empty( $message ) ) 				
-			$error = $error.'<li>' . __('Empty field "text"') . '</li>'."\n";
-		// Проверяем поля формы на недопустимые символы
-		if (!empty($toUser) && !$valobj->cha_val($toUser, V_LOGIN))
-			$error = $error.'<li>' . __('Wrong chars in field "to"') . '</li>'."\n";
-		if (!empty($subject) and !$valobj->cha_val($subject, V_TEXT))
-			$error = $error.'<li>' . __('Wrong chars in field "subject"') . '</li>'."\n";
-			
-			
+		$errors = $this->Register['Validate']->check($this->getValidateRules());
+
+		
 		// Проверяем, есть ли такой пользователь
 		if (!empty($toUser)) {
 			$to = preg_replace("#[^- _0-9a-zа-яА-Я]#ui", '', $toUser);
 			$user = $this->Model->getByName($to);
 			if (empty($user))				
-				$error = $error.'<li>' . sprintf(__('No user with this name'), $to) . '</li>'."\n";
+				$errors .= '<li>' . sprintf(__('No user with this name'), $to) . '</li>'."\n";
 		}
 		
 		// Если были допущены ошибки при заполнении формы -
 		// перенаправляем посетителя для исправления ошибок
-		if (!empty($error)) {
+		if (!empty($errors)) {
 			$_SESSION['sendMailForm'] = array();
 			$_SESSION['sendMailForm']['error'] = '<p class="errorMsg">' . __('Some error in form') . '</p>'.
-			"\n".'<ul class="errorMsg">'."\n".$error.'</ul>'."\n";
+			"\n".'<ul class="errorMsg">'."\n".$errors.'</ul>'."\n";
 			$_SESSION['sendMailForm']['toUser']  = $toUser;
 			$_SESSION['sendMailForm']['subject'] = $subject;
 			$_SESSION['sendMailForm']['message'] = $message;
@@ -2210,8 +1905,7 @@ Class UsersModule extends Module {
 	}
 
 
-
-
+	
 	// Функция возвращает html формы для авторизации на форуме
 	public function login_form()
     {
@@ -2268,16 +1962,10 @@ Class UsersModule extends Module {
 
 
 
-
 	// Вход на форум - обработчик формы авторизации
 	public function login()
     {
-		// Если не переданы данные формы - значит функция была вызвана по ошибке
-		if (!isset($_POST['username']) or !isset($_POST['password'])) redirect('/');
-		$error = '';
-		
-		
-		if ($this->Register['Config']->read('autorization_protected_key', 'secure') === 1) {
+		if (Config::read('autorization_protected_key', 'secure') === 1) {
 			if (empty($_SESSION['form_key_mine'])
 			|| empty($_POST['form_key'])		
 			|| md5(substr($_POST['form_key'], 0, 10) . $_SESSION['form_key_mine']) != $_SESSION['form_hash']) {
@@ -2285,53 +1973,36 @@ Class UsersModule extends Module {
 			}
 		}
 		
+		$errors = $this->Register['Validate']->check($this->getValidateRules());
+		
 		
 		// Защита от перебора пароля - при каждой неудачной попытке время задержки увеличивается
 		if (isset($_SESSION['loginForm']['count']) && $_SESSION['loginForm']['count'] > time()) {
-			$error = '<li>' . sprintf(__('You must wait'), ($_SESSION['loginForm']['count'] - time())) . '</li>';
+			$errors .= '<li>' . sprintf(__('You must wait'), ($_SESSION['loginForm']['count'] - time())) . '</li>';
 		}
 
-
-		// Обрезаем переменные до длины, указанной в параметре maxlength тега input
-		$name      = mb_substr( $_POST['username'], 0, 30 );
-		$password  = mb_substr( $_POST['password'], 0, 30 );
 		// Обрезаем лишние пробелы
-		$name      = trim( $name );
-		$password  = trim( $password );
-
-		
-		// Проверяем, заполнены ли обязательные поля
-		$valobj = $this->Register['Validate'];
-		if (empty($name))         		
-			$error = $error.'<li>' . __('Empty field "login"') . '</li>'."\n";
-		if (empty($password)) 			
-			$error = $error.'<li>' . __('Empty field "password"') . '</li>'."\n";
-
-			
-		// Проверяем поля формы на недопустимые символы
-		if (!empty($name) && !$valobj->cha_val($name, V_LOGIN))
-			$error = $error.'<li>' . __('Wrong chars in field "login"') . '</li>'."\n";
-		if (!empty($password) && !$valobj->cha_val($password, V_LOGIN))
-			$error = $error.'<li>' . __('Wrong chars in field "password"') . '</li>'."\n";
+		$name      = trim( $_POST['username'] );
+		$password  = trim( $_POST['password'] );
 
 			
 		// Проверять существование такого пользователя есть смысл только в том
 		// случае, если поля не пустые и не содержат недопустимых символов
-		if (empty($error)) {
+		if (empty($errors)) {
 			$user = $this->Model->getByNamePass($name, $password);
-			if (empty($user)) $error = $error.'<li>' . __('Wrong login or pass') . '</li>'."\n";
+			if (empty($user)) $errors .= '<li>' . __('Wrong login or pass') . '</li>'."\n";
 		}
 
 		
 		// Если были допущены ошибки при заполнении формы
-		if (!empty($error)) {
+		if (!empty($errors)) {
 			if (!isset($_SESSION['loginForm']['count'])) $_SESSION['loginForm']['count'] = 1;
 			else if ($_SESSION['loginForm']['count'] < 10) $_SESSION['loginForm']['count']++;
   			else if ($_SESSION['loginForm']['count'] < time()) $_SESSION['loginForm']['count'] = time() + 10;
 			else $_SESSION['loginForm']['count'] = $_SESSION['loginForm']['count'] + 10;
 			
 			$_SESSION['loginForm']['error'] = '<p class="errorMsg">' . __('Some error in form') . '</p>'.
-			"\n".'<ul class="errorMsg">'."\n".$error.'</ul>'."\n";
+			"\n".'<ul class="errorMsg">'."\n".$errors.'</ul>'."\n";
 			redirect('/users/login_form/');
 		}
 
@@ -2373,7 +2044,6 @@ Class UsersModule extends Module {
 		}
 		redirect('/');
 	}
-
 
 
 
@@ -2510,6 +2180,7 @@ Class UsersModule extends Module {
 	}
 	
 	
+	
 	/**
 	 * View rating story
 	 *
@@ -2561,6 +2232,7 @@ Class UsersModule extends Module {
 		));
 		return $this->_view($source);
 	}
+	
 	
 	
 	/**
@@ -2725,6 +2397,7 @@ Class UsersModule extends Module {
 	}
 	
 	
+	
 	/**
 	 * View warnings story
 	 *
@@ -2787,6 +2460,7 @@ Class UsersModule extends Module {
 	}
 	
 	
+	
 	/**
 	 * Delete users warnings
 	 *
@@ -2827,6 +2501,7 @@ Class UsersModule extends Module {
 		}
 		die('fail');
 	}
+	
 	
 	
 	/**
@@ -2958,6 +2633,275 @@ Class UsersModule extends Module {
 		$this->_globalize($navi);
 
 		return $this->_view('');
+	}
+	
+	
+	
+	public function getValidateRules() 
+	{	
+		$rules = array(
+			'add' => array(
+				'login' => array(
+					'required' => true,
+					'max_length' => 20,
+					'min_length' => 3,
+					'pattern' => V_LOGIN,
+				),
+				'password' => array(
+					'min_length' => Config::read('min_password_lenght'),
+					'required' => true,
+					'pattern' => V_LOGIN,
+				),
+				'confirm' => array(
+					'compare' => 'password',
+					'required' => true,
+					'pattern' => V_LOGIN,
+				),
+				'email' => array(
+					'required' => true,
+					'pattern' => V_MAIL,
+				),
+				'keystring' => array(
+					'required' => true,
+					'pattern' => V_CAPTCHA,
+				),
+				'icq' => array(
+					'required' => 'editable',
+					'pattern' => V_INT,
+				),
+				'jabber' => array(
+					'required' => 'editable',
+					'pattern' => V_MAIL,
+				),
+				'pol' => array(
+					'required' => 'editable',
+				),
+				'city' => array(
+					'required' => 'editable',
+					'pattern' => V_LOGIN,
+				),
+				'telephone' => array(
+					'required' => 'editable',
+					'pattern' => V_INT,
+				),
+				'byear' => array(
+					'required' => 'editable',
+					'pattern' => V_INT,
+				),
+				'bmonth' => array(
+					'required' => 'editable',
+					'pattern' => V_INT,
+				),
+				'bday' => array(
+					'required' => 'editable',
+					'pattern' => V_INT,
+				),
+				'url' => array(
+					'required' => 'editable',
+					'pattern' => V_URL,
+				),
+				'about' => array(
+					'required' => 'editable',
+					'pattern' => V_TEXT,
+				),
+				'signature' => array(
+					'required' => 'editable',
+					'pattern' => V_TEXT,
+				),
+				'files__avatar' => array(
+					'type' => 'image',
+					'max_size' => Config::read('max_avatar_size', 'users'),
+				),
+			),
+			'update' => array(
+				'password' => array(
+					'min_length' => Config::read('min_password_lenght'),
+					'required' => true,
+					'pattern' => V_LOGIN,
+				),
+				'confirm' => array(
+					'compare' => 'newpassword',
+					'required' => false,
+					'pattern' => V_LOGIN,
+				),
+				'newpassword' => array(
+					'required' => false,
+					'min_length' => Config::read('min_password_lenght'),
+					'pattern' => V_LOGIN,
+				),
+				'email' => array(
+					'required' => true,
+					'pattern' => V_MAIL,
+				),
+				'icq' => array(
+					'required' => 'editable',
+					'pattern' => V_INT,
+				),
+				'jabber' => array(
+					'required' => 'editable',
+					'pattern' => V_MAIL,
+				),
+				'pol' => array(
+					'required' => 'editable',
+				),
+				'city' => array(
+					'required' => 'editable',
+					'pattern' => V_LOGIN,
+				),
+				'telephone' => array(
+					'required' => 'editable',
+					'pattern' => V_INT,
+				),
+				'byear' => array(
+					'required' => 'editable',
+					'pattern' => V_INT,
+				),
+				'bmonth' => array(
+					'required' => 'editable',
+					'pattern' => V_INT,
+				),
+				'bday' => array(
+					'required' => 'editable',
+					'pattern' => V_INT,
+				),
+				'url' => array(
+					'required' => 'editable',
+					'pattern' => V_URL,
+				),
+				'about' => array(
+					'required' => 'editable',
+					'pattern' => V_TEXT,
+				),
+				'signature' => array(
+					'required' => 'editable',
+					'pattern' => V_TEXT,
+				),
+				'files__avatar' => array(
+					'type' => 'image',
+					'max_size' => Config::read('max_avatar_size', 'users'),
+				),
+			),
+			'update_by_admin' => array(
+				'login' => array(
+					'required' => true,
+					'max_length' => 20,
+					'min_length' => 3,
+					'pattern' => V_LOGIN,
+				),
+				'confirm' => array(
+					'compare' => 'newpassword',
+					'required' => false,
+					'pattern' => V_LOGIN,
+				),
+				'newpassword' => array(
+					'required' => false,
+					'min_length' => Config::read('min_password_lenght'),
+					'pattern' => V_LOGIN,
+				),
+				'email' => array(
+					'required' => true,
+					'pattern' => V_MAIL,
+				),
+				'icq' => array(
+					'required' => 'editable',
+					'pattern' => V_INT,
+				),
+				'jabber' => array(
+					'required' => 'editable',
+					'pattern' => V_MAIL,
+				),
+				'pol' => array(
+					'required' => 'editable',
+				),
+				'city' => array(
+					'required' => 'editable',
+					'pattern' => V_LOGIN,
+				),
+				'telephone' => array(
+					'required' => 'editable',
+					'pattern' => V_INT,
+				),
+				'byear' => array(
+					'required' => 'editable',
+					'pattern' => V_INT,
+				),
+				'bmonth' => array(
+					'required' => 'editable',
+					'pattern' => V_INT,
+				),
+				'bday' => array(
+					'required' => 'editable',
+					'pattern' => V_INT,
+				),
+				'url' => array(
+					'required' => 'editable',
+					'pattern' => V_URL,
+				),
+				'about' => array(
+					'required' => 'editable',
+					'pattern' => V_TEXT,
+				),
+				'signature' => array(
+					'required' => 'editable',
+					'pattern' => V_TEXT,
+				),
+				'files__avatar' => array(
+					'type' => 'image',
+					'max_size' => Config::read('max_avatar_size', 'users'),
+				),
+			),
+			'send_message' => array(
+				'toUser' => array(
+					'required' => true,
+					'max_length' => 20,
+					'pattern' => V_LOGIN,
+				),
+				'subject' => array(
+					'required' => true,
+					'max_length' => 200,
+				),
+				'mainText' => array(
+					'required' => true,
+					'max_length' => Config::read('max_message_lenght', 'users'),
+				),
+			),
+			'send_mail' => array(
+				'toUser' => array(
+					'required' => true,
+					'max_length' => 20,
+					'pattern' => V_LOGIN,
+				),
+				'subject' => array(
+					'required' => true,
+					'max_length' => 200,
+				),
+				'message' => array(
+					'required' => true,
+					'max_length' => Config::read('max_mail_lenght', 'users'),
+				),
+			),
+			'login' => array(
+				'username' => array(
+					'required' => true,
+					'pattern' => V_LOGIN,
+				),
+				'password' => array(
+					'required' => true,
+				),
+			),
+			'send_new_password' => array(
+				'username' => array(
+					'required' => true,
+					'pattern' => V_LOGIN,
+				),
+				'email' => array(
+					'required' => true,
+					'pattern' => V_MAIL,
+				),
+			),
+		);
+		
+		return array($this->module => $rules);
 	}
 }
 
