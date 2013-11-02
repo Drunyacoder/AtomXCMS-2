@@ -3343,16 +3343,16 @@ Class ForumModule extends Module {
 			'add_theme' => array(
 				'theme' => array(
 					'required' => true,
-					'max_length' => 250,
+					'max_lenght' => 250,
 					'pattern' => V_TITLE,
 				),
 				'mainText' => array(
 					'required' => true,
-					'max_length' => Config::read('max_post_lenght', 'forum'),
+					'max_lenght' => Config::read('max_post_lenght', 'forum'),
 					'title' => 'Text',
 				),
 				'description' => array(
-					'max_length' => 200,
+					'max_lenght' => 200,
 				),
 				'files__attach' => array(
 					'for' => array(
@@ -3366,11 +3366,11 @@ Class ForumModule extends Module {
 			'update_theme' => array(
 				'theme' => array(
 					'required' => true,
-					'max_length' => 250,
+					'max_lenght' => 250,
 					'pattern' => V_TITLE,
 				),
 				'description' => array(
-					'max_length' => 200,
+					'max_lenght' => 200,
 				),
 				'first_top' => array(
 					'pattern' => V_INT,
@@ -3379,7 +3379,7 @@ Class ForumModule extends Module {
 			'add_post' => array(
 				'mainText' => array(
 					'required' => true,
-					'max_length' => Config::read('max_post_lenght', 'forum'),
+					'max_lenght' => Config::read('max_post_lenght', 'forum'),
 				),
 				'files__attach' => array(
 					'for' => array(
@@ -3393,7 +3393,7 @@ Class ForumModule extends Module {
 			'update_post' => array(
 				'mainText' => array(
 					'required' => true,
-					'max_length' => Config::read('max_post_lenght', 'forum'),
+					'max_lenght' => Config::read('max_post_lenght', 'forum'),
 				),
 				'files__attach' => array(
 					'for' => array(

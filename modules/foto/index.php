@@ -861,23 +861,23 @@ Class FotoModule extends Module {
 			'add' => array(
 				'title' => array(
 					'required' => true,
-					'max_length' => 250,
+					'max_lenght' => 250,
 					'title' => 'Title',
 				),
 				'mainText' => array(
 					'required' => true,
-					'max_length' => Config::read('max_lenght', $this->module),
+					'max_lenght' => Config::read('max_lenght', $this->module),
 					'title' => 'Text',
 				),
 				'cats_selector' => array(
 					'required' => true,
 					'pattern' => V_INT,
-					'max_length' => 11,
+					'max_lenght' => 11,
 					'title' => 'Category',
 				),
 				'mainText' => array(
 					'required' => 'editable',
-					'max_length' => Config::read('description_lenght', 'foto'),
+					'max_lenght' => Config::read('description_lenght', 'foto'),
 				),
 				'files__foto' => array(
 					'required' => true,
@@ -888,23 +888,23 @@ Class FotoModule extends Module {
 			'update' => array(
 				'title' => array(
 					'required' => true,
-					'max_length' => 250,
+					'max_lenght' => 250,
 					'title' => 'Title',
 				),
 				'mainText' => array(
 					'required' => true,
-					'max_length' => Config::read('max_lenght', $this->module),
+					'max_lenght' => Config::read('max_lenght', $this->module),
 					'title' => 'Text',
 				),
 				'cats_selector' => array(
 					'required' => true,
 					'pattern' => V_INT,
-					'max_length' => 11,
+					'max_lenght' => 11,
 					'title' => 'Category',
 				),
 				'mainText' => array(
 					'required' => 'editable',
-					'max_length' => Config::read('description_lenght', 'foto'),
+					'max_lenght' => Config::read('description_lenght', 'foto'),
 				),
 				'files__foto' => array(
 					'required' => true,

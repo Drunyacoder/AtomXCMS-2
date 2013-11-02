@@ -115,15 +115,15 @@ class Validate {
 				
 				
 					// max length
-					if (!empty($params['max_length'])) {
-						if (!empty($request[$title]) && mb_strlen($request[$title]) > $params['max_length']) 
-							$errors .= $this->getErrorMessage('max_length', $params, $title);
+					if (!empty($params['max_lenght'])) {
+						if (!empty($request[$title]) && mb_strlen($request[$title]) > $params['max_lenght']) 
+							$errors .= $this->getErrorMessage('max_lenght', $params, $title);
 					}
 
 					// min length
-					if (!empty($params['min_length'])) {
-						if (!empty($request[$title]) && mb_strlen($request[$title]) < $params['min_length']) 
-							$errors .= $this->getErrorMessage('min_length', $params, $title);
+					if (!empty($params['min_lenght'])) {
+						if (!empty($request[$title]) && mb_strlen($request[$title]) < $params['min_lenght']) 
+							$errors .= $this->getErrorMessage('min_lenght', $params, $title);
 					}
 
 					// compare
@@ -242,12 +242,12 @@ class Validate {
 				$message = __('Empty field') . ' "' . $title;
 				break;
 				
-			case 'max_length':
-				$message = sprintf(__('Very big "material"'), $publicTitle, $params['max_length']);
+			case 'max_lenght':
+				$message = sprintf(__('Very big "material"'), $publicTitle, $params['max_lenght']);
 				break;
 				
-			case 'min_length':
-				$message = sprintf(__('Very small "material"'), $publicTitle, $params['min_length']);
+			case 'min_lenght':
+				$message = sprintf(__('Very small "material"'), $publicTitle, $params['min_lenght']);
 				break;
 				
 			case 'compare':

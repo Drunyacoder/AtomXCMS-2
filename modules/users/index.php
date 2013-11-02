@@ -2643,12 +2643,12 @@ Class UsersModule extends Module {
 			'add' => array(
 				'login' => array(
 					'required' => true,
-					'max_length' => 20,
-					'min_length' => 3,
+					'max_lenght' => 20,
+					'min_lenght' => 3,
 					'pattern' => V_LOGIN,
 				),
 				'password' => array(
-					'min_length' => Config::read('min_password_lenght'),
+					'min_lenght' => Config::read('min_password_lenght'),
 					'required' => true,
 					'pattern' => V_LOGIN,
 				),
@@ -2715,7 +2715,7 @@ Class UsersModule extends Module {
 			),
 			'update' => array(
 				'password' => array(
-					'min_length' => Config::read('min_password_lenght'),
+					'min_lenght' => Config::read('min_password_lenght'),
 					'required' => true,
 					'pattern' => V_LOGIN,
 				),
@@ -2726,7 +2726,7 @@ Class UsersModule extends Module {
 				),
 				'newpassword' => array(
 					'required' => false,
-					'min_length' => Config::read('min_password_lenght'),
+					'min_lenght' => Config::read('min_password_lenght'),
 					'pattern' => V_LOGIN,
 				),
 				'email' => array(
@@ -2784,8 +2784,8 @@ Class UsersModule extends Module {
 			'update_by_admin' => array(
 				'login' => array(
 					'required' => true,
-					'max_length' => 20,
-					'min_length' => 3,
+					'max_lenght' => 20,
+					'min_lenght' => 3,
 					'pattern' => V_LOGIN,
 				),
 				'confirm' => array(
@@ -2795,7 +2795,7 @@ Class UsersModule extends Module {
 				),
 				'newpassword' => array(
 					'required' => false,
-					'min_length' => Config::read('min_password_lenght'),
+					'min_lenght' => Config::read('min_password_lenght'),
 					'pattern' => V_LOGIN,
 				),
 				'email' => array(
@@ -2853,31 +2853,31 @@ Class UsersModule extends Module {
 			'send_message' => array(
 				'toUser' => array(
 					'required' => true,
-					'max_length' => 20,
+					'max_lenght' => 20,
 					'pattern' => V_LOGIN,
 				),
 				'subject' => array(
 					'required' => true,
-					'max_length' => 200,
+					'max_lenght' => 200,
 				),
 				'mainText' => array(
 					'required' => true,
-					'max_length' => Config::read('max_message_lenght', 'users'),
+					'max_lenght' => Config::read('max_message_lenght', 'users'),
 				),
 			),
 			'send_mail' => array(
 				'toUser' => array(
 					'required' => true,
-					'max_length' => 20,
+					'max_lenght' => 20,
 					'pattern' => V_LOGIN,
 				),
 				'subject' => array(
 					'required' => true,
-					'max_length' => 200,
+					'max_lenght' => 200,
 				),
 				'message' => array(
 					'required' => true,
-					'max_length' => Config::read('max_mail_lenght', 'users'),
+					'max_lenght' => Config::read('max_mail_lenght', 'users'),
 				),
 			),
 			'login' => array(

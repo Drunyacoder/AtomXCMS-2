@@ -610,18 +610,18 @@ Class StatModule extends Module {
 			'add' => array(
 				'title' => array(
 					'required' => true,
-					'max_length' => 250,
+					'max_lenght' => 250,
 					'title' => 'Title',
 				),
 				'mainText' => array(
 					'required' => true,
-					'max_length' => $this->Register['Config']->read('max_lenght', $this->module),
+					'max_lenght' => $this->Register['Config']->read('max_lenght', $this->module),
 					'title' => 'Text',
 				),
 				'cats_selector' => array(
 					'required' => true,
 					'pattern' => V_INT,
-					'max_length' => 11,
+					'max_lenght' => 11,
 					'title' => 'Category',
 				),
 				'description' => array(
@@ -657,18 +657,18 @@ Class StatModule extends Module {
 			'update' => array(
 				'title' => array(
 					'required' => true,
-					'max_length' => 250,
+					'max_lenght' => 250,
 					'title' => 'Title',
 				),
 				'mainText' => array(
 					'required' => true,
-					'max_length' => $this->Register['Config']->read('max_lenght', $this->module),
+					'max_lenght' => $this->Register['Config']->read('max_lenght', $this->module),
 					'title' => 'Text',
 				),
 				'cats_selector' => array(
 					'required' => true,
 					'pattern' => V_INT,
-					'max_length' => 11,
+					'max_lenght' => 11,
 					'title' => 'Category',
 				),
 				'description' => array(
@@ -705,7 +705,7 @@ Class StatModule extends Module {
 				'login' => array(
 					'required' => true,
 					'pattern' => V_TITLE,
-					'max_length' => 40,
+					'max_lenght' => 40,
 				),
 				'message' => array(
 					'required' => true,
@@ -719,7 +719,7 @@ Class StatModule extends Module {
 				'login' => array(
 					'required' => true,
 					'pattern' => V_TITLE,
-					'max_length' => 40,
+					'max_lenght' => 40,
 				),
 				'message' => array(
 					'required' => true,
