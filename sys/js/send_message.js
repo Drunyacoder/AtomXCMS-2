@@ -639,3 +639,9 @@ function check_pm(uid){
 		});
 	}
 }
+
+function setRatingForEntity(module, entity_id, vote){
+	$.get('/'+module+'/set_rating/'+entity_id+'?vote='+vote, function(response){
+		alert(response);
+	});
+}

@@ -38,6 +38,7 @@ class FotoEntity extends FpsEntity
 	protected $author = null;
 	protected $comments;
 	protected $filename = null;
+	protected $rating;
 
 	
 	
@@ -52,6 +53,7 @@ class FotoEntity extends FpsEntity
 			'author_id' => intval($this->author_id),
 			'comments' => intval($this->comments),
 			'filename' => $this->filename,
+			'rating' => $this->rating,
 		);
 		if ($this->id) $params['id'] = $this->id;
 		$Register = Register::getInstance();

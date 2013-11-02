@@ -50,6 +50,7 @@ class StatEntity extends FpsEntity
 	protected $on_home_top;
 	protected $add_fields = null;
 	protected $premoder;
+	protected $rating;
 	
 	
 	
@@ -73,6 +74,7 @@ class StatEntity extends FpsEntity
 			'view_on_home' => (!empty($this->view_on_home)) ? '1' : new Expr("'0'"),
 			'on_home_top' => (!empty($this->on_home_top)) ? '1' : new Expr("'0'"),
 			'premoder' => (!empty($this->premoder)) ? $this->premoder : 'nochecked',
+			'rating' => $this->rating,
 		);
 		if ($this->id) $params['id'] = $this->id;
 		$Register = Register::getInstance();

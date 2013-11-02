@@ -4,12 +4,12 @@
 | @Author:       Andrey Brykin (Drunya)        |
 | @Email:        drunyacoder@gmail.com         |
 | @Site:         http://fapos.net              |
-| @Version:      1.8.2                         |
+| @Version:      1.8.3                         |
 | @Project:      CMS                           |
 | @Package       CMS Fapos                     |
 | @Subpackege    News Module                   |
 | @Copyright     ©Andrey Brykin 2010-2013      |
-| @Last mod      2013/07/05                    |
+| @Last mod      2013/11/01                    |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
@@ -1174,7 +1174,14 @@ Class NewsModule extends Module {
 	public function delete_comment($id = null)
     {
 		include_once(ROOT . '/sys/inc/includes/delete_comment.php');
-	}	
+	}
+
+
+
+	public function set_rating($id = null)
+    {
+		include_once(ROOT . '/sys/inc/includes/set_rating.php');
+	}		
 	
 	
 
