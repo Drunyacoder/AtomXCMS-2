@@ -64,6 +64,17 @@ foreach ($count_usr as $val) {
 }
 
 
+
+// subscribes
+$subscribes_path = ROOT . '/sys/settings/subscribes.dat';
+$subscribes_emails = file($subscribes_path);
+$users_groups['777'] = array(
+	'title' => 'Подписчики',
+	'cnt' => count($subscribes_emails),
+);
+
+
+
 	
 if (isset($_POST['send'])) {
 	if (!empty($_POST['message']) 
@@ -84,6 +95,20 @@ if (isset($_POST['send'])) {
 				'`status` IN (' . $status_ids . ')',
 			),
 		));
+		
+		
+		
+		if (!empty($_POST['groups']['777'])) {
+			$semails = array();
+			foreach ($subscribes_emails as $semail) {
+				$semails[] = array(
+					'email' => $semail,
+					'name' => 'Подписчик',
+				);
+			}
+			$mail_list = array_merge($mail_list, $semails);
+		}
+
 		
 		if (count($mail_list) > 0) {
 			$from = (!empty($_POST['from'])) ? trim($_POST['from']) : Config::read('admin_email');
@@ -122,6 +147,23 @@ if (isset($_POST['send'])) {
 include_once ROOT . '/admin/template/header.php';
 ?>
 
+
+<div id="sec" class="popup">
+	<div class="top">
+		<div class="title">Добавление категории</div>
+		<div onClick="closePopup('sec');" class="close"></div>
+	</div>
+	<form action="forum_cat.php?ac=add" method="POST">
+	<div class="items" style="height:400px; overflow:auto;">
+		<?php foreach($subscribes_emails as $email): ?>
+		<?php echo h($email); ?><br />
+		<?php endforeach; ?>
+	</div>
+	</form>
+</div>
+
+
+
 <div class="warning">
 	<span class="greytxt">Email-ов доступно:</span> <?php echo $all_users_cnt; ?><br /><br />
 
@@ -143,6 +185,7 @@ include_once ROOT . '/admin/template/header.php';
 <form action="" method="POST">
 <div class="list">
 	<div class="title">Рассылка</div>
+	<div class="add-cat-butt" onClick="openPopup('sec');"><div class="add"></div>Список подписчиков</div>
 	<div class="level1">
 		<div class="items">
 			<div class="setting-item">

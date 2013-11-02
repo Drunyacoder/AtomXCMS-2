@@ -80,9 +80,6 @@ class PagesModel extends FpsModel
 	 */
 	public function buildUrl($page_id, $pages = null, $prefix = '') 
 	{ 
-		
-
-		
 		$url = '';
 		if ($pages === null) $pages = self::$pages;
 		

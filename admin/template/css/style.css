@@ -6,11 +6,14 @@ body {background:url('../img/body-bg.png') repeat !important; min-height:100%; m
 a {color:#96C703;}
 .comment {display:block; color:#939393; padding:5px 0px; font-size:11px; font-style:italic; -moz-text-shadow:none; -webkit-text-shadow:none; text-shadow:none; max-width:500px;}
 
+/* pagination */
+.pagination {color:#fff;}
+.pagination a.pages, .pagination strong {margin-right:5px;}
 
 /* Head menu */
 #wrapper {min-height:100%; position:relative; min-width:1150px; padding:106px 3% 30px 3%;}
-.headmenuwrap {height:106px; width: 94%; padding:0px 3%; background:url('../img/headmenu-bg.png') repeat-x; position:fixed; z-index:9999; -webkit-box-shadow: 0 1px 3px #555; -moz-box-shadow: 0 1px 3px #555; box-shadow: 0 1px 3px #555;}
-.headmenu {width:100%; height:35px; padding:10px 0px;}
+.headmenuwrap {height:106px; width: 94%; padding:0px 3%; background:url('../img/headmenu-bg.png') repeat-x; position:absolute; z-index:1; -webkit-box-shadow: 0 1px 3px #555; -moz-box-shadow: 0 1px 3px #555; box-shadow: 0 1px 3px #555; min-width:1300px;}
+.headmenu {width:100%; height:35px; padding:10px 0px; z-index:10000;}
 .headmenu .logo {width:110px; height:50px; margin:-9px 0px 0px 60px; float:left; background:url('../img/logo.png') no-repeat;}
 
 .headmenu .menu {float:left; z-index:99999; left: 17px; position: relative;}
@@ -41,38 +44,38 @@ a {color:#96C703;}
 .center-wrapper {position:relative;}
 table.side-separator, table.side-separator tr td {vertical-align:top; min-height:100%; position:relative;}
 
-.side-menu {width:235px; min-height:100%; background:url('../img/sidemenu-bg.png') repeat; border-left:1px solid #2a2a2b; border-right:1px solid #2a2a2b; position:fixed; z-index:9999; top:55px; left:3%;}
+.side-menu {width:235px; min-height:100%; background:url('../img/sidemenu-bg.png') repeat; border-left:1px solid #2a2a2b; border-right:1px solid #2a2a2b; position:absolute; z-index:2; top:55px; left:3%;}
 .side-menu > .search {height:31px; width:215px; padding:10px; -moz-box-shadow: 0px 0px 20px #000; -webkit-box-shadow: 0px 0px 20px #000; box-shadow: 0px 0px 20px #000; z-index:0;}
 .side-menu .search .input {width:168px; height:26px; float:left; border-radius:5px; -moz-border-radius:5px; -webkit-border-radius:5px; -moz-background:linear-gradient(#4b4a4b, #6a6969); -ms-background:linear-gradient(#4b4a4b, #6a6969); -webkit-background:linear-gradient(#4b4a4b, #6a6969); background:linear-gradient(#4b4a4b, #6a6969); -moz-box-shadow:inset 0px 0px 3px #000; -webkit-box-shadow:inset 0px 0px 3px #000; box-shadow:inset 0px 0px 3px #000; border-bottom:1px solid #a3a3a3; margin-right:10px;}
 .side-menu .search .input input[type="text"] {background:none; border:none; color:#cdcdcd; font-style:italic; padding:5px; -moz-box-shadow:none; -webkitbox-shadow:none; box-shadow:none;}
 .side-menu .search .submit-butt {width:24px; height:24px; float:left; background:url('../img/submit-button-bg.png') no-repeat; border:none; cursor:pointer;}
 
 .side-menu ul, .side-menu li {list-style-type:none;}
-.side-menu li {display:block; width:235px; min-height:42px; background:url('../img/sidemenu-point-bg.png') 209px -33px no-repeat; position:relative; border-top:1px solid #272728; border-bottom:1px solid #646363;}
-.side-menu li:hover {background:url('../img/sidemenu-point-bg.png') 210px 3px no-repeat;}
+.side-menu li {display:block; width:235px; min-height:35px; background:url('../img/sidemenu-point-bg.png') 209px -36px no-repeat; position:relative; border-top:1px solid #272728; border-bottom:1px solid #646363;}
+.side-menu li:hover {background:url('../img/sidemenu-point-bg.png') 210px 0px no-repeat;}
 .side-menu li:last-child {border-bottom:none;}
 .side-menu li div.icon {width:50px; height:30px; float:left; background:url('../img/sidemenu-icons-sprite.png') no-repeat; background-position:0px 100px; margin-left: 10px;}
-.side-menu li a {height:16px; display:inline-block; float:left; padding:13px 0px; color:#fff; text-transform:uppercase; -moz-text-shadow:0px -2px 1px #000; -webkit-text-shadow:0px -2px 1px #000; text-shadow:0px -2px 1px #000; text-decoration:none; font-size:12px;}
-.side-menu li .sub-opener {width:30px; height:30px; position:absolute; right:0px; top:5px;}
+.side-menu li a {height:16px; display:inline-block; float:left; padding-top:10px; color:#fff; text-transform:uppercase; -moz-text-shadow:0px -2px 1px #000; -webkit-text-shadow:0px -2px 1px #000; text-shadow:0px -2px 1px #000; text-decoration:none; font-size:12px;}
+.side-menu li .sub-opener {width:30px; height:30px; position:absolute; right:0px; top:3px;}
 .side-menu li div.sub {position:relative; background:url('../img/sidemenu-sub-bg.png') repeat; border-top:1px solid #272728; overflow:hidden; display:none;}
 .side-menu li div.sub .shadow {width:235px; padding:0px 20px; margin-left:-20px; -moz-box-shadow:inset 0px 0px 20px #000; -webkit-box-shadow:inset 0px 0px 20px #000; box-shadow:inset 0px 0px 20px #000;}
 .side-menu li div.sub ul, .side-menu li div.sub li {border:none; background:none;}
-.side-menu li div.sub ul li {width:auto; min-height:30px; padding:0px 10px 0px 60px;}
-.side-menu li div.sub ul li a {display:block; color:#96c703; padding:5px 0px; font-size:13px; text-transform:none; -moz-text-shadow:0px -1px 1px #000; -webkit-text-shadow:0px -1px 1px #000; text-shadow:0px -1px 1px #000; text-decoration:underline;}
+.side-menu li div.sub ul li {width:auto; min-height:25px; padding:0px 10px 0px 60px;}
+.side-menu li div.sub ul li a {display:block; color:#96c703; padding-top:5px; font-size:13px; text-transform:none; -moz-text-shadow:0px -1px 1px #000; -webkit-text-shadow:0px -1px 1px #000; text-shadow:0px -1px 1px #000; text-decoration:underline;}
 .side-menu li div.sub ul li:hover a {text-shadow:0px 0px 2px #96c703;}
 
 /* Side menu icons */
-.side-menu li div.icon.users {background-position:0px 10px;}
-.side-menu li div.icon.pages {background-position:0px -31px;}
-.side-menu li div.icon.news {background-position:0px -197px;}
-.side-menu li div.icon.forum {background-position:0px -241px;}
+.side-menu li div.icon.users {background-position:0px 6px;}
+.side-menu li div.icon.pages {background-position:0px -35px;}
+.side-menu li div.icon.news {background-position:0px -201px;}
+.side-menu li div.icon.forum {background-position:0px -245px;}
 .side-menu li div.icon.stat {background-position:0px -289px;}
-.side-menu li div.icon.loads {background-position:0px -329px;}
-.side-menu li div.icon.search {background-position:0px -68px;}
-.side-menu li div.icon.foto {background-position:0px -463px;}
-.side-menu li div.icon.chat {background-position:0px -241px;}
-.side-menu li div.icon.statistics {background-position:0px -372px;}
-.side-menu li div.icon.forum {background-position:0px -416px;}
+.side-menu li div.icon.loads {background-position:0px -334px;}
+.side-menu li div.icon.search {background-position:0px -72px;}
+.side-menu li div.icon.foto {background-position:0px -467px;}
+.side-menu li div.icon.chat {background-position:0px -245px;}
+.side-menu li div.icon.statistics {background-position:0px -376px;}
+.side-menu li div.icon.forum {background-position:0px -420px;}
 
 
 /* Content */
@@ -104,6 +107,7 @@ table.side-separator, table.side-separator tr td {vertical-align:top; min-height
 
 .list > .level1 > .items > .level2 .buttons, .list > .level1 > .head > .buttons {width:140px; padding-right:90px; text-align:right;}
 .setting-item > .buttons {width:140px; padding-right:90px; text-align:right; border-left:1px solid #bebdbd; float:right;}
+.setting-item > .unbordered-buttons {width:140px; height:25px; padding-right:50px; text-align:right; border:none; position:absolute; top:0px; bottom:0px; right:0px; margin:auto; margin-right:0px;}
 .cat-indent {display:inline-block; padding-right:10px;}
 .cat-indent:after {content:" - ";}
 
@@ -112,7 +116,7 @@ table.side-separator, table.side-separator tr td {vertical-align:top; min-height
 .list > .level1 > .head .title.settings {width:23%; border-right:1px solid #bebdbd;}
 .list > .level1 > .head .title-r {height:13px; padding:20px; float:left; border-left:1px solid #e2e1e1; -moz-text-shadow:0px 1px 1px #fff; -webkit-text-shadow:0px 1px 1px #fff; text-shadow:0px 1px 1px #fff;}
 .list > .level1 > .items > .setting-item:nth-child(2n) {background:#f4f2f2;}
-.list > .level1 > .items > .setting-item {color:#3a3a3a; font-size:13px; text-shadow:0px 0px 1px #777;}
+.list > .level1 > .items > .setting-item {color:#3a3a3a; font-size:13px; text-shadow:0px 0px 1px #777; position:relative;}
 .list > .level1 > .items > .setting-item .left, .list > .level1 > .items > .setting-item .right {padding:20px;}
 .list > .level1 > .items > .setting-item .left {width:23%; float:left; border-right:1px solid #e1e1e1;}
 

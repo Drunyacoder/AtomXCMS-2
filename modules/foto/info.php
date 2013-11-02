@@ -7,6 +7,7 @@ $menuInfo = array(
         'settings.php?m=foto' => 'Настройки',
         'design.php?m=foto' => 'Дизайн',
         'category.php?mod=foto' => 'Управление категориями',
+        'materials_list.php?m=foto' => 'Список материалов',
 	),
 );
 

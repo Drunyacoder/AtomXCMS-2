@@ -249,7 +249,6 @@ if (count($settingsInfo)) {
 	foreach ($settingsInfo as $fname => $params) {
 		if (is_string($params)) {
 			//$output .= '<tr class="small"><td class="group" colspan="3">' . h($params) . '</td></tr>';
-			$output .= '<div class="setting-item"><div class="title">' . h($params) . '</div></div>';
 			continue;
 		}
 		

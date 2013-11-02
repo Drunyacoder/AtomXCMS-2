@@ -9,6 +9,7 @@ $menuInfo = array(
         'category.php?mod=news' => 'Управление категориями',
         'additional_fields.php?m=news' => 'Дополнительные поля',
         'premoder.php?m=news' => 'Премодерация',
+        'materials_list.php?m=news' => 'Список материалов',
 	),
 );
 

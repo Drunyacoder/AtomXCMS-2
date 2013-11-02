@@ -267,6 +267,7 @@ class PagesAdminController {
 	 */
 	public function save($params)
 	{
+
 		if (!empty($params['id'])) {
 			$id = intval($params['id']);
 			$entity = $this->Model->getById(intval($params['id']));
@@ -275,7 +276,7 @@ class PagesAdminController {
 			$entity->setName($params['name']);
 			$entity->setTitle($params['title']);
 			$entity->setUrl($params['url']);
-			$entity->setPosition($params['position']);
+			$entity->setPosition($params['position'] ? $params['position'] : 0);
 			$entity->setVisible(!empty($params['visible']) ? '1' : '0');
 			$entity->setMeta_title($params['meta_title']);
 			$entity->setMeta_keywords($params['meta_keywords']);
@@ -284,6 +285,7 @@ class PagesAdminController {
 			$entity->setTemplate($params['template']);
 			$entity->setContent($params['content']);
 			$entity->save();
+			
 			
 			
 		} else {
@@ -507,7 +509,8 @@ include_once ROOT . '/admin/template/header.php';
 
 $(document).ready(function(){
 	redactor_ = $('#mainTextarea').redactor({
-		css: 'redactor.css', 
+		css: '/template/vrc/css/style_redactor.css', 
+		iframe: true,
 		cleanup: false,
 		autoclear: false, 
 		autoformat: false, 
@@ -524,7 +527,8 @@ $(document).ready(function(){
 		deniedTags: [],
 		removeEmptyTags: false,
 		phpTags: true,
-		uploadCrossDomain: true
+		uploadCrossDomain: true,
+		visual: false
 	});
 	
 	
@@ -855,7 +859,8 @@ function fillForm(id){
 			$(form).find('textarea[name="content"]').val(data.content);
 		} else {
 			$(form).find('textarea[name="content"]').val(data.content);
-			$('div.redactor_editor').html(data.content);
+			$('#mainTextarea').data("redactor").setCode(data.content);
+			//$('div.redactor_editor').html(data.content);
 		}
 		
 		 
@@ -896,6 +901,8 @@ if (!empty($_SESSION['info_message'])):
 <?php
 	unset($_SESSION['info_message']);
 endif;
+
+
 ?>
 
 

@@ -92,6 +92,8 @@ $allowedFiles = array(
     ),
     'default' => array(
         'main',
+        'infomessagegrand',
+        'infomessagegrand_en',
     ),
 	'custom' => array(),
 );
@@ -119,6 +121,8 @@ $entities = array(
     'themes_list' 		=> __('Themes list'),
     'search_form' 		=> __('Search form'),
     'search_row' 		=> __('Search results'),
+    'infomessagegrand' 	=> 'Страница ошибки',
+    'infomessagegrand_en' => 'Страница ошибки (en)',
 );
 
 
@@ -272,7 +276,6 @@ if(isset($mess) && $mess != NULL) {
 
 
 
-
 <div class="white">
 	<div class="pages-tree">
 		<div class="title">Страницы</div>
@@ -387,11 +390,20 @@ if(isset($mess) && $mess != NULL) {
 <link rel="StyleSheet" type="text/css" href="js/codemirror/theme/eclipse.css" />
 <script type="text/javascript">
 $(document).ready(function(){
+	var wd = parseInt($('.list.pages-form').css('width'), 10) - 20;
+
+	
     var editor = CodeMirror.fromTextArea(document.getElementById("tmpl"), {
 		theme: "eclipse", 
 		mode: "<?php echo ($type === 'css') ? 'css' : 'vbscript'; ?>"
 	});
-	editor.setSize(933, 450);
+	
+
+	editor.setSize(wd, 450);
+	$('.CodeMirror').css({
+		'margin-top': '-20px',
+		'margin-bottom': '-20px'
+	});
 });
 </script>
 

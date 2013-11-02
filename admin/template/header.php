@@ -35,6 +35,55 @@
 		//}, 2000);
 		
 		$('#wrapper').css('min-height', ($('body').height() - 136));
+		
+		
+		
+		// get size to current scroll position
+		function getScrollTop() {
+				   var scrOfY = 0;
+				   if( typeof( window.pageYOffset ) == "number" ) {
+						   //Netscape compliant
+						   scrOfY = window.pageYOffset;
+				   } else if( document.body
+				   && ( document.body.scrollLeft
+				   || document.body.scrollTop ) ) {
+						   //DOM compliant
+						   scrOfY = document.body.scrollTop;
+				   } else if( document.documentElement
+				   && ( document.documentElement.scrollLeft
+					|| document.documentElement.scrollTop ) ) {
+						   //IE6 Strict
+						   scrOfY = document.documentElement.scrollTop;
+				   }
+				   return scrOfY;
+		}
+		
+		function setMenuPosition() {
+			var position = getScrollTop();
+			if (typeof position == 'undefined' || !position) return false;
+			
+			
+			if (position > 106) {
+				
+				if ($('.headmenuwrap .crumbs').is(':visible')) $('.headmenuwrap .crumbs').hide();
+				$('.headmenuwrap').stop().animate({
+					'height': '55px',
+					'z-index': 5,
+					'top': parseInt(position) + 'px'
+				}, 100);
+				
+			} else {
+				if (!$('.headmenuwrap .crumbs').is(':visible')) $('.headmenuwrap .crumbs').show();
+				$('.headmenuwrap').stop().animate({
+					'height': '106px',
+					'z-index': 1,
+					'top': '0px'
+				}, 500);
+			}
+			return false;
+		}
+		
+		//window.addEventListener("scroll", setMenuPosition, false);
 	});
 	</script>
 </head> 
@@ -72,8 +121,10 @@
 				? '<a href="http://home.develdo.com/downloads.php" title="Last version">' . h($new_ver) . '</a>' 
 				: '';
 				
+				
 				$group_info = $Register['ACL']->get_user_group($_SESSION['user']['status']);
 				$group_title = $group_info['title'];
+				
 				?>
 				<div class="ava"><img src="<?php echo $ava_path; ?>" alt="user ava" title="user ava" /></div>
 				<div class="name"><a href="#"><?php echo h($_SESSION['user']['name']); ?></a><span><?php echo h($group_title) ?></span></div>

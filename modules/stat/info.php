@@ -10,6 +10,7 @@ $menuInfo = array(
         'category.php?mod=stat' => 'Управление категориями',
         'additional_fields.php?m=stat' => 'Дополнительные поля',
 		'premoder.php?m=stat' => 'Премодерация',
+        'materials_list.php?m=stat' => 'Список материалов',
 	),
 );
 

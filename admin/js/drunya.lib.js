@@ -165,11 +165,11 @@ function hideAll() {
 		$(this).slideUp('fast');
 	});
 	
-	/*
+	
 	$('.side-menu > ul > li .sub').each(function(){
 		$(this).slideUp('fast');
 	});
-	*/
+	
 	return;
 }
 

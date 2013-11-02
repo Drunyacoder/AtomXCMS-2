@@ -176,13 +176,13 @@ if (isset($_GET['a']) && $_GET['a'] == 'ed') {
 		if (empty($_SESSION['mess'])) {
 			$countchank = $FpsDB->select('snippets', DB_COUNT, array('cond' => array('name' => $_POST['my_title'])));
 			if ($countchank == 0) {
-				$last_id = $sql = $FpsDB->save('snippets', array(
+				$sql = $FpsDB->save('snippets', array(
 					'name' => $_POST['my_title'],
 					'body' => $_POST['my_text'],
 				));
 				
 				$_SESSION['mess'] = "Сниппет создан! Применяйте его так: {[" . h($_POST['my_title']) . "]}";
-				redirect('/admin/snippets.php?a=ed&id=' . $last_id);
+				redirect('/admin/snippets.php?a=ed&id=' . mysql_insert_id());
 			} else {
 				$_SESSION['mess'] = 'Такой сниппет уже есть! Измените имя блока.';
 			}

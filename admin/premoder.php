@@ -35,7 +35,7 @@ $module = $_GET['m'];
 if (in_array($module, array('news', 'stat', 'loads'))) {
 	$Model = $Register['ModManager']->getModelInstance($module);
 
-	$pageTitle = __($module) . ' - ' . $pageTitle;
+	//$pageTitle = __($module) . ' - ' . $pageTitle;
 
 	// Save settings
 
@@ -145,8 +145,8 @@ include_once ROOT . '/admin/template/header.php';
 	<div class="title"><?php echo $pageNav; ?></div>
 	<div class="level1">
 		<div class="head">
-			<div class="title settings">Заголовок</div>
-			<div class="title-r">Текст</div>
+			<div class="title settings">Имя</div>
+			<div class="title-r">Сообщение</div>
 			<div class="clear"></div>
 		</div>
 		<div class="items">

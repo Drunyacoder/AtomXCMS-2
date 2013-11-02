@@ -33,10 +33,11 @@ $FpsDB = $Register['DB']; //TODO
 $ACL = $Register['ACL'];
 
 
-
-
-
-
+/*
+pr(time());
+pr($_SESSION['adm_panel_authorize']);
+die();
+*/
 
 
 if (ADM_REFER_PROTECTED == 1) {
@@ -87,6 +88,8 @@ if (!isset($_SESSION['adm_panel_authorize']) || $_SESSION['adm_panel_authorize']
     $pageTitle = 'Авторизация в панели Администрирования';
     $pageNav = '';
     $pageNavr = '';
+
+
 ?>
 
 
@@ -166,9 +169,9 @@ if (!isset($_SESSION['adm_panel_authorize']) || $_SESSION['adm_panel_authorize']
 	if (!empty($ACL)) $ACL = $Register['ACL'];
 	
 	if ($ACL->turn(array('panel', 'restricted_access'), false)) {
-	
+
 		$url = preg_replace('#^.*/([^/]+)\.\w{2,5}$#i', "$1", $_SERVER['SCRIPT_NAME']);
-		//var_dump($url);
+		
 		if (!empty($url) && $url != 'index' && $url != 'exit') {
 			if (!$ACL->turn(array('panel', 'restricted_access_' . $url), false)) {
 				$_SESSION['message'] = __('Permission denied');
@@ -177,7 +180,7 @@ if (!isset($_SESSION['adm_panel_authorize']) || $_SESSION['adm_panel_authorize']
 		}
 	}
 }
-
+;
 
 
 
