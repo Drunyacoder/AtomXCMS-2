@@ -1,8 +1,12 @@
 <?php
 //turn access
-//$this->ACL->turn(array($this->module, 'set_rating'));
+if (!$this->ACL->turn(array($this->module, 'use_rating'), false)) 
+	die(__('Some error occurred'));
+	
+	
 $id = (!empty($id)) ? (int)$id : 0;
 if ($id < 1) redirect('/' . $this->module);
+
 
 if (!empty($_COOKIE[md5('rating_'.$this->module.'_'.$id)])) die(__('Some error occurred'));
 

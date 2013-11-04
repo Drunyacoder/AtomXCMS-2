@@ -96,6 +96,14 @@ $acl_rules = array (
       2 => 3,
       3 => 4,
     ),
+    'use_rating' => 
+    array (
+      2 => 3,
+      3 => 4,
+      5 => 1,
+      6 => 2,
+      7 => 5,
+    ),
   ),
   'stat' => 
   array (
@@ -193,6 +201,14 @@ $acl_rules = array (
       2 => 3,
       3 => 4,
     ),
+    'use_rating' => 
+    array (
+      2 => 3,
+      3 => 4,
+      5 => 1,
+      6 => 2,
+      7 => 5,
+    ),
   ),
   'loads' => 
   array (
@@ -285,6 +301,15 @@ $acl_rules = array (
       2 => 3,
       3 => 4,
     ),
+    'use_rating' => 
+    array (
+      2 => 3,
+      3 => 4,
+      4 => 0,
+      5 => 1,
+      6 => 2,
+      7 => 5,
+    ),
   ),
   'foto' => 
   array (
@@ -362,6 +387,15 @@ $acl_rules = array (
     array (
       3 => 4,
       4 => 3,
+    ),
+    'use_rating' => 
+    array (
+      2 => 3,
+      3 => 4,
+      4 => 0,
+      5 => 1,
+      6 => 2,
+      7 => 5,
     ),
   ),
   'forum' => 
@@ -590,15 +624,15 @@ $acl_rules = array (
       0 => 3,
       1 => 4,
     ),
-	'restricted_access' => array(
-
-	),
-	'restricted_access_page' => array(
-
-	),
-	'restricted_access_snippets' => array(
-
-	),
+    'restricted_access' => 
+    array (
+    ),
+    'restricted_access_page' => 
+    array (
+    ),
+    'restricted_access_snippets' => 
+    array (
+    ),
   ),
   'other' => 
   array (
