@@ -133,6 +133,7 @@ $array[] = "CREATE TABLE `{$set['db']['prefix']}loads` (
   `view_on_home` ENUM( '0', '1' ) DEFAULT '1' NOT NULL,
   `on_home_top` ENUM( '0', '1' ) DEFAULT '0' NOT NULL,
   `premoder` ENUM( 'nochecked', 'rejected', 'confirmed' ) NOT NULL DEFAULT 'confirmed',
+  `rating` INT( 11 ) NOT NULL DEFAULT '0',
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
 #####################################################################
@@ -195,6 +196,7 @@ $array[] = "CREATE TABLE `{$set['db']['prefix']}news` (
   `view_on_home` ENUM( '0', '1' ) DEFAULT '1' NOT NULL,
   `on_home_top` ENUM( '0', '1' ) DEFAULT '0' NOT NULL,
   `premoder` ENUM( 'nochecked', 'rejected', 'confirmed' ) NOT NULL DEFAULT 'confirmed',
+  `rating` INT( 11 ) NOT NULL DEFAULT '0',
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
 $array[] = "INSERT INTO `{$set['db']['prefix']}news` 
@@ -258,6 +260,7 @@ $array[] = "CREATE TABLE `{$set['db']['prefix']}stat` (
   `view_on_home` ENUM( '0', '1' ) DEFAULT '1' NOT NULL,
   `on_home_top` ENUM( '0', '1' ) DEFAULT '0' NOT NULL,
   `premoder` ENUM( 'nochecked', 'rejected', 'confirmed' ) NOT NULL DEFAULT 'confirmed',
+  `rating` INT( 11 ) NOT NULL DEFAULT '0',
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
 #####################################################################
@@ -373,6 +376,7 @@ $array[] = "CREATE TABLE `{$set['db']['prefix']}foto` (
   `category_id` int(11) default NULL,
   `author_id` int(11) NOT NULL,
   `comments` int(11) NOT NULL default '0',
+  `rating` INT( 11 ) NOT NULL DEFAULT '0',
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
 #############################################################################

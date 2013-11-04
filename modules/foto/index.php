@@ -915,5 +915,12 @@ Class FotoModule extends Module {
 		);
 		
 		return array($this->module => $rules);
-	}		
+	}	
+
+
+	
+	public function set_rating($id = null)
+    {
+		include_once(ROOT . '/sys/inc/includes/set_rating.php');
+	}	
 }

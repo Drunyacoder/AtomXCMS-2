@@ -1681,6 +1681,12 @@ Class LoadsModule extends Module {
 		include_once ROOT . '/sys/inc/includes/rss.php';
     }
 	
+	
+	
+	public function set_rating($id = null)
+    {
+		include_once(ROOT . '/sys/inc/includes/set_rating.php');
+	}
 }
 
 

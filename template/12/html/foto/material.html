@@ -9,6 +9,10 @@
 	<div class="meta">
 		<div class="icon-views"></div>Просмотров: {{ entity.views }}  
 		<div class="icon-data"></div>Дата: {{ entity.date }}
+		<img class="pere" alt="" src="{{ template_path }}/img/pere.png">
+		<div class="rating-up" onClick="setRatingForEntity('{{ module }}', {{ entity.id }}, 2);"></div>
+		{{ entity.rating }}
+		<div class="rating-down" onClick="setRatingForEntity('{{ module }}', {{ entity.id }}, 1);"></div>
 	</div>
 </div>
 <div class="foto-rotator"><a href="{{ entity.add_markers.previous_url }}">Предыдущее фото</a> | <a href="{{ entity.add_markers.next_url }}">Следующее фото</a></div>

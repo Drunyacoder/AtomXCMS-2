@@ -14,7 +14,11 @@
 		<img class="pere" alt="" src="{{ template_path }}/img/pere.png">
 		<div class="icon-data"></div>{{ entity.date }}
 		<img class="pere" alt="" src="{{ template_path }}/img/pere.png">
-		<div class="icon-comments"></div>Комментариев: {{ entity.comments }}
+		<div class="icon-comments"></div> {{ entity.comments }}
+		<img class="pere" alt="" src="{{ template_path }}/img/pere.png">
+		<div class="rating-up" onClick="setRatingForEntity('{{ module }}', {{ entity.id }}, 2);"></div>
+		{{ entity.rating }}
+		<div class="rating-down" onClick="setRatingForEntity('{{ module }}', {{ entity.id }}, 1);"></div>
 	</div>
 </div>
 
