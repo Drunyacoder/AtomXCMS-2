@@ -559,7 +559,7 @@ function delete() {
 			delete_category($category['id']);
 			delete($category['id']);
 		}
-		mysql_query("DELETE FROM `" . $FpsDB->getFullTableName(getCurrMod() . '_sections') . "` WHERE `id`='{$id}'");
+		$FpsDB->query("DELETE FROM `" . $FpsDB->getFullTableName(getCurrMod() . '_sections') . "` WHERE `id`='{$id}'");
 	}
 	redirect('/admin/category.php?mod=' . getCurrMod());
 }
@@ -570,7 +570,7 @@ function delete_category($id) {
 	$records = $FpsDB->select(getCurrMod(), DB_ALL, array('cond' => array('category_id' => $id)));
 	if (count($records) > 0) {
 		foreach ($records as $record) {
-			mysql_query("DELETE FROM `" . $FpsDB->getFullTableName(getCurrMod()) . "` WHERE `id`='{$record['id']}'");
+			$FpsDB->query("DELETE FROM `" . $FpsDB->getFullTableName(getCurrMod()) . "` WHERE `id`='{$record['id']}'");
 			
 			
 			$hlufile = ROOT . '/sys/tmp/hlu_' . getCurrMod() . '/' . $record['id'] . '.dat';
@@ -593,7 +593,7 @@ function delete_category($id) {
 				$attaches = $FpsDB->select(getCurrMod() . '_attaches', DB_ALL, array('cond' => array('entity_id' => $record['id'])));
 				if (count($attaches)) {
 					foreach ($attaches as $attach) {
-						mysql_query("DELETE FROM `" . $FpsDB->getFullTableName(getCurrMod() . '_attaches') 
+						$FpsDB->query("DELETE FROM `" . $FpsDB->getFullTableName(getCurrMod() . '_attaches') 
 						. "` WHERE `id`='{$attach['id']}'");
 						if (file_exists(ROOT . '/sys/files/' . getCurrMod() . '/' . $attach['filename']))
 							_unlink(ROOT . '/sys/files/' . getCurrMod() . '/' . $attach['filename']);
@@ -607,7 +607,7 @@ function delete_category($id) {
 			} 
 		}
 	}
-	mysql_query("DELETE FROM `" . $FpsDB->getFullTableName(getCurrMod() . '_sections') . "` WHERE `id`='{$id}'");
+	$FpsDB->query("DELETE FROM `" . $FpsDB->getFullTableName(getCurrMod() . '_sections') . "` WHERE `id`='{$id}'");
 	return true;
 }
 

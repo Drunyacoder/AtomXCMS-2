@@ -313,8 +313,10 @@ class FpsPDO {
 	
 	private function runQuery($query) 
 	{
+
 		$statement = $this->dbh->prepare($query);
 		$statement->execute($this->queryParams);
+
 		return $statement;
 	}
 	
@@ -835,6 +837,14 @@ class FpsPDO {
 		return;
 	} 
 
+	
+	
+	public function getErrorInfo() {
+		$info = $this->dbh->errorInfo();
+		return $info[2];
+	}
+
+	
 	
 	/**
 	 * Uses for singlton

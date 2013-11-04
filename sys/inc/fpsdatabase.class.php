@@ -816,6 +816,11 @@ class FpsDataBase {
 		return;
 	} 
 
+	
+	
+	public function getErrorInfo() {
+		return mysql_error();
+	}
 
 	
 	

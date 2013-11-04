@@ -21,11 +21,12 @@
 ## CMS Fapos или ее частей,                     ##
 ## без согласия автора, является не законным    ##
 ##################################################
-@ini_set('display_errors', 0);
+@ini_set('display_errors', 1);
 session_start();
 define ('ROOT', dirname(dirname(__FILE__)));
 if (function_exists('set_time_limit')) set_time_limit(0);
 include_once '../sys/inc/config.class.php';
+include_once '../sys/inc/helpers.lib.php';
 
 
 $errors = array();
@@ -35,17 +36,17 @@ new Config('../sys/settings/config.php');
 $set = Config::read('all');
 
 
-@$db = mysql_connect($set['db']['host'], $set['db']['user'], $set['db']['pass']);
-if (!$db) $errors['connect'] = 'Не удалось подключиться к базе. Проверте настройки!';
-if (!mysql_select_db($set['db']['name'], $db)) $errors['connect'] = 'Не удалось найти базу. Проверте имя базы!';
-mysql_query("SET NAMES 'utf8'");
 
 
-if (!empty($errors['connect'])) {
-	
-	echo $errors['connect'];
-	echo '<br /> Попробуйте начать сначала.';
+if (class_exists('PDO')) {
+	include_once '../sys/inc/fpspdo.class.php';
+	$DB = FpsPDO::get();
+} else {
+	include_once '../sys/inc/fpsdatabase.class.php';
+	$DB = FpsDataBase::get();
 }
+
+
 
 $array = array();
 $array[] = "DROP TABLE IF EXISTS `{$set['db']['prefix']}forum_cat`";
@@ -551,21 +552,30 @@ $array[] = "CREATE TABLE IF NOT EXISTS `{$set['db']['prefix']}polls` (
 
 $n = 0;
 foreach ($array as $key => $query) {
-	if (!mysql_query($query)) {
+	$DB->query($query);
+	if ($DB->getErrorInfo()) {
 		$errors['query'] = 'При формировании базы данных произошел збой! <br /> Начните  пожалуйста заново. (' . $query . ')';
-		if (@mysql_error()) $errors['query'] .= '<br /><br />' . mysql_error();
 		break;
+		
+		
 	} else {
-		echo '<span style="color:#46B100">' . $n . '. ' . htmlspecialchars(mb_substr($query, 0, 70, 'UTF-8')) . ' ...</span><br />'; 
+		echo '<span style="color:#46B100; font-size:10px; line-height:10px;">' . $n . '. ' . htmlspecialchars(mb_substr($query, 0, 70, 'UTF-8')) . ' ...</span><br />'; 
 		flush();
 	}
 	$n++;
 }
+
+
 if (empty($errors['query'])) {
-	if (!mysql_query("INSERT INTO `{$set['db']['prefix']}users` (`id`, `name`, `passw`, `status`, `puttime`) 
-	VALUES (1, '" . $_SESSION['adm_name'] . "', '" . md5($_SESSION['adm_pass']) . "', '4', NOW())")) 
-		$errors['query'] = 'При формировании базы данных произошел збой! <br /> Начните  пожалуйста заново.<br /><br />' . mysql_error();
+
+	$DB->query("INSERT INTO `{$set['db']['prefix']}users` (`id`, `name`, `passw`, `status`, `puttime`) 
+	VALUES (1, '" . $_SESSION['adm_name'] . "', '" . md5($_SESSION['adm_pass']) . "', '4', NOW())");
+	if ($DB->getErrorInfo()) 
+		$errors['query'] = 'При формировании базы данных произошел збой! <br /> Начните  пожалуйста заново.<br /><br />';
 }
+
+
+
 if (empty($errors)) :
 ?>
 <div style="">
