@@ -50,6 +50,7 @@ class Bootstrap
         $this->Register['Validate'] = new Validate();
         $this->Register['Log'] = new Logination();
         $this->Register['ModManager'] = new ModulesManager(ROOT . '/sys/settings/modules_access.php');
+        $this->Register['PluginController'] = new Plugins;
 
 
         $this->setPhpSettings();

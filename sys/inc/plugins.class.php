@@ -24,8 +24,44 @@
 \-----------------------------------------------*/
 
 class Plugins {
+	
+	public static $map = array();
 
 
+	public function __construct() {
+		$dirs = glob(ROOT . '/sys/plugins/*');
+		
+		
+		if (!empty($dirs)) {
+			foreach ($dirs as $dir) {
+				
+				
+				if (file_exists($dir . '/config.dat')) {
+					$config = json_decode(file_get_contents($dir . '/config.dat'), true);
+					if (!empty($config['points'])) {
+
+					
+						if (is_string($config['points'])) {
+						
+							if (empty(self::$map[$config['points']])) self::$map[$config['points']] = array();
+							self::$map[$config['points']][] = $dir;
+							
+							
+						} else if (is_array($config['points'])) {
+							foreach ($config['points'] as $point) {
+							
+								if (empty(self::$map[$point])) self::$map[$point] = array();
+								self::$map[$point][] = $dir;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	
+	
 	/**
 	 * Find plugin by key and launch his
 	 *
@@ -33,11 +69,9 @@ class Plugins {
 	 * @param mixed $params
 	 */
 	public static function intercept($key, $params = array()) {
-		$plugins = glob(ROOT . '/sys/plugins/' . $key . '*');
-	
-		if (count($plugins) > 0 && is_array($plugins)) {
-			foreach ($plugins as $plugin) {
-				if (!is_dir($plugin)) continue;
+
+		if (!empty(self::$map[$key])) {
+			foreach (self::$map[$key] as $plugin) {
 				
 				$pl_conf = file_get_contents($plugin . '/config.dat');
 				$pl_conf = json_decode($pl_conf, true);
