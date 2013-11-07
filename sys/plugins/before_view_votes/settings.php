@@ -35,7 +35,7 @@ class VotesSettings {
 		
 	
 		$votes_pach = $this->path . 'votes_history.dat';
-		$history = (file_exists($votes_pach)) ? unserialize(file_get_contents($votes_pach)) : array();
+		$history = (file_exists($votes_pach)) ? json_decode(file_get_contents($votes_pach), true) : array();
 	
 		$title = (!empty($_POST['title'])) ? $_POST['title'] : 'Unknown';
 		$vars = (count($_POST['variant']) > 0) ? $_POST['variant'] : array();
@@ -49,7 +49,7 @@ class VotesSettings {
 		
 	
 		$history[$title] = $fvars;
-		file_put_contents($votes_pach, serialize($history));
+		file_put_contents($votes_pach, json_encode($history));
 		
 		
 		redirect('admin/plugins.php?ac=edit&dir=' . $dir);
@@ -65,7 +65,7 @@ class VotesSettings {
 		
 	
 		$votes_pach = $this->path . 'votes_history.dat';
-		$history = (file_exists($votes_pach)) ? unserialize(file_get_contents($votes_pach)) : array();
+		$history = (file_exists($votes_pach)) ? json_decode(file_get_contents($votes_pach), true) : array();
 	
 		if (!empty($history) && count($history) > 0) {
 			foreach ($history as $key => $value) {
@@ -75,7 +75,7 @@ class VotesSettings {
 				}
 			}
 		}
-		file_put_contents($votes_pach, serialize($history));
+		file_put_contents($votes_pach, json_encode($history));
 		redirect('admin/plugins.php?ac=edit&dir=' . $dir);
 	}
 	
@@ -85,7 +85,7 @@ class VotesSettings {
 		$history_file = R . 'sys/plugins/' . $_GET['dir'] . '/votes_history.dat';
 		if (!file_exists($history_file)) redirect('admin/plugins.php');
 		
-		$votes = unserialize(file_get_contents($history_file));
+		$votes = json_decode(file_get_contents($history_file), true);
 		
 		$errors = '';
 		if (empty($_POST['title'])) $errors .= '<li>Заполните заголовок</li>';
@@ -114,7 +114,7 @@ class VotesSettings {
 			}
 		}
 		$votes[$title] = $variants;
-		file_put_contents($history_file, serialize($votes));
+		file_put_contents($history_file, json_encode($votes));
 		
 		
 		redirect('admin/plugins.php?ac=edit&dir=' . $_GET['dir']);
@@ -126,8 +126,8 @@ class VotesSettings {
 		$set_pach = $this->path . 'config.dat';
 		$votes_pach = $this->path . 'votes_history.dat';
 		
-		$settings = unserialize(file_get_contents($set_pach));
-		$history = (file_exists($votes_pach)) ? unserialize(file_get_contents($votes_pach)) : array();
+		$settings = json_decode(file_get_contents($set_pach), true);
+		$history = (file_exists($votes_pach)) ? json_decode(file_get_contents($votes_pach), true) : array();
 		$set_fields = '';
 		$dir = trim(strrchr(dirname(__FILE__), DS), DS);
 

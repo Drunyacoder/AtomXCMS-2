@@ -40,7 +40,7 @@ class Plugins {
 				if (!is_dir($plugin)) continue;
 				
 				$pl_conf = file_get_contents($plugin . '/config.dat');
-				$pl_conf = unserialize($pl_conf);
+				$pl_conf = json_decode($pl_conf, true);
 				if (empty($pl_conf['active'])) continue;
 				
 				

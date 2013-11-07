@@ -443,6 +443,7 @@ $language = array(
 	'Autotags settings' 			=> 'Настройки автотегов',
 	'Watermark settings' 			=> 'Настройки watermark',
 	'Saved' 						=> 'Настройки сохранены',
+	'Plugin is saved' 				=> 'Плагин установлен',
 	
 	
 	// Templates name

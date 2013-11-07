@@ -49,7 +49,7 @@ class BannerxSettings {
 		
 	
 		$db_path = $this->path . 'db.dat';
-		$banners = (file_exists($db_path)) ? unserialize(file_get_contents($db_path)) : array();
+		$banners = (file_exists($db_path)) ? json_decode(file_get_contents($db_path), true) : array();
 	
 	
 		// get title and url
@@ -103,7 +103,7 @@ class BannerxSettings {
 		
 		
 			$banners[$id] = $banner;
-			file_put_contents($db_path, serialize($banners));
+			file_put_contents($db_path, json_encode($banners));
 			$_SESSION['message'] = 'Сохранено';
 		}
 		
@@ -120,7 +120,7 @@ class BannerxSettings {
 		
 	
 		$db_path = $this->path . 'db.dat';
-		$banners = (file_exists($db_path)) ? unserialize(file_get_contents($db_path)) : array();
+		$banners = (file_exists($db_path)) ? json_decode(file_get_contents($db_path), true) : array();
 		
 		if (!empty($banners) && count($banners) > 0) {
 			foreach ($banners as $key => $value) {
@@ -139,7 +139,7 @@ class BannerxSettings {
 			}
 		}
 		
-		file_put_contents($db_path, serialize($banners));
+		file_put_contents($db_path, json_encode($banners));
 		redirect('admin/plugins.php?ac=edit&dir=' . $dir);
 	}
 	
@@ -152,7 +152,7 @@ class BannerxSettings {
 		
 		
 		$db_path = $this->path . 'db.dat';
-		$banners = (file_exists($db_path)) ? unserialize(file_get_contents($db_path)) : array();
+		$banners = (file_exists($db_path)) ? json_decode(file_get_contents($db_path), true) : array();
 		
 		
 		if (!array_key_exists($id, $banners)) {
@@ -199,7 +199,7 @@ class BannerxSettings {
 			if (!empty($img_name_escaped)) $banners[$id]['img'] = $img_name_escaped;
 			
 		
-			file_put_contents($db_path, serialize($banners));
+			file_put_contents($db_path, json_encode($banners));
 			$_SESSION['message'] = 'Сохранено';
 		}
 		
@@ -212,8 +212,8 @@ class BannerxSettings {
 		$config = $this->path . 'config.dat';
 		$db = $this->path . 'db.dat';
 		
-		$settings = unserialize(file_get_contents($config));
-		$banners = (file_exists($db)) ? unserialize(file_get_contents($db)) : array();
+		$settings = json_decode(file_get_contents($config), true);
+		$banners = (file_exists($db)) ? json_decode(file_get_contents($db), true) : array();
 		$dir = trim(strrchr(dirname(__FILE__), DS), DS);
 
 		$Viewer = new Fps_Viewer_Manager;
