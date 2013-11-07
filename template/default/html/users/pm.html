@@ -1,0 +1,41 @@
+<div class="material">
+	  <div class="mat-title">Почтовый ящик(Список переписок)</div>
+	  <div class="mat-content">
+		  <ul class="userslinks">
+		         <li><a href="{{ www_root }}/users/info/{{ fps_user_id }}">Мой профиль</a></li>
+				 <li class="active"><a href="{{ www_root }}/users/in_msg_box/">Личные сообщения</a></li>
+                 <li><a href="{{ www_root }}/users/out_msg_box/">Отправленные</a></li>
+				 <li><a href="{{ www_root }}/users/send_pm_form/">Отправить ЛС</a></li> 
+		  </ul>
+	      <div class="userinfo">
+		    <ul class="userlist">
+		     {% if messages %}
+             {% for message in messages %}
+                            <li {% if message.viewed != 1 %}class="send"{% endif %}>
+							       <div class="userlistavatar" onclick="location.href='{{ www_root }}/users/pm_view/{{ message.user.id }}'"><img src="{{ getAvatar(message.user.id) }}" class="avatar"></div>
+							        <div class="listuser">
+								          <ul class="listuserbuttons">
+									          <li><a href="{{ www_root }}/users/info/{{ message.user.id }}" class="button2">Профиль собеседника</a></li>
+                                              <li>{{ message.delete }}<input type="checkbox" class="packPoint" onClick="if(this.checked){addToPackage(this.value);}else{delFromPackage(this.value);}" value="{{ message.user.id }}" /></li>									
+								          </ul>
+								          <h3 class="userlisttitle"><a href="{{ www_root }}/users/pm_view/{{ message.user.id }}">{{ message.user.name }}</a>
+										  <span style="color:{% if message.direction == 'in'  %}blue;">&rArr;{% else %}red;">&lArr;{% endif %}</span>
+										  </h3>
+										  <div class="text" onclick="location.href='{{ www_root }}/users/pm_view/{{ message.user.id }}'" style="cursor: pointer;">
+			                                {{ message.text }}
+		                                  </div>
+								          <div>
+								               <span>Последнее обновление: {{ message.sendtime }}</span>
+								          </div>
+							        </div>
+                            </li>
+			{% endfor %}
+            {% endif %}
+	           <li>	
+			     Удалить отмеченные сообщения: <input id="packButton" type="button" disabled="disabled" onClick="sendPack('/users/delete_messages_user-/');" value="(0)">
+	             <div style="display:none;"><form id="actionPack" action="" method="POST" onsubmit="sendu('actionPack');return false;"></form></div>
+	           <li>
+           </ul>	
+	      </div>
+	  </div>
+    </div>

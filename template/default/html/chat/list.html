@@ -1,0 +1,23 @@
+<html>
+<head>
+<link type="text/css" rel="StyleSheet" href="{{ template_path }}/css/chat.css" />
+</head>
+<body>
+{% if messages %}
+{% for message in messages %}
+
+
+<div class="block">
+
+<div style="float: right">{% if message.user_id %}<a class="fps-user" href="{{ www_root }}/users/info/{{ message.user_id }}" target="_blank"></a>{% endif %} {{ message.ip }} {% if message.del %}<a class="fps-del" href="{{ message.del }}"></a>{% endif %}</div>
+
+({{ message.time }}) <a href="javascript:void('Ответить на сообщение')" onclick="parent.window.document.getElementById('chatModule').value+='[b]{{ message.name }}[/b], ';return false;" class="name">{{ message.name }}</a>:
+<div class="mess">{{ message.message }}</div>
+
+</div>
+
+
+{% endfor %}
+{% endif %}
+</body>
+</html>

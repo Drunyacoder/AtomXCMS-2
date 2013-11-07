@@ -1,0 +1,235 @@
+<!doctype html>
+<html>
+<head>
+<title>{{ title }}</title>
+
+<meta name="description" content="{{ meta_description }}" />
+<meta name="keywords" content="{{ meta_keywords }}" />
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+
+<meta name='author' content='Andrey Brykin' />
+<meta name='robots' content='index, follow' />
+<meta name='rating' content='general' />
+<meta name='generator' content='FaposCMS 2.3.1 modos189' />
+
+<link rel="icon" href="{{ template_path }}/favicon.ico" type="image/x-icon" />
+<link rel="shortcut icon" href="{{ template_path }}/favicon.ico" type="image/x-icon" />
+<link type="text/css" rel="StyleSheet" href="{{ template_path }}/css/style.css" />
+<script language="JavaScript" type="text/javascript" src="{{ www_root }}/sys/js/jquery-1.8.1.min.js"></script>
+<script language="JavaScript" type="text/javascript" src="{{ www_root }}/sys/js/send_message.js"></script>
+<script src="{{ www_root }}/sys/js/jquery.form.min.js"></script>
+{{ editor_head }}
+<!-- <script language="JavaScript" type="text/javascript" src="{{ www_root }}/sys/js/textarearesizer.js"></script> -->
+<script type="text/javascript">
+{% if fps_user_id %}
+	check_pm('{{ fps_user_id }}');
+{% endif %}
+
+/*
+$(document).ready(function() {
+$('textarea.text-area:not(.processed)').TextAreaResizer();
+});
+*/
+</script>
+<!-- FancyBOX -->
+<link type="text/css" rel="StyleSheet" href="{{ template_path }}/css/fancy.css" />
+<script type="text/javascript" src="{{ template_path }}/js/jquery.fancybox.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+	$("a.gallery").fancybox();
+});
+</script>
+<!--/FancyBOX -->
+</head>
+
+
+<body>
+<div class="headpanel">
+ <div class="linksap">
+<div class="activewindow"><a href="#">Язык</a><div class="lang" style="width: 70px;"><span>RUS<br>ENG</span></div></div>
+<div><a href="http://fapos.net/users/info/1/">Контакты</a></div>
+<div><a href="https://github.com/Drunyacoder/Fapos2.x">GitHub</a></div>
+<div><a href="http://fapos.net/forum/">Поддержка</a></div></div>
+ <div class="userlinksap">
+{% if fps_user_id %}
+<div><a href="{{ www_root }}/users/in_msg_box/">Сообщения</a></div>
+<div class="activewindow"><a href="{{ personal_page_link }}">{{ fps_user_name }}</a><div class="miniprofileadm" style="width: 300px;padding: 10px;{% if fps_admin_access == 1 %}height:150px;{% endif %}">
+    <span class="avatarminpro"><img class="avatar" src="{{ fps_user_avatar_url }}"></span>
+    <span class="uslinkminpro">
+        <a href="{{ personal_page_link }}">Мой профиль</a>
+        <a href="{{ www_root }}/users/send_pm_form/">Отправить сообщение</a>
+		<a href="{{ www_root }}/users/out_msg_box/">Отправленные</a>
+		<a href="{{ www_root }}/users/edit_form/{{ fps_user_id }}">Настройки</a>
+        {% if fps_admin_access == 1 %}
+		<a href="{{ www_root }}/admin/" target="_blank">Админка</a>
+		{% endif %}
+    </span>
+</div></div>
+<div><a href="{{ www_root }}/users/logout">Выход</a></div>
+{% else %}
+<div><a href="{{ www_root }}/users/add_form">Регистрация</a></div>
+<div class="activewindow"><a href="{{ www_root }}/users/login_form/">Войти</a>
+<div style="width: 250px;"><span>
+<form action="/users/login/" method="post">
+	Логин: <input type="text" class="loginad" name="username">
+	Пароль: <input type="password" class="passad" name="password">
+	Автовход: <input type="checkbox" name="autologin" value="1">
+	<button type="submit" onclick="submit();" class="buttonadm">ВОЙТИ</button>
+	<input type="hidden" value="submit" name="submitForm">
+</form>
+</span></div></div>
+{% endif %}
+<div><a href="{{ www_root }}/users/">Пользователи</a></div>
+ </div>
+</div>
+<div class="global">
+<div class="header">
+   <div class="logohead">
+     <div class="antihover"></div>
+     <div class="fast"><div></div></div>
+     <div class="portal"><div></div></div>
+     <div class="starting"><div></div></div>
+   </div>
+   <div class="infohead">
+     <div class="infoblock">
+	   <div class="download">
+	     <a class="downloadbutton" href="http://home.develdo.com/givecms.php?version=2.2RC1.zip" target="_blank">
+		   <div><div class="nameload">DOWNLOAD FAPOS</div>
+		   <div class="infoload">FILE IS 3.8MB(.ZIP)</div></div>
+		 </a>
+	     <a class="ahother" href="http://home.develdo.com/downloads.php">Cкачать другие версии FaposCMS</a>
+	     <a class="knownot" href="http://fapos.net/documa/?p=ustanovka">Не знаете как установить?</a>
+	   </div>
+	   <div class="info1"><b>FaposCMS</b> - Это инструмент для создания сайтов любой сложности, людьми не имеющими профессиональных навыков. Множество готовых шаблонов позволят выбрать вам подходящий дизайн. И это все абсолютно БЕСПЛАТНО!</div>
+	   <div class="info2">
+	   <div class="l">
+	   50+<br>
+	   15+<br>
+	   5000+<br>
+	   5 лет<br>
+	   100+
+	   </div>
+	   <div class="r">
+	   Шаблонов<br>
+	   Модулей<br>
+	   Пользователей<br>
+	   Разработки<br>
+	   Дополнений
+	   </div>
+	   </div>
+	 </div>
+	 <div class="sots">
+	   <a href="http://fapos.net/documa/">ДОКУМЕНТАЦИЯ</a>
+	   <a href="http://fapos.net/loads/category/5">ШАБЛОНЫ</a>
+	   <a href="http://fapos.net/forum/view_theme/362">СНИППЕТЫ</a>
+	   <a href="#">ПЛАГИНЫ</a>
+	   <a href="http://fapos.net/forum/view_forum/2">МОДУЛИ</a>
+	 </div>
+   </div>
+</div>
+
+<div class="sider">
+    <div class="sidertop">
+	  <ul>
+        <li><a href="{{ www_root }}/">HOME</a></li>
+		<li><a href="{{ www_root }}/forum">ФОРУМ</a></li>
+		<li class="active"><a href="{{ www_root }}/news">НОВОСТИ</a></li>
+		<li><a href="{{ www_root }}/stat">СТАТЬИ</a></li>
+		<li><a href="{{ www_root }}/foto">ФОТОКАТАЛОГ</a></li>
+		<li><a href="{{ www_root }}/loads/">ФАЙЛЫ</a></li>
+	  </ul>
+	  <div class="search">
+	   <form method="POST" action="{{ www_root }}/search/"> 
+        <input type="hidden" name="subaction" value="search"> 
+        <input name="search" placeholder="Найти что-нибудь..." type="text"> 
+        <input value="GO!" type="submit" name="send"> 
+       </form> 
+	  </div>
+	</div>
+	<!---------------------------------------------------------------------------CONTENT/----------------------------------------------------------------------------------------------->
+    <div class="content">
+<div class="spedbar">
+    <div>
+        <div>{{ navigation }}</div>
+    </div>
+</div>
+{% if add_link %}<a href="{{ www_root }}/news/add_form/" class="lastpostsbutton button">Добавить новость</a>{% endif %}
+<div style="clear:both;"></div>
+<div class="materials" id="full">
+	    {% if pagination %}<div class="mezdyblock"><span class="meta">{{ meta }}</span><div class="paginator"><div class="pages">{{ pagination }}</div></div></div>{% endif %}
+		{{ content }}
+		{% if pagination %}<div class="mezdyblock"><div class="paginator"><div class="pages">{{ pagination }}</div></div></div>{% endif %}	
+		{% if comments_pagination %}<div class="mezdyblock"><div class="paginator"><div class="pages">{{ comments_pagination }}</div></div></div>{% endif %}
+        {{ comments }}
+		{% if comments_pagination %}<div class="mezdyblock"><div class="paginator"><div class="pages">{{ comments_pagination }}</div></div></div>{% endif %}
+        {{ comments_form }}
+        {% if categories %}<div class="material"><div class="inftitle">Категории:</div><div class="infcont"><ul>{{ categories }}</ul></div></div>{% endif %}
+</div>
+	
+	<div class="material">
+           <div class="inftitle">Сейчас online: {{ all_online }}. Зарегестрированных: {{ users_online }}. Гостей: {{ guests_online }}. </div>
+	       <div class="infcont">{{ online_users_list }}</div>
+	    </div>
+	</div>
+	<!---------------------------------------------------------------------------/CONTENT----------------------------------------------------------------------------------------------->
+</div>
+<!--------------------------------------------------------CHAT----------------------------------------------------------------------------------------------------------------------------->
+{% if fps_chat %}
+<div class="footerbottom">
+  <div class="butofooter"><a class="buttonfutokno" onclick="if($('#ochat').css('display') == 'none'){$('#ochat').show();}else{$('#ochat').hide();}">Общий ЧАТ</a>
+    <div class="messegesokno" id="ochat" style="display:none;">
+      <span class="headfutbutton">Общий чат<span class="closebuttonfut" onclick="$('#ochat').hide();"></span></span>
+	  {{ fps_chat }}
+	  <a class="greenlink" href="{{ www_root }}/chat/">Расширенная форма</a>
+    </div>
+  </div>
+</div>
+{% endif %}
+<!--------------------------------------------------------FOOTER-BUTTONS------------------------------------------------------------------>
+<div class="footer">
+<div class="people"><span>Сообщество</span>
+<a href="{{ www_root }}/">Главная</a>
+<br><a href="{{ www_root }}/forum/">Форум</a>
+<br><a href="{{ www_root }}/news/">Новости</a>
+<br><a href="{{ www_root }}/stat/">Статьи</a>
+<br><a href="{{ www_root }}/loads/">Файлы</a>
+<br><a href="{{ www_root }}/foto/">Фотокаталог</a>
+</div>
+<div class="support"><span>Поддержка</span>
+<a href="#">Пользовательское соглашение</a>
+<br><a href="http://fapos.net/documa">Документация</a>
+<br><a href="#">Правила сайта</a>
+<br><a href="#">Заказать рекламу</a>
+<br><a href="{{ www_root }}/sitemap.xml">Карта сайта</a>
+</div>
+<div class="faposcms"><span>Fapos CMS</span>
+<a href="#">Скачать CMS</a>
+<br><a href="#">Видео-руководство</a>
+<br><a href="#">Сообщить о баге</a>
+</div>
+<div style="float: right;padding: 0;">
+<div class="socnet" style="display:block;">
+<a href="http://vkontakte.ru/fapos" class="vk" title="ВКонтакте"></a>
+<a href="#" class="twitter" title="Twitter"></a>
+<a href="#" class="fb" title="Facebook"></a>
+<a href="#" class="goplus" title="Google Plus"></a>
+<a href="#" class="github" title="GitHub"></a>
+<a href="#" class="youtube" title="YouTube"></a>
+<a href="#" class="skype" title="Skype"></a>
+<a href="{{ www_root }}/rss/" class="rss" title="RSS"></a>
+</div>
+<div>Generated by FaposCMS<br>Powered by boriska © 2013</div>
+</div>
+<div style="float:right;"><img src="{{ counter }}" /></div>
+</div>
+<script type="text/javascript">
+	var links = $('.fps-show-mat');
+	for (var key in links) {
+		if(!links.hasOwnProperty(key)) continue;
+	
+		links[key].innerHTML = '';
+	}
+	</script>
+</div>
+</body>
+</html>

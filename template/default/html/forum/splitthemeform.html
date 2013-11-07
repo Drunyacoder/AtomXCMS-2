@@ -1,0 +1,62 @@
+<form name='editThemeForm' action="{{ context.action }}" method="POST" onsubmit="sendu('sendForm'); return false">
+<div class="forumblock">
+	  <div class="forumtitle">Разделение темы: {{ theme.title }}</div> 
+	  <div class="mat-content">
+          <ul class="spisok-all">
+          <li>
+            <span class="siu_title"><strong>Форум новой темы:</strong></span>
+            <span class="siu_data"><select name="id_forum"> {{ context.options }}</select></span>
+          </li>
+		  <li>
+            <span class="siu_title"><strong>Название новой темы:</strong></span>
+            <span class="siu_data"><input type="text" name="theme" maxlength="55" value="{{ context.theme }}" /></span>
+          </li>
+		  <li>
+            <span class="siu_title"><strong>Описание новой темы:</strong></span>
+            <span class="siu_data"><input type="text" name="description" maxlength="128" value="{{ context.description }}" /></span>
+          </li>
+		  <li>
+            <span class="siu_title"><strong>Закрыть доступ:</strong></span>
+            <span class="siu_data">
+			{% for group in fps_users_groups %}
+					<label><input type="checkbox" {% for curr in context.gr_access %} {% if curr == group.id %} checked="checked" {% endif %} {% endfor %} value="{{ group.id }}" name="gr_access_{{ group.id }}" />&nbsp;{{ group.title }}</label><br />
+			{% endfor %}
+			</span>
+          </li>
+		  <li>
+            <span class="siu_title"><strong>Закрепить первое сообщение темы:</strong></span>
+            <span class="siu_data"><input type="checkbox" name="first_top" {% if context.first_top %} checked="checked" {% endif %} /></span>
+          </li>
+		  {% if checkAccess([module,'close_themes']) %}
+		  <li>
+            <span class="siu_title"><strong>Закрыть тему:</strong>Запрет на добавление сообщений в теме</span>
+            <span class="siu_data"><input type="checkbox" name="locked" {% if context.locked %} checked="checked" {% endif %} /></span>
+          </li>
+		  {% endif %}
+		  <li>
+            <input type="submit" name="sendForm" value="Разделить" />
+			<br />Будет создана новая тема с выделенными сообщениями.
+          </li>
+		  </ul>
+	  </div>
+{% for post in posts %}
+<div class="forumpost" id="post{{ post.id }}">
+<div class="poststarterinfo">
+<a class="postusername">{{ post.author_name }}</a>
+</div>
+
+<div class="posttextuser">
+	          <div class="headpostinfo"><span class="postdate">Отправлено: {{ post.time }}</span>
+			  <label class="postidlink"><input type="checkbox" {% for curr in context.posts_select %} {% if curr == post.id %} checked="checked" {% endif %} {% endfor %} value="{{ post.id }}" name="post_{{ post.id }}" /></label>
+			  </div>
+	          <div class="posttext">{{ post.message }}</div>
+	       </div>
+</div>
+{% endfor %}
+</div>
+<div class="mezdyblock">
+	     <div class="paginator">
+            <div class="pages">{{ pagination }}</div>
+         </div>
+</div>
+</form>

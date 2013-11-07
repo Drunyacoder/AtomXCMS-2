@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+<head>
+<title>Перенаправление на сторонний ресурс</title>
+<link rel="icon" href="{{ template_path }}/favicon.ico" type="image/x-icon" />
+<link rel="shortcut icon" href="{{ template_path }}/favicon.ico" type="image/x-icon" />
+<link type="text/css" rel="StyleSheet" href="{{ template_path }}/css/style.css" />
+</head>
+<body class="for-redirect">
+     <p class="vectorcssloader">
+	   <span class="css3loading" data-icon1="↻"></span> 
+	 </p>
+	 <div>
+	         {% if black %}
+			 <a href="{{ url }}">Указанный сайт</a> находится в "черном" списке и его посещение не рекомендуется.
+	         {% else %}
+	         Ожидайте. Сейчас Вы будете перемещены по <a href="{{ url }}">Ссылке</a>.
+	         {% endif %}
+     </div>
+   
+</body>
+</html>
+
+

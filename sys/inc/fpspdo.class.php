@@ -313,7 +313,6 @@ class FpsPDO {
 	
 	private function runQuery($query) 
 	{
-
 		$statement = $this->dbh->prepare($query);
 		$statement->execute($this->queryParams);
 

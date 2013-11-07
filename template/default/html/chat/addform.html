@@ -1,0 +1,120 @@
+<script type="text/javascript">
+
+function sebmitChat(e) {
+	var message = $("textarea#chatModule").val();
+	var message = encodeURIComponent(message);
+	var keystring = $("input[name='captcha_keystring']").val();
+
+	var params = 'message='+message;
+	if (typeof keystring != 'undefined') params = params + '&captcha_keystring='+keystring;
+	
+	$("#testAjax").show();
+	
+	$.post('{{ data.action }}', params, 
+		function(resp, data){responseData(resp, data);}
+	);
+}
+
+function responseData(resp, data) {
+	$("#testAjax").hide();
+	if (resp != 'ok') {
+	    $("#chat_meta").show();
+		$("#chat_meta").html(resp);
+	} else {
+		var ifr = document.getElementById('fpsChat');
+		ifr.src = ifr.src;
+		$("#chat_meta").hide();
+		$("#chat_meta").html('');
+		$("textarea#chatModule").val('');
+		$("input[name='captcha_keystring']").val('');
+	}
+	
+	refreshCaptcha();
+}
+function refreshCaptcha() {
+	if ($('img#fps_captcha').length) {
+		$('img#fps_captcha').src($('img#fps_captcha').src() + '&rand=' . Math.round(Math.random(0)*1000));
+	}
+}
+
+function createCookie(name, value, days) {
+	if (days) {
+		var date = new Date();
+		date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+		var expires = "; expires=" + date.toGMTString();
+	}
+	else expires = "";
+	document.cookie = name + "=" + value + expires + "; path=/";
+}
+
+function forUpdate() {
+	document.getElementById('fpsChat').contentWindow.location.reload();
+}
+
+function update() {
+	var value = document.getElementById("chat_refresh_time").value;
+	createCookie('chat_refresh_time', value, 360);
+	if (value > 0) {
+		var chat_refresh = setInterval(forUpdate, 1000 * value);
+	} else {
+		clearInterval(chat_refresh);
+	}
+}
+</script>
+
+<div style="display:none;" id="chat_meta"></div>
+<form action="{{ data.action }}" method="POST" onSubmit="sebmitChat(this); return false;">
+<div class="chat-addfrom">
+	<div>
+	    <span>Автообновление:</span>
+		<span>
+			<select id="chat_refresh_time" onchange="update()" style="width:65px;">
+			<option value='0'>Выкл</option>
+			<option value='10'>10 сек</option>
+			<option value='30'>30 сек</option>
+			<option value='60'>1 мин</option>
+			<option value='120'>2 мин</option>
+			<option value='300' selected="selected">5 мин</option>
+			</select>
+		</span>
+	</div>
+	<div  class="margin">
+		<textarea cols="19" rows="2" id="chatModule" name="message">{{ data.message }}</textarea>
+	</div>
+	{% if data.captcha %}
+	<div class="chat_captcha">{{ data.captcha }}</div>
+	{% endif %}
+	<div>
+			 <span style="display:none;font-size: 19px;" id="testAjax" class="vectorcssloader">
+	              <span class="css3loading" data-icon1="↻"></span> 
+             </span>
+			<input type="submit" name="send" value="Отправить" />
+	</div>
+</div>
+</form>
+
+<script type="text/javascript">
+	
+function readCookie(name) {
+	var ca = document.cookie.split(';');
+	for (var i = 0; i < ca.length; i++) {
+		pos = ca[i].indexOf("=");
+		x = ca[i].substr(0, pos).replace(/^\s+|\s+$/g,"");
+		if (x == name) {
+			return unescape(ca[i].substr(pos + 1));
+		}
+	}
+	return null;
+}
+
+var r_time = readCookie('chat_refresh_time');
+var selopt = document.getElementById("chat_refresh_time").options;
+for (var i = 0; i < selopt.length; i++) {
+	if (selopt[i].value == r_time) {
+		selopt[i].selected = true; 
+		break;
+	}
+}
+update();
+
+</script>

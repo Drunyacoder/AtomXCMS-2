@@ -1,0 +1,24 @@
+ <form action="{{ context.action }}" method="POST">
+<div class="material">
+       <div class="inftitle">Поиск по материалам</div>
+       <div class="infcont">
+	        <input type="text" value="{{ context.search }}" name="search" style="width:82%;" />
+            <input  type="submit" value="Искать" name="send" />
+	        <br /><br />
+	   <b>Искать в:</b>
+	        <br />
+			<input id="smdforum" type="checkbox" value="forum" name="m[]" {{ context.forum }}>
+            <label for="smdforum">Форум</label><br />
+
+            <input id="smdnews" type="checkbox" value="news" name="m[]" {{ context.news }}>
+            <label for="smdnews">Новости</label><br />
+
+            <input id="smdstat" type="checkbox" value="stat" name="m[]" {{ context.stat }}>
+            <label for="smdstat">Статьи</label><br />
+
+            <input id="smdloads" type="checkbox" value="loads" name="m[]" {{ context.loads }}>
+            <label for="smdloads">Загрузки</label>
+       </div>
+</div>
+</form>
+

@@ -39,6 +39,28 @@ function insertImageAttach($message, $filename, $number, $module = null)
 
 
 
+function checkAccess($params = null) {
+	if (isset($params) && is_array($params)) {
+		$Register = Register::getInstance();
+		return $Register['ACL']->turn($params, false);
+	}
+	return false;
+}
+
+
+
+function getOrderLink($params) {
+	if (!$params || !is_array($params) || count($params) < 2) return '';
+	$order = (!empty($_GET['order'])) ? strtolower(trim($_GET['order'])) : '';
+	$new_order = strtolower($params[0]);
+	$active = ($order === $new_order);
+	$asc = ($active && isset($_GET['asc']));
+	return '<a href="?order=' . $new_order . ($asc ? '' : '&asc=1') . '">' . $params[1] . ($active ? ' ' . ($asc ? '↑' : '↓') : '') . '</a>';
+}
+
+
+
+
 /**
  *
  */

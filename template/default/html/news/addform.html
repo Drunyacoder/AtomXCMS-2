@@ -1,0 +1,80 @@
+{{ editor_body }}
+<script type="text/javascript">
+maxAttachedFiles = {{ context.max_attaches }};
+
+function metaTags(element) {
+	if (!$(element).is(':checked')) {
+		$('#meta').hide();
+		$('#tags').hide();
+	} else {
+		$('#meta').show();
+		$('#tags').show();
+	}
+}
+</script>
+<form name="sendForm" id="sendForm" action="{{ context.action }}" method="POST" enctype="multipart/form-data" onsubmit="if (checkForm(this)) {sendu('sendForm')}; return false">
+<div class="material">
+	  <div class="mat-title">Добавление новости</div>
+	  <div class="mat-content">
+          <ul class="spisok-all">
+		  <li>
+            <span class="siu_title"><strong><font color="red">*</font>Категория:</strong></span>
+            <span class="siu_data"><select name="cats_selector">{{ context.cats_selector }}</select></span>
+          </li>
+		  <li>
+            <span class="siu_title"><strong><font color="red">*</font>Заголовок новости:</strong></span>
+            <span class="siu_data"><input type="text" name="title" maxlength="128" value="{{ context.title }}"></span>
+          </li>
+		  <li class="margin">
+            <textarea {{ editor_text }} class="text-area" name="mainText">{{ context.main_text }}</textarea>
+          </li>
+		  <li>
+            <span class="siu_title"><strong>Загрузить изображения:</strong></span>
+            <span class="siu_data" id="attachments">
+                <input class="attachField" type="file" id="attach1" name="attach1" onchange="getFile(1)"><span id="attachMeta1"></span>
+                <input type="button" name="addInput" value="Прикрепить еще файл" onclick="addFileField('attachments');">
+		   </span>
+          </li>
+		  <li>
+            <span class="siu_title"><strong>Настройка для поиска:</strong></span>
+            <span class="siu_data"><input type="checkbox" onClick="metaTags(this);" /></span>
+          </li>
+		  <li id="meta" style="display:none;">
+            <span class="siu_title"><strong>Meta description:</strong>Нужно для более быстрой индексации поисковыми роботами</span>
+            <span class="siu_data"><textarea name="description">{{ context.description }}</textarea></span>
+          </li>
+		  <li id="tags" style="display:none;">
+            <span class="siu_title"><strong>Теги:</strong>Слова по которым будет искаться файл</span>
+            <span class="siu_data"><input size="70" type="text" name="tags" value="{{ context.tags }}" /></span>
+          </li>
+		  <li>
+            <span class="siu_title"><strong>Источник:</strong>Настоящий автор новости</span>
+            <span class="siu_data"><input size="70" type="text" name="sourse" value="{{ context.sourse }}" /></span>
+          </li>
+		  <li>
+            <span class="siu_title"><strong>E-Mail автора:</strong></span>
+            <span class="siu_data"><input size="70" type="text" name="sourse_email" value="{{ context.sourse_email }}" /></span>
+          </li>
+		  <li>
+            <span class="siu_title"><strong>Ссылка на первоисточник:</strong>Ссылка на тот сайт откуда вы взяли новость</span>
+            <span class="siu_data"><input size="70" type="text" name="sourse_site" value="{{ context.sourse_site }}" /></span>
+          </li>
+		  {% if checkAccess([module,'record_comments_management']) %}
+		  <li>
+            <span class="siu_title"><strong>Разрешить комментирование?:</strong></span>
+            <span class="siu_data"><input type="checkbox" name="commented" value="1" {{ context.commented }} /></span>
+          </li>
+		  {% endif %}
+		  {% if checkAccess([module,'hide_material']) %}
+		  <li>
+            <span class="siu_title"><strong>Доступен для просмотра:</strong></span>
+            <span class="siu_data"><input type="checkbox" name="available" value="1" {{ context.available }} /></span>
+          </li>
+		  {% endif %}
+		  <li>
+            <input type="submit" name="submitForm" value="Отправить" />
+          </li>
+		  </ul>
+	  </div>
+</div>
+</form>

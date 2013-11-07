@@ -1,0 +1,231 @@
+<div class="material">
+	  <div class="mat-title">Профиль пользователя - {{ user.name }}</div>
+	  <div class="mat-content">
+		  <ul class="userslinks">
+		         <li class="active"><a href="{{ www_root }}/users/info/{{ user.id }}">Обзор Профиля</a></li>
+				 {% if user.edit_profile_link %}				 
+				 <li>{{ user.edit_profile_link }}</li>
+				 {% endif %}
+				 {% if fps_user_id == user.id %}
+				 <li><a href="{{ www_root }}/users/in_msg_box/">Личные сообщения</a></li>
+                 <li><a href="{{ www_root }}/users/out_msg_box/">Отправленные</a></li>
+				 {% endif %}
+				 {% if user.privatemessage %}	
+				 <li><a href="{{ www_root }}/users/send_pm_form/{% if fps_user_id != user.id %}{{ user.id }}{% endif %}">Отправить ЛС</a></li>
+                 {% endif %}
+				 {% if fps_user_id != user.id %}
+				 <li><a href="{{ www_root }}/users/send_mail_form/{{ user.id }}">Отправить на почту</a></li>
+				 {% endif %}
+				 {% if user.stat %}
+				 <li class="category"><a>Публикации</a></li>
+				 <li class="submenu">
+				    {% for stat in user.stat %}
+			          {% if stat.count %}
+				         <a href="{{ stat.url }}">{{ stat.text }} ({{ stat.count }})</a>
+			          {% endif %}
+		            {% endfor %}
+				 </li>
+				 {% endif %}
+		  </ul>
+		  <div class="userinfo">
+		      <div class="upuserinfo">
+			      <div class="profileavatar"><img class="avatar"  title="{{ user.name }}" src="{{ user.avatar }}"></div>
+				  <div class="userinfocell">
+				       <div class="nameuser">{{ user.name }}</div>
+					   <div>Регистрация: {{ user.regdate }}</div>
+					   <div class="lastrun"><img src="{{ template_path }}/img/online.png" title="online" alt="online"> Активность: {{ user.lastvisit }}</div>
+					   <div class="shkalakrut"><img border="0" src="{{ template_path }}/img/{{ getUserRatingImg(user.posts) }}" alt="" /></div>
+				  </div>
+                     {% if user.rating %}
+				        {% if user.rating >= 1 %}
+				        	<div class="userReputation" style="background-color: #780;"><div class="Rep-number">{{ user.rating }}</div><div>Положительная</div></div>
+					    {% else %}
+					        <div class="userReputation" style="background-color: #C54C4C;"><div class="Rep-number">{{ user.rating }}</div><div>Отрицательная</div></div>
+						{% endif %}
+				     {% else %}
+                            <div class="userReputation" style="background-color: #999;"><div class="Rep-number">{{ user.rating }}</div><div>Нейтральная</div></div>
+                     {% endif %}
+			  </div>
+			  
+			  <div class="bottomuserinfo">
+								<div>Статистика</div>
+								<ul class="spisokinfouser">
+								    {% if user.full_name %}
+								    <li>
+										<span class="siu_title">Полное имя:</span>
+										<span class="siu_data">{{ user.full_name }}</span>
+									</li>
+									{% endif %}
+									<li>
+										<span class="siu_title">Группа:</span>
+										<span class="siu_data">
+										   <span>
+										              {% if checkAccess([module,'edit_users']) %}
+		                                                  {% if fps_id == user.id %}
+			                                                    {{ user.group }}
+		                                                  {% else %}
+			                                                    <div class="group_edit">
+				                                                  <form id="groupForm_{{ user.id }}">
+					                                                <select name="group" onchange="document.getElementById('infomess_group_{{ user.id }}').innerHTML = ''">
+						                              {% for group in fps_users_groups %}
+							                              {% if group.id %}
+								                               <option {% if user.status == group.id %} selected {% endif %} value="{{ group.id }}">{{ group.title }}</option>
+							                          {% endif %}
+						                              {% endfor %}
+					                                           </select>
+					                                              <input type="button" value="Изменить" onClick="setGroup({{ user.id }}, 'groupForm_{{ user.id }}');" />
+					                                              <div id="infomess_group_{{ user.id }}"></div>
+				                                                  </form>
+		                                                       </div>
+		                                              {% endif %}
+	                                                  {% else %}
+		                                                  {{ user.group }}
+	                                                  {% endif %}
+									      </span>
+									</span>
+									</li>
+									<li>
+										<span class="siu_title">Репутация:</span>
+										<span class="siu_data"><a href="javascript:void(0)" onClick="showFpsWin('{{ www_root }}/users/votes_story/{{ user.id }}', '', 'История рейтинга ({{ user.name }})');">{{ user.rating }}</a>
+                                                                             <a href="javascript:void(0)" onClick="$('#setRating_{{ user.id }}').show();">-&nbsp;/&nbsp;+</a></a>
+										</span>
+									</li>
+									<li>
+										<span class="siu_title">Статус:</span>
+										<span class="siu_data">{{ getUserRatingText(user.posts) }}</span>
+									</li>
+									<li>
+										<span class="siu_title">Предупреждения:</span>
+										<span class="siu_data"><a href="javascript:void(0)" onClick="showFpsWin('{{ www_root }}/users/warnings_story/{{ user.id }}', '', 'История предупреждений ({{ user.name }})');">{{ user.warnings }}</a>&nbsp;&nbsp;&nbsp;&nbsp;
+                                                                             <a href="javascript:void(0)" onClick="$('#addWarning_{{ user.id }}').show();">-&nbsp;/&nbsp;+</a>
+										</span>
+									</li>
+									<li>
+										<span class="siu_title">Сообщений на форуме:</span>
+										<span class="siu_data">{{ user.posts }}</span>
+									</li>
+									{% if user.telephone %}
+									<li>
+										<span class="siu_title">Телефон:</span>
+										<span class="siu_data"> {{ user.telephone }}</span>
+									</li>
+									{% endif %}
+									{% if user.age %}
+									<li>
+										<span class="siu_title">Возраст:</span>
+										<span class="siu_data"> {{ user.age }} </span>	
+									</li>
+									<li>
+										<span class="siu_title">День рождения:</span>
+										<span class="siu_data">{{ user.byear }}-{{ user.bmonth }}-{{ user.bday }}</span>
+									</li>
+									{% endif %}
+ 									{% if user.url %}
+									<li>
+										<span class="siu_title">WEB - site:</span>
+                                        <span class="siu_data">{{ user.url }}</span>
+									</li>
+									{% endif %}
+                                    <li>
+										<span class="siu_title">Пол:</span>
+                                        <span class="siu_data">{% if user.pol %} {{ user.pol }} {% else %} Не указан {% endif %}</span>
+									</li>
+									{% if user.city %}
+									<li>
+										<span class="siu_title">Город:</span>
+                                        <span class="siu_data">{{ user.city }}</span>
+									</li>
+									{% endif %}
+									{% if user.icq %}
+									<li>
+										<span class="siu_title">Номер в ICQ:</span>
+                                        <span class="siu_data">{{ user.icq }}</span>
+									</li>
+									{% endif %}
+									{% if user.jabber %}
+									<li>
+										<span class="siu_title">Jabber:</span>
+                                        <span class="siu_data">{{ user.jabber }}</span>
+									</li>
+									{% endif %}
+									{% if user.lastpost %}
+									<li>
+										<span class="siu_title">Последнее сообщение:</span>
+                                        <span class="siu_data">{{ user.lastpost }}</span>
+									</li>
+									{% endif %}
+									{% if user.about %}
+									<li>
+										<span class="siu_title">Интересы:</span>
+                                        <span class="siu_data">{{ user.about }}</span>
+									</li>
+									{% endif %}
+									
+								</ul>
+			  </div>
+		 </div>  
+	  </div>
+	  </div>
+	
+<style>
+#setRating_{{ user.id }} {}
+#addWarning_{{ user.id }} {}
+#infomess_{{ user.id }}, #winfomess_{{ user.id }} {margin-top: 5px;text-align: center;}
+#ratingForm_{{ user.id }} {}
+#warningForm_{{ user.id }} {}
+</style>	
+<div id="setRating_{{ user.id }}" class="fps-fwin" style="display:none;">
+<div class="drag_window">
+    <div class="fps-title" onmousedown="drag_object(event, this.parentNode)">Голос для <b>{{ user.name }}</b></div>
+    <div onClick="$('#setRating_{{ user.id }}').hide()" class="fps-close"></div>
+    <div class="fps-cont">
+        <form id="ratingForm_{{ user.id }}">
+            <input type="radio" name="points" value="1" /><b>&nbsp;1</b><br />
+            <input type="radio" name="points" value="0" /><b>&nbsp;0</b><br />
+            <input type="radio" name="points" value="-1" /><b>-1</b><br />
+            <textarea name="comment"></textarea><br />
+            <input type="button" value="Отправить" onClick="setRating({{ user.id }}, 'ratingForm_{{ user.id }}');" />
+        </form>
+        <div id="infomess_{{ user.id }}"></div>
+    </div>
+</div>
+</div>
+<div id="addWarning_{{ user.id }}" class="fps-fwin" style="display:none;">
+    <div class="drag_window">
+        <div class="fps-title" onmousedown="drag_object(event, this.parentNode)">Замечание для <b>{{ user.name }}</b></div>
+        <div onClick="$('#addWarning_{{ user.id }}').hide()" class="fps-close"></div>
+        <div class="fps-cont">
+            <form id="warningForm_{{ user.id }}">
+                <fieldset>
+                    <legend><b>Действие</b></legend>
+                    <input type="radio" name="points" value="1">[+]Повысить уровень замечаний<br />
+                    <input type="radio" name="points" value="-1">[-]Понизить уровень замечаний(снять бан)<br />
+                </fieldset>
+                <fieldset>
+                    <legend><b>Причина</b></legend>
+                    <textarea style="width:96%;" name="cause"></textarea>
+                </fieldset>
+                <fieldset>
+                    <legend><b>Бан</b></legend>
+                    <input style="width:50px;margin:2px;" type="text" name="cnt" value="" />
+                    <select style="width:80px;margin:2px;" name="mult">
+                        <option value="h">Часа</option>
+                        <option value="d">Дней</option>
+                        <option value="w">Недель</option>
+                        <option value="m">Месяцев</option>
+                        <option value="y">Лет</option>
+                    </select>
+                    <input type="checkbox" name="permanently" value="1" />Навсегда
+                </fieldset>
+                <fieldset>
+                    <legend><b>Уведомление</b></legend>
+                    <input type="checkbox" name="noticepm" value="1" />Личные сообщения
+                </fieldset>
+                <fieldset>
+                    <input type="button" value="Отправить" onClick="addWarning_({{ user.id }}, 'warningForm_{{ user.id }}');" />
+                </fieldset>
+            </form>
+            <div id="winfomess_{{ user.id }}"></div>
+        </div>
+    </div>
+</div>

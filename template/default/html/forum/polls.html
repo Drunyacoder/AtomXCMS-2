@@ -1,0 +1,76 @@
+<script type="text/javascript">
+function sendVote(){
+	var ansver = $('input[type="radio"]:checked');
+	if (typeof ansver != 'undefined') {
+		$.get('{{ www_root }}/forum/vote_poll/{{ poll.id }}?ansver=' + ansver.val(), function(response){
+			$('#pollVote').hide();
+			
+			renderPollResults(response);
+			
+			$('#pollResults').show();
+		});
+	}
+}
+
+function renderPollResults(data) {
+	$('#pollResults').html('');
+	
+	data = jQuery.parseJSON(data);
+	
+	for (key in data) {
+		var poll = data[key];
+		
+		var row = '<li>'
+		+'<span class="answer">' + poll.ansver + '</span>'
+		+'<span class="votes"> (' + poll.votes + ' голосов [' + poll.percentage + '%])</span>'
+		+'<p class="progress_bar" title="Процент голосов: ' + poll.percentage + '%">'
+		+'<span style="width: ' + poll.percentage + '%"></span>'
+		+'</p>'
+		+'</li>';
+		$('#pollResults').append(row);
+	}
+	
+	/*
+	data.each(function(poll){
+		var row = '<li>'
+		+'<span class="answer">' + poll.ansver + '</span>'
+		+'<span class="votes"> (' + poll.votes + ' голосов [' + poll.percentage + '%])</span>'
+		+'<p class="progress_bar" title="Процент голосов: ' + poll.percentage + '%">'
+		+'<span style="width: ' + poll.percentage + '%"></span>'
+		+'</p>'
+		+'</li>';
+		$('#pollResults').append(row);
+	});
+	*/
+}
+</script>
+<div class="poll_question">
+{% if poll.question %}
+<h4 class="question"><b>Голосование:</b> {{ poll.question }} ?</h4>
+{% endif %}
+{% if poll.can_voted %} 	
+		<ol id="pollVote">
+              {% for variant in poll.variants %}   
+			  <li>
+			       <input type="radio" name="ansver" value="{{ variant.ansver_id }}"/>
+			       <label>{{ variant.ansver }}</label>
+			  </li>
+              {% endfor %}
+			  <li>
+                   <input onClick="sendVote();" type="button" name="poll_send" value="Голосовать" />	
+              </li>			   
+		</ol>
+{% endif %}
+
+		<ol id="pollResults" {% if poll.can_voted %} style="display:none;" {% endif %}>
+               {% for variant in poll.variants %}		
+			<li>
+						<span class="answer">{{ variant.ansver }}</span>
+						<span class="votes"> ({{ variant.votes }} голосов [{{ variant.percentage }}%])</span>
+						<p class="progress_bar" title="Процент голосов: {{ variant.percentage }}%">
+						         <span style="width: {{ variant.percentage }}%"></span>
+						</p>
+			</li>	
+               {% endfor %}				
+		</ol>
+</div>

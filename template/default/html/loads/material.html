@@ -1,0 +1,50 @@
+<div class="material">
+      <div class="mat-title"><a href="{{ entity.add_markers.entry_url }}">{{ entity.title }}</a><div class="mod-panel">{{ entity.add_markers.moder_panel }}</div></div>
+	  <div class="mat-content">
+		    <div class="main_text margin">{{ entity.add_markers.main_text }}</div>
+			<div class="screenshots"><div>
+			 <a class="gallery" href="{{ entity.add_markers.img_url_1 }}"><img src="{{ entity.add_markers.img_small_url_1 }}"/></a>
+			 <a class="gallery" href="{{ entity.add_markers.img_url_2 }}"><img src="{{ entity.add_markers.img_small_url_2 }}"/></a>
+			 <a class="gallery" href="{{ entity.add_markers.img_url_3 }}"><img src="{{ entity.add_markers.img_small_url_3 }}"/></a>
+			 <a class="gallery" href="{{ entity.add_markers.img_url_4 }}"><img src="{{ entity.add_markers.img_small_url_4 }}"/></a>
+			 <a class="gallery" href="{{ entity.add_markers.img_url_5 }}"><img src="{{ entity.add_markers.img_small_url_5 }}"/></a>
+			 <a class="gallery" href="{{ entity.add_markers.img_url_6 }}"><img src="{{ entity.add_markers.img_small_url_6 }}"/></a>
+			 <a class="gallery" href="{{ entity.add_markers.img_url_7 }}"><img src="{{ entity.add_markers.img_small_url_7 }}"/></a>
+			 <a class="gallery" href="{{ entity.add_markers.img_url_8 }}"><img src="{{ entity.add_markers.img_small_url_8 }}"/></a>
+			 <a class="gallery" href="{{ entity.add_markers.img_url_9 }}"><img src="{{ entity.add_markers.img_small_url_9 }}"/></a>
+			 <a class="gallery" href="{{ entity.add_markers.img_url_10 }}"><img src="{{ entity.add_markers.img_small_url_10 }}"/></a>
+			</div></div>
+            <div class="infomats">
+		        <div class="namesmats">
+				{% if checkAccess([module,'download_files']) %}
+                  {% if entity.add_markers.attachment %}
+				       <a class="downloadbutton" target="_blank"><div>{{ entity.add_markers.attachment }}<div class="infoload">Downloads: {{ entity.downloads }}</div></div></a>
+		          {% else %}
+				  <div class="errorfile">
+		              Файл не найден
+				  </div>
+		          {% endif %}
+		        {% else %}
+				<div class="errorfile">
+		          У вас нет прав на скачивание файла
+				</div>
+		        {% endif %}
+				{% if entity.tags %}
+				<br /><b>Теги: </b>{% for tag in entity.tags %}<a href="{{ www_root }}/news/index/{{ tag }}">{{ tag }}</a>; {% endfor %}
+				{% endif %}
+				{% if entity.sourse %}<br /><b>Источник:</b> {{ entity.sourse }}{% endif %}
+				</div>
+		        <div class="infomatsright">
+			      <b>Автор:</b><a href="{{ entity.add_markers.profile_url }}"> {{ entity.author.name }}</a>
+				  <br /><b>Категория:</b><a href="{{ entity.add_markers.category_url }}"> {{ entity.category.title }}</a>
+			      <br /><b>Просмотров:</b> {{ entity.views }}
+				  <br /><b>Комментариев:</b> {{ entity.comments }}
+				  <br />
+				  <br /><script language="JavaScript" type="text/javascript" src="{{ template_path }}/js/share.js"></script>
+			    </div>
+	        </div>
+      </div>
+</div>
+
+
+

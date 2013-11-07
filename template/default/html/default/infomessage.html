@@ -1,0 +1,14 @@
+<div>
+   <div style="text-align: center;">
+	   {{ data.message }}
+
+	   {% if data.url %}
+		<div>
+			<a href="{{ data.url }}">Продолжить</a>
+		</div>
+
+		{{ data.jsredirect }}
+
+	   {% endif %}
+   </div>
+</div>

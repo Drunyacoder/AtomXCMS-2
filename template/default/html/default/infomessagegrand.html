@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+<head>
+<title>{{ data.info_message }}</title>
+<link rel="icon" href="{{ www_root }}/sys/img/favicon.ico" type="image/x-icon" />
+<link type="text/css" rel="StyleSheet" href="{{ template_path }}/css/style.css" />
+</head>
+<body>
+<div class="messegesokno" style="width:223px;height:143px;">
+      <span class="headfutbutton">Информация</span>
+    <div>
+	     <div>{{ data.info_message }}</div>
+         {% if data.error_message %}
+         <div id="sql_querys">
+	     <br />{{ data.error_message }}
+         </div>
+         {% endif %}
+	</div>
+</div>
+</body>
+</html>

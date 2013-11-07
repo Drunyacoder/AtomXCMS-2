@@ -1,0 +1,107 @@
+<form name="addNewUserFormByAdmin" id="sendForm" action="{{ context.action }}" method="POST" enctype="multipart/form-data" onsubmit="sendu('sendForm'); return false">
+
+<div class="material">
+	  <div class="mat-title">Изменение профиля</div>
+	  <div class="mat-content">
+          <ul class="spisok-all">
+		  <li>
+            <span class="siu_title"><strong>Логин:</strong></span>
+            <span class="siu_data"><input type="text" name="name" maxlength="30" value="{{ context.login }}" readonly /></span>
+          </li>
+		  <li>
+            <span class="siu_title"><strong>Полное имя:</strong></span>
+            <span class="siu_data"><input type="text" name="full_name" maxlength="255" value="{{ context.full_name }}" /></span>
+          </li>
+          <li>
+            <span class="siu_title"><strong>Адрес e-mail:</strong></span>
+            <span class="siu_data">
+			<input type="hidden" name="oldEmail" value="{{ context.oldemail }}" />
+			<input type="text" name="email" maxlength="60" value="{{ context.email }}" /></span>
+          </li>
+		  <li>
+            <span class="siu_title"><strong>Новый пароль:</strong>Указывайте пароль <em>только</em> если вы хотите его поменять.</span>
+            <span class="siu_data"><input type="password" name="newpassword" maxlength="30" value=""  /></span>
+          </li>
+		  <li>
+            <span class="siu_title"><strong>Подтвердите пароль:</strong>Только если вы указали новый пароль</span>
+            <span class="siu_data"><input type="password" name="confirm" maxlength="30" value=""  /></span>
+          </li>
+		  <li>
+            <span class="siu_title"><strong>Пол:</strong></span>
+            <span class="siu_data">
+			      Мужской<input type="radio" name="pol" value="1"{{ context.mpol }} />
+		          Женский<input type="radio" name="pol" value="2"{{ context.fpol }} />
+		    </span>
+          </li>
+		  <li>
+            <span class="siu_title"><strong>Город:</strong></span>
+            <span class="siu_data"><input type="text" name="city" maxlength="100" value="{{ context.city }}" /></span>
+          </li>
+		  <li>
+            <span class="siu_title"><strong>Дата рождения:</strong>(день;месяц;год)</span>
+            <span class="siu_data"> 
+		                     <select style="width:50px;" name="bday">
+			                         {{ context.bday_selector }}
+		                     </select>
+							 <select style="width:50px;" name="bmonth">
+			                         {{ context.bmonth_selector }}
+		                     </select>
+							 <select style="width:50px;" name="byear">
+			                         {{ context.byears_selector }}
+		                      </select>&nbsp;
+		                      
+			</span>
+          </li>
+		  <li>
+            <span class="siu_title"><strong>Коррекция временных зон:</strong>Укажите разницу вашего времени относительно серверного, чтобы скорректировать время на часах сайта под вас.</span>
+            <span class="siu_data">
+			           <select name="timezone">
+                              {{ context.options }}
+                       </select>
+                               Текущее время на сервере: {{ context.servertime }}</span>
+          </li>
+		  <li>
+            <span class="siu_title"><strong>Аватар:</strong>Показывает небольшое изображение рядом с вашими ответами, материалами и т.п</span>
+            <span class="siu_data"><img title="{{ context.name }}" class="avatar" border="0" src="{{ context.avatar }}"><input type="file" name="avatar"  />{{ context.unlinkfile }}</span>
+          </li>
+		  <li>
+            <span class="siu_title"><strong>Подпись:</strong>Показывается под вашими сообщениями</span>
+            <span class="siu_data"><textarea name="signature" cols="30" rows="3">{{ context.signature }}</textarea></span>
+          </li>
+		  <li>
+            <span class="siu_title"><strong>О себе:</strong></span>
+            <span class="siu_data"><textarea name="about" cols="30" rows="3">{{ context.about }}</textarea></span>
+          </li>
+		  <li>
+            <span class="siu_title"><strong>Домашняя страничка:</strong> Ваш WEB-site или ссылка на вашу страницу в соц. сети</span>
+            <span class="siu_data"><input type="text" name="url" maxlength="60" value="{{ context.url }}"  /></span>
+          </li>
+		  <li>
+            <span class="siu_title"><strong>Телефон:</strong></span>
+            <span class="siu_data"><input type="text" name="telephone" maxlength="100" value="{{ context.telephone }}" /></span>
+          </li>
+		  <li>
+            <span class="siu_title"><strong>Номер ICQ:</strong></span>
+            <span class="siu_data"><input type="text" name="icq" maxlength="12" value="{{ context.icq }}"  /></span>
+          </li>
+		  <li>
+            <span class="siu_title"><strong>Jabber:</strong></span>
+            <span class="siu_data"><input type="text" name="jabber" maxlength="100" value="{{ context.jabber }}" /></span>
+          </li>
+		  <li>
+            <span class="siu_title"><strong>Оформление сайта:</strong>Выберите то, что вам по душе.</span>
+            <span class="siu_data"><select name="template">{{ context.template }}</select></span>
+          </li>
+		  <li>
+            <span class="siu_title"><strong>Активация:</strong></span>
+            <span class="siu_data">{{ context.activation }}</span>
+          </li>
+		  <li>
+		  <input type="submit" name="submitForm" value="Сохранить" />
+		  </li>
+          
+          </ul>
+      </div>
+</div>
+
+</form>

@@ -1,0 +1,48 @@
+<form name='editThemeForm' id="editThemeForm" action="{{ context.action }}" method="POST" onsubmit="sendu('editThemeForm'); return false">
+<div class="material">
+	  <div class="mat-title">Редактирование темы</div>
+	  <div class="mat-content">
+          <ul class="spisok-all">
+          <li>
+            <span class="siu_title"><strong>Местонахождение темы:</strong></span>
+            <span class="siu_data"><select name="id_forum">{{ context.options }}</select></span>
+		  </li>
+		  <li>
+			<span class="siu_title"><strong>Название темы:</strong></span>
+            <span class="siu_data"><input type="text" name="theme" maxlength="55" value="{{ context.theme }}" /></span>
+		  </li>
+		  <li>
+			<span class="siu_title"><strong>Описание темы:</strong></span>
+            <span class="siu_data"><input type="text" name="description" maxlength="128" value="{{ context.description }}" /></span>
+		  </li>
+		  <li>
+			<span class="siu_title"><strong>Автор темы:</strong></span>
+            <span class="siu_data"><input type="text" name="author" value="{{ context.author }}" disabled /></span>
+		  </li>
+		   {% if fps_admin_access == 1 %}
+		  <li>
+			<span class="siu_title"><strong>Закрыть доступ:</strong></span>
+            <span class="siu_data">
+			{% for group in context.users_groups %}
+		      <label><input type="checkbox" {% if context.gr_access %} {% for curr in context.gr_access %} {% if curr == group.id %} checked="checked" {% endif %} {% endfor %} {% endif %} value="{{ group.id }}" name="gr_access_{{ group.id }}" />{{ group.title }}</label>
+           {% endfor %}
+		   </span>
+		  </li>
+		   {% endif %}
+		  <li>
+			<span class="siu_title"><strong>Закрепить первое сообщение темы:</strong></span>
+            <span class="siu_data"><input type="checkbox" name="first_top" {% if context.first_top %} checked="checked" {% endif %} /></span>
+		  </li>
+		  {% if checkAccess([module,'close_themes']) %}
+		  <li>
+			<span class="siu_title"><strong>Закрыть тему:</strong></span>
+            <span class="siu_data"><input type="checkbox" name="locked" {% if context.locked %} checked="checked" {% endif %} </span>
+		  </li>
+		  {% endif %}
+		  <li>
+			<input type="submit" name="sendForm" value="Сохранить" />
+		  </li>
+		  </ul>
+	  </div>
+</div>
+</form>

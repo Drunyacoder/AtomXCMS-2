@@ -1,0 +1,56 @@
+<div class="material">
+	  <div class="mat-title">Список пользователей</div>
+	  <div class="mat-content">
+
+        <div class="userlistsortirovka">
+		Сортировать по:
+            <ul>
+                   <li>{{ getOrderLink(['name','Имя']) }}</li>
+		           <li>{{ getOrderLink(['puttime','Дата регистрации']) }}</li>
+                   <li>{{ getOrderLink(['last_visit','Последний визит']) }}</li>
+                   <li>{{ getOrderLink(['status','Группа']) }}</li>
+            </ul>
+        </div>
+
+         <ul class="userlist">
+		     {% if entities %}
+             {% for user in entities %}
+                            <li>
+							       <div class="userlistavatar"><img src="{{ getAvatar(user.id) }}" class="avatar"></div>
+							        <div class="listuser">
+								          <ul class="listuserbuttons">
+									          <li><a href="{{ www_root }}/users/info/{{ user.id }}" class="button2">Профиль</a></li>
+                                              {% if user.pm %}<li><a href="{{ www_root }}/users/send_pm_form/{{ user.id }}" class="button2">Отправить ЛС</a></li>{% endif %}
+                                              {% if user.moder_panel %}<li><a href="{{ www_root }}/users/edit_form_by_admin/{{ user.id }}" class="button2">Изменить профиль</a></li>{% endif %}									
+								          </ul>
+								          <h3 class="userlisttitle"><a href="{{ www_root }}/users/info/{{ user.id }}">{{ user.name }}</a></h3>
+										   {% if user.rating %}
+				                              {% if user.rating >= 1 %}
+											  <p class="listreputation" style="background-color: #780;"><span>{{ user.rating }}</span></p>
+				        	                  {% else %}
+											  <p class="listreputation" style="background-color: #C54C4C;"><span>{{ user.rating }}</span></p>
+					                          {% endif %}
+				                           {% else %}
+										       <p class="listreputation" style="background-color: #999;"><span>{{ user.rating }}</span></p>
+                                           {% endif %}
+								          <div>
+								               <span><b class="group">{{ user.group }}</b></span><span>{{ user.posts }} сообщений</span><span><b>Регистрация:</b>  {{ user.puttime }}</span><span><b>Последний визит:</b> {{ user.last_visit }}</span>
+								          </div>
+							        </div>
+                            </li>
+			{% endfor %}
+            {% endif %}
+         </ul>
+		 
+        <div class="userlistsortirovka">
+		Сортировать по:
+            <ul>
+                   <li>{{ getOrderLink(['name','Имя']) }}</li>
+		           <li>{{ getOrderLink(['puttime','Дата регистрации']) }}</li>
+                   <li>{{ getOrderLink(['last_visit','Последний визит']) }}</li>
+                   <li>{{ getOrderLink(['status','Группа']) }}</li>
+            </ul>
+        </div>
+		
+      </div>
+</div>

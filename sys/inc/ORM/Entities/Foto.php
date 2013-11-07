@@ -105,18 +105,4 @@ class FotoEntity extends FpsEntity
    		$this->category = $category;
    	}
 
-
-
-	/**
-     * @return object
-     */
-	public function getCategory()
-	{
-        if (!$this->checkProperty($this->category)) {
-            $Model = new FotoModel('foto');
-            $this->category = $Model->getCategoryByNew($this);  // TODO (function is not exists)
-        }
-		return $this->category;
-	}
-
 }

@@ -1,0 +1,19 @@
+<form name="addForumForm" id="editForumForm" action="{{ context.action }}" method="POST" onsubmit="sendu('editForumForm'); return false">
+<div class="material">
+	  <div class="mat-title">Редактирование форума</div>
+	  <div class="mat-content">
+          <ul class="spisok-all">
+          <li>
+            <span class="siu_title"><strong>Название форума:</strong></span>
+            <span class="siu_data"><input type="text" name="title" value="{{ context.title }}" maxlength="120" /></span>
+			
+			<span class="siu_title"><strong>Описание форума:</strong></span>
+            <span class="siu_data"><textarea name="description" maxlength="250">{{ context.description }}</textarea></span>
+		  </li>
+		  <li>
+			<input type="submit" name="sendForm" value="Сохранить" />
+		  </li>
+		  </ul>
+	  </div>
+</div>
+</form>

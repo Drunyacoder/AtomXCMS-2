@@ -1,0 +1,46 @@
+{{ editor_body }}
+
+<script type="text/javascript">
+$(function() {
+    $('[list=findusers]').keyup(function() {
+        if ($('[list=findusers]').val().length > 2) {
+            $.get('/users/search_niks/?name='+$('[list=findusers]').val(), {}, function(data){
+                $('#findusers').html(data);
+            });
+        } else {
+            $('#findusers').html('');
+        };
+    });
+    return;
+});
+</script>
+<form name="sendMailForm" id="sendForm" action="{{ context.action }}" method="POST" onsubmit="sendu('sendForm'); return false">
+	<div class="material">
+	  <div class="mat-title">Отправление сообщения: {{ context.touser }}</div>
+	  <div class="mat-content">
+		  <ul class="userslinks">
+		         <li><a href="{{ www_root }}/users/info/{{ fps_user_id }}">Мой профиль</a></li>
+				 <li><a href="{{ www_root }}/users/in_msg_box/">Личные сообщения</a></li>
+                 <li><a href="{{ www_root }}/users/out_msg_box/">Отправленные</a></li>
+				 <li class="active"><a href="{{ www_root }}/users/send_pm_form/">Отправить ЛС</a></li>
+		  </ul>
+	      <div class="userinfo">
+		    <ul class="spisok-all">
+            <li>
+              <span class="siu_title"><strong><font color="red">*</font> Кому:</strong>Внимание в форме предусмотрен поиск по именам</span>
+              <span class="siu_data">
+			    <input type="text" name="toUser" id="toUser" maxlength="30" value="{{ context.touser }}" list="findusers" />
+				<datalist id="findusers"></datalist>
+			  </span>
+            </li>
+			<li>
+              <textarea {{ editor_text }} name="mainText">{{ context.main_text }}</textarea>
+            </li>
+			<li>
+              <input class="subm" type="submit" name="submitForm" value="Отправить" />
+            </li>
+		    </ul>
+	      </div>
+	  </div>
+    </div>
+</form>

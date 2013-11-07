@@ -1,0 +1,36 @@
+<form name='editThemeForm' id="movePostsForm" action="{{ context.action }}" method="POST" onsubmit="sendu('movePostsForm'); return false">
+<div class="forumblock">
+	  <div class="forumtitle">Перемещение сообщений: {{ theme.title }}</div> 
+	  <div class="mat-content">
+          <ul class="spisok-all">
+          <li>
+            <span class="siu_title"><strong>Идентификатор темы:</strong>Порядковый номер темы в которую вы хотите переместить сообщения, узнать его можно из адреса страницы темы. Этот номер находится в конце адреса, после <b>view_theme/</b></span>
+            <span class="siu_data"><input type="text" name="theme" maxlength="55" value="{{ context.theme }}" /></span>
+          </li>
+		  <li>
+            <input type="submit" name="sendForm" value="Переместить выделенные сообщения" />
+			<br />Сообщения будут распределены относительно даты их создания
+          </li>
+		  </ul>
+	  </div>
+{% for post in posts %}
+<div class="forumpost" id="post{{ post.id }}">
+<div class="poststarterinfo">
+<a class="postusername">{{ post.author_name }}</a>
+</div>
+
+<div class="posttextuser">
+	          <div class="headpostinfo"><span class="postdate">Отправлено: {{ post.time }}</span>
+			  <label class="postidlink"><input type="checkbox" {% for curr in context.posts_select %} {% if curr == post.id %} checked="checked" {% endif %} {% endfor %} value="{{ post.id }}" name="post_{{ post.id }}" /></label>
+			  </div>
+	          <div class="posttext">{{ post.message }}</div>
+	       </div>
+</div>
+{% endfor %}
+</div>
+<div class="mezdyblock">
+	     <div class="paginator">
+            <div class="pages">{{ pagination }}</div>
+         </div>
+</div>
+</form>

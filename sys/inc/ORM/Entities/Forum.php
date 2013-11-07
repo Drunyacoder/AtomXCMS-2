@@ -46,7 +46,7 @@ class ForumEntity extends FpsEntity
 	{
 		$params = array(
 			'title' => $this->title,
-			'description ' => $this->description ,
+			'description' => $this->description ,
 			'pos' => intval($this->pos),
 			'in_cat' => intval($this->in_cat),
 			'last_theme_id' => intval($this->last_theme_id),

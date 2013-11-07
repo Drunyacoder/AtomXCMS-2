@@ -8,12 +8,12 @@ $set = array (
   'open_reg' => '1',
   'debug_mode' => 1,
   'max_file_size' => '15000000',
-  'min_password_lenght' => '6',
+  'min_password_lenght' => '5',
   'admin_email' => 'test@email.cms',
   'redirect' => '',
   'redirect_delay' => '1',
   'time_on_line' => '10',
-  'template' => '12',
+  'template' => 'default',
   'use_additional_fields' => 0,
   'hlu' => 1,
   'hlu_extention' => '.htm',
@@ -171,13 +171,20 @@ $set = array (
   ),
   'foto' => 
   array (
-    'description_lenght' => 300,
+    'description_lenght' => '300',
     'description_requred' => 0,
     'active' => 1,
     'title' => 'Фото',
     'description' => 'Каталог Фотографий',
-    'per_page' => 20,
-    'max_file_size' => 5000000,
+    'per_page' => '20',
+    'max_file_size' => '5000000',
+    'Ограничения' => '',
+    'Поля обязательные для заполнения' => '',
+    'fields' => 
+    array (
+      'description' => 'description',
+    ),
+    'Прочее' => '',
   ),
   'statistics' => 
   array (
@@ -188,7 +195,7 @@ $set = array (
     'host' => 'localhost',
     'name' => 'fapos',
     'user' => 'root',
-    'pass' => 'root',
+    'pass' => '',
     'prefix' => '',
   ),
   'news_on_home' => 1,

@@ -1,0 +1,14 @@
+<div>
+{% if warnings %}
+{% for warning in warnings %}
+	<div class="urating" id="uvote_{{ warning.id }}">
+		<div class="action">(<span>{{ warning.points }}</span>)</div>
+		<div class="usr"><a href="{{ www_root }}/users/info/{{ warning.from_user_id }}">{{ warning.fromuser.name }}</a></div>
+		<div class="date">{{ warning.date }}</div>
+		<div class="moder">{{ warning.moder_panel }}</div>
+		<div class="clear"></div>
+		<div class="comm">{{ warning.cause }}</div>
+	</div>
+{% endfor %}
+{% endif %}
+</div>

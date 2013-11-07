@@ -1,0 +1,18 @@
+<form name='editThemeForm' action="{{ context.action }}" method="POST" onsubmit="sendu('sendForm'); return false">
+<div class="forumblock">
+	  <div class="forumtitle">Соединение тем: {{ theme.title }}</div> 
+	  <div class="mat-content">
+          <ul class="spisok-all">
+          <li>
+            <span class="siu_title"><strong>Идентификатор темы:</strong>Порядковый номер темы с которой вы хотите соединить эту тему, узнать его можно из адреса страницы темы. Этот номер находится в конце адреса, после <b>view_theme/</b></span>
+            <span class="siu_data"><input type="text" name="theme" maxlength="55" value="{{ context.theme }}" /></span>
+          </li>
+		  <li>
+            <input type="submit" name="sendForm" value="Соединить темы" />
+			<br />Сообщения будут распределены относительно даты их создания.
+			<br />Название темы и местоположение будет взято у темы <b>в которую</b> перемещают.
+          </li>
+		  </ul>
+	  </div>
+	  </div>
+</form>

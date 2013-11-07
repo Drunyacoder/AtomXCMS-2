@@ -1,0 +1,9 @@
+﻿<table cellspacing="0" cellpadding="0" class="cat-tb">
+	<tr colspan="2"><td colspan="2" class="title">{{ context.h1 }}</td></tr>
+	<tr colspan="2"><td colspan="2" class="meta">{{ context.menu }}</td></tr>
+	<tr><td class="col">{{ context.in_on }}</td><td class="col"><b>{{ context.in_on_user }}</b></td></tr>
+	<tr><td class="col">{{ context.in_on_message }}</td><td class="col">{{ message.sendtime }}</td></tr>
+	<tr><td class="col">Тема</td><td class="col"><b>{{ message.subject }}</b></td></tr>
+	<tr><td colspan="2" class="message">{{ message.message }}</td></tr>
+	<tr><td class="col" colspan="2"align="center"><a href="{{ context.response }}">Ответить</a></td></tr>
+</table>

@@ -1,0 +1,22 @@
+{{ editor_body }}
+<div class="material">
+	   <form method="POST" id="sendForm" action="{{ form.action }}" onsubmit="sendu('sendForm');return false;">
+       <div class="mat-title">Редактирование комментария</div>
+	   <div class="mat-content">
+          <ul class="spisok-all">
+		  {% if fps_user_id == 0 %}
+          <li>
+            <span class="siu_title"><strong><font color="red">*</font>Псевдоним:</strong></span>
+            <span class="siu_data"><input {{ form.disabled }} type="text" name="login" value="{{ form.name }}" /></span>
+          </li>
+		  {% endif %}
+		  <li class="margin" style="overflow:visible;">
+            <textarea {{ editor_text }} name="message">{{ form.message }}</textarea>
+          </li>
+		  <li>
+            <input type="submit" name="send" value="Сохранить" />
+          </li>
+          </ul>
+      </div>
+	  </form>
+</div>
