@@ -38,7 +38,7 @@ class ForumCatEntity extends FpsEntity
 	{
 		$params = array(
 			'title' => $this->title,
-			'previev_id ' => intval($this->preview_id),
+			'previev_id' => intval($this->preview_id),
 		);
 		if ($this->id) $params['id'] = $this->id;
 		$Register = Register::getInstance();

@@ -145,25 +145,8 @@ Class LoadsModule extends Module {
 			
             $announce = $this->Textarier->getAnnounce($announce, $entry_url, 0,
                 $this->Register['Config']->read('announce_lenght', $this->module), $entity);
+			$announce = $this->insertImageAttach($entity, $announce);
 			
-			
-            $attaches = $entity->getAttaches();
-            // replace image tags in text
-            if (!empty($attaches) && is_array($attaches)) {
-                $attachDir = ROOT . '/sys/files/' . $this->module . '/';
-                foreach ($attaches as $attach) {
-				
-                    if ($attach->getIs_image() == 1 && file_exists($attachDir . $attach->getFilename())) {
-					
-					
-						$announce = $this->insertImageAttach(
-							$announce, 
-							$attach->getFilename(), 
-							$attach->getAttach_number()
-						);
-                    }
-                }
-            }
 
             $markers['announce'] = $announce;
 
@@ -301,24 +284,8 @@ Class LoadsModule extends Module {
                 , $this->Register['Config']->read('announce_lenght', $this->module)
                 , $result
             );
-			
-			
-            // replace image tags in text
-            $attaches = $result->getAttaches();
-            if (!empty($attaches) && count($attaches) > 0) {
-                $attachDir = ROOT . '/sys/files/' . $this->module . '/';
-                foreach ($attaches as $attach) {
-				
-                    if ($attach->getIs_image() == 1 && file_exists($attachDir . $attach->getFilename())) {
-					
-						$announce = $this->insertImageAttach(
-							$announce, 
-							$attach->getFilename(), 
-							$attach->getAttach_number()
-						);
-                    }
-                }
-            }
+			$announce = $this->insertImageAttach($result, $announce);
+
 
             $markers['announce'] = $announce;
 
@@ -448,23 +415,8 @@ Class LoadsModule extends Module {
 
         $announce = $entity->getMain();
         $announce = $this->Textarier->print_page($announce, $entity->getAuthor()->getStatus(), $entity->getTitle());
+		$announce = $this->insertImageAttach($entity, $announce);
 		
-
-        // replace image tags in text
-        $attaches = $entity->getAttaches();
-        if (!empty($attaches) && count($attaches) > 0) {
-            $attachDir = ROOT . '/sys/files/' . $this->module . '/';
-            foreach ($attaches as $attach) {
-                if ($attach->getIs_image() == 1 && file_exists($attachDir . $attach->getFilename())) {
-				
-					$announce = $this->insertImageAttach(
-						$announce, 
-						$attach->getFilename(), 
-						$attach->getAttach_number()
-					);
-                }
-            }
-        }
 
         $markers['mainText'] = $announce;
         $markers['main_text'] = $announce;
@@ -579,16 +531,8 @@ Class LoadsModule extends Module {
 			
 			
 			$announce = $this->Textarier->getAnnounce($entity->getMain(), $entry_url, 0, $this->Register['Config']->read('announce_lenght', $this->module), $entity);
+			$announce = $this->insertImageAttach($entity, $announce);
 
-			// replace image tags in text
-			$attaches = $entity->getAttaches();
-			if (!empty($attaches) && count($attaches) > 0) {
-				foreach ($attaches as $attach) {
-					if ($attach->getIs_image() == '1') {
-						$announce = $this->insertImageAttach($announce, $attach->getFilename(), $attach->getAttach_number());
-					}
-				}
-			}
 
 			$markers['announce'] = $announce;
 
@@ -672,7 +616,7 @@ Class LoadsModule extends Module {
 
 
 		$data['action'] = get_url('/' . $this->module . '/add/');
-		$data['max_attaches'] = $this->Register['Config']->read('max_attaches', $this->module);
+		$data['max_attaches'] = Config::read('max_attaches', $this->module);
 		if (empty($data['max_attaches']) || !is_numeric($data['max_attaches']))
 			$data['max_attaches'] = 5;
 			

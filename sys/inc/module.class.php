@@ -643,18 +643,46 @@ class Module {
 	}
 
 	
+	
 	/**
 	 * Replace image marker
 	 */
-	function insertImageAttach($message, $filename, $number, $module = null)
+	function insertImageAttach($entity, $announce, $module = null)
 	{
-		if (!isset($module)) $module = $this->module;
+		$attachment = null;
+		$module = (!empty($module)) ? $module : $this->module;
+       
+        $attaches = ($module == 'forum') ? $entity->getAttacheslist() : $entity->getAttaches();
 		
+
+        if (!empty($attaches) && count($attaches) > 0) {
+            $attachDir = ROOT . '/sys/files/' . $module . '/';
+			
+            foreach ($attaches as $attach) {
+				if (file_exists($attachDir . $attach->getFilename())) {
+				
+				
+					if ($attach->getIs_image() == 1) {
+						$announce = str_replace('{IMAGE' . $attach->getAttach_number() . '}'
+							, '<a class="gallery" href="' . get_url('/sys/files/' . $module . '/' . $attach->getFilename()) 
+							. '"><img alt="' . h($entity->getTitle()) . '" title="' . h($entity->getTitle()) 
+							. '" title="" src="' . get_url('/image/' . $module . '/' . $attach->getFilename()) . '" /></a>'
+							, $announce);
+							
+							
+					} else {
+						$attachment .= __('Attachment') . $attach->getAttach_number() 
+							. ': ' . get_img('/sys/img/file.gif', array('alt' => __('Open file'), 'title' => __('Open file'))) 
+							. '&nbsp;' . get_link(($attach->getSize() / 1000) .' Kb', '/forum/download_file/' 
+							. $attach->getFilename(), array('target' => '_blank')) . '<br />';
+					}
+				}
+            }
+        }
 		
-		return str_replace('{IMAGE'.$number.'}'
-			, '<a class="gallery" href="' . get_url('/sys/files/' . $module . '/' . $filename) 
-			. '"><img src="' . get_url('/image/' . $module . '/' . $filename) . '" /></a>'
-			, $message);
+		if (!empty($attachment)) $entity->setAttachment($attachment);
+	
+		return $announce;
 	}
 	
 	

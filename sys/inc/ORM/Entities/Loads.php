@@ -84,7 +84,7 @@ class LoadsEntity extends FpsEntity
 			'available' => (!empty($this->available)) ? '1' : new Expr("'0'"),
 			'view_on_home' => (!empty($this->view_on_home)) ? '1' : new Expr("'0'"),
 			'on_home_top' => (!empty($this->on_home_top)) ? '1' : new Expr("'0'"),
-			'premoder' => (!empty($this->premoder) && in_array($this->premoder, array('nochecked', 'ejected', 'confirmed'))) ? $this->premoder : 'nochecked',
+			'premoder' => (!empty($this->premoder) && in_array($this->premoder, array('nochecked', 'rejected', 'confirmed'))) ? $this->premoder : 'nochecked',
 			'rating' => intval($this->rating),
 		);
 		

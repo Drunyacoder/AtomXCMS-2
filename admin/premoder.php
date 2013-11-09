@@ -77,24 +77,7 @@ if (in_array($module, array('news', 'stat', 'loads'))) {
 			
 			
 			$announce = $premoder_ent->getMain();
-			
-			// replace image tags in text
-			$attaches = $premoder_ent->getAttaches();
-			if (!empty($attaches) && count($attaches) > 0) {
-				$attachDir = ROOT . '/sys/files/' . $module . '/';
-				foreach ($attaches as $attach) {
-					if ($attach->getIs_image() == 1 && file_exists($attachDir . $attach->getFilename())) {
-					
-					
-						$announce = insertImageAttach(
-							$announce, 
-							$attach->getFilename(), 
-							$attach->getAttach_number(),
-							$module
-						);
-					}
-				}
-			}
+			$announce = insertImageAttach($premoder_ent, $announce, $module);
 			
 			
 			$output .= '<div class="setting-item">

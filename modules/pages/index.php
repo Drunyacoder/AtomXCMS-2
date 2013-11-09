@@ -234,28 +234,11 @@ Class PagesModule extends Module {
 						
                         $announce = $this->Textarier->getAnnounce($announce, $entry_url, 0,
                             $this->Register['Config']->read('announce_lenght'), $result);
+						$announce = $this->insertImageAttach($result, $announce, $result->getSkey());
 						
-						
-                        if (count($matattaches) > 0) {
-                            $attachDir = ROOT . '/sys/files/' . $result->getSkey() . '/';
-                            foreach ($matattaches as $attach) {
-							
-							
-                                if ($attach->getIs_image() == 1 && file_exists($attachDir . $attach->getFilename())) {
-									$announce = $this->insertImageAttach(
-										$announce, 
-										$attach->getFilename(), 
-										$attach->getAttach_number(),
-										$result->getSkey()
-									);
-                                }
-                            }
-                        }
 						
                         $markers['announce'] = $announce;
-
 						$markers['profile_url'] = get_url(getProfileUrl($result->getAuthor_id()));
-
                         $markers['module_title'] = $this->Register['Config']->read('title', $result->getSkey());
                         $result->setAdd_markers($markers);
 

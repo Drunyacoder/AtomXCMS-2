@@ -141,24 +141,7 @@ Class StatModule extends Module {
 				, $this->Register['Config']->read('announce_lenght', $this->module)
 				, $result
 			);
-			
-			
-			// replace image tags in text
-			$attaches = $result->getAttaches();
-			if (!empty($attaches) && count($attaches) > 0) {
-				$attachDir = ROOT . '/sys/files/' . $this->module . '/';
-				foreach ($attaches as $attach) {
-					if ($attach->getIs_image() == 1 && file_exists($attachDir . $attach->getFilename())) {
-					
-					
-						$announce = $this->insertImageAttach(
-							$announce, 
-							$attach->getFilename(), 
-							$attach->getAttach_number()
-						);
-					}
-				}
-			}
+			$announce = $this->insertImageAttach($result, $announce);
 			
 
 			$markers['announce'] = $announce;
@@ -302,28 +285,10 @@ Class StatModule extends Module {
 				, $this->Register['Config']->read('announce_lenght', $this->module)
 				, $result
 			);
-			
-			
-			// replace image tags in text
-			$attaches = $result->getAttaches();
-			if (!empty($attaches) && count($attaches) > 0) {
-				$attachDir = ROOT . '/sys/files/' . $this->module . '/';
-				foreach ($attaches as $attach) {
-					if ($attach->getIs_image() == 1 && file_exists($attachDir . $attach->getFilename())) {
-					
-					
-						$announce = $this->insertImageAttach(
-							$announce, 
-							$attach->getFilename(), 
-							$attach->getAttach_number()
-						);
-					}
-				}
-			}
+			$announce = $this->insertImageAttach($result, $announce);
+
 
 			$markers['announce'] = $announce;
-			
-			
 			$markers['category_url'] = get_url('/' . $this->module . '/category/' . $result->getCategory_id());
 			$markers['profile_url'] = getProfileUrl($result->getAuthor()->getId());
 			if ($result->getTags()) $result->setTags(explode(',', $result->getTags()));
@@ -433,24 +398,8 @@ Class StatModule extends Module {
 		
 		$announce = $entity->getMain();
 		$announce = $this->Textarier->print_page($announce, $entity->getAuthor()->getStatus(), $entity->getTitle());
-		
-		
-		// replace image tags in text
-		$attaches = $entity->getAttaches();
-		if (!empty($attaches) && count($attaches) > 0) {
-			$attachDir = ROOT . '/sys/files/' . $this->module . '/';
-			foreach ($attaches as $attach) {
-				if ($attach->getIs_image() == 1 && file_exists($attachDir . $attach->getFilename())) {
-				
-				
-					$announce = $this->insertImageAttach(
-						$announce, 
-						$attach->getFilename(), 
-						$attach->getAttach_number()
-					);
-				}
-			}
-		}
+		$announce = $this->insertImageAttach($entity, $announce);
+
 
 		$markers['mainText'] = $announce;
 		$markers['main_text'] = $announce;
@@ -557,21 +506,10 @@ Class StatModule extends Module {
 			
 			
 			$announce = $this->Textarier->getAnnounce($entity->getMain(), $entry_url, 0, $this->Register['Config']->read('announce_lenght', $this->module), $entity);
+			$announce = $this->insertImageAttach($entity, $announce);
 
-			// replace image tags in text
-			$attaches = $entity->getAttaches();
-			if (!empty($attaches) && count($attaches) > 0) {
-				foreach ($attaches as $attach) {
-					if ($attach->getIs_image() == '1') {
-						$announce = $this->insertImageAttach($announce, $attach->getFilename(), $attach->getAttach_number());
-					}
-				}
-			}
 
 			$markers['announce'] = $announce;
-
-			
-
 			$markers['category_url'] = get_url($this->getModuleURL('category/' . $entity->getCategory_id()));
 			$markers['profile_url'] = getProfileUrl($entity->getAuthor_id());
 

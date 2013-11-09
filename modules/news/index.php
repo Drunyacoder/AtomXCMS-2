@@ -4,12 +4,12 @@
 | @Author:       Andrey Brykin (Drunya)        |
 | @Email:        drunyacoder@gmail.com         |
 | @Site:         http://fapos.net              |
-| @Version:      1.8.3                         |
+| @Version:      1.8.4                         |
 | @Project:      CMS                           |
 | @Package       CMS Fapos                     |
 | @Subpackege    News Module                   |
 | @Copyright     ©Andrey Brykin 2010-2013      |
-| @Last mod      2013/11/01                    |
+| @Last mod      2013/11/10                    |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
@@ -141,24 +141,7 @@ Class NewsModule extends Module {
 				, $this->Register['Config']->read('announce_lenght', $this->module)
 				, $result
 			);
-			
-			
-			// replace image tags in text
-			$attaches = $result->getAttaches();
-			if (!empty($attaches) && count($attaches) > 0) {
-				$attachDir = ROOT . '/sys/files/' . $this->module . '/';
-				foreach ($attaches as $attach) {
-					if ($attach->getIs_image() == 1 && file_exists($attachDir . $attach->getFilename())) {
-					
-					
-						$announce = $this->insertImageAttach(
-							$announce, 
-							$attach->getFilename(), 
-							$attach->getAttach_number()
-						);
-					}
-				}
-			}
+			$announce = $this->insertImageAttach($result, $announce);
 			
 
 			$markers['announce'] = $announce;
@@ -302,24 +285,8 @@ Class NewsModule extends Module {
 				, $this->Register['Config']->read('announce_lenght', $this->module)
 				, $result
 			);
-			
-			
-			// replace image tags in text
-			$attaches = $result->getAttaches();
-			if (!empty($attaches) && count($attaches) > 0) {
-				$attachDir = ROOT . '/sys/files/' . $this->module . '/';
-				foreach ($attaches as $attach) {
-					if ($attach->getIs_image() == 1 && file_exists($attachDir . $attach->getFilename())) {
-					
-					
-						$announce = $this->insertImageAttach(
-							$announce, 
-							$attach->getFilename(), 
-							$attach->getAttach_number()
-						);
-					}
-				}
-			}
+			$announce = $this->insertImageAttach($result, $announce);
+
 
 			$markers['announce'] = $announce;
 			
@@ -434,24 +401,8 @@ Class NewsModule extends Module {
 		
 		$announce = $entity->getMain();
 		$announce = $this->Textarier->print_page($announce, $entity->getAuthor()->getStatus(), $entity->getTitle());
-		
-		
-		// replace image tags in text
-		$attaches = $entity->getAttaches();
-		if (!empty($attaches) && count($attaches) > 0) {
-			$attachDir = ROOT . '/sys/files/' . $this->module . '/';
-			foreach ($attaches as $attach) {
-				if ($attach->getIs_image() == 1 && file_exists($attachDir . $attach->getFilename())) {
-				
-				
-					$announce = $this->insertImageAttach(
-						$announce, 
-						$attach->getFilename(), 
-						$attach->getAttach_number()
-					);
-				}
-			}
-		}
+		$announce = $this->insertImageAttach($entity, $announce);
+
 
 		$markers['mainText'] = $announce;
 		$markers['main_text'] = $announce;
@@ -558,16 +509,8 @@ Class NewsModule extends Module {
 			
 			
 			$announce = $this->Textarier->getAnnounce($entity->getMain(), $entry_url, 0, $this->Register['Config']->read('announce_lenght', $this->module), $entity);
+			$announce = $this->insertImageAttach($entity, $announce);
 
-			// replace image tags in text
-			$attaches = $entity->getAttaches();
-			if (!empty($attaches) && count($attaches) > 0) {
-				foreach ($attaches as $attach) {
-					if ($attach->getIs_image() == '1') {
-						$announce = $this->insertImageAttach($announce, $attach->getFilename(), $attach->getAttach_number());
-					}
-				}
-			}
 
 			$markers['announce'] = $announce;
 
@@ -759,6 +702,7 @@ Class NewsModule extends Module {
 		//remove cache
 		$this->Register['Cache']->clean(CACHE_MATCHING_ANY_TAG, array('module_' . $this->module));
 		$this->DB->cleanSqlCache();
+		
 		// Формируем SQL-запрос на добавление темы	
 		$max_lenght = $this->Register['Config']->read('max_lenght', $this->module);
 		$add = mb_substr($add, 0, $max_lenght);
@@ -787,7 +731,7 @@ Class NewsModule extends Module {
 		$className = ucfirst($this->module) . 'Entity';
 		$new = new $className($res);
 		$last_id = $new->save();
-	
+		
 
 		if (is_object($this->AddFields)) {
 			$this->AddFields->save($last_id, $_addFields);

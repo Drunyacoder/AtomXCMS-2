@@ -821,33 +821,7 @@ Class ForumModule extends Module {
 				
 				
 				$message = $this->Textarier->print_page($post->getMessage(), $author_status);
-
-				
-				$attachment = null;
-				if ($post->getAttacheslist()) {
-					foreach ($post->getAttacheslist() as $attach) {
-						$collizion = false;
-						if (file_exists(ROOT . '/sys/files/forum/' . $attach->getFilename())) {
-							$attachment .= __('Attachment') . $attach->getAttach_number() 
-								. ': ' . get_img('/sys/img/file.gif', array('alt' => __('Open file'), 'title' => __('Open file'))) 
-								. '&nbsp;' . get_link(($attach->getSize() / 1000) .' Кб', '/forum/download_file/' 
-								. $attach->getFilename(), array('target' => '_blank')) . '<br />';
-								
-								
-							//if attach is image and isset markers for this image
-							if ($attach->getIs_image() == 1) {
-								$message = $this->insertImageAttach($message, $attach->getFilename(), $attach->getAttach_number());
-							}
-							$collizion = true;
-							continue;
-						}
-					}
-					/* may be collizion (paranoya mode) */
-					if (!$collizion) $this->deleteCollizions($post);
-				} else {
-					$this->deleteCollizions($post);
-				}
-				$post->setAttachment($attachment);
+				$message = $this->insertImageAttach($post, $message);
 				$post->setMessage($message);
 				
 
@@ -3386,7 +3360,7 @@ Class ForumModule extends Module {
 						'from' => 1,
 						'to' => $max_attach,
 					),
-					'type' => 'image',
+					'type' => 'file',
 					'max_size' => Config::read('max_file_size'),
 				),
 			),
@@ -3400,7 +3374,7 @@ Class ForumModule extends Module {
 						'from' => 1,
 						'to' => $max_attach,
 					),
-					'type' => 'image',
+					'type' => 'file',
 					'max_size' => Config::read('max_file_size'),
 				),
 			),

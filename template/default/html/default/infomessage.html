@@ -1,14 +1,10 @@
-<div>
-   <div style="text-align: center;">
-	   {{ data.message }}
-
-	   {% if data.url %}
-		<div>
-			<a href="{{ data.url }}">Продолжить</a>
-		</div>
-
-		{{ data.jsredirect }}
-
-	   {% endif %}
-   </div>
-</div>
+<table class="error" align="center">
+<tr>
+  <th>Информация</th>
+</tr>
+<tr>
+  <td style="text-align:center;">
+  {{ info_message }}
+  </td>
+</tr>
+</table>

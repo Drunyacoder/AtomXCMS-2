@@ -43,7 +43,7 @@ class ForumAttachesEntity extends FpsEntity
 	{
 		$params = array(
 			'post_id' => intval($this->post_id),
-			'theme_id ' => intval($this->theme_id),
+			'theme_id' => intval($this->theme_id),
 			'user_id' => intval($this->user_id),
 			'attach_number' => intval($this->attach_number),
 			'filename' => $this->filename,
