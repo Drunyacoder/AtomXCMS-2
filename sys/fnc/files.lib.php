@@ -70,7 +70,7 @@ function downloadAttaches($module, $entity_id) {
 	//$this->deleteCollizions(array('id' => $post_id), true);
 	
 	
-	$max_attach = $Register['Config']->read('max_attaches', $module);
+	$max_attach = Config::read('max_attaches', $module);
 	if (empty($max_attach) || !is_numeric($max_attach)) $max_attach = 5;
 	for ($i = 1; $i <= $max_attach; $i++) {
 		$attach_name = 'attach' . $i;
@@ -86,8 +86,8 @@ function downloadAttaches($module, $entity_id) {
 			// Перемещаем файл из временной директории сервера в директорию files
 			if (move_uploaded_file($_FILES[$attach_name]['tmp_name'], $files_dir . $filename)) {
 				if ($is_image == '1') {
-					$watermark_path = ROOT . '/sys/img/' . ($Register['Config']->read('watermark_type') == '1' ? 'watermark_text.png' : $Register['Config']->read('watermark_img'));
-					if ($Register['Config']->read('use_watermarks') && !empty($watermark_path) && file_exists($watermark_path)) {
+					$watermark_path = ROOT . '/sys/img/' . (Config::read('watermark_type') == '1' ? 'watermark_text.png' : Config::read('watermark_img'));
+					if (Config::read('use_watermarks') && !empty($watermark_path) && file_exists($watermark_path)) {
 						$waterObj = new FpsImg;
 						$save_path = $files_dir . $filename;
 						$waterObj->createWaterMark($save_path, $watermark_path);

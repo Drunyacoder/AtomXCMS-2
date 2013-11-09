@@ -142,7 +142,7 @@ class FpsPDO {
 		// querys list 
 		$redirect = true;
 		if (Config::read('debug_mode') == 1) {
-			$_SESSION['db_querys'][] = str_replace(array_keys($this->queryParams), $this->queryParams, $query) . ' &nbsp; [ ' . $took . ' ]';
+			$_SESSION['db_querys'][] = $this->getQueryDump($query) . ' &nbsp; [ ' . $took . ' ]';
 			$redirect = false;
 		}
 		if (!$data) {
@@ -207,7 +207,7 @@ class FpsPDO {
 			}
 			$query['fields'] = implode(', ', $valueInsert);
 			$query = $this->__renderQuery('update', $query);
-		
+			
 		
 		// if not $id or $params
 		} else {
@@ -224,11 +224,12 @@ class FpsPDO {
 			}
 			$query['fields'] = implode(', ', $fieldInsert);
 			$query['values'] = implode(', ', $valueInsert);
+
 			$query = $this->__renderQuery('insert', $query);
 			
 			
 			if ($Register['Config']->read('debug_mode') == 1) 
-				$_SESSION['db_querys'][] = str_replace(array_keys($this->queryParams), $this->queryParams, $query);
+				$_SESSION['db_querys'][] = $this->getQueryDump($query);
 			
 
 			$this->runQuery($query);
@@ -236,7 +237,7 @@ class FpsPDO {
 		}
 		
 		if ($Register['Config']->read('debug_mode') == 1) 
-			$_SESSION['db_querys'][] = str_replace(array_keys($this->queryParams), $this->queryParams, $query);
+			$_SESSION['db_querys'][] = $this->getQueryDump($query);
 		
 		
 		return $this->runQuery($query);
@@ -262,7 +263,7 @@ class FpsPDO {
 		
 		
 		if (Config::read('debug_mode') == 1) 
-			$_SESSION['db_querys'][] = str_replace(array_keys($this->queryParams), $this->queryParams, $data) . ' &nbsp; [ ' . $took . ' ]';
+			$_SESSION['db_querys'][] = $this->getQueryDump($data) . ' &nbsp; [ ' . $took . ' ]';
 		
 		if ($sql !== true) {
 			if (!empty($sql)) {
@@ -307,16 +308,31 @@ class FpsPDO {
 		$this->runQuery($query);
 		$took = getMicroTime() - $start;
 		if (Config::read('debug_mode') == 1) 
-			$_SESSION['db_querys'][] = str_replace(array_keys($this->queryParams), $this->queryParams, $query) . ' &nbsp; [ ' . $took . ' ]';
+			$_SESSION['db_querys'][] = $this->getQueryDump($query) . ' &nbsp; [ ' . $took . ' ]';
 	}
 	
 	
 	private function runQuery($query) 
 	{
+
+		
 		$statement = $this->dbh->prepare($query);
 		$statement->execute($this->queryParams);
-
+		
 		return $statement;
+	}
+	
+	
+	private function getQueryDump($query) {
+		if (empty($this->queryParams)) return $query;
+		
+
+		foreach ($this->queryParams as $k => $v) {
+			$v = "'$v'";
+			$query = preg_replace('#([ =,\(])('.$k.')([ \),])#i', "$1".$v."$3", $query);
+		}
+
+		return $query;
 	}
 	
 	
@@ -389,9 +405,10 @@ class FpsPDO {
 	 * @return string Rendered SQL expression to be run.
 	 */
 	private function __renderQuery($type, $data) {
+		
 		extract($data);
 		$aliases = null;
-
+		
 		switch (strtolower($type)) {
 			case 'select':
 				return "SELECT {$fields} FROM {$table} {$alias} {$joins} {$conditions} {$group} {$order} {$limit}";

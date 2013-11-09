@@ -194,7 +194,6 @@ Class LoadsModule extends Module {
         return $this->_view($source);
 	}
 
-
 	
 
 	/**
@@ -350,8 +349,7 @@ Class LoadsModule extends Module {
         return $this->_view($source);
 	}
 	  
-	  
-
+	 
 
 	/**
 	 * show page with load info
@@ -446,7 +444,6 @@ Class LoadsModule extends Module {
 			$attach_rem_url = '';
 		}
 		$markers['attachment'] = $attach_serv . ' | ' . $attach_rem_url;
-
 
 
         $announce = $entity->getMain();
@@ -625,166 +622,6 @@ Class LoadsModule extends Module {
 	}
 		
 
-	public function getValidateRules() 
-	{
-		$max_attach = $this->Register['Config']->read('max_attaches', $this->module);
-		if (empty($max_attach) || !is_numeric($max_attach)) $max_attach = 5;
-		$rules = array(
-			'add' => array(
-				'title' => array(
-					'required' => true,
-					'max_lenght' => 250,
-					'title' => 'Title',
-				),
-				'mainText' => array(
-					'required' => true,
-					'max_lenght' => $this->Register['Config']->read('max_lenght', $this->module),
-					'title' => 'Text',
-				),
-				'cats_selector' => array(
-					'required' => true,
-					'pattern' => V_INT,
-					'max_lenght' => 11,
-					'title' => 'Category',
-				),
-				'description' => array(
-					'required' => 'editable',
-				),
-				'tags' => array(
-					'required' => 'editable',
-					'pattern' => V_TITLE,
-				),
-				'sourse' => array(
-					'required' => 'editable',
-					'pattern' => V_TITLE,
-				),
-				'sourse_email' => array(
-					'required' => 'editable',
-					'pattern' => V_MAIL,
-				),
-				'sourse_site' => array(
-					'required' => 'editable',
-					'pattern' => V_URL,
-				),
-				'download_url' => array(
-					'required' => 'editable',
-					'pattern' => V_URL,
-				),
-				'download_url_size' => array(
-					'required' => 'editable',
-					'pattern' => V_INT,
-				),
-				'files__attach' => array(
-					'for' => array(
-						'from' => 1,
-						'to' => $max_attach,
-					),
-					'type' => 'image',
-					'max_size' => Config::read('max_attaches_size', $this->module),
-				),
-				'files__attach_file' => array(
-					'type' => 'file',
-					'max_size' => Config::read('max_file_size', $this->module),
-					'required' => 'editable',
-					'required_error' => __('Not attachment'),
-				),
-				'commented' => array(),
-				'available' => array(),
-			),
-			'update' => array(
-				'title' => array(
-					'required' => true,
-					'max_lenght' => 250,
-					'title' => 'Title',
-				),
-				'mainText' => array(
-					'required' => true,
-					'max_lenght' => Config::read('max_lenght', $this->module),
-					'title' => 'Text',
-				),
-				'cats_selector' => array(
-					'required' => true,
-					'pattern' => V_INT,
-					'max_lenght' => 11,
-					'title' => 'Category',
-				),
-				'description' => array(
-					'required' => 'editable',
-				),
-				'tags' => array(
-					'required' => 'editable',
-					'pattern' => V_TITLE,
-				),
-				'sourse' => array(
-					'required' => 'editable',
-					'pattern' => V_TITLE,
-				),
-				'sourse_email' => array(
-					'required' => 'editable',
-					'pattern' => V_MAIL,
-				),
-				'sourse_site' => array(
-					'required' => 'editable',
-					'pattern' => V_URL,
-				),
-				'download_url' => array(
-					'required' => 'editable',
-					'pattern' => V_URL,
-				),
-				'download_url_size' => array(
-					'required' => 'editable',
-					'pattern' => V_INT,
-				),
-				'files__attach' => array(
-					'for' => array(
-						'from' => 1,
-						'to' => $max_attach,
-					),
-					'type' => 'image',
-					'max_size' => Config::read('max_attaches_size', $this->module),
-				),
-				'files__attach_file' => array(
-					'type' => 'file',
-					'max_size' => Config::read('max_file_size', $this->module),
-					'required' => false,
-				), 				
-				'commented' => array(),
-				'available' => array(),
-			),
-			'add_comment' => array(
-				'login' => array(
-					'required' => true,
-					'pattern' => V_TITLE,
-					'max_lenght' => 40,
-				),
-				'message' => array(
-					'required' => true,
-				),
-				'captcha_keystring' => array(
-					'pattern' => V_CAPTCHA,
-					'title' => 'Kaptcha',
-				),
-			),
-			'update_comment' => array(
-				'login' => array(
-					'required' => true,
-					'pattern' => V_TITLE,
-					'max_lenght' => 40,
-				),
-				'message' => array(
-					'required' => true,
-				),
-				'captcha_keystring' => array(
-					'pattern' => V_CAPTCHA,
-					'title' => 'Kaptcha',
-				),
-			),
-		);
-		
-		return array($this->module => $rules);
-	}
-	
-	
 	
 	/*
 	 * return form to add 
@@ -852,7 +689,6 @@ Class LoadsModule extends Module {
 		return $this->_view($source);
 	}
 
-	
 	
 	
 	/**
@@ -928,7 +764,7 @@ Class LoadsModule extends Module {
         if (!$section) $errors .= '<li>' . __('Can not find category') . '</li>' . "\n";
 		
 		
-		
+
 		// Errors
 		if (!empty($errors)) {
 			$_SESSION['FpsForm'] = array_merge(array(
@@ -993,7 +829,7 @@ Class LoadsModule extends Module {
         );
         $entity = new LoadsEntity($data);
         $last_id = $entity->save();
-
+		
 
         // Get last insert ID and save additional fields if an exists and activated.
         // This must be doing only after save main(parent) material
@@ -1018,7 +854,6 @@ Class LoadsModule extends Module {
 		
         return $this->showInfoMessage(__('Material successfully added'), '/' . $this->module . '/' );
 	}
-
 
 
 
@@ -1131,7 +966,6 @@ Class LoadsModule extends Module {
 		setReferer();
 		return $this->_view($source);
 	}
-
 
 
 
@@ -1318,7 +1152,6 @@ Class LoadsModule extends Module {
 
 
 
-
     /**
      * add comment to stat
      *
@@ -1331,6 +1164,7 @@ Class LoadsModule extends Module {
     }
 
 
+	
     /**
      * add comment form to stat
      *
@@ -1490,7 +1324,6 @@ Class LoadsModule extends Module {
 
 
 
-
     public function download_file($id = null, $mimetype = 'application/octet-stream')
     {
 		
@@ -1571,6 +1404,7 @@ Class LoadsModule extends Module {
 	}
 
 
+	
 	public function download_file_url($id = null, $mimetype = 'application/octet-stream')
     {
 	    $entity = $this->Model->getById($id);
@@ -1686,6 +1520,167 @@ Class LoadsModule extends Module {
 	public function set_rating($id = null)
     {
 		include_once(ROOT . '/sys/inc/includes/set_rating.php');
+	}
+	
+	
+	
+	public function getValidateRules() 
+	{
+		$max_attach = $this->Register['Config']->read('max_attaches', $this->module);
+		if (empty($max_attach) || !is_numeric($max_attach)) $max_attach = 5;
+		$rules = array(
+			'add' => array(
+				'title' => array(
+					'required' => true,
+					'max_lenght' => 250,
+					'title' => 'Title',
+				),
+				'mainText' => array(
+					'required' => true,
+					'max_lenght' => $this->Register['Config']->read('max_lenght', $this->module),
+					'title' => 'Text',
+				),
+				'cats_selector' => array(
+					'required' => true,
+					'pattern' => V_INT,
+					'max_lenght' => 11,
+					'title' => 'Category',
+				),
+				'description' => array(
+					'required' => 'editable',
+				),
+				'tags' => array(
+					'required' => 'editable',
+					'pattern' => V_TITLE,
+				),
+				'sourse' => array(
+					'required' => 'editable',
+					'pattern' => V_TITLE,
+				),
+				'sourse_email' => array(
+					'required' => 'editable',
+					'pattern' => V_MAIL,
+				),
+				'sourse_site' => array(
+					'required' => 'editable',
+					'pattern' => V_URL,
+				),
+				'download_url' => array(
+					'required' => 'editable',
+					'pattern' => V_URL,
+				),
+				'download_url_size' => array(
+					'required' => 'editable',
+					'pattern' => V_INT,
+				),
+				'files__attach' => array(
+					'for' => array(
+						'from' => 1,
+						'to' => $max_attach,
+					),
+					'type' => 'image',
+					'max_size' => Config::read('max_attaches_size', $this->module),
+				),
+				'files__attach_file' => array(
+					'type' => 'file',
+					'max_size' => Config::read('max_file_size', $this->module),
+					'required' => 'editable',
+					'required_error' => __('Not attachment'),
+				),
+				'commented' => array(),
+				'available' => array(),
+			),
+			'update' => array(
+				'title' => array(
+					'required' => true,
+					'max_lenght' => 250,
+					'title' => 'Title',
+				),
+				'mainText' => array(
+					'required' => true,
+					'max_lenght' => Config::read('max_lenght', $this->module),
+					'title' => 'Text',
+				),
+				'cats_selector' => array(
+					'required' => true,
+					'pattern' => V_INT,
+					'max_lenght' => 11,
+					'title' => 'Category',
+				),
+				'description' => array(
+					'required' => 'editable',
+				),
+				'tags' => array(
+					'required' => 'editable',
+					'pattern' => V_TITLE,
+				),
+				'sourse' => array(
+					'required' => 'editable',
+					'pattern' => V_TITLE,
+				),
+				'sourse_email' => array(
+					'required' => 'editable',
+					'pattern' => V_MAIL,
+				),
+				'sourse_site' => array(
+					'required' => 'editable',
+					'pattern' => V_URL,
+				),
+				'download_url' => array(
+					'required' => 'editable',
+					'pattern' => V_URL,
+				),
+				'download_url_size' => array(
+					'required' => 'editable',
+					'pattern' => V_INT,
+				),
+				'files__attach' => array(
+					'for' => array(
+						'from' => 1,
+						'to' => $max_attach,
+					),
+					'type' => 'image',
+					'max_size' => Config::read('max_attaches_size', $this->module),
+				),
+				'files__attach_file' => array(
+					'type' => 'file',
+					'max_size' => Config::read('max_file_size', $this->module),
+					'required' => false,
+				), 				
+				'commented' => array(),
+				'available' => array(),
+			),
+			'add_comment' => array(
+				'login' => array(
+					'required' => true,
+					'pattern' => V_TITLE,
+					'max_lenght' => 40,
+				),
+				'message' => array(
+					'required' => true,
+				),
+				'captcha_keystring' => array(
+					'pattern' => V_CAPTCHA,
+					'title' => 'Kaptcha',
+				),
+			),
+			'update_comment' => array(
+				'login' => array(
+					'required' => true,
+					'pattern' => V_TITLE,
+					'max_lenght' => 40,
+				),
+				'message' => array(
+					'required' => true,
+				),
+				'captcha_keystring' => array(
+					'pattern' => V_CAPTCHA,
+					'title' => 'Kaptcha',
+				),
+			),
+		);
+		
+		return array($this->module => $rules);
 	}
 }
 

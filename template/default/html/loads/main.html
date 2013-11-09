@@ -15,7 +15,7 @@
 <link rel="icon" href="{{ template_path }}/favicon.ico" type="image/x-icon" />
 <link rel="shortcut icon" href="{{ template_path }}/favicon.ico" type="image/x-icon" />
 <link type="text/css" rel="StyleSheet" href="{{ template_path }}/css/style.css" />
-<script language="JavaScript" type="text/javascript" src="{{ www_root }}/sys/js/jquery-1.8.1.min.js"></script>
+<script language="JavaScript" type="text/javascript" src="{{ www_root }}/sys/js/jquery.js"></script>
 <script language="JavaScript" type="text/javascript" src="{{ www_root }}/sys/js/send_message.js"></script>
 <script src="{{ www_root }}/sys/js/jquery.form.min.js"></script>
 {{ editor_head }}
@@ -32,8 +32,8 @@ $('textarea.text-area:not(.processed)').TextAreaResizer();
 */
 </script>
 <!-- FancyBOX -->
-<link type="text/css" rel="StyleSheet" href="{{ template_path }}/css/fancy.css" />
-<script type="text/javascript" src="{{ template_path }}/js/jquery.fancybox.js"></script>
+<link type="text/css" rel="StyleSheet" href="{{ www_root }}/sys/js/fancybox/css/fancy.css" />
+<script type="text/javascript" src="{{ www_root }}/sys/js/fancybox/jquery.fancybox.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
 	$("a.gallery").fancybox();

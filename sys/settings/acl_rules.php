@@ -310,6 +310,15 @@ $acl_rules = array (
       6 => 2,
       7 => 5,
     ),
+    'download_files' => 
+    array (
+      2 => 3,
+      3 => 4,
+      4 => 0,
+      5 => 1,
+      6 => 2,
+      7 => 5,
+    ),
   ),
   'foto' => 
   array (

@@ -54,6 +54,7 @@ class LoadsEntity extends FpsEntity
 	protected $view_on_home;
 	protected $on_home_top;
 	protected $add_fields = null;
+	protected $premoder;
 	protected $rating;
 	
 	
@@ -83,8 +84,11 @@ class LoadsEntity extends FpsEntity
 			'available' => (!empty($this->available)) ? '1' : new Expr("'0'"),
 			'view_on_home' => (!empty($this->view_on_home)) ? '1' : new Expr("'0'"),
 			'on_home_top' => (!empty($this->on_home_top)) ? '1' : new Expr("'0'"),
-			'rating' => $this->rating,
+			'premoder' => (!empty($this->premoder) && in_array($this->premoder, array('nochecked', 'ejected', 'confirmed'))) ? $this->premoder : 'nochecked',
+			'rating' => intval($this->rating),
 		);
+		
+		
 		if ($this->id) $params['id'] = $this->id;
 		$Register = Register::getInstance();
 		return $Register['DB']->save('loads', $params);

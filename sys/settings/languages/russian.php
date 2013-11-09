@@ -71,6 +71,7 @@ $language = array(
 	'html' 							=> 'Поддержка HTML', 						
 	'users_warnings' 				=> 'Выдавать предупреждения', 						
 	'delete_warnings' 				=> 'Удалять предупреждения', 						
+	'download_files' 				=> 'Скачивать файлы', 						
 
 	'entry' 						=> 'Вход в панель управления', 						
 

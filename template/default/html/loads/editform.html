@@ -11,7 +11,10 @@ function metaTags(element) {
 		$('#tags').show();
 	}
 }
+
 </script>
+{{ context.errors }}
+{{ context.preview }}
 <form name="sendForm" id="sendForm" action="{{ context.action }}" method="POST" enctype="multipart/form-data" onsubmit="if (checkForm(this)) {sendu('sendForm')}; return false">
 <div class="material">
 	  <div class="mat-title">Добавление файла</div>
@@ -28,7 +31,7 @@ function metaTags(element) {
 		  
 		  <li>
             <span class="siu_title"><strong><font color="red">*</font>Загрузить файл:</strong></span>
-            <span class="siu_data"><input type="file" name="attach" /> Удалить:<input type="checkbox" name="delete_file" value="1" /> </span>
+            <span class="siu_data"><input type="file" name="attach_file" /> Удалить:<input type="checkbox" name="delete_file" value="1" /> </span>
           </li>
 		   <li>
             <span class="siu_title"><strong>Указать зеркало:</strong>Зеркало, это ссылка на файл на стороннем сайте</span>
@@ -39,8 +42,9 @@ function metaTags(element) {
             <span class="siu_data"><input size="70" type="text" name="download_url_size" value="{{ context.download_url_size }}" /></span>
           </li>
 		  <li class="margin">
-            <textarea {{ editor_text }} class="text-area" name="mainText">{{ context.main_text }}</textarea>
+            <textarea {{ editor_text }} class="text-area" name="mainText">{{ context.mainText }}</textarea>
           </li>
+		  <li><center>{{ context.attaches_delete }}</center></li>
 		  <li>
             <span class="siu_title"><strong>Загрузить скриншоты:</strong></span>
             <span class="siu_data" id="attachments">
