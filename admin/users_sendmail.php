@@ -64,17 +64,6 @@ foreach ($count_usr as $val) {
 }
 
 
-
-// subscribes
-$subscribes_path = ROOT . '/sys/settings/subscribes.dat';
-$subscribes_emails = file($subscribes_path);
-$users_groups['777'] = array(
-	'title' => 'Подписчики',
-	'cnt' => count($subscribes_emails),
-);
-
-
-
 	
 if (isset($_POST['send'])) {
 	if (!empty($_POST['message']) 
@@ -96,18 +85,6 @@ if (isset($_POST['send'])) {
 			),
 		));
 		
-		
-		
-		if (!empty($_POST['groups']['777'])) {
-			$semails = array();
-			foreach ($subscribes_emails as $semail) {
-				$semails[] = array(
-					'email' => $semail,
-					'name' => 'Подписчик',
-				);
-			}
-			$mail_list = array_merge($mail_list, $semails);
-		}
 
 		
 		if (count($mail_list) > 0) {
@@ -147,7 +124,7 @@ if (isset($_POST['send'])) {
 include_once ROOT . '/admin/template/header.php';
 ?>
 
-
+<?php /*
 <div id="sec" class="popup">
 	<div class="top">
 		<div class="title">Добавление категории</div>
@@ -161,7 +138,7 @@ include_once ROOT . '/admin/template/header.php';
 	</div>
 	</form>
 </div>
-
+*/ ?>
 
 
 <div class="warning">
@@ -185,7 +162,7 @@ include_once ROOT . '/admin/template/header.php';
 <form action="" method="POST">
 <div class="list">
 	<div class="title">Рассылка</div>
-	<div class="add-cat-butt" onClick="openPopup('sec');"><div class="add"></div>Список подписчиков</div>
+	<!--<div class="add-cat-butt" onClick="openPopup('sec');"><div class="add"></div>Список подписчиков</div>-->
 	<div class="level1">
 		<div class="items">
 			<div class="setting-item">
