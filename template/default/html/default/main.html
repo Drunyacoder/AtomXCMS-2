@@ -32,8 +32,8 @@ $('textarea.text-area:not(.processed)').TextAreaResizer();
 */
 </script>
 <!-- FancyBOX -->
-<link type="text/css" rel="StyleSheet" href="{{ template_path }}/css/fancy.css" />
-<script type="text/javascript" src="{{ template_path }}/js/jquery.fancybox.js"></script>
+<link type="text/css" rel="StyleSheet" href="{{ www_root }}/sys/js/fancybox/css/fancy.css" />
+<script type="text/javascript" src="{{ www_root }}/sys/js/fancybox/jquery.fancybox.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
 	$("a.gallery").fancybox();
@@ -148,21 +148,24 @@ $(document).ready(function() {
 	</div>
 	<!---------------------------------------------------------------------------CONTENT/----------------------------------------------------------------------------------------------->
     <div class="content">
-<div class="spedbar">
-    <div>
-        <div>{{ navigation }}</div>
-    </div>
-</div>
-<div class="paginator">{{ meta }}<div class="pages">{{ pagination }}</div></div>
-{% if add_link %}<a href="{{ www_root }}/news/add_form/" class="lastpostsbutton button">Добавить новость</a>{% endif %}
-<div style="clear:both;"></div>
-<div class="materials"> 
+	<div class="spedbar">
+		<div>
+			<div>{{ navigation }}</div>
+		</div>
+	</div>
+
+	{% if add_link %}<a href="{{ www_root }}/news/add_form/" class="lastpostsbutton button">Добавить новость</a>{% endif %}
+	<div style="clear:both;"></div>
+	
+	<div class="materials"> 
+	    {% if pagination %}<div class="mezdyblock"><span class="meta">{{ meta }}</span><div class="paginator"><div class="pages">{{ pagination }}</div></div></div>{% endif %}
 		{{ content }}
 		<div class="paginator"><div class="pages">{{ comments_pagination }}</div></div>
-        {{ comments }}
+		{{ comments }}
 		<div class="paginator"><div class="pages">{{ comments_pagination }}</div></div>
-        {{ comments_form }}
-</div><div class="rightbloks">
+		{{ comments_form }}
+	</div>
+	<div class="rightbloks">
 		<div class="block">
 		  <div class="blockstop">Топ новостей</div>
 		  <div class="blokscontent"><ul class="mini_list">{{ pop_news }}</ul></div>

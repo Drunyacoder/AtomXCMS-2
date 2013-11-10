@@ -50,6 +50,7 @@ class CommentsEntity extends FpsEntity
 			'date' => $this->date,
 			'module' => $this->module,
 		);
+		
 		if($this->id) $data['id'] = $this->id;
 		$Register = Register::getInstance();
 		return $Register['DB']->save('comments', $data);

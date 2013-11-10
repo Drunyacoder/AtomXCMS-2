@@ -74,6 +74,8 @@ input[type="radio"] {box-shadow: none;-webkit-box-shadow: none;-moz-box-shadow: 
 input[type="file"], #attachMeta1 input {background-color: #fff;padding: 5px;}
 input[type="checkbox"] {}
 textarea {margin: 0;padding: 2px 1px;}
+.text-area {width:99%; height:250px; margin:auto;}
+.comment-ta {width:100%; height:100px;}
 
 button, .blockstop , .mat-title, .button, input[type="submit"], input[type="button"] {
 background: #6c6c6c url('../img/button.png') repeat-x top;
@@ -546,7 +548,7 @@ box-shadow: inset 0px 0px 2px #999;-webkit-box-shadow: inset 0px 0px 2px #999;-m
 display: inline-block;
 vertical-align: top;
 width: 700px;
-margin-right: 8px;
+margin-right: 5px;
 min-height: 300px;
 }
 .content #full {display: block;width: 100%;}
@@ -687,7 +689,7 @@ text-overflow: ellipsis;
 .content ul.spisok-all li .siu_title strong {display: block;}
 .content ul.spisok-all li .siu_data {word-wrap:break-word;max-width: 100%;display:inline-block; font-size: 13px;vertical-align: top;margin: 10px;}
 .content ul.spisok-all li .siu_data img.avatar {position:relative;}
-.content ul.spisok-all li .siu_data input {height: 25px;width: 374px;vertical-align: top;}
+.content ul.spisok-all li .siu_data input {height: 25px;width: 350px;vertical-align: top;}
 .content ul.spisok-all li .siu_data input[type="radio"], .content ul.spisok-all li .siu_data input[type="checkbox"] {height: 13px;width: 13px;}
 .content ul.spisok-all li .siu_data input[type="file"] {width: 270px;}
 .content ul.spisok-all li .siu_data textarea {height: 90px;width: 600px;}

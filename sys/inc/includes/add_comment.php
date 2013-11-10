@@ -1,21 +1,19 @@
 <?php
 //turn access
 $this->ACL->turn(array($this->module, 'add_comments'));
-if (!isset($_POST['login']) || !isset($_POST['message'])) {
-	redirect('/' . $this->module);
-}
 $id = (int)$id;
 if ($id < 1) redirect('/' . $this->module);
 
 
-$target_new = $this->Model->getById($id);
-if (!$target_new) redirect('/' . $this->module);
-if (!$target_new->getCommented()) return $this->showInfoMessage(__('Comments are denied here'), '/' . $this->module . '/view/' . $id); 
+$target_entity = $this->Model->getById($id);
+if (!$target_entity) redirect('/' . $this->module);
+if (!$target_entity->getCommented()) return $this->showInfoMessage(__('Comments are denied here'), '/' . $this->module . '/view/' . $id); 
 
 
 /* cut and trim values */
 if (!empty($_SESSION['user'])) {
 	$name = $_SESSION['user']['name'];
+	$this->Register['Validate']->disableFieldCheck('login');
 } else {
 	$name = mb_substr($_POST['login'], 0, 70);
 	$name = trim($name);
@@ -30,8 +28,7 @@ $keystring = (isset($_POST['captcha_keystring'])) ? trim($_POST['captcha_keystri
 
 
 // Check fields
-$errors  = '';
-$errors .= $this->Register['Validate']->check($this->getValidateRules());
+$errors = $this->Register['Validate']->check($this->getValidateRules());
 
 
 
@@ -94,26 +91,15 @@ $data = array(
 );
 
 
-
 $className = $this->Register['ModManager']->getEntityName('Comments');
 $entityComm = new $className($data);
+$commId = $entityComm->save();
 
-if ($entityComm) {
-
-	$entityComm->save();
-
-	$entity = $this->Model->getById($id);
-	if ($entity) {
-		$entity->setComments($entity->getComments() + 1);
-		$entity->save();
-		
-
-		if ($this->Log) $this->Log->write('adding comment to ' . $this->module, $this->module . ' id(' . $id . ')');
-		return $this->showInfoMessage(__('Comment is added'), '/' . $this->module . '/view/' . $id);
-	}
-}
+if (!$commId) return $this->showInfoMessage(__('Some error occurred'), '/' . $this->module . '/view/' . $id);
 
 
+$target_entity->setComments($target_entity->getComments() + 1);
+$target_entity->save();
 
 if ($this->Log) $this->Log->write('adding comment to ' . $this->module, $this->module . ' id(' . $id . ')');
 return $this->showInfoMessage(__('Comment is added'), '/' . $this->module . '/view/' . $id );
