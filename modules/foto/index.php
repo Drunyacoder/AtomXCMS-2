@@ -514,7 +514,7 @@ Class FotoModule extends Module {
 			? get_link(__('Add material'), '/foto/add_form/') : '';
 		$this->_globalize($navi);
 		
-		$source = $this->render('addform.html', array('data' => $markers));
+		$source = $this->render('addform.html', array('context' => $markers));
 		
 		return $this->_view($html . $source);
 	}

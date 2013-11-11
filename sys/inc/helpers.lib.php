@@ -59,6 +59,48 @@ function checkAccess($params = null) {
 
 
 
+function getAvatar($id_user = null, $email_user = null) {
+	$def = get_url('/template/' . getTemplateName() . '/img/noavatar.png');
+	
+	if (isset($id_user) && $id_user > 0) {
+		if (is_file(ROOT . '/sys/avatars/' . $id_user . '.jpg')) {
+			return get_url('/sys/avatars/' . $id_user . '.jpg');
+		} else {
+			if (Config::read('use_gravatar', 'users')) {
+				if (!isset($email_user)) {
+					$Register = Register::getInstance();
+					$usersModel = $Register['ModManager']->getModelInstance('Users');
+					$user = $usersModel->getById($id_user);
+					if ($user) {
+						$email_user = $user->getEmail();
+					} else {
+						return $def;
+					}
+				}
+				return getGravatar($email_user);
+			} else {
+				return $def;
+			}
+		}
+	} else {
+		return $def;
+	}
+}
+
+
+
+/**
+* Get correct name of template for current user
+*/
+function getTemplateName()
+{
+	$template = Config::read('template');
+	$template = Plugins::intercept('select_template', $template);
+	return $template;
+}
+
+
+
 function getOrderLink($params) {
 	if (!$params || !is_array($params) || count($params) < 2) return '';
 	$order = (!empty($_GET['order'])) ? strtolower(trim($_GET['order'])) : '';

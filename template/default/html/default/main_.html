@@ -10,7 +10,7 @@
 <meta name='author' content='Andrey Brykin' />
 <meta name='robots' content='index, follow' />
 <meta name='rating' content='general' />
-<meta name='generator' content='FaposCMS 2.3.1 modos189' />
+<meta name='generator' content='FaposCMS 2.4' />
 
 <link rel="icon" href="{{ template_path }}/favicon.ico" type="image/x-icon" />
 <link rel="shortcut icon" href="{{ template_path }}/favicon.ico" type="image/x-icon" />
@@ -93,7 +93,7 @@ $(document).ready(function() {
    <div class="infohead">
      <div class="infoblock">
 	   <div class="download">
-	     <a class="downloadbutton" href="http://home.develdo.com/givecms.php?version=2.2RC1.zip" target="_blank">
+	     <a class="downloadbutton" href="http://home.develdo.com/downloads.php" target="_blank">
 		   <div><div class="nameload">DOWNLOAD FAPOS</div>
 		   <div class="infoload">FILE IS 3.8MB(.ZIP)</div></div>
 		 </a>
@@ -131,12 +131,12 @@ $(document).ready(function() {
 <div class="sider">
     <div class="sidertop">
 	  <ul>
-        <li><a href="{{ www_root }}/">HOME</a></li>
+        <li class="active"><a href="{{ www_root }}/">HOME</a></li>
 		<li><a href="{{ www_root }}/forum">ФОРУМ</a></li>
 		<li><a href="{{ www_root }}/news">НОВОСТИ</a></li>
 		<li><a href="{{ www_root }}/stat">СТАТЬИ</a></li>
 		<li><a href="{{ www_root }}/foto">ФОТОКАТАЛОГ</a></li>
-		<li class="active"><a href="{{ www_root }}/loads/">ФАЙЛЫ</a></li>
+		<li><a href="{{ www_root }}/loads/">ФАЙЛЫ</a></li>
 	  </ul>
 	  <div class="search">
 	   <form method="POST" action="{{ www_root }}/search/"> 
@@ -148,24 +148,48 @@ $(document).ready(function() {
 	</div>
 	<!---------------------------------------------------------------------------CONTENT/----------------------------------------------------------------------------------------------->
     <div class="content">
-<div class="spedbar">
-    <div>
-        <div>{{ navigation }}</div>
-    </div>
-</div>
-{% if add_link %}<a href="{{ www_root }}/loads/add_form/" class="lastpostsbutton button">Загрузить файл</a>{% endif %}
-<div style="clear:both;"></div>
-<div class="materials" id="full">
+	<div class="spedbar">
+		<div>
+			<div>{{ navigation }}</div>
+		</div>
+	</div>
+
+	{% if add_link %}<a href="{{ www_root }}/news/add_form/" class="lastpostsbutton button">Добавить новость</a>{% endif %}
+	<div style="clear:both;"></div>
+	
+	<div class="materials"> 
 	    {% if pagination %}<div class="mezdyblock"><span class="meta">{{ meta }}</span><div class="paginator"><div class="pages">{{ pagination }}</div></div></div>{% endif %}
 		{{ content }}
-		{% if pagination %}<div class="mezdyblock"><div class="paginator"><div class="pages">{{ pagination }}</div></div></div>{% endif %}
-		{% if comments_pagination %}<div class="mezdyblock"><div class="paginator"><div class="pages">{{ comments_pagination }}</div></div></div>{% endif %}
-        {{ comments }}
-		{% if comments_pagination %}<div class="mezdyblock"><div class="paginator"><div class="pages">{{ comments_pagination }}</div></div></div>{% endif %}
-        {{ comments_form }}
-        {% if categories %}<div class="material"><div class="inftitle">Категории:</div><div class="infcont"><ul>{{ categories }}</ul></div></div>{% endif %}
-</div>
-	
+		<div class="paginator"><div class="pages">{{ comments_pagination }}</div></div>
+		{{ comments }}
+		<div class="paginator"><div class="pages">{{ comments_pagination }}</div></div>
+		{{ comments_form }}
+	</div>
+	<div class="rightbloks">
+		<div class="block">
+		  <div class="blockstop">Топ новостей</div>
+		  <div class="blokscontent"><ul class="mini_list">{{ pop_news }}</ul></div>
+		</div>
+	    <div class="block">
+		  <div class="blockstop">Последние комментарии</div>
+		  <div class="blokscontent last_comments">{{ last_comments }}</div>
+		</div>
+	    <div class="block">
+		  <div class="blockstop">Топ пользователей</div>
+		  <div class="blokscontent users_rating">{{ users_rating }}</div>
+		</div>
+	    <div class="block">
+		  <div class="blockstop">Сайты на FaposCMS</div>
+		  <div class="blokscontent">
+		  <ul class="mini_list">
+		     <li><img src="http://fapos.net/sys/img/favicon.ico" height="16" width="16"/><a href="fapos.net" title="Официальный сайт FaposCMS">Оф.Сайт. FaposCMS</a></li>
+			 <li><img src="http://modostroi.ru/sys/img/favicon.ico" height="16" width="16"/><a href="fapos.net" title="Сайт о различных модах">Модострой</a></li>
+			 <li><img src="http://fapos.net/sys/img/favicon.ico" height="16" width="16"/><a href="fapos.net" title="Официальный сайт FaposCMS">Оф.Сайт. FaposCMS</a></li>
+		  </ul>
+		  </div>
+		</div>
+	  </div>
+	<div class="paginator"><div class="pages">{{ pagination }}</div></div>
 	<div class="material">
            <div class="inftitle">Сейчас online: {{ all_online }}. Зарегестрированных: {{ users_online }}. Гостей: {{ guests_online }}. </div>
 	       <div class="infcont">{{ online_users_list }}</div>
@@ -203,7 +227,7 @@ $(document).ready(function() {
 <br><a href="{{ www_root }}/sitemap.xml">Карта сайта</a>
 </div>
 <div class="faposcms"><span>Fapos CMS</span>
-<a href="#">Скачать CMS</a>
+<a href="http://home.develdo.com/downloads.php">Скачать CMS</a>
 <br><a href="#">Видео-руководство</a>
 <br><a href="#">Сообщить о баге</a>
 </div>
