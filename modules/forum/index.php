@@ -308,7 +308,7 @@ Class ForumModule extends Module {
 		
 		//are we have cache?
 		if ($this->cached && $this->Cache->check($this->cacheKey)) {
-			$html = $this->Cache->read($this->cacheKey);
+			$source = $this->Cache->read($this->cacheKey);
 		} else {
 
 		
@@ -320,7 +320,7 @@ Class ForumModule extends Module {
 			if (empty($forum)) {
 				return $this->showInfoMessage(__('Can not find forum'), '/forum/');
 			}
-			//pr($forum); die();
+
 			
 			// Check access to this forum. May be locked by pass or posts count
 			$this->__checkForumAccess($forum);
@@ -409,17 +409,20 @@ Class ForumModule extends Module {
 			//$forum->setCount_themes(count($themes));
 
 
+			$source = $this->render('themes_list.html', array(
+				'themes' => $themes,
+				'forum' => $forum,
+			));
+			
+			
 			//write cache
 			if ($this->cached)
-				$this->Cache->write($html, $this->cacheKey, $this->cacheTags);
+				$this->Cache->write($source, $this->cacheKey, $this->cacheTags);
 		}
 		
 		
 
-		$source = $this->render('themes_list.html', array(
-			'themes' => $themes,
-			'forum' => $forum,
-		));
+
 		return $this->_view($source);
 	}
 

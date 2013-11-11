@@ -1020,12 +1020,12 @@ ul.fotocatalog .attributes {background: #ccc;}
 .file .announce {display: none;  overflow: hidden;  -o-text-overflow: ellipsis;  text-overflow: ellipsis;background: #F3F3F3;box-shadow: inset 0px 0px 3px #999;  -webkit-box-shadow: inset 0px 0px 3px #999;  -moz-box-shadow: inset 0px 0px 3px #999;margin: 3px;padding: 5px;}
 .razmery {}
 .razmery > span {font-size: 11px;height: 20px;line-height: 20px;display: inline-block;text-align: center;border-right: 1px solid #aaa;vertical-align: top;border-bottom: 1px solid #aaa;margin-bottom: -1px;white-space: nowrap;  overflow: hidden;  -o-text-overflow: ellipsis;  text-overflow: ellipsis;}
-.razmery > .name {width: 400px;text-align: left;padding-left: 3px;}
+.razmery > .name {width: 285px;text-align: left;padding-left: 3px; overflow:hidden;}
 .razmery > .annonce {width: 24px;cursor: pointer;}
 .razmery > .name .mod-panel {float: right;padding: 3px;height: 14px;}
 .razmery > .author {width: 80px;}
 .razmery > .cat {width: 104px;}
-.razmery > .number {width: 75px;}
+.razmery > .number {width: 30px; overflow:hidden;}
 .razmery > .date {width: 105px;border-right: none;}
 .mat-content .screenshots {
 overflow: hidden;
