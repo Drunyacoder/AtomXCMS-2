@@ -373,23 +373,18 @@ Class StatisticsModule
 	{
 		$width = 100;
 		$height = 35;
-		
+
 		$im     = imagecreatefrompng(ROOT . "/sys/img/statistics.png");
-		$tmp = imageCreateTrueColor($width, $height);
-		
-		imageAlphaBlending($tmp, false);
-		imageSaveAlpha($tmp, true);
-		imageCopyResampled($tmp, $im, 0, 0, 0, 0, $width, $height, $width, $height);
-		
+		imageSaveAlpha($im, true);
 		
 		$color = imagecolorallocate($im, 20, 10, 20);
 		
-		imagestring($tmp, 1, $width - (strlen($all_hits) * 5), 3, $all_hits, $color);
-		imagestring($tmp, 1, $width - (strlen($hits) * 5), 14, $hits, $color);
-		imagestring($tmp, 1, $width - (strlen($hosts) * 5), 24, $hosts, $color);
+		imagestring($im, 1, $width - (strlen($all_hits) * 5), 3, $all_hits, $color);
+		imagestring($im, 1, $width - (strlen($hits) * 5), 14, $hits, $color);
+		imagestring($im, 1, $width - (strlen($hosts) * 5), 24, $hosts, $color);
 		
-		imagepng($tmp, ROOT . '/sys/img/counter.png');
-		imagedestroy($tmp);
+		imagepng($im, ROOT . '/sys/img/counter.png');
+		imagedestroy($im);
 	} 
 	
 
@@ -414,4 +409,3 @@ Class StatisticsModule
 
 }
 
-?>
