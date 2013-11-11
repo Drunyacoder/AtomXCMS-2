@@ -2,12 +2,12 @@
 /*---------------------------------------------\
 |											   |
 | @Author:       Andrey Brykin (Drunya)        |
-| @Version:      1.2                           |
+| @Version:      1.3                           |
 | @Project:      CMS                           |
 | @package       CMS Fapos                     |
 | @subpackege    News Model                    |
-| @copyright     ©Andrey Brykin 2010-2012      |
-| @last mod      2012/06/04                    |
+| @copyright     ©Andrey Brykin 2010-2013      |
+| @last mod      2013/11/11                    |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
@@ -30,6 +30,7 @@ class SearchModel extends FpsModel
 
     protected $RelatedEntities = array();
 
+	
 
     public function truncateTable()
     {
@@ -37,13 +38,24 @@ class SearchModel extends FpsModel
     }
 	
 	
-	public function getSearchResults($search, $limit)
+	
+	public function getSearchResults($search, $limit, $modules)
 	{
+		$lmsql = '';
+		if (is_array($modules)) {
+			$lmsql .= '(';
+			foreach ($modules as $module) {
+				if ($module != $modules[0]) {
+					$lmsql .= ' OR ';
+				}
+				$lmsql .= '`module` = \''.$module.'\'';
+			}
+			$lmsql .= ') AND';
+		}
 		$results = $this->getDbDriver()->query("
 			SELECT * FROM `" . $this->getDbDriver()->getFullTableName('search_index') . "`
-			WHERE MATCH (`index`) AGAINST ('" . $search . "' IN BOOLEAN MODE)
+			WHERE ".$lmsql." MATCH (`index`) AGAINST ('" . $search . "' IN BOOLEAN MODE)
 			ORDER BY MATCH (`index`) AGAINST ('" . $search . "' IN BOOLEAN MODE) DESC LIMIT " . $limit);
-			
 		if ($results) {
 			foreach ($results as $key => $res) {
 				$results[$key] = new SearchEntity($res);

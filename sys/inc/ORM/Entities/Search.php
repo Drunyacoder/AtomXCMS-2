@@ -30,6 +30,7 @@ class SearchEntity extends FpsEntity
 	protected $id;
 	protected $index;
 	protected $entity_id;
+	protected $entity_title;
 	protected $entity_table;
 	protected $entity_view;
 	protected $module;
@@ -43,6 +44,7 @@ class SearchEntity extends FpsEntity
 		$params = array(
 			'index' => $this->index,
 			'entity_id' => intval($this->entity_id),
+			'entity_title' => $this->entity_title,
 			'entity_table' => $this->entity_table,
 			'date' => $this->date,
 			'entity_view' => $this->entity_view,

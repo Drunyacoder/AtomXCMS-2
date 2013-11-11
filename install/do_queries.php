@@ -398,6 +398,7 @@ $array[] = "CREATE TABLE `{$set['db']['prefix']}search_index` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
 	`index` TEXT character set utf8 NOT NULL,
 	`entity_id` INT(11) NOT NULL,
+	`entity_title` VARCHAR(255) NOT NULL default '',
 	`entity_table` VARCHAR(100) character set utf8 NOT NULL,
 	`entity_view` VARCHAR(100) character set utf8 NOT NULL,
 	`module` VARCHAR(100) character set utf8 NOT NULL,

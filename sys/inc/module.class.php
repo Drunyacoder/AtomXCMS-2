@@ -697,6 +697,15 @@ class Module {
 	
 	
 	
+	// get path to tmp files of current module
+	function getTmpPath($file = null)
+	{
+		$path = '/sys/tmp/' . $this->module . '/' . (!empty($file) ? $file : '');
+		return $path;
+	}
+	
+	
+	
 	public function showAjaxResponse($array)
 	{
 		echo json_encode($array); die();
