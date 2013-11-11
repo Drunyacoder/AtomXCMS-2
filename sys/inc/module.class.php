@@ -543,18 +543,18 @@ class Module {
 		// Check cache
 		if ($this->cached && $this->Cache->check('category_tree_' . $this->cacheKey)) {
 			$tree = $this->Cache->read('category_tree_' . $this->cacheKey);
-			$tree = unserialize($tree);
+			$tree = json_decode($tree, true);
 			return $tree;
 		} else {
 			$tree = $this->DB->select($this->module . '_sections', DB_ALL);
+			
+			if ($this->cached)
+				$this->Cache->write(json_encode($this->categories), 'category_tree_' . $this->cacheKey
+				, array('module_' . $this->module, 'category_block'));
 		}
 		
 		
 		if (!empty($tree) && count($tree) > 0) {
-			if ($this->cached)
-				$this->Cache->write($this->categories, 'category_tree_' . $this->cacheKey
-				, array('module_' . $this->module, 'category_block'));
-		
 			$output = $this->_buildBreadCrumbsNode($tree, $cat_id);
 			return $output;
 		}

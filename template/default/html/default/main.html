@@ -154,7 +154,7 @@ $(document).ready(function() {
 		</div>
 	</div>
 
-	{% if add_link %}<a href="{{ www_root }}/{{ module }}/add_form/" class="lastpostsbutton button">Добавить новость</a>{% endif %}
+	{% if add_link %}<a href="{{ www_root }}/{% if module == 'pages' %}news{% else %}{{ module }}{% endif %}/add_form/" class="lastpostsbutton button">Добавить новость</a>{% endif %}
 	<div style="clear:both;"></div>
 	
 	<div class="materials"> 
