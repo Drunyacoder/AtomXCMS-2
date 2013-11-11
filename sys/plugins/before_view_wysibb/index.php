@@ -3,6 +3,7 @@
 
 class WysiBB {
 	public function common($params) {
+		
 		$markers = array(
 			'editor_head' => null,
 			'editor_body' => null,
@@ -30,7 +31,7 @@ class WysiBB {
 				$markers[$marker] = !empty($editor[$marker]) ? $editor[$marker] : null;
 			}
 		}
-		
+	
 		foreach ($markers as $marker => $value) {
 			$params = preg_replace('#{{\s*' . $marker . '\s*}}#i', $value, $params);
 		}

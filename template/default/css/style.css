@@ -19,6 +19,7 @@
     font-weight: normal;
     font-style: normal;
 }
+
 /*----------------------------------------------------------/FONT--------------------------------------------------------------------------------*/
 body {text-align:center;margin: 0;background: url('../img/bg.jpg') repeat fixed;height:100%;min-width: 1000px;}
 /*----------------------------------------------------------LINKS--------------------------------------------------------------------------------*/
@@ -607,7 +608,7 @@ box-shadow: inset 0px 0px 1px #999;-webkit-box-shadow: inset 0px 0px 1px #999;-m
 .content .inftitle {margin: 0 10px;padding: 6px 0;font-size: 17px;border-bottom: 1px solid #aaa;}
 .content .infcont {padding: 10px;}
 .content .spisokico {list-style:none;}
-.wysibb-text {width: 915px;min-height: 200px;}
+.wysibb-text {width: 100%;min-height: 200px;}
 .wysibb-text-editor {min-height: 200px !important;}
 .margin {margin:10px;}
 /*--------------------------------------------------------------USERS----------------------------------------------------------------------------*/

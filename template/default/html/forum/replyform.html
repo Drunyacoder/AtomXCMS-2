@@ -2,7 +2,7 @@
 <div class="forumblock">
        <form name="sendForm" id="sendForm" action="{{ context.action }}" method="POST" enctype="multipart/form-data" onsubmit="if (checkForm(this)) {sendu('sendForm')}; return false">       
 	        <div class="titleanswer">Форма для ответа</div>
-	        <div class="answertextarea"><textarea style="width:925px; height:250px;" {{ editor_forum_text }} class="text-area" name="mainText">{{ context.main_text }}</textarea></div>
+	        <div class="answertextarea"><textarea id="editor" style="width:925px; height:250px;" {{ editor_forum_text }} class="text-area" name="mainText">{{ context.message }}</textarea></div>
 	        <div class="margin"><div id="attachments">Прикрепить файлы:<br/>
 			  <input class="attachField" type="file" id="attach1" name="attach1"  onChange="getFile(1)" /><span id="attachMeta1"></span>
 			  <input type="button" name="addInput" value="Прикрепить еще файл" onClick="addFileField('attachments');" />

@@ -12,6 +12,8 @@ function metaTags(element) {
 	}
 }
 </script>
+{{ context.errors }}
+{{ context.preview }}
 <form name="sendForm" id="sendForm" action="{{ context.action }}" method="POST" enctype="multipart/form-data" onsubmit="if (checkForm(this)) {sendu('sendForm')}; return false">
 <div class="material">
 	  <div class="mat-title">Редактирование новости: {{ context.title }}</div>
@@ -26,7 +28,7 @@ function metaTags(element) {
             <span class="siu_data"><input type="text" name="title" maxlength="128" value="{{ context.title }}"></span>
           </li>
 		  <li class="margin">
-            <textarea {{ editor_text }} class="text-area" name="mainText">{{ context.main_text }}</textarea>
+            <textarea {{ editor_text }} id="editor" class="text-area" name="mainText">{{ context.main_text }}</textarea>
           </li>
 		  <li>
             <span class="siu_title"><strong>Удаление загруженных изображений:</strong></span>

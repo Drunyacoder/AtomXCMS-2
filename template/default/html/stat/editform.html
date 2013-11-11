@@ -26,7 +26,7 @@ function metaTags(element) {
             <span class="siu_data"><input type="text" name="title" maxlength="128" value="{{ context.title }}"></span>
           </li>
 		  <li class="margin">
-            <textarea {{ editor_text }} class="text-area" name="mainText">{{ context.main_text }}</textarea>
+            <textarea {{ editor_text }} id="editor" class="text-area" name="mainText">{{ context.mainText }}</textarea>
           </li>
 		  <li>
             <span class="siu_title">Удаление загруженных изображений:</strong></span>

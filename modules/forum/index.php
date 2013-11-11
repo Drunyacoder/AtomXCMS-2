@@ -2260,7 +2260,7 @@ Class ForumModule extends Module {
 				$source = $this->render('replyform.html', array(
 					'context' => array(
 						'action' => get_url('/forum/add_post/' . $id_theme),
-						'main_text' => $message,
+						'message' => $message,
 					),
 				));
 				$html = $html . $source;
