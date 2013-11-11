@@ -168,14 +168,7 @@ Class StatisticsModule
 		}
 		
 	
-		$im     = imagecreatefrompng(ROOT . "/sys/img/statistics.png");
-		$orange = imagecolorallocate($im, 20, 10, 20);
-		$image_x = imagesx($im);
-		imagestring($im, 1, $image_x - (strlen($all_hits) * 5), 3, $all_hits, $orange);
-		imagestring($im, 1, $image_x - (strlen($hits) * 5), 14, $hits, $orange);
-		imagestring($im, 1, $image_x - (strlen($hosts) * 5), 24, $hosts, $orange);
-		imagepng($im, ROOT . '/sys/img/counter.png');
-		imagedestroy($im);
+		self::viewCounter($all_hits, $hits, $hosts);
 		
 		
 		
@@ -332,7 +325,8 @@ Class StatisticsModule
 	/**
 	* write into database
 	*/
-	static public function _writeIntoDataBase($date) {
+	static public function _writeIntoDataBase($date) 
+	{
 		$file = ROOT . '/sys/logs/counter/' . $date . '.dat';
 		if (!preg_match('#^\d{4}-\d{2}-\d{2}$#', $date) || !file_exists($file)) return;
 		
@@ -365,32 +359,41 @@ Class StatisticsModule
 	/**
 	* if statistics OFF
 	*/
-	function viewOffCounter() {
+	function viewOffCounter() 
+	{
 		copy(ROOT . '/sys/img/counter_off.png', ROOT . '/sys/img/counter.png');
 	}
+	
 	
 	
 	/**
 	* view counter
 	*/
-	function viewCounter() {
-		$_hosts = $this->Model->getCollection(array("`date` >= '" . date("Y-m-d") . "'"));
-		$hosts = (!empty($_hosts[0])) ? $_hosts[0]['ips'] : 0;
-		$hits = (!empty($_hosts[0])) ? $_hosts[0]['views'] : 0;
-	
-		header("Content-type: image/png");
-	
+	public static function viewCounter($all_hits, $hits, $hosts) 
+	{
+		$width = 100;
+		$height = 35;
+		
 		$im     = imagecreatefrompng(ROOT . "/sys/img/statistics.png");
-		$orange = imagecolorallocate($im, 20, 10, 20);
-		$px     = (imagesx($im) - 17);
-		imagestring($im, 1, $px, 1, $hits, $orange);
-		imagestring($im, 1, $px, 13, $hits, $orange);
-		imagestring($im, 1, $px, 22, $hosts, $orange);
-		imagepng($im);
-		imagedestroy($im);
-	}
+		$tmp = imageCreateTrueColor($width, $height);
+		
+		imageAlphaBlending($tmp, false);
+		imageSaveAlpha($tmp, true);
+		imageCopyResampled($tmp, $im, 0, 0, 0, 0, $width, $height, $width, $height);
+		
+		
+		$color = imagecolorallocate($im, 20, 10, 20);
+		
+		imagestring($tmp, 1, $width - (strlen($all_hits) * 5), 3, $all_hits, $color);
+		imagestring($tmp, 1, $width - (strlen($hits) * 5), 14, $hits, $color);
+		imagestring($tmp, 1, $width - (strlen($hosts) * 5), 24, $hosts, $color);
+		
+		imagepng($tmp, ROOT . '/sys/img/counter.png');
+		imagedestroy($tmp);
+	} 
 	
 
+	
 	/*
 	* return who online
 	* also we have analog in helpers lib

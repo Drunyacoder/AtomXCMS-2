@@ -53,6 +53,7 @@ class StatisticsEntity extends FpsEntity
 			'other_bot_views' => intval($this->other_bot_views),
 			'other_site_visits' => intval($this->other_site_visits),
 		);
+		
 		if ($this->id) $params['id'] = $this->id;
 		$Register = Register::getInstance();
 		return $Register['DB']->save('statistics', $params);
