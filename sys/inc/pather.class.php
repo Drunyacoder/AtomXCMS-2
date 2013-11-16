@@ -71,6 +71,36 @@ Class Pather {
 
 		
 		if (empty($url)) {
+		
+		
+			// get user country
+			$language = substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
+			
+			
+			// база данных стран
+			$countrys = array(
+			   'ua' => 'Украина',
+			   'ua-ua' => 'Украина',
+			   'ru' => 'Россия',
+			   'ru-ru' => 'Россия',
+			   'kz' => 'Казахстан',
+			);
+
+			$country = (!empty($countrys[$language])) ? $countrys[$language] : false;
+			if (!$country) {
+				$this->Register['lang'] = 'eng';
+				return array(
+					'pages',
+					'index',
+					'22',
+				);
+				
+				
+			} else {
+				$this->Register['lang'] = 'rus';
+			}
+		
+		
 			if ($this->Register['Config']->read('start_mod')) {
 				$_GET['url'] = $this->Register['Config']->read('start_mod');
 				$pathParams = $this->parsePath();
@@ -78,19 +108,39 @@ Class Pather {
 			}
 			
 			
+			
+
+			
+			
+			
 		} else {
+			
+			
+			if (substr($url, 0, 3) === 'en') {
+					$lang = 'eng';
+					$this->Register['lang'] = $lang;
+					$_REQUEST['lang'] = $lang;
+					
+			} else if (substr($url, 0, 2) === 'ru') {
+					$lang = 'rus';
+					$this->Register['lang'] = $lang;
+					$_REQUEST['lang'] = $lang;
+			}
+			
 			
 			if ($this->Register['Config']->read('start_mod') && $url === $this->Register['Config']->read('start_mod')) {
 				$this->Register['is_home_page'] = true;
 			}
-		
+			
 			$pathParams = explode('/', $url);
+			
 			foreach ($pathParams as $key => $value) {
 				if (empty($value)) unset($pathParams[$key]);
 			}
+			//sort($pathParams);
 		}
 		
-
+		
 		// sort array(keys begins from 0)
 		$pathParams_ = array();
 		foreach ($pathParams as $key => $val) $pathParams_[] = trim($val);
@@ -104,15 +154,15 @@ Class Pather {
 				return $pathParams;
 			}
 		}
-
+		
 		//may be i need upgrade this...hz
-		if (count($pathParams) == 1 && !file_exists(ROOT . '/modules/' . $pathParams[0] . '/index.php') /* && preg_match('#^\d+$#', $pathParams[0])*/) {
+		/*if (count($pathParams) == 1 && !file_exists(ROOT . '/modules/' . $pathParams[0] . '/index.php')) {
 			$pathParams = array(
 				0 => 'pages',
 				1 => 'index',
-				2 => $pathParams[0],
+				2 => implode('/', $pathParams),
 			);
-		} else if (count($pathParams) == 0 ) {
+		} else*/ if (count($pathParams) == 0 ) {
 			$pathParams[1] = 'index';
 			$pathParams[0] = 'pages';
 		}
