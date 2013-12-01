@@ -868,7 +868,7 @@ function add() {
 		$parent_forum_id = (!empty($parent_forum_id)) ? $parent_forum_id : '';
 		
 		$description = $_POST['description'];
-		$FpsDB->save('forums', array(
+		$id = $FpsDB->save('forums', array(
 			'description' => $description,
 			'title' => $title,
 			'in_cat' => $in_cat,
@@ -877,7 +877,7 @@ function add() {
 			'lock_passwd' => $lock_passwd,
 			'lock_posts' => $lock_posts,
 		));
-		$id = mysql_insert_id();
+
 		if (!empty($_FILES['icon']['name'])) {
 			if (move_uploaded_file($_FILES['icon']['tmp_name'], ROOT . '/sys/img/forum_icon_' . $id . '.jpg')) {
 				chmod(ROOT . '/sys/img/forum_icon_' . $id . '.jpg', 0755);
