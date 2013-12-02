@@ -404,7 +404,6 @@ Class NewsModule extends Module {
 		$announce = $this->insertImageAttach($entity, $announce);
 
 
-		$markers['mainText'] = $announce;
 		$markers['main_text'] = $announce;
 		$entity->setAdd_markers($markers);
 		if ($entity->getTags()) $entity->setTags(explode(',', $entity->getTags()));
@@ -571,12 +570,13 @@ Class NewsModule extends Module {
 		
 		
         // Check for preview or errors
-        $data = array('title' => null, 'mainText' => null, 'in_cat' => null, 'description' => null, 'tags' => null, 'sourse' => null, 'sourse_email' => null, 'sourse_site' => null, 'commented' => null, 'available' => null);
+        $data = array('title' => null, 'main_text' => null, 'in_cat' => null, 'description' => null, 'tags' => null, 
+			'sourse' => null, 'sourse_email' => null, 'sourse_site' => null, 'commented' => null, 'available' => null);
 		$data = array_merge($data, $markers);
         $data = Validate::getCurrentInputsValues($data);
 		
 		
-        $data['preview'] = $this->Parser->getPreview($data['mainText']);
+        $data['preview'] = $this->Parser->getPreview($data['main_text']);
         $data['errors'] = $this->Parser->getErrors();
         if (isset($_SESSION['viewMessage'])) unset($_SESSION['viewMessage']);
         if (isset($_SESSION['FpsForm'])) unset($_SESSION['FpsForm']);
@@ -649,14 +649,14 @@ Class NewsModule extends Module {
 		
 		// Обрезаем переменные до длины, указанной в параметре maxlength тега input
 		$title  = trim(mb_substr($_POST['title'], 0, 128));
-		$add 	= trim($_POST['mainText']);
+		$add 	= trim($_POST['main_text']);
 		$in_cat = intval($_POST['cats_selector']);
 		$commented = (!empty($_POST['commented'])) ? 1 : 0;
 		$available = (!empty($_POST['available'])) ? 1 : 0;
 
 		// Если пользователь хочет посмотреть на сообщение перед отправкой
 		if ( isset( $_POST['viewMessage'] ) ) {
-			$_SESSION['viewMessage'] = array_merge(array('title' => null, 'mainText' => null, 'in_cat' => $in_cat,
+			$_SESSION['viewMessage'] = array_merge(array('title' => null, 'main_text' => null, 'in_cat' => $in_cat,
 				'description' => null, 'tags' => null, 'sourse' => null, 'sourse_email' => null, 
 				'sourse_site' => null, 'commented' => null, 'available' => null), $_POST);
 			redirect('/' . $this->module . '/add_form/');
@@ -672,7 +672,7 @@ Class NewsModule extends Module {
 			
 		// Errors
 		if (!empty($errors)) {
-			$_SESSION['FpsForm'] = array_merge(array('title' => null, 'mainText' => null, 'in_cat' => $in_cat,
+			$_SESSION['FpsForm'] = array_merge(array('title' => null, 'main_text' => null, 'in_cat' => $in_cat,
 				'description' => null, 'tags' => null, 'sourse' => null, 'sourse_email' => null, 
 				'sourse_site' => null, 'commented' => null, 'available' => null), $_POST);
 			$_SESSION['FpsForm']['error']   = '<p class="errorMsg">' . __('Some error in form') . '</p>'.
@@ -801,7 +801,7 @@ Class NewsModule extends Module {
 
         $data = array(
 			'title' 		=> '', 
-			'mainText' 		=> $entity->getMain(), 
+			'main_text' 		=> $entity->getMain(), 
 			'in_cat' 		=> $entity->getCategory_id(), 
 			'description' 	=> '', 
 			'tags' 			=> '', 
@@ -880,7 +880,7 @@ Class NewsModule extends Module {
 		// Если не переданы данные формы - функция вызвана по ошибке
 		if (!isset($id) 
 		|| !isset($_POST['title']) 
-		|| !isset($_POST['mainText']) 
+		|| !isset($_POST['main_text']) 
 		|| !isset($_POST['cats_selector'])) {
 			redirect('/');
 		}
@@ -924,7 +924,7 @@ Class NewsModule extends Module {
 		
 		// Обрезаем переменные до длины, указанной в параметре maxlength тега input
 		$title  = trim(mb_substr($_POST['title'], 0, 128));
-		$edit   = trim($_POST['mainText']);
+		$edit   = trim($_POST['main_text']);
 		$commented = (!empty($_POST['commented'])) ? 1 : 0;
 		$available = (!empty($_POST['available'])) ? 1 : 0;
         $in_cat = intval($_POST['cats_selector']);
@@ -932,7 +932,7 @@ Class NewsModule extends Module {
 		
 		// Если пользователь хочет посмотреть на сообщение перед отправкой
 		if (isset($_POST['viewMessage'])) {
-			$_SESSION['viewMessage'] = array_merge(array('title' => null, 'mainText' => null, 'in_cat' => $in_cat,
+			$_SESSION['viewMessage'] = array_merge(array('title' => null, 'main_text' => null, 'in_cat' => $in_cat,
 				'description' => null, 'tags' => null, 'sourse' => null, 'sourse_email' => null, 
 				'sourse_site' => null, 'commented' => null, 'available' => null), $_POST);
 			redirect('/' . $this->module . '/edit_form/' . $id);
@@ -950,7 +950,7 @@ Class NewsModule extends Module {
 
 		// Errors
 		if (!empty($errors)) {
-			$_SESSION['FpsForm'] = array_merge(array('title' => null, 'mainText' => null, 'in_cat' => $in_cat, 
+			$_SESSION['FpsForm'] = array_merge(array('title' => null, 'main_text' => null, 'in_cat' => $in_cat, 
 				'description' => null, 'tags' => null, 'sourse' => null, 'sourse_email' => null, 
 				'sourse_site' => null, 'commented' => null, 'available' => null), $_POST);
 			$_SESSION['FpsForm']['error']   = '<p class="errorMsg">' . __('Some error in form') . '</p>'
@@ -1347,7 +1347,7 @@ Class NewsModule extends Module {
 					'max_lenght' => 250,
 					'title' => 'Title',
 				),
-				'mainText' => array(
+				'main_text' => array(
 					'required' => true,
 					'max_lenght' => Config::read('max_lenght', $this->module),
 					'title' => 'Text',
@@ -1394,7 +1394,7 @@ Class NewsModule extends Module {
 					'max_lenght' => 250,
 					'title' => 'Title',
 				),
-				'mainText' => array(
+				'main_text' => array(
 					'required' => true,
 					'max_lenght' => Config::read('max_lenght', $this->module),
 					'title' => 'Text',

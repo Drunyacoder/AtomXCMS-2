@@ -104,7 +104,7 @@ function index(&$page_title) {
 		$dir = trim($dir, '/');
 		
 		if (file_exists($result . '/config.dat')) {
-			$params = unserialize(file_get_contents($result . '/config.dat'));
+			$params = json_decode(file_get_contents($result . '/config.dat'), true);
 		}
 		if (empty($params)) $params = array();
 		
@@ -172,10 +172,10 @@ function onPlugin() {
 	
 		$pach = ROOT . '/sys/plugins/' . $dir;
 		$conf_pach = $pach . '/config.dat';
-		$history = (file_exists($conf_pach)) ? unserialize(file_get_contents($conf_pach)) : array();
+		$history = (file_exists($conf_pach)) ? json_decode(file_get_contents($conf_pach), true) : array();
 		
 		$history['active'] = 1;
-		file_put_contents($conf_pach, serialize($history));
+		file_put_contents($conf_pach, json_encode($history));
 		redirect('../admin/plugins.php');
 }
 
@@ -187,10 +187,10 @@ function offPlugin() {
 	
 		$pach = ROOT . '/sys/plugins/' . $dir;
 		$conf_pach = $pach . '/config.dat';
-		$history = (file_exists($conf_pach)) ? unserialize(file_get_contents($conf_pach)) : array();
+		$history = (file_exists($conf_pach)) ? json_decode(file_get_contents($conf_pach), true) : array();
 		
 		$history['active'] = 0;
-		file_put_contents($conf_pach, serialize($history));
+		file_put_contents($conf_pach, json_encode($history));
 		redirect('../admin/plugins.php');
 }
 

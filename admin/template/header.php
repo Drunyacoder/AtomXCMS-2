@@ -243,9 +243,9 @@
 
 		['<?php echo __('Plugins'); ?>',
 		  [
-		  '<a href="/admin/plugins.php"><?php echo __('List'); ?></a>'
-		  //'sep',
-		  //'<a href="/admin/chcreat.php?a=ed">Редактировать</a>'
+		  '<a href="/admin/plugins.php"><?php echo __('List'); ?></a>',
+		  'sep',
+		  '<a href="/admin/get_plugins.php?a=ed">Установка</a>'
 		  ]],
 
 		  

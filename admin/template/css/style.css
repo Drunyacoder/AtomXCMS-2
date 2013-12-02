@@ -6,6 +6,9 @@ body {background:url('../img/body-bg.png') repeat !important; min-height:100%; m
 a {color:#96C703;}
 .comment {display:block; color:#939393; padding:5px 0px; font-size:11px; font-style:italic; -moz-text-shadow:none; -webkit-text-shadow:none; text-shadow:none; max-width:500px;}
 
+/* general */
+.green {color:#96c71e;}
+
 /* pagination */
 .pagination {color:#fff;}
 .pagination a.pages, .pagination strong {margin-right:5px;}
@@ -132,6 +135,9 @@ table.side-separator, table.side-separator tr td {vertical-align:top; min-height
 .list > .level1 > .items .comment {display:block; color:#939393; padding:5px 0px; font-size:11px; font-style:italic; -moz-text-shadow:none; -webkit-text-shadow:none; text-shadow:none;}
 
 .list .level1:last-child {border-radius:0 0 4px 4px;}
+
+.r-but-container {position:absolute; margin:auto; right:100px; top:0px; bottom:0px; height:30px;}
+.pl-preview {width:180px; margin:0px auto; -moz-box-shadow: 3px 3px 10px #000000; -webkit-box-shadow: 3px 3px 10px #000000; box-shadow: 3px 3px 10px #000000;}
 
 
 /* Checkboxs and radio customization */

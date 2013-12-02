@@ -67,7 +67,22 @@ $pageTitle = __('Admin Panel');
 $pageNav = $pageTitle . __(' - General information');
 $pageNavl = '';
 
+// get our plugins
+$pl_url = ROOT . '/sys/plugins/*';
+$our_plugins = glob($pl_url, GLOB_ONLYDIR);
 
+foreach ($our_plugins as &$pl) {
+	if (file_exists($pl . '/config.dat')) {
+		$pl_conf = json_decode(get_cont($pl . '/config.dat'), true);
+		if (!empty($pl_conf['title'])) {
+			$pl = $pl_conf['title'];
+		}
+	}
+}
+
+
+
+// get foreign plugins
 $url = 'http://home.develdo.com/plugins_api.php';
 $data = json_decode(file_get_contents($url), true);
 
@@ -96,12 +111,22 @@ endif;
 		<?php foreach ($data as $row): ?>
 			<div class="setting-item">
 				<div class="left">
+				<?php if (!empty($row['img']) && @fopen($row['img'], 'r')): ?>
+					<img class="pl-preview" src="<?php echo h($row['img']) ?>" />
+				<?php else: ?>
 					NO IMAGE
+				<?php endif; ?>
 				</div>
 				<div class="right">
 					<h3><?php echo $row['title'] ?></h3>
 					<?php echo $row['description'] ?><br /><br />
-					<a href="<?php echo WWW_ROOT ?>/admin/get_plugins.php?set_plugin=<?php echo $row['url'] ?>">Установить</a>
+					<div class="r-but-container">
+					<?php if (in_array($row['title'], $our_plugins)): ?>
+						<strong class="green"><?php echo __('Plugin is saved') ?></strong>
+					<?php else: ?>
+						<a href="<?php echo WWW_ROOT ?>/admin/get_plugins.php?set_plugin=<?php echo $row['url'] ?>">Установить</a>
+					<?php endif; ?>
+					</div>
 				</div>
 				<div class="clear"></div>
 			</div>

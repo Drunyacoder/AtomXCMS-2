@@ -21,13 +21,19 @@
 
 
 
+/**
+ * Alias for file_get_contents
+ */
+function get_cont($path) {
+	return file_get_contents($path);
+}
+
 
 	
 /**
  * Replace image marker
  */
-function insertImageAttach($entity, $announce, $module = null)
-{
+function insertImageAttach($entity, $announce, $module = null) {
 	// replace image tags in text
 	$attaches = $entity->getAttaches();
 	if (!empty($attaches) && count($attaches) > 0) {
