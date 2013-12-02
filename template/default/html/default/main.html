@@ -156,40 +156,35 @@ $(document).ready(function() {
 
 	{% if add_link %}<a href="{{ www_root }}/{% if module == 'pages' %}news{% else %}{{ module }}{% endif %}/add_form/" class="lastpostsbutton button">Добавить новость</a>{% endif %}
 	<div style="clear:both;"></div>
-	
-	<div class="materials"> 
-	    {% if pagination %}<div class="mezdyblock"><span class="meta">{{ meta }}</span><div class="paginator"><div class="pages">{{ pagination }}</div></div></div>{% endif %}
-		{{ content }}
-		<div class="paginator"><div class="pages">{{ comments_pagination }}</div></div>
-		{{ comments }}
-		<div class="paginator"><div class="pages">{{ comments_pagination }}</div></div>
-		{{ comments_form }}
+
+	<div class="twoblocks">
+		<div class="materials"> 
+			{% if pagination %}<div class="mezdyblock"><span class="meta">{{ meta }}</span><div class="paginator"><div class="pages">{{ pagination }}</div></div></div>{% endif %}
+			{{ content }}
+			<div class="paginator"><div class="pages">{{ comments_pagination }}</div></div>
+			{{ comments }}
+			<div class="paginator"><div class="pages">{{ comments_pagination }}</div></div>
+			{{ comments_form }}
+		</div>
+		<div class="rightbloks">
+			<div class="block">
+			  <div class="blockstop">Топ новостей</div>
+			  <div class="blokscontent"><ul class="mini_list">{{ pop_news }}</ul></div>
+			</div>
+			<div class="block">
+			  <div class="blockstop">Последние комментарии</div>
+			  <div class="blokscontent last_comments">{{ last_comments }}</div>
+			</div>
+			<div class="block">
+			  <div class="blockstop">Топ пользователей</div>
+			  <div class="blokscontent users_rating">{{ users_rating }}</div>
+			</div>
+		</div>
+		<div class="clear"></div>
+		<div class="paginator"><div class="pages">{{ pagination }}</div></div>
 	</div>
-	<div class="rightbloks">
-		<div class="block">
-		  <div class="blockstop">Топ новостей</div>
-		  <div class="blokscontent"><ul class="mini_list">{{ pop_news }}</ul></div>
-		</div>
-	    <div class="block">
-		  <div class="blockstop">Последние комментарии</div>
-		  <div class="blokscontent last_comments">{{ last_comments }}</div>
-		</div>
-	    <div class="block">
-		  <div class="blockstop">Топ пользователей</div>
-		  <div class="blokscontent users_rating">{{ users_rating }}</div>
-		</div>
-	    <div class="block">
-		  <div class="blockstop">Сайты на FaposCMS</div>
-		  <div class="blokscontent">
-		  <ul class="mini_list">
-		     <li><img src="http://fapos.net/sys/img/favicon.ico" height="16" width="16"/><a href="fapos.net" title="Официальный сайт FaposCMS">Оф.Сайт. FaposCMS</a></li>
-			 <li><img src="http://modostroi.ru/sys/img/favicon.ico" height="16" width="16"/><a href="fapos.net" title="Сайт о различных модах">Модострой</a></li>
-			 <li><img src="http://fapos.net/sys/img/favicon.ico" height="16" width="16"/><a href="fapos.net" title="Официальный сайт FaposCMS">Оф.Сайт. FaposCMS</a></li>
-		  </ul>
-		  </div>
-		</div>
-	  </div>
-	<div class="paginator"><div class="pages">{{ pagination }}</div></div>
+	<div class="clear"></div>
+	
 	<div class="material">
            <div class="inftitle">Сейчас online: {{ all_online }}. Зарегестрированных: {{ users_online }}. Гостей: {{ guests_online }}. </div>
 	       <div class="infcont">{{ online_users_list }}</div>

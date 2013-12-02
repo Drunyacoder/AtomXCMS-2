@@ -25,6 +25,7 @@ body {text-align:center;margin: 0;background: url('../img/bg.jpg') repeat fixed;
 /*----------------------------------------------------------LINKS--------------------------------------------------------------------------------*/
 a {color: #d6d6d6;text-decoration: none;text-shadow: 0 1px 0 #000;font-family: ArialNarrow,sans-serif;cursor: pointer;}
 a:hover {color: #fff;}
+.clear {clear:both;}
 /*----------------------------------------------------------ACTIVE_BUTTONS--------------------------------------------------------------------------------*/
 /*------------------------------CSSLOADER---------------------------------*/
 .for-redirect {
@@ -133,7 +134,7 @@ a.downloadbutton div div.infoload {height: 15px;font-size: 11px;color: #777;}
 a.downloadbutton:hover {background-position:  left -61px, right -61px;}
 a.downloadbutton:hover > div {background-position: bottom;}
 /*------------------------------------------------------------RAZMETKA------------------------------------------------------------------------------*/
-.global {width:1000px;margin: 0 auto;padding-bottom: 1px;}
+.global {max-width:1500px;margin: 0 auto;padding-bottom: 1px;}
 .header {width: 100%;height: 300px;}
 /*----------------------------------------------------------ADMIN-PANEL--------------------------------------------------------------------------------*/
 .headpanel {
@@ -312,7 +313,7 @@ background: url('../img/starting.png') no-repeat;
 .logohead .fast:hover div, .logohead .portal:hover div, .logohead .starting:hover div {opacity:1;}
 /*-------------------------------------------------------------INFORMATION-----------------------------------------------------------------------------*/
 img.avatar, img.ava {max-width: 95px;max-height: 95px;position: absolute;margin: auto;top: 0;bottom: 0;left: 0;right: 0;}
-.infohead {width: 620px;height: 270px;padding-top: 30px;float: left;}
+.infohead {width:620px; height:270px; padding-top:30px; float:right;}
 .infoblock {
 margin-top: 40px;
 height: 130px;
@@ -519,15 +520,8 @@ font: 12px Verdana !important;
 .paginator div.pages .pages:hover  {background-color: #aaa;}
 .paginator div.pages strong.pages {background-color: #780 !important;}
 .meta {margin: 7px 0;display: inline-block;}
-.content .rightbloks {
-display: inline-block;
-width: 239px;
-vertical-align: top;
-min-height: 500px;
-border-radius: 10px;-moz-border-radius: 10px;-webkit-border-radius: 10px;
-background-color: #e7e7e7;
-box-shadow: inset 0px 0px 2px #999;-webkit-box-shadow: inset 0px 0px 2px #999;-moz-box-shadow: inset 0px 0px 2px #999;
-}
+.twoblocks {overflow:hidden; padding-right:250px;}
+.content .rightbloks {width: 239px;vertical-align: top;min-height: 500px; border-radius: 10px;-moz-border-radius: 10px -webkit-border-radius: 10px; background-color: #e7e7e7; box-shadow: inset 0px 0px 2px #999;-webkit-box-shadow: inset 0px 0px 2px #999;-moz-box-shadow: inset 0px 0px 2px #999; float:right; clear:right; margin-right:-250px;}
 .content .rightbloks .block {border-radius: 10px;-moz-border-radius: 10px;-webkit-border-radius: 10px;}
 .content .rightbloks .block .blockstop, .content div .material .mat-title {display: block;cursor: default;-moz-border-radius: 8px 8px 3px 3px;-webkit-border-radius: 8px 8px 3px 3px;border-radius: 8px 8px 3px 3px;}
 .content .rightbloks .block .blokscontent {padding: 5px;min-height: 100px;}
@@ -545,22 +539,9 @@ box-shadow: inset 0px 0px 2px #999;-webkit-box-shadow: inset 0px 0px 2px #999;-m
 .etopu .ttop div {float: none;}
 .ebottomu {clear: both;text-align: center;margin-top: 5px;}
 /*-------------------------/RIGHTBLOCKINFO--------------------------------------*/
-.content .materials {
-display: inline-block;
-vertical-align: top;
-width: 700px;
-margin-right: 5px;
-min-height: 300px;
-}
+.content .materials {vertical-align:top; width:100%; min-height:300px; position:relative; float:left; clear:left;}
 .content #full {display: block;width: 100%;}
-.content .material {
-clear: both;
-margin:10px 0;
-border-radius: 10px;
-background-color: #e7e7e7;
-box-shadow: inset 0px 0px 3px #999;-webkit-box-shadow: inset 0px 0px 3px #999;-moz-box-shadow: inset 0px 0px 3px #999;
-height: 100%;
-}
+.content .material {clear: both; margin:0px 0px 10px 0px;border-radius: 10px; background-color: #e7e7e7; box-shadow: inset 0px 0px 3px #999; -webkit-box-shadow: inset 0px 0px 3px #999; -moz-box-shadow: inset 0px 0px 3px #999; height: 100%;}
 .content .material .mat-title {
 display: block;
 font-size: 16px;
@@ -604,7 +585,7 @@ box-shadow: inset 0px 0px 1px #999;-webkit-box-shadow: inset 0px 0px 1px #999;-m
 .content .mezdyblock {height: 40px;}
 .content .titleanswer {margin: 0 10px;padding: 10px 0;font-size: 18px;border-bottom: 1px solid #aaa;}
 .content .answertextarea {display: inline-block;padding: 10px;vertical-align: top;width: 927px;min-height: 200px;}
-.content .sumbitbuttons {text-align: right;padding: 10px;}
+.content .sumbitbuttons {text-align:center; padding:10px;}
 .content .inftitle {margin: 0 10px;padding: 6px 0;font-size: 17px;border-bottom: 1px solid #aaa;}
 .content .infcont {padding: 10px;}
 .content .spisokico {list-style:none;}
