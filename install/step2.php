@@ -1,10 +1,9 @@
 <?php 
-session_start(); 
-define ('ROOT', dirname(dirname(__FILE__)));
+include_once '../sys/boot.php';
 ?><!doctype html>
 <html>
 <head>
-<title>Fapos CMS - вместе в будущее</title>
+<title>AtomX - вместе в будущее</title>
 <meta content="text/html; charset=utf-8" http-equiv="content-type">
 <link rel="shortcut icon" href="../sys/img/favicon.ico" type="image/x-icon">
 <link type="text/css" rel="StyleSheet" href="css/style.css" />

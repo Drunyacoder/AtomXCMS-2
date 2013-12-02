@@ -30,16 +30,10 @@ header('Content-Type: text/html; charset=utf-8');
 
 
 
-
-
 if (file_exists('install')) {
-	if (file_exists('sys/settings/config.php')) {
-		include_once ('sys/settings/config.php');
-		if (!empty($set)) {
-			if (!empty($set['db']['name'])) {
-				echo 'Before use your site, delete INSTALL dir! <br />Перед использованием удалите папку INSTALL'; die();
-			}
-		}
+	include_once ('sys/settings/config.php');
+	if (!empty($set) && !empty($set['db']['name'])) {
+		die('Before use your site, delete INSTALL dir! <br />Перед использованием удалите папку INSTALL');	
 	}
 	header('Location: install'); die();
 }

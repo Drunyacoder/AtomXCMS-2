@@ -6,7 +6,7 @@ if (isset($_SESSION['db_querys'])) unset($_SESSION['db_querys']);
 /**
  * Current version of engine
  */
-define('FPS_VERSION', '2.3 RC1');
+define('FPS_VERSION', '2.4 RC1');
 
 /**
  * Path constants
@@ -31,6 +31,14 @@ define ('WWW_ROOT', '');
 define ('ADM_REFER_PROTECTED', 0);
 
 
+
+
+/**
+ * whether the system is installed
+ */
+function isInstall() {
+	return !file_exists(ROOT . '/install');
+}
 
 
 

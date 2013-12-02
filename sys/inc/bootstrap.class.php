@@ -40,23 +40,31 @@ class Bootstrap
 
         $this->touchStartTime();
 
-        $this->Register['DB'] = (class_exists('PDO') && Config::read('use_pdo')) ? FpsPDO::get() : FpsDataBase::get();
+		
+		if (isInstall()) {
+			$this->Register['DB'] = (class_exists('PDO') && Config::read('use_pdo')) ? FpsPDO::get() : FpsDataBase::get();
+			$this->Register['UserAuth'] = new UserAuth;
+			$this->Register['Log'] = new Logination();
+		}
+		
+		
         $this->Register['DocParser'] = new Document_Parser;
         $this->Register['ACL'] = new ACL(ROOT . '/sys/settings/');
         $this->Register['Cache'] = new Cache;
         $this->Register['PrintText'] = new PrintText;
-        $this->Register['UserAuth'] = new UserAuth;
         $this->Register['PluginControll'] = new Plugins;
         $this->Register['Validate'] = new Validate();
-        $this->Register['Log'] = new Logination();
         $this->Register['ModManager'] = new ModulesManager(ROOT . '/sys/settings/modules_access.php');
         $this->Register['PluginController'] = new Plugins;
 
 
         $this->setPhpSettings();
-        $this->inputCheck();
-        $this->initProtect();
-        $this->initUser();
+		
+		if (isInstall()) {
+			$this->inputCheck();
+			$this->initProtect();
+			$this->initUser();
+		}
     }
 
 
