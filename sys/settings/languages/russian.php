@@ -445,7 +445,15 @@ $language = array(
 	'Watermark settings' 			=> 'Настройки watermark',
 	'Saved' 						=> 'Настройки сохранены',
 	'Plugin is saved' 				=> 'Плагин установлен',
-	
+	'Download plugin' 				=> 'Загрузить плагин',
+	'Plugins download' 				=> 'Загрузка плагинов',
+	'Install'		 				=> 'Установить',
+	'Upload file'		 			=> 'Загрузить файл',
+	'Upload as local file'		 	=> 'Загрузить плагин как локальный файл',
+	'File type should be ZIP'		=> 'Формат файла должен быть ZIP',
+	'Download plugin from remote server' => 'Загрузить плагин с удаленного сервера',
+	'Plugins instruction' 			=> 'Допустимый формат файлов - zip архивы, не более 10 Мб.<br />
+										Вы можете найти плагины на сайте <a href="http://atomx.net">atomx.net</a>',
 	
 	// Templates name
 	'Add form'  					=> 'Форма добавления',

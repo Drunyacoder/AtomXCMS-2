@@ -33,8 +33,8 @@ $api_url = 'http://home.develdo.com/';
 
 
 // download & install plugin
-if (!empty($_GET['set_plugin'])) {
-	$set_plugin = str_replace(array('.', '/'), '', $_GET['set_plugin']);
+if (!empty($_GET['download'])) {
+	$set_plugin = str_replace(array('.', '/'), '', $_GET['download']);
 
 	$set_url = $api_url . 'plugins/' . $set_plugin . '.zip';
 	$new_path_z = ROOT . '/sys/plugins/' . $set_plugin . '.zip';
@@ -102,10 +102,56 @@ endif;
 ?>
 
 
+<div class="warning">
+<?php echo __('Plugins instruction') ?>
+</div>
 
-<!--************ GENERAL **********-->							
+
+
+<!-- Download foreign plugins -->
+<div id="sec" class="popup">
+	<div class="top">
+		<div class="title"><?php echo __('Download plugin') ?></div>
+		<div onClick="closePopup('sec');" class="close"></div>
+	</div>
+	<form action="get_plugins.php?ac=download" method="POST" enctype="multipart/form-data">
+	<div class="items">
+		<div class="clear">&nbsp;</div>
+		<div class="item">
+			<div class="left">
+				URL:
+				<span class="comment"><?php echo __('Download plugin from remote server') ?></span>
+			</div>
+			<div class="right"><input type="text" name="pl_url" placeholder="http://site.com/path/to/plugin" /></div>
+			<div class="clear"></div>
+		</div>
+		<div class="clear">&nbsp;</div>
+		<div class="item">
+			<div class="left">
+				<?php echo __('Upload file') ?>:
+				<span class="comment"><?php echo __('Upload as local file') ?></span>
+			</div>
+			<div class="right"><input type="file" accept="application/zip" name="pl_file" onChange="if (pl_file.value.substring(pl_file.value.lastIndexOf('.')+1, pl_file.value.length).toLowerCase() != 'zip')
+{ alert('<?php echo __('File type should be ZIP') ?>!'); return; };" /></div>
+			<div class="clear"></div>
+		</div>
+		<div class="clear">&nbsp;</div>
+		<div class="item submit">
+			<div class="left"></div>
+			<div style="float:left;" class="right">
+				<input type="submit" class="save-button" name="send" value="<?php echo __('Save') ?>">
+			</div>
+			<div class="clear"></div>
+		</div>
+	</div>
+	</form>
+</div>
+
+
+<!-- Download from official server -->							
 <div class="list">
-	<div class="title">Загрузка плагинов</div>
+	<div class="title"><?php echo __('Plugins download') ?></div>
+	<div class="add-cat-butt" onClick="openPopup('sec');"><div class="add"></div><?php echo __('Download plugin') ?></div>
 	<div class="level1">
 		<div class="items" id="plugins">
 		<?php foreach ($data as $row): ?>
@@ -124,7 +170,7 @@ endif;
 					<?php if (in_array($row['title'], $our_plugins)): ?>
 						<strong class="green"><?php echo __('Plugin is saved') ?></strong>
 					<?php else: ?>
-						<a href="<?php echo WWW_ROOT ?>/admin/get_plugins.php?set_plugin=<?php echo $row['url'] ?>">Установить</a>
+						<a href="<?php echo WWW_ROOT ?>/admin/get_plugins.php?set_plugin=<?php echo $row['url'] ?>"><?php echo __('Install') ?></a>
 					<?php endif; ?>
 					</div>
 				</div>
