@@ -52,7 +52,6 @@ class Bootstrap
         $this->Register['ACL'] = new ACL(ROOT . '/sys/settings/');
         $this->Register['Cache'] = new Cache;
         $this->Register['PrintText'] = new PrintText;
-        $this->Register['PluginControll'] = new Plugins;
         $this->Register['Validate'] = new Validate();
         $this->Register['ModManager'] = new ModulesManager(ROOT . '/sys/settings/modules_access.php');
         $this->Register['PluginController'] = new Plugins;

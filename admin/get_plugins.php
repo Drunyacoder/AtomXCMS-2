@@ -32,32 +32,21 @@ $api_url = 'http://home.develdo.com/';
 
 
 
+
+
+
+$Register['PluginController']->foreignUpload('http://home.develdo.com/plugins/ulogin.zip');
+$r = $Register['PluginController']->install('ulogin.zip');
+var_dump($r);
+die();
+
 // download & install plugin
 if (!empty($_GET['download'])) {
-	$set_plugin = str_replace(array('.', '/'), '', $_GET['download']);
 
-	$set_url = $api_url . 'plugins/' . $set_plugin . '.zip';
-	$new_path_z = ROOT . '/sys/plugins/' . $set_plugin . '.zip';
-	$new_path = ROOT . '/sys/plugins/' . $set_plugin . '/';
-	copy($set_url, $new_path_z);
-	
-	
-	if (file_exists($new_path_z)) {
-		Zip::extractZip($new_path_z, ROOT . '/sys/plugins/');
+
 		
-		
-		if (file_exists($new_path . 'config.dat')) {
-			$config = json_decode(file_get_contents($new_path . 'config.dat'), true);
-			
-			$obj = new $config['className'];
-			if (method_exists($obj, 'install')) {
-				$obj->install();
-			}
-		}
-		
-		$_SESSION['message'] = __('Plugin is saved');
-		redirect('/admin/get_plugins.php');
-	}
+	$_SESSION['message'] = __('Plugin is saved');
+	redirect('/admin/get_plugins.php');
 }
 
 
@@ -67,9 +56,11 @@ $pageTitle = __('Admin Panel');
 $pageNav = $pageTitle . __(' - General information');
 $pageNavl = '';
 
+
 // get our plugins
 $pl_url = ROOT . '/sys/plugins/*';
 $our_plugins = glob($pl_url, GLOB_ONLYDIR);
+
 
 foreach ($our_plugins as &$pl) {
 	if (file_exists($pl . '/config.dat')) {
@@ -82,20 +73,18 @@ foreach ($our_plugins as &$pl) {
 
 
 
-// get foreign plugins
+// get foreign plugins (API)
 $url = 'http://home.develdo.com/plugins_api.php';
 $data = json_decode(file_get_contents($url), true);
 
 
-//echo $header;
+
 include 'template/header.php';
 ?>
 
 
-<?php
-if (!empty($_SESSION['message'])):
-?>
-<script type="text/javascript">showHelpWin('<?php echo h($_SESSION['message']) ?>', '<?php echo __('Message') ?>');</script>
+<?php if (!empty($_SESSION['message'])): ?>
+	<script type="text/javascript">showHelpWin('<?php echo h($_SESSION['message']) ?>', '<?php echo __('Message') ?>');</script>
 <?php
 	unset($_SESSION['message']);
 endif;

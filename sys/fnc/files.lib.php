@@ -54,6 +54,8 @@ function deleteAttach($module, $entity_id, $attachNum) {
     return true;
 }
 
+
+
 /**
  * Download attached files
  *
@@ -141,6 +143,8 @@ function getSecureFilename($filename, $dirToCheck) {
 	return $filename . $ext;
 }
 
+
+
 function isImageFile($mime, $ext = null) {
 	/**
 	 * Types of images
@@ -155,6 +159,8 @@ function isImageFile($mime, $ext = null) {
 	if (!empty($ext)) $is_image = $is_image && in_array(strtolower($ext), $img_extentions);
 	return $is_image;
 }
+
+
 
 function isPermittedFile($ext) {
 	/**

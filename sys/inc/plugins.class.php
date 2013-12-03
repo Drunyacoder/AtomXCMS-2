@@ -26,6 +26,8 @@
 class Plugins {
 	
 	public static $map = array();
+	
+	public $errors = array();
 
 
 	public function __construct() {
@@ -57,6 +59,92 @@ class Plugins {
 					}
 				}
 			}
+		}
+	}
+	
+	
+	
+	public function install($filename) {
+		$src = ROOT . '/sys/tmp/' . $filename;
+		$dest = ROOT . '/sys/tmp/install_plugin/';
+	
+		
+		Zip::extractZip($src, $dest);
+		if (!file_exists($dest)) {
+			$this->errors = __('Some error occurred');
+			return false;
+		}
+		
+		$tmp_plugin_path = glob($dest . '*', GLOB_ONLYDIR);
+		$tmp_plugin_path = $tmp_plugin_path[0];
+		$plugin_basename = substr(strrchr($tmp_plugin_path, '/'), 1);
+		$plugin_path = ROOT . '/sys/plugins/' . $plugin_basename;
+			
+		
+		copyr($dest, ROOT . '/sys/plugins/');
+		
+		
+		
+		if (file_exists($plugin_path . '/config.dat')) {
+			$config = json_decode(file_get_contents($plugin_path . '/config.dat'), true);
+			
+			
+			include_once $plugin_path . '/index.php';
+			$className = $config['className'];
+			$obj = new $className(null);
+			
+			if (method_exists($obj, 'install')) {
+				$obj->install();
+			}
+		}
+		
+		_unlink($src);
+		_unlink($dest);
+		
+		return true;
+	}
+	
+	
+	
+	public function foreignUpload($url) {
+		$headers = get_headers($url,1);
+		if (!empty($headers['Content-Disposition']))
+			preg_match('#filename="(.*)"#iU', $headers['Content-Disposition'], $matches);
+		$filename = (isset($matches[1])) ? $matches[1] : basename($url);
+		
+		
+		if (copy($url, ROOT . '/sys/tmp/'.$filename)) {
+			return $filename;
+			
+		} else {
+			$this->errors = __('Some error occurred');
+			return false;
+		}
+	}
+	
+	
+	
+	public function localUpload($field) {
+		if (empty($_FILES[$field]['name'])) {
+			$this->errors = __('File not found');
+			return false;
+		}
+		
+		$ext = strrchr($_FILES[$field]['name'], '.');
+		if (strtolower($ext) !== '.zip') {
+			$this->errors = __('Wrong file format');
+			return false;
+		}
+		
+		$filename = $_FILES[$field]['name'];
+		
+		
+		if (move_uploaded_file($_FILES[$field]['tmp_name'], ROOT . '/sys/tmp/'.$filename)) {
+			return $filename;
+			
+		} else {
+			$this->errors = __('Some error occurred');
+			return false;
 		}
 	}
 
