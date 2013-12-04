@@ -823,6 +823,25 @@ function copyr($source, $dest)
 }
 
 
+
+/**
+ * Find all files in directory
+ * @Recursive
+ */
+function getDirFiles($path)
+{   
+	$ret = array();
+	$dir_iterator = new RecursiveDirectoryIterator($path);
+	$iterator = new RecursiveIteratorIterator($dir_iterator, RecursiveIteratorIterator::SELF_FIRST);
+	
+	foreach ($iterator as $file) {
+		if($file->isFile()) $ret[] = str_replace($path, '', (string)$file);
+	}
+	
+	return $ret;
+}
+
+
 function memoryUsage($base_memory_usage) {
     printf("Bytes diff: %s<br />\n", getSimpleFileSize(memory_get_usage() - $base_memory_usage));
 }

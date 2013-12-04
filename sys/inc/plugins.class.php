@@ -27,7 +27,9 @@ class Plugins {
 	
 	public static $map = array();
 	
-	public $errors = array();
+	private $errors = array();
+	
+	private $files = array();
 
 
 	public function __construct() {
@@ -64,6 +66,18 @@ class Plugins {
 	
 	
 	
+	public function getErrors() {
+		return $this->errors;
+	}
+	
+	
+	
+	public function getFiles() {
+		return $this->files;
+	}
+	
+	
+	
 	public function install($filename) {
 		$src = ROOT . '/sys/tmp/' . $filename;
 		$dest = ROOT . '/sys/tmp/install_plugin/';
@@ -82,7 +96,7 @@ class Plugins {
 			
 		
 		copyr($dest, ROOT . '/sys/plugins/');
-		
+		$this->files = getDirFiles($plugin_path);
 		
 		
 		if (file_exists($plugin_path . '/config.dat')) {

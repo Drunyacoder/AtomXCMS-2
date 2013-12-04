@@ -330,8 +330,11 @@ Class ForumModule extends Module {
 			
 			// reply link
 			$addLink = ($this->ACL->turn(array('forum', 'add_themes'), false)) 
-			? get_link(get_img('/template/' . $this->Register['Config']->read('template').'/img/add_theme_button.png', 
-			array('alt' => __('New topic'))), '/forum/add_theme_form/' . $id_forum) : '';
+			? get_link(
+				__('New topic'), 
+				'/forum/add_theme_form/' . $id_forum,
+				array('class' => 'fps-add-button forum')
+			) : '';
 			
 			
 

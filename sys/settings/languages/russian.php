@@ -454,6 +454,7 @@ $language = array(
 	'Download plugin from remote server' => 'Загрузить плагин с удаленного сервера',
 	'Plugins instruction' 			=> 'Допустимый формат файлов - zip архивы, не более 10 Мб.<br />
 										Вы можете найти плагины на сайте <a href="http://atomx.net">atomx.net</a>',
+	'Files ...'      				=> 'Установленные файлы: ',
 	
 	// Templates name
 	'Add form'  					=> 'Форма добавления',

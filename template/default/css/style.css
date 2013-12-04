@@ -1084,6 +1084,8 @@ background: rgba(177, 199, 150, 1);
 .botname {color:#FF0000;}
 .smilebox {width:100%;height:400px;overflow:auto; background:#131A1D;}
 .smilebox div {width:38px;height:40px; float:left;}
+.fps-add-button {font-size:15px; padding:4px; border:1px solid #313131; border-radius:3px; background:#616161; color:#f3f3f3 !important;}
+.fps-add-button:hover {text-decoration:none !important; background:#717171;}
 /*--rating--*/
 .urating {border-bottom: 1px solid #780; margin-bottom:5px;}
 .urating .action {float:left; color: #666666; font-size:17px; font-weight:bold; padding:0 3px;}

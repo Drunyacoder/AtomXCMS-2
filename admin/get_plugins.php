@@ -33,21 +33,80 @@ $api_url = 'http://home.develdo.com/';
 
 
 
-
-
-$Register['PluginController']->foreignUpload('http://home.develdo.com/plugins/ulogin.zip');
-$r = $Register['PluginController']->install('ulogin.zip');
-var_dump($r);
-die();
-
-// download & install plugin
-if (!empty($_GET['download'])) {
-
-
-		
-	$_SESSION['message'] = __('Plugin is saved');
+function showError() {
+	$errors = $Register['PluginController']->getErrors();
+	
+	$_SESSION['message'] = $errors;
 	redirect('/admin/get_plugins.php');
 }
+
+
+
+// local plugin archive
+if (!empty($_FILES['pl_file']['name'])) {
+	// download plugin to tmp folder
+	$filename = $Register['PluginController']->localUpload('pl_file');
+	if (!$filename) {
+		showError();
+	}
+	
+	// install plugin
+	$result = $Register['PluginController']->install($filename);
+	if (!$result) {
+		showError();
+	}
+		
+	
+	$files = $Register['PluginController']->getFiles();
+	$message = __('Plugin is saved');
+	$message .= __('Files ...') . '<ul>';
+	foreach ($files as $file) {
+		$message .= '<li>' . $file . '</li>';
+	}
+	$message .= '</ul>';
+	
+	// redirect and push message
+	$_SESSION['message'] = $message;
+	redirect('/admin/get_plugins.php');
+	
+	
+// foreign plugin archive	
+} else if (!empty($_GET['api_key']) || !empty($_POST['pl_url'])) {
+	// get plugin URL
+	if (!empty($_GET['api_key'])) {
+		$download_key = trim($_GET['api_key']);
+		$download_url = $api_url . 'plugins/' . $download_key;
+		
+	} else if (!empty($_POST['pl_url'])) {
+		$download_url = trim($_POST['pl_url']);
+	}
+	
+	// download plugin to tmp folder
+	$filename = $Register['PluginController']->foreignUpload($download_url);
+	if (!$filename) {
+		showError();
+	}
+	
+	// install plugin
+	$result = $Register['PluginController']->install($filename);
+	if (!$result) {
+		showError();
+	}
+
+	
+	$files = $Register['PluginController']->getFiles();
+	$message = __('Plugin is saved');
+	$message .= __('Files ...') . '<ul>';
+	foreach ($files as $file) {
+		$message .= '<li>' . $file . '</li>';
+	}
+	$message .= '</ul>';
+	
+	// redirect and push message
+	$_SESSION['message'] = $message;
+	redirect('/admin/get_plugins.php');
+}
+
 
 
 
@@ -74,7 +133,7 @@ foreach ($our_plugins as &$pl) {
 
 
 // get foreign plugins (API)
-$url = 'http://home.develdo.com/plugins_api.php';
+$url = $api_url . 'plugins_api.php';
 $data = json_decode(file_get_contents($url), true);
 
 
@@ -103,7 +162,7 @@ endif;
 		<div class="title"><?php echo __('Download plugin') ?></div>
 		<div onClick="closePopup('sec');" class="close"></div>
 	</div>
-	<form action="get_plugins.php?ac=download" method="POST" enctype="multipart/form-data">
+	<form action="get_plugins.php" method="POST" enctype="multipart/form-data">
 	<div class="items">
 		<div class="clear">&nbsp;</div>
 		<div class="item">
@@ -159,7 +218,7 @@ endif;
 					<?php if (in_array($row['title'], $our_plugins)): ?>
 						<strong class="green"><?php echo __('Plugin is saved') ?></strong>
 					<?php else: ?>
-						<a href="<?php echo WWW_ROOT ?>/admin/get_plugins.php?set_plugin=<?php echo $row['url'] ?>"><?php echo __('Install') ?></a>
+						<a href="<?php echo WWW_ROOT ?>/admin/get_plugins.php?api_key=<?php echo $row['url'] ?>"><?php echo __('Install') ?></a>
 					<?php endif; ?>
 					</div>
 				</div>
