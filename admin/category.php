@@ -481,14 +481,16 @@ function edit() {
 	if ($no_access !== '') $no_access = New Expr($no_access);
 	
 	
+	$model = $Register['ModManager']->getModelInstance(getCurrMod() . 'Sections');
+	$entity = $model->getById($id);
+	
+	
 	/* prepare data to save */
-	$data = array(
-		'id' => $id, 
-		'title' => substr($_POST['title'], 0, 100), 
-		'no_access' => $no_access,
-	);
-	if (!empty($parent_id)) $data['parent_id'] = (int)$parent_id;
-	$FpsDB->save(getCurrMod() . '_sections', $data);
+	$entity->setTitle(substr($_POST['title'], 0, 100));
+	$entity->setNo_access($no_access);
+	if (!empty($parent_id)) $entity->setParent_id((int)$parent_id);
+
+	$entity->save();
 		
 
 	redirect('/admin/category.php?mod=' . getCurrMod());
@@ -506,7 +508,7 @@ function add() {
 	
 	
 	$error = '';
-	$title = mysql_real_escape_string($_POST['title']);
+	$title = trim($_POST['title']);
 	$in_cat = intval($_POST['id_sec']);
 	if ($in_cat < 0) $in_cat = 0;
 	
@@ -532,11 +534,14 @@ function add() {
 	
 	
 	if (empty($error)) {
-		$FpsDB->save(getCurrMod() . '_sections', array(
+		$data = array(
 			'title' => $title,
 			'parent_id' => $in_cat,
 			'no_access' => $no_access,
-		));
+		);
+		$entityName = getCurrMod() . 'SectionsEntity';
+		$entity = new $entityName($data);
+		$entity->save();
 	}
 		
 	redirect('/admin/category.php?mod=' . getCurrMod());
@@ -544,36 +549,48 @@ function add() {
 
 
 function delete() {	
-	global $FpsDB;
+	global $Register, $FpsDB;
 	$id = (!empty($_GET['id'])) ? intval($_GET['id']) : 0;
 	if ($id < 1) redirect('/admin/category.php?mod=' . getCurrMod());
 	
 	
-	$childrens = $FpsDB->select(getCurrMod() . '_sections', DB_ALL, array('cond' => array('parent_id' => $id)));
+	$model = $Register['ModManager']->getModelInstance(getCurrMod() . 'Sections');
+	$childrens = $model->getCollection(array('parent_id' => $id));
 
+	pr($childrens);
 	
-	if (!count($childrens)) {
+	if (!$childrens) {
 		delete_category($id);
 	} else {
 		foreach ($childrens as $category) {
-			delete_category($category['id']);
-			delete($category['id']);
+			delete_category($category->getId());
+			delete($category->getId());
 		}
-		$FpsDB->query("DELETE FROM `" . $FpsDB->getFullTableName(getCurrMod() . '_sections') . "` WHERE `id`='{$id}'");
+		
+		$category->delete();
 	}
 	redirect('/admin/category.php?mod=' . getCurrMod());
 }
 
 
 function delete_category($id) {
-	global $FpsDB;
-	$records = $FpsDB->select(getCurrMod(), DB_ALL, array('cond' => array('category_id' => $id)));
-	if (count($records) > 0) {
+	global $Register, $FpsDB;
+	
+	$attachModel = $Register['ModManager']->getModelInstance(getCurrMod() . 'Attaches');
+	$sectionsModel = $Register['ModManager']->getModelInstance(getCurrMod() . 'Sections');
+	$model = $Register['ModManager']->getModelInstance(getCurrMod());
+	$records = $model->getCollection(array('category_id' => $id));
+	
+	
+	// delete materials and attaches
+	if (is_array($records) && count($records) > 0) {
 		foreach ($records as $record) {
-			$FpsDB->query("DELETE FROM `" . $FpsDB->getFullTableName(getCurrMod()) . "` WHERE `id`='{$record['id']}'");
+			
+			$record->delete();
+		
 			
 			
-			$hlufile = ROOT . '/sys/tmp/hlu_' . getCurrMod() . '/' . $record['id'] . '.dat';
+			$hlufile = ROOT . '/sys/tmp/hlu_' . getCurrMod() . '/' . $record->getId() . '.dat';
 			if (file_exists($hlufile)) {
 				$fname = file_get_contents($hlufile);
 				_unlink($hlufile);
@@ -583,31 +600,34 @@ function delete_category($id) {
 			
 			
 			if (getCurrMod() == 'foto') {
-				if (file_exists(ROOT . '/sys/files/foto/full/' . $record['filename'])) 
-					_unlink(ROOT . '/sys/files/foto/full/' . $record['filename']);
-				if (file_exists(ROOT . '/sys/files/foto/preview/' . $record['filename'])) 
-					_unlink(ROOT . '/sys/files/foto/preview/' . $record['filename']);
+				if (file_exists(ROOT . '/sys/files/foto/full/' . $record->getFilename())) 
+					_unlink(ROOT . '/sys/files/foto/full/' . $record->getFilename());
+				if (file_exists(ROOT . '/sys/files/foto/preview/' . $record->getFilename())) 
+					_unlink(ROOT . '/sys/files/foto/preview/' . $record->getFilename());
 
 					
 			} else {
-				$attaches = $FpsDB->select(getCurrMod() . '_attaches', DB_ALL, array('cond' => array('entity_id' => $record['id'])));
-				if (count($attaches)) {
+				$attaches = $attachModel->getCollection(array('entity_id' => $record->getId()));
+				if ($attaches) {
 					foreach ($attaches as $attach) {
-						$FpsDB->query("DELETE FROM `" . $FpsDB->getFullTableName(getCurrMod() . '_attaches') 
-						. "` WHERE `id`='{$attach['id']}'");
-						if (file_exists(ROOT . '/sys/files/' . getCurrMod() . '/' . $attach['filename']))
-							_unlink(ROOT . '/sys/files/' . getCurrMod() . '/' . $attach['filename']);
+						$attach->delete();
+						if (file_exists(ROOT . '/sys/files/' . getCurrMod() . '/' . $attach->getFilename()))
+							_unlink(ROOT . '/sys/files/' . getCurrMod() . '/' . $attach->getFilename());
 					}
 				}
 				
 				if (getCurrMod() == 'loads') {
-					if (file_exists(ROOT . '/sys/files/loads/' . $record['download'])) 
-						_unlink(ROOT . '/sys/files/loads/' . $record['download']);
+					if (file_exists(ROOT . '/sys/files/loads/' . $record->getDownload())) 
+						_unlink(ROOT . '/sys/files/loads/' . $record->getDownload());
 				}
 			} 
 		}
 	}
-	$FpsDB->query("DELETE FROM `" . $FpsDB->getFullTableName(getCurrMod() . '_sections') . "` WHERE `id`='{$id}'");
+	
+	// delete category
+	$entity = $sectionsModel->getById($id);
+	if ($entity) $entity->delete();
+	
 	return true;
 }
 

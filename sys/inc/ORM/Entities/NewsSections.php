@@ -2,12 +2,12 @@
 /*---------------------------------------------\
 |											   |
 | @Author:       Andrey Brykin (Drunya)        |
-| @Version:      1.0                           |
+| @Version:      1.1                           |
 | @Project:      CMS                           |
 | @package       CMS Fapos                     |
 | @subpackege    NewsSections Entity           |
-| @copyright     ©Andrey Brykin 2010-2012      |
-| @last mod      2012/02/27                    |
+| @copyright     ©Andrey Brykin 2010-2013      |
+| @last mod      2013/12/08                    |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
@@ -35,5 +35,27 @@ class NewsSectionsEntity extends FpsEntity
 	protected $no_access;
 	
 
-
+	public function save()
+	{
+		$params = array(
+			'parent_id' => intval($this->parent_id),
+			'announce' => (string)$this->announce,
+			'title' => (string)$this->title,
+			'view_on_home' => (string)$this->view_on_home,
+			'no_access' => (string)$this->no_access,
+		);
+		
+		
+		if ($this->id) $params['id'] = intval($this->id);
+		$Register = Register::getInstance();
+		return $Register['DB']->save('news_sections', $params);
+	}
+	
+	
+	
+	public function delete()
+	{ 
+		$Register = Register::getInstance();
+		$Register['DB']->delete('news_sections', array('id' => $this->id));
+	}
 }

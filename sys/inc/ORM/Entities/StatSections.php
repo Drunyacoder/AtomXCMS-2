@@ -7,7 +7,7 @@
 | @package       CMS Fapos                     |
 | @subpackege    StatSections Entity           |
 | @copyright     ©Andrey Brykin 2010-2013      |
-| @last mod      2013/04/03                    |
+| @last mod      2013/12/08                    |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
@@ -34,6 +34,29 @@ class StatSectionsEntity extends FpsEntity
 	protected $view_on_home;
 	protected $no_access;
 	
+	
 
-
+	public function save()
+	{
+		$params = array(
+			'parent_id' => intval($this->parent_id),
+			'announce' => (string)$this->announce,
+			'title' => (string)$this->title,
+			'view_on_home' => (string)$this->view_on_home,
+			'no_access' => (string)$this->no_access,
+		);
+		
+		
+		if ($this->id) $params['id'] = intval($this->id);
+		$Register = Register::getInstance();
+		return $Register['DB']->save('stat_sections', $params);
+	}
+	
+	
+	
+	public function delete()
+	{ 
+		$Register = Register::getInstance();
+		$Register['DB']->delete('stat_sections', array('id' => $this->id));
+	}
 }
