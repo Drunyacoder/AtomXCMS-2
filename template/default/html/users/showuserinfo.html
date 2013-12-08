@@ -11,7 +11,7 @@
                  <li><a href="{{ www_root }}/users/out_msg_box/">Отправленные</a></li>
 				 {% endif %}
 				 {% if user.privatemessage %}	
-				 <li><a href="{{ www_root }}/users/send_pm_form/{% if fps_user_id != user.id %}{{ user.id }}{% endif %}">Отправить ЛС</a></li>
+				 <li><a href="{{ www_root }}/users/send_msg_form/{% if fps_user_id != user.id %}{{ user.id }}{% endif %}">Отправить ЛС</a></li>
                  {% endif %}
 				 {% if fps_user_id != user.id %}
 				 <li><a href="{{ www_root }}/users/send_mail_form/{{ user.id }}">Отправить на почту</a></li>

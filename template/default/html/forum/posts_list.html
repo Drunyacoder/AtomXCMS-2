@@ -64,7 +64,7 @@
 			  {% if post.id_author != 0 %}
 			  <a href="{{ www_root }}/users/info/{{ post.id_author }}" id="forpostuserlinks" class="footerpostbuttons">Профиль</a>
 			  {% if fps_user != false %}
-			  <a href="{{ www_root }}/users/send_pm_form/{{ post.id_author }}" id="forpostuserlinks" class="footerpostbuttons">ЛС</a>
+			  <a href="{{ www_root }}/users/send_msg_form/{{ post.id_author }}" id="forpostuserlinks" class="footerpostbuttons">ЛС</a>
 			  <a href="{{ www_root }}/users/send_mail_form/{{ post.id_author }}" id="forpostuserlinks" class="footerpostbuttons">Mail</a>
 			  {% endif %}
 			  {% if post.author.url %}

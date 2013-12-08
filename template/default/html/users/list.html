@@ -20,7 +20,7 @@
 							        <div class="listuser">
 								          <ul class="listuserbuttons">
 									          <li><a href="{{ www_root }}/users/info/{{ user.id }}" class="button2">Профиль</a></li>
-                                              {% if user.pm %}<li><a href="{{ www_root }}/users/send_pm_form/{{ user.id }}" class="button2">Отправить ЛС</a></li>{% endif %}
+                                              {% if user.pm %}<li><a href="{{ www_root }}/users/send_msg_form/{{ user.id }}" class="button2">Отправить ЛС</a></li>{% endif %}
                                               {% if user.moder_panel %}<li><a href="{{ www_root }}/users/edit_form_by_admin/{{ user.id }}" class="button2">Изменить профиль</a></li>{% endif %}									
 								          </ul>
 								          <h3 class="userlisttitle"><a href="{{ www_root }}/users/info/{{ user.id }}">{{ user.name }}</a></h3>
