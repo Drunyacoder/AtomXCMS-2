@@ -1518,7 +1518,7 @@ Class UsersModule extends Module {
         $data = array(
             'to_user' => $to,
             'from_user' => $from,
-            'sendtime' => 'NOW()',
+            'sendtime' => new Expr('NOW()'),
             'subject' => $subject,
             'message' => $message,
             'id_rmv' => 0,
