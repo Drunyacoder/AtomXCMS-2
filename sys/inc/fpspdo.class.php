@@ -316,7 +316,8 @@ class FpsPDO {
 	{
 		$statement = $this->dbh->prepare($query);
 		$statement->execute($this->queryParams);
-		
+		//pr($query);
+		//pr($this->queryParams);
 		return $statement;
 	}
 	

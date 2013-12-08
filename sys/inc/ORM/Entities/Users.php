@@ -65,22 +65,22 @@ class UsersEntity extends FpsEntity
             'name' => $this->name,
             'passw' => $this->passw,
             'email' => $this->email,
-            'color' => $this->color,
-            'state' => $this->state,
+            'color' => $this->color ? $this->color : '',
+            'state' => $this->state ? $this->state : '',
             'rating' => intval($this->rating),
-            'timezone' => $this->timezone,
-            'url' => $this->url,
-            'icq' => $this->icq,
-            'about' => $this->about,
-            'signature' => $this->signature,
-            'pol' => $this->pol,
-            'jabber' => $this->jabber,
-            'city' => $this->city,
+            'timezone' => intval($this->timezone),
+            'url' => (string)$this->url,
+            'icq' => (string)$this->icq,
+            'about' => (string)$this->about,
+            'signature' => (string)$this->signature,
+            'pol' => (string)$this->pol,
+            'jabber' => (string)$this->jabber,
+            'city' => (string)$this->city,
             'telephone' => intval($this->telephone),
             'byear' => intval($this->byear),
             'bmonth' => intval($this->bmonth),
             'bday' => intval($this->bday),
-            'photo' => $this->photo,
+            'photo' => (string)$this->photo,
             'puttime' => $this->puttime,
             'themes' => intval($this->themes),
             'posts' => intval($this->posts),
@@ -88,10 +88,12 @@ class UsersEntity extends FpsEntity
             'locked' => intval($this->locked),
             'activation' => $this->activation,
             'warnings' => intval($this->warnings),
-            'ban_expire' => $this->ban_expire,
+            'ban_expire' => $this->ban_expire ? $this->ban_expire : '0000-00-00 00:00:00',
         );
+		
         if ($this->id) $params['id'] = $this->id;
         $Register = Register::getInstance();
+		
         return $Register['DB']->save('users', $params);
     }
 	

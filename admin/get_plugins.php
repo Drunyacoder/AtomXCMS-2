@@ -58,8 +58,8 @@ if (!empty($_FILES['pl_file']['name'])) {
 		
 	
 	$files = $Register['PluginController']->getFiles();
-	$message = __('Plugin is saved');
-	$message .= __('Files ...') . '<ul>';
+	$message = '<h2>' . __('Plugin is saved') . '</h2>';
+	$message .= '<strong>' . __('Files ...') . '</strong><ul class="wps-list">';
 	foreach ($files as $file) {
 		$message .= '<li>' . $file . '</li>';
 	}
@@ -95,8 +95,8 @@ if (!empty($_FILES['pl_file']['name'])) {
 
 	
 	$files = $Register['PluginController']->getFiles();
-	$message = __('Plugin is saved');
-	$message .= __('Files ...') . '<ul>';
+	$message = '<h2>' . __('Plugin is saved') . '</h2>';
+	$message .= '<strong>' . __('Files ...') . '</strong><ul class="wps-list">';
 	foreach ($files as $file) {
 		$message .= '<li>' . $file . '</li>';
 	}
@@ -143,7 +143,7 @@ include 'template/header.php';
 
 
 <?php if (!empty($_SESSION['message'])): ?>
-	<script type="text/javascript">showHelpWin('<?php echo h($_SESSION['message']) ?>', '<?php echo __('Message') ?>');</script>
+	<script type="text/javascript">showHelpWin('<?php echo $_SESSION['message'] ?>', '<?php echo __('Message') ?>');</script>
 <?php
 	unset($_SESSION['message']);
 endif;

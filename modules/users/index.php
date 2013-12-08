@@ -311,7 +311,7 @@ Class UsersModule extends Module {
 		$new_name = preg_replace( "#[^- _0-9a-zА-Яа-я]#i", "", $name );
 		// Формируем SQL-запрос
         $res = $this->Model->getSameNics($new_name);
-		if (count($res) > 0) $errors .= '<li>' . sprintf(__('Name already exists'), $new_name) . '</li>'."\n";
+		if ($res) $errors .= '<li>' . sprintf(__('Name already exists'), $new_name) . '</li>'."\n";
 		
 		
 		/* check avatar */
@@ -444,7 +444,7 @@ Class UsersModule extends Module {
 		/* clean DB cache */
 		$this->Register['DB']->cleanSqlCache();
 		$res = $this->Model->getCollection(array('activation' => $code), array('limit' => 1));
-
+		
 		if (count($res) > 0 ) {
 			$id = $res[0]->getId();
             $res[0]->setActivation('');

@@ -221,6 +221,10 @@ a.undo {background-position:-253px 0px;}
 .popup .top .title {color:#96C703; font-size:15px; font-weight:bold; float:left;}
 .popup .top .close {float:right; width:14px; height:14px; background:url('../img/close-button.png') no-repeat; margin-left:10px; cursor:pointer;}
 .popup .items {border-top:1px solid #000; padding:20px; line-height:17px;}
+
+.popup .items h2 {color:#87c703 !important;}
+.popup .items ul li {font-style:italic;}
+
 .popup .items .item {padding:5px 0px;}
 .popup .items .item .left {width:150px; float:left; padding-top:7px; -moz-text-shadow: 0 0 1px #999999; -webkit-text-shadow: 0 0 1px #999999; text-shadow: 0 0 1px #999999;}
 .popup .items .item .left .comment {display:block; color:#939393; font-size:11px; -moz-text-shadow:none; -webkit-text-shadow:none; text-shadow:none;}
@@ -229,6 +233,7 @@ a.undo {background-position:-253px 0px;}
 .popup .items .item .right select {width:300px;}
 .popup .items .item .right textarea {height:100px;}
 .popup .items .item.submit {padding-top:30px;}
+
 
 
 
