@@ -34,7 +34,7 @@
 				       <div class="nameuser">{{ user.name }}</div>
 					   <div>Регистрация: {{ user.regdate }}</div>
 					   <div class="lastrun"><img src="{{ template_path }}/img/online.png" title="online" alt="online"> Активность: {{ user.lastvisit }}</div>
-					   <div class="shkalakrut"><img border="0" src="{{ template_path }}/img/{{ getUserRatingImg(user.posts) }}" alt="" /></div>
+					   <div class="shkalakrut">Сообщений: {{ user.posts }}</div>
 				  </div>
                      {% if user.rating %}
 				        {% if user.rating >= 1 %}
@@ -89,10 +89,6 @@
 										<span class="siu_data"><a href="javascript:void(0)" onClick="showFpsWin('{{ www_root }}/users/votes_story/{{ user.id }}', '', 'История рейтинга ({{ user.name }})');">{{ user.rating }}</a>
                                                                              <a href="javascript:void(0)" onClick="$('#setRating_{{ user.id }}').show();">-&nbsp;/&nbsp;+</a></a>
 										</span>
-									</li>
-									<li>
-										<span class="siu_title">Статус:</span>
-										<span class="siu_data">{{ getUserRatingText(user.posts) }}</span>
 									</li>
 									<li>
 										<span class="siu_title">Предупреждения:</span>
