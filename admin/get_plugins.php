@@ -75,7 +75,7 @@ if (!empty($_FILES['pl_file']['name'])) {
 	// get plugin URL
 	if (!empty($_GET['api_key'])) {
 		$download_key = trim($_GET['api_key']);
-		$download_url = $api_url . 'plugins/' . $download_key;
+		$download_url = $api_url . 'plugins/' . $download_key . '.zip';
 		
 	} else if (!empty($_POST['pl_url'])) {
 		$download_url = trim($_POST['pl_url']);

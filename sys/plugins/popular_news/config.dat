@@ -1,0 +1,7 @@
+{
+	"className":"PopNews",
+	"title":"popnews",
+	"description":"Popular news",
+	"active":1,
+	"points":"before_view"
+}
