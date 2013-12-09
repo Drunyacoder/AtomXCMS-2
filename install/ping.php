@@ -23,6 +23,6 @@ function checkUpdate() {
 }
 
 function checkRequest() {
-	@$b = file_get_contents('http://home.develdo.com/check.php?v=2.3RC1&d=' . $_SERVER['HTTP_HOST']);
+	@$b = file_get_contents('http://home.develdo.com/check.php?v=2.4RC3&d=' . $_SERVER['HTTP_HOST']);
 }
 ?>
