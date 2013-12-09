@@ -1055,6 +1055,8 @@ cursor: move;
 background: #6c6c6c url('../img/button.png') repeat-x top;  font-family: Arial,HelveticaCY,Helvetica,sans-serif;  padding: 0 10px;  line-height: 26PX;  font-size: 14px;  color: #f3f3f3;  text-shadow: 0 1px 0 #313131;  height: 30px;  display: block;  
 border-radius: 10px 10px 0 0;  -moz-border-radius: 10px 10px 0 0;  -webkit-border-radius: 10px 10px 0 0;
 }
+.fps-cont * {text-align:center;}
+.fps-cont ul, .fps-cont li {list-style-type:none; padding:0px;}
 .drag_window .fps-cont {
 border: 1px solid #780;
 padding: 5px;

@@ -1923,11 +1923,11 @@ Class UsersModule extends Module {
 		
 
 
-		if (isset($_SESSION['loginForm']['error'])) {
+		if (isset($_SESSION['FpsForm']['error'])) {
 			$error = $this->render('infomessage.html', array(
-				'info_message' => $_SESSION['loginForm']['error']
+				'info_message' => $_SESSION['FpsForm']['error']
 			));
-			unset($_SESSION['loginForm']['error']);
+			unset($_SESSION['FpsForm']['error']);
 		}
 		
 		
@@ -1969,7 +1969,7 @@ Class UsersModule extends Module {
 			if (empty($_SESSION['form_key_mine'])
 			|| empty($_POST['form_key'])		
 			|| md5(substr($_POST['form_key'], 0, 10) . $_SESSION['form_key_mine']) != $_SESSION['form_hash']) {
-				$this->showInfoMessage(__('Use authorize form'), '/');
+				return $this->showInfoMessage(__('Use authorize form'), '/');
 			}
 		}
 		
@@ -1977,8 +1977,8 @@ Class UsersModule extends Module {
 		
 		
 		// Защита от перебора пароля - при каждой неудачной попытке время задержки увеличивается
-		if (isset($_SESSION['loginForm']['count']) && $_SESSION['loginForm']['count'] > time()) {
-			$errors .= '<li>' . sprintf(__('You must wait'), ($_SESSION['loginForm']['count'] - time())) . '</li>';
+		if (isset($_SESSION['FpsForm']['count']) && $_SESSION['FpsForm']['count'] > time()) {
+			$errors .= '<li>' . sprintf(__('You must wait'), ($_SESSION['FpsForm']['count'] - time())) . '</li>';
 		}
 
 		// Обрезаем лишние пробелы
@@ -1996,18 +1996,26 @@ Class UsersModule extends Module {
 		
 		// Если были допущены ошибки при заполнении формы
 		if (!empty($errors)) {
-			if (!isset($_SESSION['loginForm']['count'])) $_SESSION['loginForm']['count'] = 1;
-			else if ($_SESSION['loginForm']['count'] < 10) $_SESSION['loginForm']['count']++;
-  			else if ($_SESSION['loginForm']['count'] < time()) $_SESSION['loginForm']['count'] = time() + 10;
-			else $_SESSION['loginForm']['count'] = $_SESSION['loginForm']['count'] + 10;
+			if (!isset($_SESSION['FpsForm']['count'])) $_SESSION['FpsForm']['count'] = 1;
+			else if ($_SESSION['FpsForm']['count'] < 10) $_SESSION['FpsForm']['count']++;
+  			else if ($_SESSION['FpsForm']['count'] < time()) $_SESSION['FpsForm']['count'] = time() + 10;
+			else $_SESSION['FpsForm']['count'] = $_SESSION['FpsForm']['count'] + 10;
 			
-			$_SESSION['loginForm']['error'] = '<p class="errorMsg">' . __('Some error in form') . '</p>'.
+			$_SESSION['FpsForm']['error'] = '<p class="errorMsg">' . __('Some error in form') . '</p>'.
 			"\n".'<ul class="errorMsg">'."\n".$errors.'</ul>'."\n";
-			redirect('/users/login_form/');
+			
+			
+			if (isset($_GET['ajax'])) {
+				$data = $_SESSION['FpsForm']; 
+				unset($_SESSION['FpsForm']);
+				return $this->showAjaxResponse($data);
+			} else {
+				redirect('/users/login_form/');
+			}
 		}
 
 		// Все поля заполнены правильно и такой пользователь существует - продолжаем...
-		unset($_SESSION['loginForm']);
+		unset($_SESSION['FpsForm']);
 
 
 		if ($user->getActivation()) return $this->showInfoMessage(__('Your account not activated'), '/');
@@ -2030,19 +2038,24 @@ Class UsersModule extends Module {
 		
 		
 		// Authorization complete. Redirect
+		$to = '/';
+		
 		if (isset($_SESSION['authorize_referer'])) {
-			redirect('/' . $_SESSION['authorize_referer']);
+			$to = '/' . $_SESSION['authorize_referer'];
+			
 		} else if (!empty($_SERVER['HTTP_REFERER']) 
 		&& preg_match('#^http://([^/]+)/(.+)#', $_SERVER['HTTP_REFERER'], $match)) {
 			if (!empty($match[1]) && !empty($match[2]) && $match[1] == $_SERVER['SERVER_NAME']) {
 				$ref_params = explode('/', $match[2]);
 				if (empty($ref_params[0]) || empty($ref_params[1]) ||
 				($ref_params[0] != 'users' && $ref_params[1] != 'login_form')) {
-					redirect('/' . $match[2]);
+					$to = '/' . $match[2];
 				}
 			}
 		}
-		redirect('/');
+		
+		
+		redirect($to);
 	}
 
 

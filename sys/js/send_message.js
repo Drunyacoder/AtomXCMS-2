@@ -645,3 +645,110 @@ function setRatingForEntity(module, entity_id, vote){
 		alert(response);
 	});
 }
+
+
+
+
+/* 
+ *
+ * aJax окошки 2.0
+ * 
+ * Документация по ним тут:
+ * https://github.com/modos189/Fapos2.x/wiki/Работа-с-aJax-окнами-2.0
+ * 
+ */
+
+//close - показывать (true) или скрывать (false) кнопку закрытия окна. По-умолчанию true
+//time - время в секундах, после которого окно закроется. По-умолчанию 0 (не закрывать)
+//align - задает выравнивание контента. По-умолчанию left
+//css - строка со стилями окна
+
+// Создаёт окно
+function fpsWnd(name, title, content, params) {
+    if (name && name.length > 0) {
+        var i = $("#"+name).length;
+        if (i>0) {
+            fpsWnd.content(name, content)
+            fpsWnd.show(name)
+            return false
+        }
+    }
+    
+    props = $.extend({
+        close: true,
+        time: 0,
+        align: 'left',
+        css: ''
+    }, params || {});
+
+    var win = '<div id="'+name+'" class="fps-fwin" style="'+props.css+'"> \
+        <div class="drag_window"> \
+        <div class="fps-title" onmousedown="drag_object(event, this.parentNode)">'+title+'</div>';
+        
+        if (props.close) {
+            win += '<div onClick="$(\'#'+name+'\').hide()" class="fps-close"></div>';
+        };
+
+        win += '<div class="fps-cont" style="text-align: '+props.align+'">'+content+'</div> \
+            </div> \
+            </div>';
+    $('body').append(win);
+
+    if (props.time>0) {
+        setTimeout(function() {
+            fpsWnd.hide(name);
+        }, props.time);
+    };
+
+}
+
+// Отправляет форму на сервер и открывыет окно со статусом выполненного действия
+function sendu(e, title, params) {
+    if (e instanceof Object != true) {
+        e = $('#'+e);
+    }
+	
+    if (title == undefined) {
+        title = 'Информация';
+    }
+    fpsWnd('fpsWinSendu', title, '<span id="loader"><img src="/sys/img/ajaxload.gif" alt="loading"></span>', params)
+    setTimeout(function(){
+
+		// иначе старым способом
+		jQuery.ajax({
+			url:     $(e).attr("action"),
+			type:     "POST",
+			dataType: "html",
+			data: jQuery(e).serialize(), 
+			success: function(response) {
+				response = $.parseJSON(response);
+				fpsWnd.content('fpsWinSendu', response.error);
+			},
+			error: function(response) {
+				fpsWnd.content('fpsWinSendu', "Ошибка при отправке формы");
+			}
+		}); 
+    }, 1);
+    // костыль, чтобы визуальный редактор успел отправить сформированное сообщение в textarea
+}
+function sendu_response(responseText, statusText, xhr, $form)  {
+    fpsWnd.content('fpsWinSendu', responseText);
+}
+
+// Скрывает окно
+fpsWnd.hide = function (name) {
+    $("#"+name).css({ display: "none" })
+};
+// Показывает окно
+fpsWnd.show = function (name) {
+    $("#"+name).css({ display: "block" })
+};
+// Меняет заголовок окна
+fpsWnd.header = function (name, content) {
+    $('#'+name+' .fps-title').html(content);
+};
+// Меняет содержимое окна
+fpsWnd.content = function (name, content) {
+    $('#'+name+' .fps-cont').html(content);
+};
+
