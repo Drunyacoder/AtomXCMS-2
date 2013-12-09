@@ -737,12 +737,12 @@ Class ForumModule extends Module {
 				. $this->Register['Config']->read('template').'/img/reply.png', array('alt' => __('Answer'), 
 				'title' => __('Answer'))), '/forum/view_theme/' . $id_theme . '#sendForm');
 			} else {
-				$markers['add_link'] = get_img('/sys/img/reply_locked.png', 
-				array('alt' => __('Theme is locked'), 'title' => __('Theme is locked')));
+				$markers['add_link'] = ''; // __('Theme is locked')
+				$markers['closed_theme'] = true;
 			}
 			
 			
-			//if (!isset($_SESSION['user'])) $markers['add_link'] = '';
+			
 			if (!$this->ACL->turn(array('forum', 'add_posts', $theme->getId_forum()), false)) $markers['add_link'] = '';
 			$markers['meta'] = '';
 			$this->_globalize($markers);

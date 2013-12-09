@@ -1,8 +1,8 @@
-    {% if add_link %}
-        <a href="{{ www_root }}/forum/view_theme/{{ theme.id }}#sendForm" class="newtembutton button">Ответить</a>
-	{% endif %}
+
 	{% if closed_theme %}
         <a style="background-position: top;cursor: default;" class="newtembutton button">Тема закрыта</a>
+	{% else %}
+		<a href="{{ www_root }}/forum/view_theme/{{ theme.id }}#sendForm" class="newtembutton button">Ответить</a>
     {% endif %}
 	<span class="meta">{{ meta }}</span>
 	<div class="paginator">
@@ -71,7 +71,8 @@
 			  <a href="{{ post.author.url }}" id="forpostuserlinks" class="footerpostbuttons">site</a>
 			  {% endif %}
 			  {% endif %}
-	          {% if post.edit_link %}<a href="{{ www_root }}/forum/edit_post_form/{{ post.id }}" class="editpostlink">Изменить</a>{% endif %} {% if post.delete_link %}<a onclick="return confirm('Вы уверены?')" href="{{ www_root }}/forum/delete_post/{{ post.id }}" class="footerpostbuttons">Удалить</a>{% endif %}<span {{ editor_forum_quote }}>Цитировать</span>
+	          {% if post.edit_link %}<a href="{{ www_root }}/forum/edit_post_form/{{ post.id }}" class="footerpostbuttons">Изменить</a>{% endif %} 
+			  {% if post.delete_link %}<a onclick="return confirm('Вы уверены?')" href="{{ www_root }}/forum/delete_post/{{ post.id }}" class="footerpostbuttons">Удалить</a>{% endif %}<span {{ editor_forum_quote }}>Цитировать</span>
 	       </div>
 	    </div>
 		
