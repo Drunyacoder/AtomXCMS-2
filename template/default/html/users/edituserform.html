@@ -60,7 +60,11 @@
           </li>
 		  <li>
             <span class="siu_title"><strong>Аватар:</strong>Показывает небольшое изображение рядом с вашими ответами, материалами и т.п</span>
-            <span class="siu_data"><img title="{{ context.name }}" class="avatar" border="0" src="{{ context.avatar }}"><input type="file" name="avatar"  />{{ context.unlinkfile }}</span>
+            <span class="siu_data">
+				<img title="{{ context.name }}" class="avatar" border="0" src="{{ context.avatar }}">
+				<br /><input type="file" name="avatar"  />
+				<br />{{ context.unlinkfile }}
+			</span>
           </li>
 		  <li>
             <span class="siu_title"><strong>Подпись:</strong>Показывается под вашими сообщениями</span>
