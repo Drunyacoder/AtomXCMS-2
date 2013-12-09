@@ -1923,11 +1923,11 @@ Class UsersModule extends Module {
 		
 
 
-		if (isset($_SESSION['FpsForm']['error'])) {
-			$error = $this->render('infomessage.html', array(
-				'info_message' => $_SESSION['FpsForm']['error']
+		if (isset($_SESSION['FpsForm']['errors'])) {
+			$errors = $this->render('infomessage.html', array(
+				'info_message' => $_SESSION['FpsForm']['errors']
 			));
-			unset($_SESSION['FpsForm']['error']);
+			unset($_SESSION['FpsForm']['errors']);
 		}
 		
 		
@@ -1936,7 +1936,7 @@ Class UsersModule extends Module {
 			'form_key' => '',
 			'action' => get_url('/users/login/'),
 			'new_password' => get_link('Забыли пароль?', '/users/new_password_form/'),
-			'error' => (!empty($error)) ? $error : '',
+			'errors' => (!empty($errors)) ? $errors : '',
 		);
 		if ($this->Register['Config']->read('autorization_protected_key', 'secure') === 1) {
 			$_SESSION['form_key_mine'] = rand(1000, 9999);
@@ -2001,7 +2001,7 @@ Class UsersModule extends Module {
   			else if ($_SESSION['FpsForm']['count'] < time()) $_SESSION['FpsForm']['count'] = time() + 10;
 			else $_SESSION['FpsForm']['count'] = $_SESSION['FpsForm']['count'] + 10;
 			
-			$_SESSION['FpsForm']['error'] = '<p class="errorMsg">' . __('Some error in form') . '</p>'.
+			$_SESSION['FpsForm']['errors'] = '<p class="errorMsg">' . __('Some error in form') . '</p>'.
 			"\n".'<ul class="errorMsg">'."\n".$errors.'</ul>'."\n";
 			
 			

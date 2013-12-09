@@ -1,4 +1,5 @@
-<form name="loginForm" action="{{ context.action }}" method="POST" id="sendForm" onsubmit="sendu('sendForm'); return false">
+{{ context.errors }}
+<form name="loginForm" action="{{ context.action }}" method="POST" id="sendForm">
 	<div class="material">
 	  <div class="mat-title">Авторизация</div>
 	  <div class="mat-content">
@@ -6,10 +7,10 @@
           <li>
             <span class="siu_title"><strong>Логин:</strong></span>
             <span class="siu_data"><input type="text" name="username" maxlength="30" value="" /></span>
-			
+			<br />
 			<span class="siu_title"><strong>Пароль:</strong></span>
             <span class="siu_data"><input type="password" name="password" maxlength="30" />{{ context.form_key }}</span>
-			
+			<br />
 			<span class="siu_title"><strong>Запомнить:</strong></span>
             <span class="siu_data"><input type="checkbox" name="autologin" value="1" /></span>
 		  </li>

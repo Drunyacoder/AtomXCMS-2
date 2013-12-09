@@ -722,7 +722,7 @@ function sendu(e, title, params) {
 			data: jQuery(e).serialize(), 
 			success: function(response) {
 				response = $.parseJSON(response);
-				fpsWnd.content('fpsWinSendu', response.error);
+				fpsWnd.content('fpsWinSendu', response.errors);
 			},
 			error: function(response) {
 				fpsWnd.content('fpsWinSendu', "Ошибка при отправке формы");

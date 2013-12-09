@@ -70,11 +70,11 @@ $(document).ready(function() {
 <div><a href="{{ www_root }}/users/add_form">Регистрация</a></div>
 <div class="activewindow"><a href="{{ www_root }}/users/login_form/">Войти</a>
 <div style="width: 250px;"><span>
-<form action="/users/login/" method="post">
+<form id="mloginForm"  action="/users/login/?ajax" method="post">
 	Логин: <input type="text" class="loginad" name="username">
 	Пароль: <input type="password" class="passad" name="password">
 	Автовход: <input type="checkbox" name="autologin" value="1">
-	<button type="submit" onclick="submit();" class="buttonadm">ВОЙТИ</button>
+	<button type="submit" onclick="sendu('mloginForm'); return false" class="buttonadm">ВОЙТИ</button>
 	<input type="hidden" value="submit" name="submitForm">
 </form>
 </span></div></div>
