@@ -722,6 +722,11 @@ function sendu(e, title, params) {
 			data: jQuery(e).serialize(), 
 			success: function(response) {
 				response = $.parseJSON(response);
+				
+				if (response.redirect != undefined) {
+					window.location.href = response.redirect
+				}
+				
 				fpsWnd.content('fpsWinSendu', response.errors);
 			},
 			error: function(response) {

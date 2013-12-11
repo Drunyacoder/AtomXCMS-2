@@ -595,7 +595,8 @@ function redirect($url, $header = 302) {
 	$allowed_headers = array(301, 302);
 	if (!in_array($header, $allowed_headers)) $header = 301;
 
-
+	if (isset($_GET['ajax'])) die(json_encode(array('redirect' => $url)));
+	
 	header('Location: ' . get_url($url), TRUE, $header);
 	// :)
 	die() or exit();
