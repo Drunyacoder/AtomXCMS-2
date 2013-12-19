@@ -36,4 +36,27 @@ class FotoSectionsEntity extends FpsEntity
 	
 
 
+	public function save()
+	{
+		$params = array(
+			'parent_id' => intval($this->parent_id),
+			'announce' => (string)$this->announce,
+			'title' => (string)$this->title,
+			'view_on_home' => (string)$this->view_on_home,
+			'no_access' => (string)$this->no_access,
+		);
+		
+		
+		if ($this->id) $params['id'] = intval($this->id);
+		$Register = Register::getInstance();
+		return $Register['DB']->save('foto_sections', $params);
+	}
+	
+	
+	
+	public function delete()
+	{ 
+		$Register = Register::getInstance();
+		$Register['DB']->delete('foto_sections', array('id' => $this->id));
+	}
 }

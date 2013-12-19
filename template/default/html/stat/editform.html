@@ -12,7 +12,7 @@ function metaTags(element) {
 	}
 }
 </script>
-<form name="sendForm" id="sendForm" action="{{ context.action }}" method="POST" enctype="multipart/form-data" onsubmit="if (checkForm(this)) {sendu('sendForm')}; return false">
+<form name="sendForm" id="sendForm" action="{{ context.action }}" method="POST" enctype="multipart/form-data" onsubmit="return checkForm(this)">
 <div class="material">
 	  <div class="mat-title">Редактирование статьи: {{ context.title }}</div>
 	  <div class="mat-content">

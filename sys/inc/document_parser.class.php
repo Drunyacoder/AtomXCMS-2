@@ -115,20 +115,29 @@ class Document_Parser {
 
 
 	/**
-	* @param       string $page
-	* @return      data with parsed snippets
-	*/
+	 * Parse snippets in template
+	 * Examples:
+	 * {[snippet_name]}
+	 * {[!snippet_name]}
+	 * {[!snippet_name?param1=value1&param2=value2]}
+	 *
+	 * @param       string $page
+	 * @return      data with parsed snippets
+	 */
 	public function parseSnippet($page)
     {
 		$Register = Register::getInstance();
         $FpsDB = $Register['DB'];
 
-        $tpl = preg_match_all('#\{\[([!]*)(\w+)\]\}#U', $page, $mas);
+        $tpl = preg_match_all('#\{\[([!]*)([\d\w]+?)(\??.*)\]\}#U', $page, $mas);
+		
+		
         for ($i= 0; $i < count($mas[2]); $i++) {
 			$cached = true;
 			$block_name = $mas[2][$i];
 			if ($mas[1][$i] === '!') $cached = false;
 
+			
 			// Check cache
 			if ($cached === true) {
 				$cache_key = 'snippet_' . strtolower($block_name);
@@ -148,16 +157,35 @@ class Document_Parser {
             $limit = $sql[0];
 			
 			if (strtolower($block_name) == strtolower($limit['name'])) {
+			
+		
+				// snippet params
+				$params = array();
+				if (!empty($mas[3][$i])) {
+					preg_match_all('#([\w]+)=([^&]+)#', $mas[3][$i], $matches);
+					
+					if (!empty($matches)) {
+						foreach ($matches[1] as $k => $v) {
+							$params[$v] = $matches[2][$k];
+						}
+					}
+				}
+				
+				
+				// eval snippet
 				ob_start();
 				$str = eval($limit['body']);
 				$res = ob_get_contents();
 				ob_end_clean();
+				
+				// replace marker to content
 				$page = str_replace($mas[0][$i], $res, $page); 
 
 				if ($cached === true) 
 					$this->Cache->write($res, $cache_key, array());
 			}
 	    }
+		
 		return $page;
 	}
 	
