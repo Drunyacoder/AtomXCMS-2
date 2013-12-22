@@ -21,6 +21,13 @@
 
 
 
+function wrap_errors($errors) {
+	return '<p class="errorMsg">' . __('Some error in form') . '</p>' .
+			"\n" . '<ul class="errorMsg">' . "\n" . $errors . '</ul>' . "\n";
+}
+
+
+
 /**
  * Alias for file_get_contents
  */
