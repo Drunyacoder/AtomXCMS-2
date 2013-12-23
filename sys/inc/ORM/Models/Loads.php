@@ -40,9 +40,10 @@ class LoadsModel extends FpsModel
             'foreignKey' => 'category_id',
         ),
         'comments_' => array(
-            'model' => 'LoadsComments',
+            'model' => 'Comments',
             'type' => 'has_many',
             'foreignKey' => 'entity_id',
+			'additionCond' => array("module = 'loads'"),
         ),
         'attaches' => array(
             'model' => 'LoadsAttaches',

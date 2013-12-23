@@ -40,9 +40,10 @@ class StatModel extends FpsModel
             'foreignKey' => 'category_id',
         ),
         'comments_' => array(
-            'model' => 'StatComments',
+            'model' => 'Comments',
             'type' => 'has_many',
             'foreignKey' => 'entity_id',
+			'additionCond' => array("module = 'stat'"),
         ),
         'attaches' => array(
             'model' => 'StatAttaches',

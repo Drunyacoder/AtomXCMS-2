@@ -40,9 +40,10 @@ class NewsModel extends FpsModel
             'foreignKey' => 'category_id',
         ),
         'comments_' => array(
-            'model' => 'NewsComments',
+            'model' => 'Comments',
             'type' => 'has_many',
             'foreignKey' => 'entity_id',
+			'additionCond' => array("module = 'news'"),
         ),
         'attaches' => array(
             'model' => 'NewsAttaches',
