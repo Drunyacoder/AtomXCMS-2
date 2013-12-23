@@ -632,13 +632,7 @@ class Module {
 	
 	function showInfoMessage($message, $queryString = null) 
 	{
-		// AJAX request
-		if (isset($_GET['ajax'])) {
-			$data = array('errors' => wrap_errors($message));
-			return $this->showAjaxResponse($data);
-		}
-		
-		
+		//pr(h('Refresh: ' . $this->Register['Config']->read('redirect_delay') . '; url=http://' . $_SERVER['SERVER_NAME'] . get_url($queryString))); die();
 		header( 'Refresh: ' . $this->Register['Config']->read('redirect_delay') . '; url=http://' . $_SERVER['SERVER_NAME'] . get_url($queryString));
 		$output = $this->render('infomessagegrand.html', array('data' => array('info_message' => $message, 'error_message' => null)));
 		echo $output;

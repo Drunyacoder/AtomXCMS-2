@@ -772,7 +772,7 @@ Class ForumModule extends Module {
 					$first_top = true;
 				}
 			}
-
+			
 			
 			foreach ($posts as $post) {
 				// Если автор сообщения (поста) - зарегистрированный пользователь
@@ -834,7 +834,7 @@ Class ForumModule extends Module {
 				$signature = ($postAuthor->getSignature())
 				? $this->Textarier->getSignature($postAuthor->getSignature(), $postAuthor->getStatus()) : '' ;
                 $postAuthor->setSignature($signature);
-				
+
 				
 				// If author is authorized user. 
 				$email = '';

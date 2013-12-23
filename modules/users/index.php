@@ -1757,7 +1757,7 @@ Class UsersModule extends Module {
 				'id' => $idMsg,
 				"(`to_user` = '" . $_SESSION['user']['id'] . "' OR `from_user` = '" . $_SESSION['user']['id'] . "')"
 			));
-			if (count($messages) == 0) {
+			if (count($res) == 0) {
 				continue;
 			}
 

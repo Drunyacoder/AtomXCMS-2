@@ -1,0 +1,46 @@
+html, body {padding:0px; margin:0px; color:#000000;font-family:Corbel; font-size:15px;}
+a {color:#FFFFFF; text-decoration:none;}
+html {width:100%; height:100%;}
+body {width:100%; height:100%; background: url('../img/bg.jpg') repeat;}
+
+
+#head {width:100%; height:150px; background: url('../img/bg2.jpg') repeat; position:relative;}
+#subhead {width:100%; height:10px; margin-top:1px; background: url('../img/bg3.jpg') repeat;}
+#logo {width:332px; height:67px; left:23%; top:10%; background: url('../img/install-logo.png') no-repeat; position:relative;}
+#newv {float:right; color:#E90E0E; font-family:Corbel; font-style:italic;}
+#newv a {float:right; color:#E90E0E; font-family:Corbel; font-style:italic;}
+
+#progressbar {width:720px; height:21px; margin:0px auto; top:35px; position:relative;}
+#progressbar li {display:block; width:28px; height:28px; float:left; background: url('../img/progress-bar-line.png') no-repeat; }
+#progressbar li.progressbar-li {position:relative; left: -6px; top:-8px;}
+#progressbar li.act {display:block; width:28px; height:28px; float:left; background: url('../img/progress-bar-line-active.png') no-repeat; }
+
+
+#container {width:1000px; height:1115px; margin:0px auto; margin-top:-115px; background: url('../img/convert-close.png') no-repeat; position:relative;}
+a#begin {display:block; position:relative; top:360px; left:484px; color:#000000; text-decoration:none; width:40px;}
+#descr {width:745px; padding:15px; margin:0px auto; top:470px; background: url('../img/descr-bg.png') repeat; position:relative; font-size:16px;}
+
+
+#container2 {width:706px; padding:15px; margin:0px auto; margin-top:-30px; background: url('../img/container2-bg.png') repeat-y; position:relative;}
+
+
+.inp {  margin:5px; width:500px;}
+.inp  input {border:none; background:#E2E2C1;-moz-border-radius:5px; -webkit-border-radius:5px; border-radius:5px; border:1px solid #636400; margin-right:10px; margin-left:10px;width: 150px;}
+.btn {background: url('../img/btn.png') no-repeat; width:150px; height:34px;border:none; cursor:pointer;}
+
+
+
+#queries, #checkAccess, #checkServer, #SQLserver, #SQLbase, #SQLuser, #SQLpass, #SQLpref {font-size:13px !important;}
+
+.fin-a {color:#95BC00; font-size: 17px !important; text-decoration:underline;}
+.fin-a:hover {text-decoration:none;}
+.fin-h {color:#95BC00; margin-bottom:7px;}
+
+.help {color:#E90E0E; font-size:13px;}
+
+#footer1 {width:770px; margin:0px auto; margin-top:-100px; z-index:10; position:relative;}
+#footer1 a {text-transform:uppercase; margin-right:20px; color:#BBBC00; font-family: Arial;}
+#footer1 a:hover {color:#FFFFFF;}
+#footer2 {width:806px; height:307px; margin:0px auto; bottom:0px; background: url('../img/convert-open.png') repeat; position:relative;}
+
+
