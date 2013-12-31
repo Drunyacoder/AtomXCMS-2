@@ -2184,7 +2184,7 @@ Class UsersModule extends Module {
 				'to_user' => $to_id,
 				'comment' => $comment,
 				'points' => $points,
-				'date' => 'NOW()',
+				'date' => new Expr('NOW()'),
 			));
 			$voteEntity->save();
 			die('ok');

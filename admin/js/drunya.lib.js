@@ -4,6 +4,34 @@ var wStep = 10;
 var winTimeout = 50;
 var openedWindows = new Array();
 //var wObj = document.getElementById('test');
+
+
+AtomX = new function() {
+	this.toggle = function(id){
+		var el = $('#'+id);
+		if (el.is(':visible')) 
+			el.hide();
+		else
+			el.show();
+	};
+	
+	this.toggleByClass = function(class_name){
+		var el = $('.'+class_name);
+		if (el.is(':visible')) 
+			el.hide();
+		else
+			el.show();
+	};
+	
+	this.hideAll = function(class_name) {
+		$('.'+class_name).hide();
+	};
+}
+
+
+
+
+
 function resizeWrapper(id) {
 	var nheight = $(id).height();
 	var wrapheight = $('#content-wrapper').height();

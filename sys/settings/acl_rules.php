@@ -1,8 +1,8 @@
 <?php 
 $acl_rules = array (
-  'news' => 
+  'news.view_list' => 
   array (
-    'view_list' => 
+    'groups' => 
     array (
       0 => 1,
       1 => 2,
@@ -10,7 +10,13 @@ $acl_rules = array (
       4 => 3,
       5 => 0,
     ),
-    'view_materials' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'news.view_materials' => 
+  array (
+    'groups' => 
     array (
       0 => 1,
       1 => 2,
@@ -18,49 +24,103 @@ $acl_rules = array (
       3 => 4,
       4 => 0,
     ),
-    'add_materials' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'news.add_materials' => 
+  array (
+    'groups' => 
     array (
       1 => 2,
       2 => 3,
       3 => 4,
       4 => 1,
     ),
-    'materials_require_premoder' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'news.materials_require_premoder' => 
+  array (
+    'groups' => 
     array (
       1 => 0,
       2 => 1,
     ),
-    'edit_mine_materials' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'news.edit_mine_materials' => 
+  array (
+    'groups' => 
     array (
       2 => 3,
       3 => 4,
     ),
-    'edit_materials' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'news.edit_materials' => 
+  array (
+    'groups' => 
     array (
       2 => 3,
       3 => 4,
     ),
-    'delete_mine_materials' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'news.delete_mine_materials' => 
+  array (
+    'groups' => 
     array (
       2 => 3,
       3 => 4,
     ),
-    'delete_materials' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'news.delete_materials' => 
+  array (
+    'groups' => 
     array (
       2 => 3,
       3 => 4,
     ),
-    'up_materials' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'news.up_materials' => 
+  array (
+    'groups' => 
     array (
       2 => 3,
       3 => 4,
     ),
-    'on_home' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'news.on_home' => 
+  array (
+    'groups' => 
     array (
       2 => 3,
       3 => 4,
     ),
-    'view_comments' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'news.view_comments' => 
+  array (
+    'groups' => 
     array (
       2 => 3,
       3 => 4,
@@ -68,7 +128,13 @@ $acl_rules = array (
       5 => 1,
       6 => 2,
     ),
-    'add_comments' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'news.add_comments' => 
+  array (
+    'groups' => 
     array (
       2 => 3,
       3 => 4,
@@ -76,27 +142,57 @@ $acl_rules = array (
       5 => 1,
       6 => 2,
     ),
-    'edit_comments' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'news.edit_comments' => 
+  array (
+    'groups' => 
     array (
       2 => 3,
       3 => 4,
     ),
-    'delete_comments' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'news.delete_comments' => 
+  array (
+    'groups' => 
     array (
       2 => 3,
       3 => 4,
     ),
-    'hide_material' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'news.hide_material' => 
+  array (
+    'groups' => 
     array (
       2 => 3,
       3 => 4,
     ),
-    'record_comments_management' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'news.record_comments_management' => 
+  array (
+    'groups' => 
     array (
       2 => 3,
       3 => 4,
     ),
-    'use_rating' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'news.use_rating' => 
+  array (
+    'groups' => 
     array (
       2 => 3,
       3 => 4,
@@ -104,10 +200,13 @@ $acl_rules = array (
       6 => 2,
       7 => 5,
     ),
+    'users' => 
+    array (
+    ),
   ),
-  'stat' => 
+  'stat.view_list' => 
   array (
-    'view_list' => 
+    'groups' => 
     array (
       0 => 1,
       1 => 2,
@@ -115,7 +214,13 @@ $acl_rules = array (
       3 => 4,
       4 => 0,
     ),
-    'view_materials' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'stat.view_materials' => 
+  array (
+    'groups' => 
     array (
       0 => 1,
       1 => 2,
@@ -123,49 +228,103 @@ $acl_rules = array (
       3 => 4,
       4 => 0,
     ),
-    'add_materials' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'stat.add_materials' => 
+  array (
+    'groups' => 
     array (
       0 => 1,
       1 => 2,
       3 => 4,
       4 => 3,
     ),
-    'materials_require_premoder' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'stat.materials_require_premoder' => 
+  array (
+    'groups' => 
     array (
       1 => 0,
       2 => 1,
     ),
-    'edit_mine_materials' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'stat.edit_mine_materials' => 
+  array (
+    'groups' => 
     array (
       2 => 3,
       3 => 4,
     ),
-    'edit_materials' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'stat.edit_materials' => 
+  array (
+    'groups' => 
     array (
       2 => 3,
       3 => 4,
     ),
-    'delete_mine_materials' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'stat.delete_mine_materials' => 
+  array (
+    'groups' => 
     array (
       2 => 3,
       3 => 4,
     ),
-    'delete_materials' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'stat.delete_materials' => 
+  array (
+    'groups' => 
     array (
       2 => 3,
       3 => 4,
     ),
-    'up_materials' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'stat.up_materials' => 
+  array (
+    'groups' => 
     array (
       2 => 3,
       3 => 4,
     ),
-    'on_home' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'stat.on_home' => 
+  array (
+    'groups' => 
     array (
       2 => 3,
       3 => 4,
     ),
-    'view_comments' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'stat.view_comments' => 
+  array (
+    'groups' => 
     array (
       2 => 3,
       3 => 4,
@@ -173,7 +332,13 @@ $acl_rules = array (
       5 => 2,
       6 => 0,
     ),
-    'add_comments' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'stat.add_comments' => 
+  array (
+    'groups' => 
     array (
       2 => 3,
       3 => 4,
@@ -181,27 +346,57 @@ $acl_rules = array (
       5 => 2,
       6 => 0,
     ),
-    'edit_comments' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'stat.edit_comments' => 
+  array (
+    'groups' => 
     array (
       2 => 3,
       3 => 4,
     ),
-    'delete_comments' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'stat.delete_comments' => 
+  array (
+    'groups' => 
     array (
       2 => 3,
       3 => 4,
     ),
-    'hide_material' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'stat.hide_material' => 
+  array (
+    'groups' => 
     array (
       2 => 3,
       3 => 4,
     ),
-    'record_comments_management' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'stat.record_comments_management' => 
+  array (
+    'groups' => 
     array (
       2 => 3,
       3 => 4,
     ),
-    'use_rating' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'stat.use_rating' => 
+  array (
+    'groups' => 
     array (
       2 => 3,
       3 => 4,
@@ -209,10 +404,13 @@ $acl_rules = array (
       6 => 2,
       7 => 5,
     ),
+    'users' => 
+    array (
+    ),
   ),
-  'loads' => 
+  'loads.view_list' => 
   array (
-    'view_list' => 
+    'groups' => 
     array (
       0 => 1,
       1 => 2,
@@ -220,109 +418,13 @@ $acl_rules = array (
       4 => 3,
       6 => 0,
     ),
-    'view_materials' => 
+    'users' => 
     array (
-      0 => 1,
-      1 => 2,
-      3 => 4,
-      4 => 3,
-      5 => 0,
-    ),
-    'add_materials' => 
-    array (
-      0 => 1,
-      1 => 2,
-      3 => 4,
-      4 => 3,
-    ),
-    'edit_mine_materials' => 
-    array (
-      3 => 4,
-      4 => 3,
-    ),
-    'edit_materials' => 
-    array (
-      3 => 4,
-      4 => 3,
-    ),
-    'delete_mine_materials' => 
-    array (
-      3 => 4,
-      4 => 3,
-    ),
-    'delete_materials' => 
-    array (
-      3 => 4,
-      4 => 3,
-    ),
-    'up_materials' => 
-    array (
-      3 => 4,
-      4 => 3,
-    ),
-    'on_home' => 
-    array (
-      3 => 4,
-      4 => 3,
-    ),
-    'view_comments' => 
-    array (
-      3 => 4,
-      4 => 3,
-      5 => 1,
-      6 => 2,
-      7 => 0,
-    ),
-    'add_comments' => 
-    array (
-      3 => 4,
-      4 => 3,
-      5 => 1,
-      6 => 2,
-      7 => 0,
-    ),
-    'edit_comments' => 
-    array (
-      3 => 4,
-      4 => 3,
-    ),
-    'delete_comments' => 
-    array (
-      3 => 4,
-      4 => 3,
-    ),
-    'hide_material' => 
-    array (
-      2 => 3,
-      3 => 4,
-    ),
-    'record_comments_management' => 
-    array (
-      2 => 3,
-      3 => 4,
-    ),
-    'use_rating' => 
-    array (
-      2 => 3,
-      3 => 4,
-      4 => 0,
-      5 => 1,
-      6 => 2,
-      7 => 5,
-    ),
-    'download_files' => 
-    array (
-      2 => 3,
-      3 => 4,
-      4 => 0,
-      5 => 1,
-      6 => 2,
-      7 => 5,
     ),
   ),
-  'foto' => 
+  'loads.view_materials' => 
   array (
-    'view_list' => 
+    'groups' => 
     array (
       0 => 1,
       1 => 2,
@@ -330,7 +432,194 @@ $acl_rules = array (
       4 => 3,
       5 => 0,
     ),
-    'view_materials' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'loads.add_materials' => 
+  array (
+    'groups' => 
+    array (
+      0 => 1,
+      1 => 2,
+      3 => 4,
+      4 => 3,
+    ),
+    'users' => 
+    array (
+    ),
+  ),
+  'loads.edit_mine_materials' => 
+  array (
+    'groups' => 
+    array (
+      3 => 4,
+      4 => 3,
+    ),
+    'users' => 
+    array (
+    ),
+  ),
+  'loads.edit_materials' => 
+  array (
+    'groups' => 
+    array (
+      3 => 4,
+      4 => 3,
+    ),
+    'users' => 
+    array (
+    ),
+  ),
+  'loads.delete_mine_materials' => 
+  array (
+    'groups' => 
+    array (
+      3 => 4,
+      4 => 3,
+    ),
+    'users' => 
+    array (
+    ),
+  ),
+  'loads.delete_materials' => 
+  array (
+    'groups' => 
+    array (
+      3 => 4,
+      4 => 3,
+    ),
+    'users' => 
+    array (
+    ),
+  ),
+  'loads.up_materials' => 
+  array (
+    'groups' => 
+    array (
+      3 => 4,
+      4 => 3,
+    ),
+    'users' => 
+    array (
+    ),
+  ),
+  'loads.on_home' => 
+  array (
+    'groups' => 
+    array (
+      3 => 4,
+      4 => 3,
+    ),
+    'users' => 
+    array (
+    ),
+  ),
+  'loads.view_comments' => 
+  array (
+    'groups' => 
+    array (
+      3 => 4,
+      4 => 3,
+      5 => 1,
+      6 => 2,
+      7 => 0,
+    ),
+    'users' => 
+    array (
+    ),
+  ),
+  'loads.add_comments' => 
+  array (
+    'groups' => 
+    array (
+      3 => 4,
+      4 => 3,
+      5 => 1,
+      6 => 2,
+      7 => 0,
+    ),
+    'users' => 
+    array (
+    ),
+  ),
+  'loads.edit_comments' => 
+  array (
+    'groups' => 
+    array (
+      3 => 4,
+      4 => 3,
+    ),
+    'users' => 
+    array (
+    ),
+  ),
+  'loads.delete_comments' => 
+  array (
+    'groups' => 
+    array (
+      3 => 4,
+      4 => 3,
+    ),
+    'users' => 
+    array (
+    ),
+  ),
+  'loads.hide_material' => 
+  array (
+    'groups' => 
+    array (
+      2 => 3,
+      3 => 4,
+    ),
+    'users' => 
+    array (
+    ),
+  ),
+  'loads.record_comments_management' => 
+  array (
+    'groups' => 
+    array (
+      2 => 3,
+      3 => 4,
+    ),
+    'users' => 
+    array (
+    ),
+  ),
+  'loads.use_rating' => 
+  array (
+    'groups' => 
+    array (
+      2 => 3,
+      3 => 4,
+      4 => 0,
+      5 => 1,
+      6 => 2,
+      7 => 5,
+    ),
+    'users' => 
+    array (
+    ),
+  ),
+  'loads.download_files' => 
+  array (
+    'groups' => 
+    array (
+      2 => 3,
+      3 => 4,
+      4 => 0,
+      5 => 1,
+      6 => 2,
+      7 => 5,
+    ),
+    'users' => 
+    array (
+    ),
+  ),
+  'foto.view_list' => 
+  array (
+    'groups' => 
     array (
       0 => 1,
       1 => 2,
@@ -338,66 +627,152 @@ $acl_rules = array (
       4 => 3,
       5 => 0,
     ),
-    'add_materials' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'foto.view_materials' => 
+  array (
+    'groups' => 
+    array (
+      0 => 1,
+      1 => 2,
+      3 => 4,
+      4 => 3,
+      5 => 0,
+    ),
+    'users' => 
+    array (
+    ),
+  ),
+  'foto.add_materials' => 
+  array (
+    'groups' => 
     array (
       0 => 1,
       1 => 2,
       3 => 4,
       4 => 3,
     ),
-    'edit_mine_materials' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'foto.edit_mine_materials' => 
+  array (
+    'groups' => 
     array (
       3 => 4,
       4 => 3,
     ),
-    'edit_materials' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'foto.edit_materials' => 
+  array (
+    'groups' => 
     array (
       3 => 4,
       4 => 3,
     ),
-    'delete_mine_materials' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'foto.delete_mine_materials' => 
+  array (
+    'groups' => 
     array (
       3 => 4,
       4 => 3,
     ),
-    'delete_materials' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'foto.delete_materials' => 
+  array (
+    'groups' => 
     array (
       4 => 3,
       5 => 4,
     ),
-    'up_materials' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'foto.up_materials' => 
+  array (
+    'groups' => 
     array (
       3 => 4,
       4 => 3,
     ),
-    'on_home' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'foto.on_home' => 
+  array (
+    'groups' => 
     array (
       3 => 4,
       4 => 3,
     ),
-    'view_comments' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'foto.view_comments' => 
+  array (
+    'groups' => 
     array (
       3 => 4,
       4 => 3,
       5 => 1,
       6 => 0,
     ),
-    'add_comments' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'foto.add_comments' => 
+  array (
+    'groups' => 
     array (
       3 => 4,
       4 => 3,
     ),
-    'edit_comments' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'foto.edit_comments' => 
+  array (
+    'groups' => 
     array (
       3 => 4,
       4 => 3,
     ),
-    'delete_comments' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'foto.delete_comments' => 
+  array (
+    'groups' => 
     array (
       3 => 4,
       4 => 3,
     ),
-    'use_rating' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'foto.use_rating' => 
+  array (
+    'groups' => 
     array (
       2 => 3,
       3 => 4,
@@ -406,10 +781,13 @@ $acl_rules = array (
       6 => 2,
       7 => 5,
     ),
+    'users' => 
+    array (
+    ),
   ),
-  'forum' => 
+  'forum.view_forums_list' => 
   array (
-    'view_forums_list' => 
+    'groups' => 
     array (
       0 => 1,
       1 => 2,
@@ -417,7 +795,13 @@ $acl_rules = array (
       4 => 3,
       5 => 0,
     ),
-    'view_forums' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'forum.view_forums' => 
+  array (
+    'groups' => 
     array (
       0 => 1,
       1 => 2,
@@ -425,7 +809,13 @@ $acl_rules = array (
       4 => 3,
       5 => 0,
     ),
-    'view_themes' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'forum.view_themes' => 
+  array (
+    'groups' => 
     array (
       0 => 1,
       1 => 2,
@@ -433,95 +823,194 @@ $acl_rules = array (
       4 => 3,
       5 => 0,
     ),
-    'add_themes' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'forum.add_themes' => 
+  array (
+    'groups' => 
     array (
       0 => 1,
       1 => 2,
       3 => 4,
       4 => 3,
     ),
-    'edit_themes' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'forum.edit_themes' => 
+  array (
+    'groups' => 
     array (
       3 => 4,
       4 => 3,
     ),
-    'edit_mine_themes' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'forum.edit_mine_themes' => 
+  array (
+    'groups' => 
     array (
       3 => 4,
       4 => 3,
     ),
-    'delete_themes' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'forum.delete_themes' => 
+  array (
+    'groups' => 
     array (
       3 => 4,
       4 => 3,
     ),
-    'delete_mine_themes' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'forum.delete_mine_themes' => 
+  array (
+    'groups' => 
     array (
       3 => 4,
       4 => 3,
     ),
-    'close_themes' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'forum.close_themes' => 
+  array (
+    'groups' => 
     array (
       3 => 4,
       4 => 3,
     ),
-    'important_themes' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'forum.important_themes' => 
+  array (
+    'groups' => 
     array (
       3 => 4,
       4 => 3,
     ),
-    'add_posts' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'forum.add_posts' => 
+  array (
+    'groups' => 
     array (
       0 => 1,
-      3 => 4,
+      //3 => 4,
       4 => 3,
       5 => 0,
     ),
-    'edit_posts' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'forum.edit_posts' => 
+  array (
+    'groups' => 
     array (
       3 => 4,
       4 => 3,
     ),
-    'edit_mine_posts' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'forum.edit_mine_posts' => 
+  array (
+    'groups' => 
     array (
       3 => 4,
       4 => 3,
       5 => 1,
     ),
-    'delete_posts' => 
+    'users' => 
     array (
-      3 => 4,
-      4 => 3,
-    ),
-    'delete_mine_posts' => 
-    array (
-      3 => 4,
-      4 => 3,
-    ),
-    'add_forums' => 
-    array (
-      3 => 4,
-      4 => 3,
-    ),
-    'edit_forums' => 
-    array (
-      3 => 4,
-      4 => 3,
-    ),
-    'delete_forums' => 
-    array (
-      3 => 4,
-      4 => 3,
-    ),
-    'replace_forums' => 
-    array (
-      3 => 4,
-      4 => 3,
     ),
   ),
-  'users' => 
+  'forum.delete_posts' => 
   array (
-    'view_list' => 
+    'groups' => 
+    array (
+      3 => 4,
+      4 => 3,
+    ),
+    'users' => 
+    array (
+    ),
+  ),
+  'forum.delete_mine_posts' => 
+  array (
+    'groups' => 
+    array (
+      3 => 4,
+      4 => 3,
+    ),
+    'users' => 
+    array (
+    ),
+  ),
+  'forum.add_forums' => 
+  array (
+    'groups' => 
+    array (
+      3 => 4,
+      4 => 3,
+    ),
+    'users' => 
+    array (
+    ),
+  ),
+  'forum.edit_forums' => 
+  array (
+    'groups' => 
+    array (
+      3 => 4,
+      4 => 3,
+    ),
+    'users' => 
+    array (
+    ),
+  ),
+  'forum.delete_forums' => 
+  array (
+    'groups' => 
+    array (
+      3 => 4,
+      4 => 3,
+    ),
+    'users' => 
+    array (
+    ),
+  ),
+  'forum.replace_forums' => 
+  array (
+    'groups' => 
+    array (
+      3 => 4,
+      4 => 3,
+    ),
+    'users' => 
+    array (
+    ),
+  ),
+  'users.view_list' => 
+  array (
+    'groups' => 
     array (
       0 => 1,
       1 => 2,
@@ -529,7 +1018,13 @@ $acl_rules = array (
       4 => 3,
       5 => 0,
     ),
-    'view_users' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'users.view_users' => 
+  array (
+    'groups' => 
     array (
       0 => 1,
       1 => 2,
@@ -537,152 +1032,294 @@ $acl_rules = array (
       4 => 3,
       5 => 0,
     ),
-    'edit_users' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'users.edit_users' => 
+  array (
+    'groups' => 
     array (
       3 => 4,
       4 => 3,
     ),
-    'edit_mine' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'users.edit_mine' => 
+  array (
+    'groups' => 
     array (
       0 => 1,
       1 => 2,
       3 => 4,
       4 => 3,
     ),
-    'ban_users' => 
+    'users' => 
     array (
-      3 => 4,
-      4 => 3,
-    ),
-    'set_rating' => 
-    array (
-      1 => 1,
-      2 => 2,
-      3 => 4,
-      4 => 3,
-    ),
-    'delete_rating_comments' => 
-    array (
-      3 => 4,
-      4 => 3,
-    ),
-    'users_warnings' => 
-    array (
-      3 => 4,
-      4 => 3,
-    ),
-    'delete_warnings' => 
-    array (
-      3 => 4,
-      4 => 3,
     ),
   ),
-  'bbcodes' => 
+  'users.ban_users' => 
   array (
-    'bb_s' => 
+    'groups' => 
+    array (
+      3 => 4,
+      4 => 3,
+    ),
+    'users' => 
+    array (
+    ),
+  ),
+  'users.set_rating' => 
+  array (
+    'groups' => 
+    array (
+      1 => 1,
+      2 => 2,
+      3 => 4,
+      4 => 3,
+    ),
+    'users' => 
+    array (
+    ),
+  ),
+  'users.delete_rating_comments' => 
+  array (
+    'groups' => 
+    array (
+      3 => 4,
+      4 => 3,
+    ),
+    'users' => 
+    array (
+    ),
+  ),
+  'users.users_warnings' => 
+  array (
+    'groups' => 
+    array (
+      3 => 4,
+      4 => 3,
+    ),
+    'users' => 
+    array (
+    ),
+  ),
+  'users.delete_warnings' => 
+  array (
+    'groups' => 
+    array (
+      3 => 4,
+      4 => 3,
+    ),
+    'users' => 
+    array (
+    ),
+  ),
+  'bbcodes.bb_s' => 
+  array (
+    'groups' => 
     array (
       3 => 4,
       4 => 3,
       2 => 2,
       1 => 1,
     ),
-    'bb_u' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'bbcodes.bb_u' => 
+  array (
+    'groups' => 
     array (
       3 => 4,
       4 => 3,
       2 => 2,
       1 => 1,
     ),
-    'bb_b' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'bbcodes.bb_b' => 
+  array (
+    'groups' => 
     array (
       3 => 4,
       4 => 3,
       2 => 2,
       1 => 1,
     ),
-    'bb_i' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'bbcodes.bb_i' => 
+  array (
+    'groups' => 
     array (
       3 => 4,
       4 => 3,
       2 => 2,
       1 => 1,
     ),
-    'bb_img' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'bbcodes.bb_img' => 
+  array (
+    'groups' => 
     array (
       3 => 4,
       4 => 3,
       2 => 2,
       1 => 1,
     ),
-    'bb_url' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'bbcodes.bb_url' => 
+  array (
+    'groups' => 
     array (
       4 => 3,
       2 => 2,
       1 => 1,
       5 => 4,
     ),
-    'html' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'bbcodes.html' => 
+  array (
+    'groups' => 
     array (
       5 => 4,
     ),
+    'users' => 
+    array (
+    ),
   ),
-  'panel' => 
+  'panel.entry' => 
   array (
-    'entry' => 
+    'groups' => 
     array (
       0 => 3,
       1 => 4,
     ),
-    'restricted_access' => 
-    array (
-    ),
-    'restricted_access_page' => 
-    array (
-    ),
-    'restricted_access_snippets' => 
+    'users' => 
     array (
     ),
   ),
-  'other' => 
+  'panel.restricted_access' => 
   array (
-    'can_see_hidden' => 
+    'groups' => 
+    array (
+    ),
+    'users' => 
+    array (
+    ),
+  ),
+  'panel.restricted_access_page' => 
+  array (
+    'groups' => 
+    array (
+    ),
+    'users' => 
+    array (
+    ),
+  ),
+  'panel.restricted_access_snippets' => 
+  array (
+    'groups' => 
+    array (
+    ),
+    'users' => 
+    array (
+    ),
+  ),
+  'other.can_see_hidden' => 
+  array (
+    'groups' => 
     array (
       3 => 4,
       4 => 3,
     ),
-    'no_captcha' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'other.no_captcha' => 
+  array (
+    'groups' => 
     array (
       3 => 4,
       4 => 3,
       2 => 2,
       5 => 1,
     ),
-    'can_premoder' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'other.can_premoder' => 
+  array (
+    'groups' => 
     array (
       0 => 4,
       1 => 5,
     ),
+    'users' => 
+    array (
+    ),
   ),
-  'chat' => 
+  'chat.view_materials' => 
   array (
-    'view_materials' => 
+    'groups' => 
     array (
       4 => 3,
       5 => 1,
       6 => 4,
       7 => 0,
     ),
-    'add_materials' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'chat.add_materials' => 
+  array (
+    'groups' => 
     array (
       4 => 3,
       5 => 1,
       6 => 4,
       7 => 0,
     ),
-    'delete_materials' => 
+    'users' => 
+    array (
+    ),
+  ),
+  'chat.delete_materials' => 
+  array (
+    'groups' => 
     array (
       4 => 3,
       5 => 4,
+    ),
+    'users' => 
+    array (
+    ),
+  ),
+  'forum.1.add_posts' => 
+  array (
+    'users' => 
+    array (
+      0 => 1,
     ),
   ),
 )

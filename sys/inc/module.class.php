@@ -303,7 +303,7 @@ class Module {
 		if (!empty($this->template) && $this->wrap == true) {
             Plugins::intercept('before_parse_layout', $this);
 			
-		
+
 			$this->View->setLayout($this->template);
 			$markers = $this->getGlobalMarkers(file_get_contents($this->View->getTemplateFilePath('main.html')));
             $markers['content'] = $content;
@@ -334,7 +334,6 @@ class Module {
 		}
         
 		
-		//$output = Plugins::intercept('before_view', $output);
 		$this->afterRender();
 		
 		echo $output;

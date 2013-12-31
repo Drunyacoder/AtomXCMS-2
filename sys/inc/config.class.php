@@ -2,12 +2,12 @@
 ##################################################
 ##												##
 ## @Author:       Andrey Brykin (Drunya)        ##
-## @Version:      0.8                           ##
+## @Version:      1.0                           ##
 ## @Project:      CMS                           ##
 ## @package       CMS Fapos                     ##
 ## @subpackege    Config class                  ##
-## @copyright     ©Andrey Brykin 2010-2011      ##
-## @last mod.     2011/12/16                    ##
+## @copyright     ©Andrey Brykin 2010-2014      ##
+## @last mod.     2014/01/01                    ##
 ##################################################
 
 
@@ -27,8 +27,8 @@
 * Uses for read | write | clean settings
 *
 * @author     Andrey Brykin
-* @version    0.2
-* @link       http://cms.develdo.com
+* @version    1.0
+* @link       http://atomx.net
 */
 class Config {
 
@@ -36,10 +36,12 @@ class Config {
     static public $settings;
 
 
-    public function __construct($path)
+    public function __construct($path = null)
     {
-        include ($path);
-        self::$settings = $set;
+		if ($path) {
+			include ($path);
+			self::$settings = $set;
+		}
     }
 	
 	
@@ -72,9 +74,38 @@ class Config {
 		if (!empty($module)) {
 			if (isset($set[$module][$title])) return $set[$module][$title];
 		} else {
-			if (isset($set[$title])) return $set[$title];
+			
+			if (false !== strpos($title, '.')) {
+				$params = explode('.', $title);
+				$obj = new self();
+				return $obj->__find($set, $params);
+				
+			} else {
+				if (isset($set[$title])) return $set[$title];
+			}
 		}
 		return null;
+	}
+	
+	
+	
+	/**
+	 * Find value in global config
+	 *
+	 * @Recursive
+	 * @param array $conf
+	 * @param array $params
+	 */
+	private function __find($conf, $params) {
+		$first_param = array_shift($params);
+		if (empty($conf[$first_param])) return null;
+		
+		// last key - only return value
+		if (count($params) == 0) 
+			return $conf[$first_param];
+		
+		// not last key - one more iteration
+		return $this->__find($conf[$first_param], $params);
 	}
 	
 }

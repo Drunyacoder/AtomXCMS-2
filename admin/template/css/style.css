@@ -234,6 +234,10 @@ a.undo {background-position:-253px 0px;}
 .popup .items .item .right textarea {height:100px;}
 .popup .items .item.submit {padding-top:30px;}
 
+.popup .items .item.narrow {padding:0px;}
+.popup .items .item.narrow .left { width:250px;}
+.popup .items .item.narrow:hover {background:#eee;}
+
 
 
 
@@ -279,7 +283,7 @@ table.grid tr:nth-child(2n) td {background:#F4F2F2;}
 table.grid td, table.grid th {border-right:1px solid #C7C7C7;}
 table.grid td a {color:#96C703;}
 table.grid td.group {font-weight:bold; color:#96C703; -moz-text-shadow:none; -webkit-text-shadow:none; text-shadow:none;}
-table.grid th > .title, table.grid td.group > .title {color:#96C703;}
+table.grid th > .title, table.grid td.group > .title {color:#96C703; cursor:pointer;}
 .pages {font-size:13px;}
 .pages strong {color:#F4F2F2;}
 .pages a {color:#96C703;}

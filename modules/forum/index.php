@@ -742,7 +742,6 @@ Class ForumModule extends Module {
 			}
 			
 			
-			
 			if (!$this->ACL->turn(array('forum', 'add_posts', $theme->getId_forum()), false)) $markers['add_link'] = '';
 			$markers['meta'] = '';
 			$this->_globalize($markers);

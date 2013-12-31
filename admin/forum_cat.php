@@ -38,7 +38,7 @@ $popups_content = '';
 
 
 if (!isset($_GET['ac'])) $_GET['ac'] = 'index';
-$permis = array('add', 'del', 'index', 'edit', 'acl');
+$permis = array('add', 'del', 'index', 'edit');
 if (!in_array($_GET['ac'], $permis)) $_GET['ac'] = 'index';
 
 switch($_GET['ac']) {
@@ -54,9 +54,6 @@ switch($_GET['ac']) {
 	case 'edit':
 		$content = edit();
 		break;
-	case 'acl':
-		$content = acl();
-		break; 
 	default:
 		$content = index();
 }
@@ -349,113 +346,6 @@ function index(&$page_title) {
 			if (count($queryCat) > 0) {
 				foreach ($queryCat as $cat) {
 				
-				
-				
-			
-					$Register = Register::getInstance();
-					$acl_groups = $Register['ACL']->get_group_info();
-					$acl_rules = $Register['ACL']->getRules();
-					$forum_rules = $Register['ACL']->getForumRules();
-					$forum_rules = (!empty($forum_rules[$cat['id']])) ? $forum_rules[$cat['id']] : array();
-					
-					
-	
-					$gr_selector = '<select>';
-					foreach ($acl_groups as $gr_id => $group) {
-						if ($gr_id === 0) continue;
-					
-						$gr_selector .= '<option onClick="selectAclTab(\'' . $gr_id . '\')" value="' 
-							. $gr_id . '">' . $group['title'] . '</option>';
-					}
-					$gr_selector .= '</select>';
-					
-					
-					
-					/* ACl FORUM FORM */	
-					$popups_content .= '<div id="acl' . $cat['id'] . '" class="popup">
-						<div class="top">
-							<div class="title">Добавление категории</div>
-							<div onClick="closePopup(\'acl' . $cat['id'] . '\');" class="close"></div>
-						</div>
-						<form action="forum_cat.php?ac=acl&id=' . $cat['id'] . '" method="POST" enctype="multipart/form-data">
-						<div class="items">
-						<div class="item"><div class="left">Просматривать темы в форуме могут:</div>' .
-						'<div class="right">' . $gr_selector . '</div>' .
-						'<div class="clear"></div></div>';
-						
-					
-					
-					
-					// Create checkboxses block for each user group
-					$f = true;
-					foreach ($acl_groups as $gr_id => $group) {
-					
-						$style = ($f) ? '' : 'style="display: none;"';
-						if ($f) $f = false;
-						
-						
-						$checked = array();
-						foreach (array('grn', 'grm', 'grsm') as $ch_val) {
-							$checked[$ch_val] = (!empty($forum_rules[$gr_id]) && $forum_rules[$gr_id] === $ch_val) 
-							? ' checked="checked"' : '';
-						}
-						
-						
-						
-						$popups_content .= '<div class="acl-perms-collection" id="aclset' . $gr_id . '" ' . $style . '>
-							<div class="item"><div class="left">
-								Без особых прав:
-								<span class="comment">Действуют только права, выставленные в правах групп.</span>
-							</div>' .
-							'<div class="right">
-								<input type="radio" name="access_for_' . $gr_id . '"' . $checked['grn'] 
-								. ' value="grn" id="grn' . $gr_id . $cat['id'] . '" />
-								<label for="grn' . $gr_id . $cat['id'] . '"></label>
-							</div>' .
-							'<div class="clear"></div></div>
-							
-							<div class="item"><div class="left">
-								Модератор:
-								<span class="comment">Редактирование, закрытие, открытие тем.</span>
-							</div>' .
-							'<div class="right">
-								<input type="radio" name="access_for_' . $gr_id . '"' . $checked['grm'] 
-								. ' value="grm" id="grm' . $gr_id . $cat['id'] . '" />
-								<label for="grm' . $gr_id . $cat['id'] . '"></label>
-							</div>' .
-							'<div class="clear"></div></div>
-							
-							<div class="item"><div class="left">
-								Супер модератор:
-								<span class="comment">Редактирование, удаление, закрытие, открытие и перенос тем.</span>
-							</div>' .
-							'<div class="right">
-								<input type="radio" name="access_for_' . $gr_id . '"' . $checked['grsm'] 
-								. ' value="grsm" id="grsm' . $gr_id . $cat['id'] . '" />
-								<label for="grsm' . $gr_id . $cat['id'] . '"></label>
-							</div>' .
-							'<div class="clear"></div></div>
-							</div>';
-					}
-						
-							
-					$popups_content .= '<div class="item submit">
-								<div class="left"></div>
-								<div class="right" style="float:left;">
-									<input type="submit" value="' . __('Save') . '" name="send" class="save-button" />
-								</div>
-								<div class="clear"></div>
-							</div>
-						</div>
-						</form>
-					</div>';
-					/* END ACL FORUM FORM */
-					
-					
-
-					
-					
-
 					
 					//cat selector and position selector for EDIT FRORUMS
 					$cat_selector = '<select name="in_cat" id="cat_secId">';	
@@ -742,43 +632,6 @@ function edit() {
 	}
 	redirect('/admin/forum_cat.php');
 }
-
-
-
-
-function acl() {
-	if (empty($_GET['id'])) redirect('/admin/forum_cat.php');
-	$id = (int)$_GET['id'];
-	if ($id < 1) redirect('/admin/forum_cat.php');
-	
-
-	$Register = Register::getInstance();
-	$acl_groups = $Register['ACL']->get_group_info();
-	$forum_rules = $Register['ACL']->getForumRules();
-	
-
-	$edited_forum = (array_key_exists($id, $forum_rules)) ? $forum_rules[$id] : array();
-	
-
-	foreach ($acl_groups as $gr_id => $grparams) {
-		if ($gr_id === 0) continue;
-		
-		
-		if (isset($_POST['access_for_' . $gr_id])) {
-			$edited_forum[$gr_id] = $_POST['access_for_' . $gr_id];
-		} else {
-			$edited_forum[$gr_id] = '';
-		}				
-	}
-	
-	
-	$forum_rules[$id] = $edited_forum;
-	$Register['ACL']->saveForumRules($forum_rules);
-	
-
-	redirect('/admin/forum_cat.php');
-}
-
 
 
 
