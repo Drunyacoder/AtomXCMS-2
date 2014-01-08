@@ -12,6 +12,7 @@ $acl_rules = array (
     ),
     'users' => 
     array (
+      0 => 2,
     ),
   ),
   'news.view_materials' => 
@@ -911,7 +912,6 @@ $acl_rules = array (
     'groups' => 
     array (
       0 => 1,
-      //3 => 4,
       4 => 3,
       5 => 0,
     ),
@@ -1315,7 +1315,7 @@ $acl_rules = array (
     array (
     ),
   ),
-  'forum.1.add_posts' => 
+  'forum.1.edit_themes' => 
   array (
     'users' => 
     array (

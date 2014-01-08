@@ -263,10 +263,10 @@ function buildCatsList($catsTree, $catsList, $indent = '') {
 								if (($n % 3) == 0) $popups .= '</tr><tr>';
 								$checked = (in_array($id, $no_access)) ? '' : ' checked="checked"';
 								
-								$id = md5(rand(0, 99999) . $n);
+								$inp_id = md5(rand(0, 99999) . $n);
 								
-								$popups .= '<td><input id="' . $id . '" type="checkbox" name="access[' . $id . ']" value="' . $id 
-								. '"' . $checked . '  /><label for="' . $id . '">' . h($group['title']) . '</label></td>';
+								$popups .= '<td><input id="' . $inp_id . '" type="checkbox" name="access[' . $id . ']" value="' . $id 
+								. '"' . $checked . '  /><label for="' . $inp_id . '">' . h($group['title']) . '</label></td>';
 								$n++;
 							}
 						}
@@ -374,12 +374,12 @@ function index(&$page_title) {
 					<div class="right">
 						<table class="checkbox-collection"><tr>';
 						$n = 0;
-						$id = md5(rand(0, 99999) . $n);
+						$inp_id = md5(rand(0, 99999) . $n);
 						if ($acl_groups && is_array($acl_groups)) {
 							foreach ($acl_groups as $id => $group) {
 								if (($n % 3) == 0) $popups .= '</tr><tr>';
-								$popups .= '<td><input type="checkbox" name="access[' . $id . ']" value="' . $id 
-								. '"  checked="checked" /><label for="' . $id . '">' . h($group['title']) . '</label></td>';
+								$popups .= '<td><input id="' . $inp_id . '" type="checkbox" name="access[' . $id . ']" value="' . $id 
+								. '"  checked="checked" /><label for="' . $inp_id . '">' . h($group['title']) . '</label></td>';
 								$n++;
 							}
 						}

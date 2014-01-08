@@ -269,13 +269,196 @@ if(!empty($_SESSION['message'])) {
 ?>
 
 
+
+<!-- Find users for add new special rules -->
+<div id="sp_rules_find_users" class="popup">
+	<div class="top">
+		<div class="title"><?php echo __('Find users') ?></div>
+		<div onClick="closePopup('sp_rules_find_users');" class="close"></div>
+	</div>
+	<div class="items">
+		<div class="item">
+			<div class="left">
+				<?php echo __('Name') ?>
+				<span class="comment"><?php echo __('Begin to write that see similar users') ?></span>
+			</div>
+			<div class="right">
+				<input id="autocomplete_inp" type="text" name="user_name" placeholder="User Name" />
+			</div>
+			<div class="clear"></div>
+		</div>
+		<div id="add_users_list"></div>
+			
+			
+
+	</div>
+</div>
+<script>
+$('#autocomplete_inp').keypress(function(e){
+	var inp = $(this);
+	if (inp.val().length < 2) return;
+	setTimeout(function(){
+		AtomX.findUsers('/admin/find_users.php?name='+inp.val(), 'add_users_list', false);
+	}, 500);
+
+});
+</script>
+
+
+<?php if (!empty($_GET['new_sp'])): $k = intval($_GET['new_sp']); ?>
+<!-- Add new special rules -->
+<div id="sp_rules_add" class="popup" style="display:block;">
+		<div class="top">
+			<div class="title">Редактирование прав</div>
+			<div onClick="closePopup('sp_rules_add');" class="close"></div>
+		</div>
+		<form action="users_rules.php?ac=special&uid=<?php echo $k ?>" method="POST">
+		<div class="items">
+		
+		
+				<div class="item">
+					<div class="left">
+						<select onChange="AtomX.hideAll('<?php echo $k ?>_hiden_block'); AtomX.toggle(this.value);">
+						<?php foreach ($acl_rules as $mod => $_rules): ?>
+							<?php $hash = $k . '_' . $mod ?>
+									<option value="<?php echo $hash ?>"><?php echo __($mod); ?></option>
+						<?php endforeach; ?>
+						</select>
+					</div>
+					<div class="right">
+					</div>
+					<div class="clear"></div>
+				</div>
+				
+				
+			<?php $display = 'block'; ?>
+			<?php foreach ($acl_rules as $mod => $_rules): ?>	
+				<?php $hash = $k . '_' . $mod ?>
+				<div class="<?php echo $k ?>_hiden_block" style="display:<?php echo $display ?>;" id="<?php echo $hash ?>">
+				<?php $display = 'none'; ?>
+				
+				
+				<?php if ($mod === 'forum'): ?>
+					<select onChange="AtomX.hideAll('<?php echo $k ?>_forum_block'); AtomX.toggle(this.value);">
+					<option value="all_forums">Все форумы</option>
+					<?php foreach ($allForums as $forum): ?>
+						<?php $hash = $k . '_forum_' . $forum->getId() ?>
+								<option value="<?php echo $hash ?>"><?php echo h($forum->getTitle()); ?></option>
+					<?php endforeach; ?>
+					</select>
+					
+					
+
+					<div class="<?php echo $k ?>_forum_block" style="display:block;" id="all_forums">
+						<?php foreach ($_rules as $title => $rules): ?>
+							<div class="item narrow">
+								<div class="left">
+									<?php echo __($title); ?>
+								</div>
+								<div class="right">
+								
+									<?php  $ch_id = $mod . '_' . $k . '_' . $title; ?>
+									<input name="<?php echo $mod . '['.$title.']' ?>" type="checkbox" value="1" 
+									<?php if ($ACL->turn(
+										array($mod, $title), 
+										false, 
+										false, 
+										str_replace('user_', '', $k), 
+										true
+									)) echo 'checked="checked"' ?> id="<?php  echo $ch_id; ?>" /><label for="<?php  echo $ch_id; ?>"></label>
+									
+								</div>
+								<div class="clear"></div>
+							</div>
+						<?php endforeach; ?>
+					</div>
+					
+					
+					<?php foreach ($allForums as $forum): ?>
+						<?php $hash = $k . '_forum_' . $forum->getId() ?>
+						<div class="<?php echo $k ?>_forum_block" style="display:none;" id="<?php echo $hash ?>">
+							<?php foreach ($_rules as $title => $rules): ?>
+								<div class="item narrow">
+									<div class="left">
+										<?php echo __($title); ?>
+									</div>
+									<div class="right">
+									
+										<?php  $ch_id = $mod . '_' . $forum->getId() . '_' . $k . '_' . $title; ?>
+										<input name="<?php echo $mod. '_' . $forum->getId() . '['.$title.']' ?>" type="checkbox" value="1" <?php if ($ACL->turn(
+											array($mod, $title, $forum->getId()), 
+											false, 
+											false, 
+											str_replace('user_', '', $k), 
+											true
+										)) echo 'checked="checked"' ?> id="<?php  echo $ch_id; ?>" /><label for="<?php  echo $ch_id; ?>"></label>
+										
+									</div>
+									<div class="clear"></div>
+								</div>
+							<?php endforeach; ?>
+						</div>
+					<?php endforeach; ?>
+					
+					
+				<?php else: ?>
+				
+					
+					<?php foreach ($_rules as $title => $rules): ?>
+						<div class="item narrow">
+							<div class="left">
+								<?php echo __($title); ?>
+							</div>
+							<div class="right">
+							
+								<?php  $ch_id = $mod . '_' . $k . '_' . $title; ?>
+								<input name="<?php echo $mod.'['.$title.']' ?>" type="checkbox" value="1" 
+								<?php if ($ACL->turn(
+									array($mod, $title), 
+									false, 
+									false, 
+									str_replace('user_', '', $k),
+									true
+								)) echo 'checked="checked"' ?> id="<?php  echo $ch_id; ?>" /><label for="<?php  echo $ch_id; ?>"></label>
+							</div>
+							<div class="clear"></div>
+						</div>
+					<?php endforeach; ?>
+				<?php endif; ?>
+				
+				</div>
+			<?php endforeach; ?>
+			<div class="item submit">
+				<div class="left"></div>
+				<div class="right" style="float:left;">
+					<input type="submit" value="Save" name="send" class="save-button" />
+				</div>
+				<div class="clear"></div>
+			</div>
+		</div>
+		</form>
+	</div>
+<?php endif; ?>
+
+
+
+
+
+
  
 <!-- Special users rules -->
 <script>
 $('#users_selector').live('change', function(){
 	$('#special_rules_container > table').hide();
 	var value = $('#users_selector').val();
+	
+	if (value == 'add') {
+		openPopup('sp_rules_find_users');
+		return false;
+	}
+	
 	$('#urules_' + value).show();
+	
 });
 </script>
  
@@ -289,6 +472,7 @@ $('#users_selector').live('change', function(){
 		<?php foreach($specialRules as $k => $userRules): ?>
 			<option value="<?php echo md5($k) ?>"><?php echo h($usersNames[str_replace('user_', '', $k)]) ?></option>
 		<?php endforeach; ?>
+		<option value="add"><?php echo __('Add user') ?></option>
 	</select>
 </div>
 

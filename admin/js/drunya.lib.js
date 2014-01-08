@@ -26,6 +26,47 @@ AtomX = new function() {
 	this.hideAll = function(class_name) {
 		$('.'+class_name).hide();
 	};
+	
+	// autocompleter @url - pathtosite/admin/find_users.php?name=<name>
+	this.findUsers = function(url, id) {
+		var output = '';
+		
+		$.get(url, {}, function(response){
+			var users = $.parseJSON(response);
+			
+			$(users).each(function(k, user){
+				output += '<li><a href="../admin/users_rules.php?new_sp=' + user.id + '">' + user.name + '</a> (' + user.id + ')</li>';
+			});
+			
+			$('#'+id).html('<ul>'+output+'</ul>');
+		});
+	};
+	
+	/**
+	 * autocompleter 
+	 * @url - pathtosite/admin/find_users.php?name=<name>
+	 * @id - block ID to past content
+	 * @to_url - for each user
+	 */
+	this.findUsersForForums = function(url, id, to_url) {
+		var output = '';
+		
+		$.get(url, {}, function(response){
+			var users = $.parseJSON(response);
+			
+			
+			$(users).each(function(k, user){
+				str = to_url.replace(/%id/, user.id);
+				str = str.replace(/%name/, user.name);
+				
+				output += '<li><a href="' + str + '">' + user.name + '</a> (' + user.id + ')</li>';
+			});
+			
+			$('#'+id).html('<ul>'+output+'</ul>');
+		});
+	};
+	
+
 }
 
 
@@ -52,6 +93,9 @@ function selectAclTab(id) {
 
 function openPopup(id) {
 	resizeWrapper($('#'+id));
+	$('#'+id).css({
+		'top': $(window).scrollTop() + $('#'+id).data('top')
+	});
 
 	$('#' + id).fadeIn(1000);
 	
