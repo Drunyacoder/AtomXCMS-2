@@ -6,8 +6,8 @@
 ## Project:      CMS                            ##
 ## package       CMS Fapos                      ##
 ## subpackege    ACL library                    ##
-## copyright     ©Andrey Brykin 2010-2011       ##
-## last mod.     2011/12/12                     ##
+## copyright     ©Andrey Brykin 2010-2014       ##
+## last mod.     2014/01/09                     ##
 ##################################################
 
 
