@@ -127,12 +127,7 @@ $set = array (
     array (
       'attach_file' => 'attach_file',
     ),
-    'Ограничения' => '',
-    'Изображения' => '',
-    'Обязательные поля' => '',
-    'Комментарии' => '',
     'comments_order' => 0,
-    'Прочее' => '',
   ),
   'secure' => 
   array (
@@ -178,8 +173,6 @@ $set = array (
     'description' => 'Каталог Фотографий',
     'per_page' => '20',
     'max_file_size' => '5000000',
-    'Ограничения' => '',
-    'Поля обязательные для заполнения' => '',
     'fields' => 
     array (
       'description' => 'description',
@@ -213,18 +206,16 @@ $set = array (
     'index_interval' => 2,
   ),
   'email_activate' => 1,
-  'common' => 
+  'rss' => 
   array (
     'rss_news' => 1,
     'rss_stat' => 1,
     'rss_loads' => 1,
-    'rss_lenght' => 300,
-    'rss_cnt' => 10,
+    'rss_lenght' => '300',
+    'rss_cnt' => '10',
   ),
   'auto_sitemap' => 1,
   'allow_smiles' => 1,
   'smiles_set' => 'fapos',
-  'Какие из последних материалов выводить на главной' => '',
-  'Прочее' => '',
 )
 ?>

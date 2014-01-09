@@ -355,7 +355,7 @@ $('#autocomplete_inp').keypress(function(e){
 								<div class="left">
 									<?php echo __($title); ?>
 								</div>
-								<div class="right">
+								<div class="right" style="width:auto;">
 								
 									<?php  $ch_id = $mod . '_' . $k . '_' . $title; ?>
 									<input name="<?php echo $mod . '['.$title.']' ?>" type="checkbox" value="1" 
@@ -382,7 +382,7 @@ $('#autocomplete_inp').keypress(function(e){
 									<div class="left">
 										<?php echo __($title); ?>
 									</div>
-									<div class="right">
+									<div class="right" style="width:auto;">
 									
 										<?php  $ch_id = $mod . '_' . $forum->getId() . '_' . $k . '_' . $title; ?>
 										<input name="<?php echo $mod. '_' . $forum->getId() . '['.$title.']' ?>" type="checkbox" value="1" <?php if ($ACL->turn(
@@ -409,7 +409,7 @@ $('#autocomplete_inp').keypress(function(e){
 							<div class="left">
 								<?php echo __($title); ?>
 							</div>
-							<div class="right">
+							<div class="right" style="width:auto;">
 							
 								<?php  $ch_id = $mod . '_' . $k . '_' . $title; ?>
 								<input name="<?php echo $mod.'['.$title.']' ?>" type="checkbox" value="1" 
@@ -572,7 +572,7 @@ $('#users_selector').live('change', function(){
 								<div class="left">
 									<?php echo __($title); ?>
 								</div>
-								<div class="right">
+								<div class="right" style="width:auto;">
 								
 									<?php  $ch_id = $mod . '_' . $k . '_' . $title; ?>
 									<input name="<?php echo $mod . '['.$title.']' ?>" type="checkbox" value="1" 
@@ -599,7 +599,7 @@ $('#users_selector').live('change', function(){
 									<div class="left">
 										<?php echo __($title); ?>
 									</div>
-									<div class="right">
+									<div class="right" style="width:auto;">
 									
 										<?php  $ch_id = $mod . '_' . $forum->getId() . '_' . $k . '_' . $title; ?>
 										<input name="<?php echo $mod. '_' . $forum->getId() . '['.$title.']' ?>" type="checkbox" value="1" <?php if ($ACL->turn(
@@ -626,7 +626,7 @@ $('#users_selector').live('change', function(){
 							<div class="left">
 								<?php echo __($title); ?>
 							</div>
-							<div class="right">
+							<div class="right" style="width:auto;">
 							
 								<?php  $ch_id = $mod . '_' . $k . '_' . $title; ?>
 								<input name="<?php echo $mod.'['.$title.']' ?>" type="checkbox" value="1" 

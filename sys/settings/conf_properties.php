@@ -576,7 +576,7 @@ $sysMods = array(
 	'sys',
 	'hlu',
 	'secure',
-	'common',
+	'rss',
 	'sitemap',
 	'watermark',
 	'autotags',

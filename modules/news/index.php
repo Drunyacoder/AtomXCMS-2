@@ -66,6 +66,7 @@ Class NewsModule extends Module {
 	
 		// we need to know whether to show hidden
 		$query_params = array('cond' => array());
+		
 		if (!$this->ACL->turn(array('other', 'can_see_hidden'), false)) {
 			$query_params['cond']['available'] = 1;
 		}

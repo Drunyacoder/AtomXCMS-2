@@ -7,7 +7,7 @@ $cache_tags = array(
 );
 
 
-$check = $this->Register['Config']->read('rss_' . $this->module, 'common');
+$check = $this->Register['Config']->read('rss_' . $this->module, 'rss');
 if (!$check) redirect('/');
 
 
@@ -28,7 +28,7 @@ if ($this->Cache->check($cache_key)) {
 	$html .= '<link>' . $sitename . $this->module . '/</link>';
 	$html .= '<description>' . h($this->Register['Config']->read('description', $this->module)) . '</description>';
 	$html .= '<pubDate>' . date('r') . '</pubDate>';
-	$html .= '<generator>FPS RSS Generator (Fapos CMS)</generator>';
+	$html .= '<generator>FPS RSS Generator (AtomX CMS)</generator>';
 
 	
 	$this->Model->bindModel('category');
@@ -36,18 +36,20 @@ if ($this->Cache->check($cache_key)) {
 	$records = $this->Model->getCollection(
 		array(), 
 		array(
-			'limit' => $this->Register['Config']->read('rss_cnt', 'common'),
+			'limit' => $this->Register['Config']->read('rss_cnt', 'rss'),
 		)
 	);
 	
+	
 	if (!empty($records) && is_array($records)) {
 		$html .= '<lastBuildDate>' . date('r', strtotime($records[0]->getDate())) . '</lastBuildDate>';
+		
 		foreach ($records as $record) { 
 			$html .= '<item>';
 			$html .= '<link>' . $sitename . get_url(entryUrl($record, $this->module)) . '</link>';
 			$html .= '<pubDate>' . date('r', strtotime($record->getDate())) . '</pubDate>';
 			$html .= '<title>' . $record->getTitle() . '</title>';
-			$html .= '<description><![CDATA[' . mb_substr($record->getMain(), 0, $this->Register['Config']->read('rss_lenght', 'common')) . '<br />';
+			$html .= '<description><![CDATA[' . mb_substr($record->getMain(), 0, $this->Register['Config']->read('rss_lenght', 'rss')) . '<br />';
 			$html .= 'Автор: ' . $record->getAuthor()->getName() . '<br />]]></description>';
 			$html .= '<category>' . $record->getCategory()->getTitle() . '</category>';
 			$html .= '<guid>' . $sitename . $this->module . '/view/' . $record->getId() . '</guid>';
@@ -55,9 +57,7 @@ if ($this->Cache->check($cache_key)) {
 		}
 	}
 	
-	
-	
-	
+
 	
 	$html .= '</channel>';
 	$html .= '</rss>';
