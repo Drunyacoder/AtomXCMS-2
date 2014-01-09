@@ -12,7 +12,6 @@ $acl_rules = array (
     ),
     'users' => 
     array (
-      0 => 2,
     ),
   ),
   'news.view_materials' => 
@@ -199,7 +198,6 @@ $acl_rules = array (
       3 => 4,
       5 => 1,
       6 => 2,
-      7 => 5,
     ),
     'users' => 
     array (
@@ -403,7 +401,6 @@ $acl_rules = array (
       3 => 4,
       5 => 1,
       6 => 2,
-      7 => 5,
     ),
     'users' => 
     array (
@@ -597,7 +594,6 @@ $acl_rules = array (
       4 => 0,
       5 => 1,
       6 => 2,
-      7 => 5,
     ),
     'users' => 
     array (
@@ -612,7 +608,6 @@ $acl_rules = array (
       4 => 0,
       5 => 1,
       6 => 2,
-      7 => 5,
     ),
     'users' => 
     array (
@@ -780,7 +775,6 @@ $acl_rules = array (
       4 => 0,
       5 => 1,
       6 => 2,
-      7 => 5,
     ),
     'users' => 
     array (
@@ -1272,7 +1266,6 @@ $acl_rules = array (
     'groups' => 
     array (
       0 => 4,
-      1 => 5,
     ),
     'users' => 
     array (

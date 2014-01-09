@@ -25,9 +25,4 @@ $acl_groups = array (
     'title' => 'Админ',
     'color' => 'EF1821',
   ),
-  5 => 
-  array (
-    'title' => 'Админ2',
-    'color' => '3F3821',
-  ),
 );
