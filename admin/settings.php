@@ -122,7 +122,7 @@ if (in_array($module, $sysMods)) {
 	$settingsInfo = $settingsInfo[$module];
 	
 	switch($module) {
-		case 'common':
+		case 'rss':
 			$pageTitle = __('RSS settings');
 			break;
 		case 'hlu':
@@ -170,7 +170,7 @@ if (isset($_POST['send'])) {
 	
 	foreach ($settingsInfo as $fname => $params) {
 		if (!empty($params['attr']) && !empty($params['attr']['disabled'])) continue;
-	
+		if (is_string($params)) continue;
 		unset($value);
 		
 		
@@ -215,8 +215,6 @@ if (isset($_POST['send'])) {
 		} else {
 			$tmpSet[$fname] = $value;
 		}
-		
-
 	}
 	
 	if (!in_array($module, $noSub)) {
