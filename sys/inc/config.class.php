@@ -2,12 +2,12 @@
 ##################################################
 ##												##
 ## @Author:       Andrey Brykin (Drunya)        ##
-## @Version:      1.0                           ##
+## @Version:      1.1                           ##
 ## @Project:      CMS                           ##
 ## @package       CMS Fapos                     ##
 ## @subpackege    Config class                  ##
 ## @copyright     ©Andrey Brykin 2010-2014      ##
-## @last mod.     2014/01/01                    ##
+## @last mod.     2014/01/10                    ##
 ##################################################
 
 
@@ -63,6 +63,9 @@ class Config {
 	
 	/**
 	* read settings
+	* Examples:
+	* Config::read(param, module)
+	* Config::read(module.param)
 	*
 	* @param string $title - title of setting
 	* @param string $module - parent module of setting

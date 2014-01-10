@@ -29,6 +29,7 @@ class FotoSectionsEntity extends FpsEntity
 	
 	protected $id;
 	protected $parent_id;
+	protected $path;
 	protected $announce;
 	protected $title;
 	protected $view_on_home;
@@ -40,6 +41,7 @@ class FotoSectionsEntity extends FpsEntity
 	{
 		$params = array(
 			'parent_id' => intval($this->parent_id),
+			'path' => (string)$this->path,
 			'announce' => (string)$this->announce,
 			'title' => (string)$this->title,
 			'view_on_home' => (string)$this->view_on_home,

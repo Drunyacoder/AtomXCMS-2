@@ -6,8 +6,8 @@
 ## @Project:      CMS                           ##
 ## @package       CMS Fapos                     ##
 ## @subpackege    Admin module                  ##
-## @copyright     ©Andrey Brykin 2010-2013      ##
-## @Last mod.     2013/07/17                    ##
+## @copyright     ©Andrey Brykin 2010-2014      ##
+## @Last mod.     2014/01/10                    ##
 ##################################################
 
 
@@ -24,7 +24,7 @@
 
 
 header('Content-Type: text/html; charset=utf-8');
-
+if (!isInstall()) redirect('/install');
 
 
 
@@ -64,10 +64,7 @@ if (!isset($_SESSION['adm_panel_authorize']) || $_SESSION['adm_panel_authorize']
 		
 
 		if (empty($errors)) {
-			/*
-			if ($login != strtolower($_SESSION['user']['name']) || md5($pass) != $_SESSION['user']['passw']) 
-				$errors .= '<li>Не верный Пароль или Логин</li>';
-			*/
+			
 			$user = $FpsDB->select('users', DB_FIRST, array('cond' => array('name' => $login, 'passw' => md5($pass))));
 			if (!count($user)) {
 				$errors .= '<li>Не верный Пароль или Логин</li>';

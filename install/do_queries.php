@@ -156,6 +156,7 @@ $array[] = "DROP TABLE IF EXISTS `{$set['db']['prefix']}loads_sections`";
 $array[] = "CREATE TABLE `{$set['db']['prefix']}loads_sections` (
   `id` int(11) NOT NULL auto_increment,
   `parent_id` int(11) default '0',
+  `path` VARCHAR( 255 ) NOT NULL DEFAULT '',
   `announce` varchar(255) NOT NULL default '',
   `title` varchar(255) NOT NULL,
   `view_on_home` ENUM( '0', '1' ) DEFAULT '1' NOT NULL,
@@ -208,6 +209,7 @@ $array[] = "DROP TABLE IF EXISTS `{$set['db']['prefix']}news_sections`";
 $array[] = "CREATE TABLE `{$set['db']['prefix']}news_sections` (
   `id` int(11) NOT NULL auto_increment,
   `parent_id` int(11) default '0',
+  `path` VARCHAR( 255 ) NOT NULL DEFAULT '',
   `announce` varchar(255) NOT NULL default '',
   `title` varchar(255) NOT NULL,
   `view_on_home` ENUM( '0', '1' ) DEFAULT '1' NOT NULL,
@@ -269,6 +271,7 @@ $array[] = "DROP TABLE IF EXISTS `{$set['db']['prefix']}stat_sections`";
 $array[] = "CREATE TABLE `{$set['db']['prefix']}stat_sections` (
   `id` int(11) NOT NULL auto_increment,
   `parent_id` int(11) default '0',
+  `path` VARCHAR( 255 ) NOT NULL DEFAULT '',
   `announce` varchar(255) NOT NULL default '',
   `title` varchar(255) NOT NULL,
   `view_on_home` ENUM( '0', '1' ) DEFAULT '1' NOT NULL,
@@ -385,6 +388,7 @@ $array[] = "DROP TABLE IF EXISTS `{$set['db']['prefix']}foto_sections`";
 $array[] = "CREATE TABLE `{$set['db']['prefix']}foto_sections` (
   `id` int(11) NOT NULL auto_increment,
   `parent_id` int(11) default '0',
+  `path` VARCHAR( 255 ) NOT NULL DEFAULT '',
   `announce` varchar(255) NOT NULL default '',
   `title` varchar(255) NOT NULL,
   `view_on_home` ENUM( '0', '1' ) DEFAULT '1' NOT NULL,

@@ -444,7 +444,7 @@ function edit() {
 	global $FpsDB;
 	$Register = Register::getInstance();
 	$acl_groups = $Register['ACL']->get_group_info();
-	
+	$model = $Register['ModManager']->getModelInstance(getCurrMod() . 'Sections');
 	
 	$error = '';
 
@@ -453,14 +453,14 @@ function edit() {
 
 
 	$parent_id = intval($_POST['id_sec']);
-	$changed_cat = $FpsDB->select(getCurrMod() . '_sections', DB_FIRST, array('cond' => array('id' => $id)));
-	if (empty($changed_cat)) $error .= '<li>' . __('Edited section not found') . '</li>';
+	$entity = $model->getById($id);
+	if (empty($entity)) $error .= '<li>' . __('Edited section not found') . '</li>';
 
 	
 	/* we must know changed parent section or not changed her. And check her  */
-	if (!empty($parent_id) && $changed_cat[0]['parent_id'] != $parent_id) {
-		$target_section = $FpsDB->select(getCurrMod() . '_sections', DB_COUNT, array('cond' => array('id' => $parent_id)));
-		if ($target_section < 1) $error .= '<li>' . __('Parent section not found') . '</li>';
+	if (!empty($parent_id) && $entity->getParent_id() != $parent_id) {
+		$target_section = $model->getById($parent_id);
+		if (empty($target_section)) $error .= '<li>' . __('Parent section not found') . '</li>';
 	}
 	/* if errors exists */
 	if (!empty($error)) {
@@ -481,14 +481,16 @@ function edit() {
 	if ($no_access !== '') $no_access = New Expr($no_access);
 	
 	
-	$model = $Register['ModManager']->getModelInstance(getCurrMod() . 'Sections');
-	$entity = $model->getById($id);
-	
-	
 	/* prepare data to save */
 	$entity->setTitle(substr($_POST['title'], 0, 100));
 	$entity->setNo_access($no_access);
-	if (!empty($parent_id)) $entity->setParent_id((int)$parent_id);
+	
+	if (!empty($target_section)) {
+		$path = $target_section->getPath();
+		$path = (!empty($path)) ? $path . $parent_id . '.' : $parent_id . '.';
+		$entity->setParent_id((int)$parent_id);
+		$entity->setPath($path);
+	}
 
 	$entity->save();
 		
@@ -505,12 +507,18 @@ function add() {
 	
 	$Register = Register::getInstance();
 	$acl_groups = $Register['ACL']->get_group_info();
+	$model = $Register['ModManager']->getModelInstance(getCurrMod() . 'Sections');
 	
 	
 	$error = '';
 	$title = trim($_POST['title']);
-	$in_cat = intval($_POST['id_sec']);
-	if ($in_cat < 0) $in_cat = 0;
+	$parent_id = intval($_POST['id_sec']);
+	if ($parent_id < 0) $parent_id = 0;
+	
+	if (!empty($parent_id)) {
+		$target_section = $model->getById($parent_id);
+		if (empty($target_section)) $error .= '<li>' . __('Parent section not found') . '</li>';
+	}
 	
 	
 	if (empty($title)) $error .= '<li>' . __('Empty field "title"') . '</li>';
@@ -533,16 +541,22 @@ function add() {
 	}
 	
 	
-	if (empty($error)) {
-		$data = array(
-			'title' => $title,
-			'parent_id' => $in_cat,
-			'no_access' => $no_access,
-		);
-		$entityName = getCurrMod() . 'SectionsEntity';
-		$entity = new $entityName($data);
-		$entity->save();
+	if (!empty($target_section)) {
+		$path = $target_section->getPath();
+		$path = (!empty($path)) ? $path . $parent_id . '.' : $parent_id . '.';
 	}
+	
+	
+	$data = array(
+		'title' => $title,
+		'parent_id' => $parent_id,
+		'no_access' => $no_access,
+	);
+	if (!empty($path)) $data['path'] = $path;
+	
+	$entityName = getCurrMod() . 'SectionsEntity';
+	$entity = new $entityName($data);
+	$entity->save();
 		
 	redirect('/admin/category.php?mod=' . getCurrMod());
 }
@@ -557,7 +571,6 @@ function delete() {
 	$model = $Register['ModManager']->getModelInstance(getCurrMod() . 'Sections');
 	$childrens = $model->getCollection(array('parent_id' => $id));
 
-	pr($childrens);
 	
 	if (!$childrens) {
 		delete_category($id);
