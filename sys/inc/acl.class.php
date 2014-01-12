@@ -88,7 +88,8 @@ class ACL {
 
 		
 		$access = false;
-		$rules = $this->mergeModeratorsPermissions();
+		$rules = $this->rules;
+		if (!$onlySpecialAccess) $rules = $this->mergeModeratorsPermissions($rules);
 		
 		
 		switch (count($params)) {
@@ -148,6 +149,8 @@ class ACL {
 	*
 	*/
 	public function save_rules($rules) {
+		$rules = $this->cleanRules($rules);
+		
 		if ($fopen = fopen(ROOT . '/sys/settings/acl_rules.php', 'w')) {
 			fputs($fopen, '<?php ' . "\n" . '$acl_rules = ' . var_export($rules, true) . "\n" . '?>');
 			fclose($fopen);
@@ -262,8 +265,8 @@ class ACL {
 	 * Convert forums moderators data to simple ACL rules data
 	 * (Moderator permissions convert to special user permissions for concrete forum)
 	 */
-	private function mergeModeratorsPermissions() {
-		$result = $this->rules;
+	private function mergeModeratorsPermissions($rules) {
+		$result = $rules;
 		
 		if (empty($this->forumsModerators)) return $result;
 		
@@ -281,6 +284,20 @@ class ACL {
 		}
 		
 		return $result;
+	}
+	
+	
+	
+	private function cleanRules($rules) {
+		foreach ($rules as $rule_key => $rules_data) {
+			if (!preg_match('#^forum\.[\d]\.#', $rule_key)) continue;
+			
+			if (!array_key_exists('users', $rules_data) || empty($rules_data['users'])) {
+				unset($rules[$rule_key]);
+			}
+		}
+		
+		return $rules;
 	}
 	
 	
