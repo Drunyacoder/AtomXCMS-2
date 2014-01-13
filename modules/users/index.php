@@ -2,12 +2,12 @@
 /*---------------------------------------------\
 |											   |
 | @Author:       Andrey Brykin (Drunya)        |
-| @Version:      1.6.0                         |
+| @Version:      1.6.1                         |
 | @Project:      CMS                           |
 | @package       CMS Fapos                     |
 | @subpackege    Users Module                  |
-| @copyright     ©Andrey Brykin 2010-2013      |
-| @last mod      2013/10/19                    |
+| @copyright     ©Andrey Brykin 2010-2014      |
+| @last mod      2014/01/13                    |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
@@ -74,7 +74,7 @@ Class UsersModule extends Module {
         //order by
         $order = getOrderParam(__CLASS__);
         $queryParams = array(
-            'order' => mysql_real_escape_string($order),
+            'order' => $order,
             'page' => $page,
             'limit' => $this->Register['Config']->read('users_per_page', 'users')
         );

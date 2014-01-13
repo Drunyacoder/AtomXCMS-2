@@ -2,12 +2,12 @@
 ##################################################
 ##												##
 ## @Author:       Andrey Brykin (Drunya)        ##
-## @Version:      1.1                           ##
+## @Version:      1.2                           ##
 ## @Project:      CMS                           ##
 ## @package       CMS Fapos                     ##
 ## @subpackege    Admin module                  ##
-## @copyright     ©Andrey Brykin 2010-2012      ##
-## @last mod.     2012/06/10                    ##
+## @copyright     ©Andrey Brykin 2010-2014      ##
+## @last mod.     2014/01/13                    ##
 ##################################################
 
 
@@ -26,7 +26,7 @@ include_once ROOT . '/admin/inc/adm_boot.php';
 
 
 $date = (!empty($_GET['date'])) ? $_GET['date'] : time();
-$_date = mysql_real_escape_string(date("Y-m-d", $date));
+$_date = date("Y-m-d", $date);
 if ($_date == date("Y-m-d")) {
 	if (file_exists(ROOT . '/sys/logs/counter/' . $_date . '.dat')) {
 		$stats[0] = unserialize(file_get_contents(ROOT . '/sys/logs/counter/' . $_date . '.dat'));

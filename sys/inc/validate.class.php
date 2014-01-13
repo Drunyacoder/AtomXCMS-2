@@ -307,15 +307,15 @@ class Validate {
 			
 			// create SQL query
 			$sql = "SELECT * FROM `{$sourse['table']}`
-					WHERE `{$sourse['field']}` LIKE '".mysql_real_escape_string( $data )."' OR
-					`{$sourse['field']}` LIKE '".mysql_real_escape_string( $eng_new_data )."' OR
-					`{$sourse['field']}` LIKE '".mysql_real_escape_string( $rus_new_data )."'";
+					WHERE `{$sourse['field']}` LIKE '".$Register['DB']->escape( $data )."' OR
+					`{$sourse['field']}` LIKE '".$Register['DB']->escape( $eng_new_data )."' OR
+					`{$sourse['field']}` LIKE '".$Register['DB']->escape( $rus_new_data )."'";
 		  
 		} else { //security level not hight...
 		
 			$sql = "SELECT COUNT(*) 
 					FROM `{$sourse['table']}`  
-					WHERE `{$sourse['field']}` LIKE '" . mysql_real_escape_string($data) . "'";
+					WHERE `{$sourse['field']}` LIKE '" . $Register['DB']->escape($data) . "'";
 					
 		}
 		$query = $FpsDB->query($sql);

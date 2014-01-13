@@ -322,6 +322,14 @@ class FpsPDO {
 	}
 	
 	
+	/**
+	 * similar to mysql_real_escape_string
+	 */
+	public function escape($value) {
+		return trim($this->dbh->quote($value), "'");
+	}
+	
+	
 	private function getQueryDump($query) {
 		if (empty($this->queryParams)) return $query;
 		

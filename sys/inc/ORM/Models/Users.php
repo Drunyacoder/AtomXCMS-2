@@ -56,9 +56,9 @@ class UsersModel extends FpsModel
         $rus_new_name = str_replace( $eng, $rus, $nick );
         // Формируем SQL-запрос
         $res = $Register['DB']->query("SELECT * FROM `" . $Register['DB']->getFullTableName('users') . "`
-			WHERE name LIKE '".mysql_real_escape_string( $nick )."' OR
-			name LIKE '".mysql_real_escape_string( $eng_new_name )."' OR
-			name LIKE '".mysql_real_escape_string( $rus_new_name )."';");
+			WHERE name LIKE '".$Register['DB']->escape( $nick )."' OR
+			name LIKE '".$Register['DB']->escape( $eng_new_name )."' OR
+			name LIKE '".$Register['DB']->escape( $rus_new_name )."';");
         return $res;
     }
 
@@ -156,9 +156,9 @@ class UsersModel extends FpsModel
         $Register = Register::getInstance();
 		$entity = $Register['DB']->query("SELECT *, UNIX_TIMESTAMP(last_visit) as unix_last_visit
 			FROM `" . $Register['DB']->getFullTableName('users') . "`  WHERE name='"
-			.mysql_real_escape_string( $name )."' AND passw='".mysql_real_escape_string( md5( $password ) )
+			.$Register['DB']->escape( $name )."' AND passw='".$Register['DB']->escape( md5( $password ) )
 			."' LIMIT 1");
-
+		
 		if (!empty($entity[0])) {
             $entity = $this->getAllAssigned($entity);
 			$entityClassName = $Register['ModManager']->getEntityNameFromModel(get_class($this));

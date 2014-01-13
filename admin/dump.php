@@ -107,7 +107,7 @@ if (!empty($_GET['ac']) && $_GET['ac'] == 'make_dump') {
 						if ( is_null($field) )
 							$field = "NULL";
 						else
-							$field = "'".mysql_escape_string( $field )."'";
+							$field = "'".$FpsDB->escape( $field )."'";
 						if ( $query == "" )
 							$query = $field;
 						else

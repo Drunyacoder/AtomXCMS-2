@@ -288,6 +288,15 @@ class FpsDataBase {
 	
 	
 	/**
+	 * similar to mysql_real_escape_string
+	 */
+	public function escape($value) {
+		return mysql_real_escape_string($value);
+	}
+	
+	
+	
+	/**
 	 * @param array $params Params for query
 	 *
 	 * Prepare part of SQL query with JOIN uses params
