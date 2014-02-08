@@ -12,6 +12,7 @@ $acl_rules = array (
     ),
     'users' => 
     array (
+      0 => 2,
     ),
   ),
   'news.view_materials' => 
@@ -908,6 +909,7 @@ $acl_rules = array (
       0 => 1,
       4 => 3,
       5 => 0,
+      5 => 4,
     ),
     'users' => 
     array (

@@ -389,7 +389,7 @@ function entryUrl($material, $module) {
 	$matId = $material->getId();
 	$matTitle = $material->getTitle();
 	
-
+	
 	if (empty($matId)) 
 		trigger_error('Empty material ID', E_USER_ERROR);
 		
@@ -429,6 +429,7 @@ function entryUrl($material, $module) {
 	$title = translit($matTitle);
 	$title = strtolower(preg_replace('#[^a-z0-9]#i', '_', $title));
 	
+	
 	// Colission protect
 	$tmp_file_title = $tmp_dir . $title . '.dat';
 	while (file_exists($tmp_file_title)) {
@@ -436,12 +437,17 @@ function entryUrl($material, $module) {
 		if (!empty($collision) && $collision != $matId) {
 			$title .= '_';
 			$tmp_file_title = $tmp_dir . $title . '.dat';
+		
+		} else {
+			$tmp_file_title_flag = true;
+			break;
 		}
 	}
 
 	
 	file_put_contents($tmp_file, $title);
-	file_put_contents($tmp_dir . $title . '.dat', $matId);
+	if (empty($tmp_file_title_flag)) 
+		file_put_contents($tmp_dir . $title . '.dat', $matId);
 	return h(sprintf($pattern, $title));
 }
 
