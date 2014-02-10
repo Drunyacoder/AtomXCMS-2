@@ -24,7 +24,8 @@
 
 function getProfileUrl($user_id) {
 	if (!empty($_SESSION['user']) && $_SESSION['user']['id'] == $user_id) {
-		$url = '/users/edit_form/';
+		//$url = '/users/edit_form/';
+		$url = '/users/info/' . $user_id . '/';
 	} else {
 		$url = '/users/info/' . $user_id . '/' ;
 	}
