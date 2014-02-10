@@ -71,63 +71,14 @@ Class Pather {
 
 		
 		if (empty($url)) {
-		
-		
-			// get user country
-			$language = substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
-			
-			
-			// база данных стран
-			$countrys = array(
-			   'ua' => 'Украина',
-			   'ua-ua' => 'Украина',
-			   'ru' => 'Россия',
-			   'ru-ru' => 'Россия',
-			   'kz' => 'Казахстан',
-			);
-
-			$country = (!empty($countrys[$language])) ? $countrys[$language] : false;
-			if (!$country) {
-				$this->Register['lang'] = 'eng';
-				return array(
-					'pages',
-					'index',
-					'22',
-				);
-				
-				
-			} else {
-				$this->Register['lang'] = 'rus';
-			}
-		
-		
 			if ($this->Register['Config']->read('start_mod')) {
 				$_GET['url'] = $this->Register['Config']->read('start_mod');
 				$pathParams = $this->parsePath();
 				return $pathParams;
 			}
-			
-			
-			
 
 			
-			
-			
 		} else {
-			
-			
-			if (substr($url, 0, 3) === 'en') {
-					$lang = 'eng';
-					$this->Register['lang'] = $lang;
-					$_REQUEST['lang'] = $lang;
-					
-			} else if (substr($url, 0, 2) === 'ru') {
-					$lang = 'rus';
-					$this->Register['lang'] = $lang;
-					$_REQUEST['lang'] = $lang;
-			}
-			
-			
 			if ($this->Register['Config']->read('start_mod') && $url === $this->Register['Config']->read('start_mod')) {
 				$this->Register['is_home_page'] = true;
 			}
@@ -169,8 +120,10 @@ Class Pather {
 
 
 		// Redirect from not HLU to HLU
+		$Register = Register::getInstance();
 		if (count($pathParams) >= 3 &&  $pathParams[1] == 'view' && $this->Register['Config']->read('hlu') == 1) {
-			$hlufile = ROOT . '/sys/tmp/hlu_' . $pathParams[0] . '/' . $pathParams[2] . '.dat';
+			$hlufile = $Register['URL']->getTmpFilePath($pathParams[2], $pathParams[0]);
+
 			if (file_exists($hlufile) && is_readable($hlufile)) {
 				$hlustr = file_get_contents($hlufile);
 				if (!empty($hlustr)) {
@@ -276,9 +229,10 @@ Class Pather {
 	 * @return int ID
 	 */
 	private function getHluId($string, $module) {
+		$Register = Register::getInstance();
 		$clean_str = substr($string, 0, strpos($string, '.'));
-		$tmp_dir = ROOT . '/sys/tmp/hlu_' . $module . '/';
-		$tmp_file = $tmp_dir . $clean_str . '.dat';
+		
+		$tmp_file = $Register['URL']->getTmpFilePath($clean_str, $module);
 		if (!file_exists($tmp_file) || !is_readable($tmp_file)) return false;
 
 		$id = file_get_contents($tmp_file);

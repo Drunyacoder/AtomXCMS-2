@@ -41,6 +41,9 @@ class Autoload
         if (file_exists(ROOT . '/sys/inc/' . strtolower($class) . '.class.php')) {
             include_once ROOT . '/sys/inc/' . strtolower($class) . '.class.php';
             return true;
+		} else if (file_exists(ROOT . '/sys/inc/' . $class . '.class.php')){
+            include_once ROOT . '/sys/inc/' . $class . '.class.php';
+            return true;
         }  else if (file_exists(ROOT . '/sys/fnc/' . strtolower($class) . '.class.php')){
             include_once ROOT . '/sys/fnc/' . strtolower($class) . '.class.php';
             return true;
