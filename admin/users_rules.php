@@ -142,6 +142,12 @@ if (!empty($specialRules)) {
 	}
 	
 	
+	foreach ($specialRules as $k => $v) {
+		if (!array_key_exists(str_replace('user_', '', $k), $usersNames))
+			unset($specialRules[$k]);
+	}
+	
+	
 	// get forum titles
 	if (!empty($fIds)) {
 		$forums = $forumModel->getCollection(array('id IN (' . implode(',', $fIds) . ')'));
