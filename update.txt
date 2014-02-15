@@ -11,7 +11,8 @@
 	/modules/*
 	/sys/inc/*
 	/sys/fnc/*
-	/template/default/html/forum/replyform.html
+	/template/*
+	/sys/fonts/* (если нет, добавить)
 
 
 3. Потом смотрим, что получилось в режиме дебага(в этом случае, если будут ошибки, мы их увидим).
