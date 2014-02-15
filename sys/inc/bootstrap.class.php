@@ -36,6 +36,8 @@ class Bootstrap
      */
     public function __construct()
     {
+        $this->setPhpSettings();
+		
         $this->Register = Register::getInstance();
 
         $this->touchStartTime();
@@ -57,8 +59,6 @@ class Bootstrap
         $this->Register['PluginController'] = new Plugins;
         $this->Register['URL'] = new FpsUrl;
 
-
-        $this->setPhpSettings();
 		
 		if (isInstall()) {
 			$this->inputCheck();
@@ -203,5 +203,7 @@ class Bootstrap
          */
         if (function_exists('mb_internal_encoding'))
             mb_internal_encoding('UTF-8');
+			
+		date_default_timezone_set('UTC');
     }
 }

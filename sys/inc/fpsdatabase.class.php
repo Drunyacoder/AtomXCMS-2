@@ -87,6 +87,9 @@ class FpsDataBase {
          }
          mysql_query("SET NAMES 'utf8'");
          mysql_set_charset('UTF-8');
+		 
+		mysql_query("SET GLOBAL time_zone = '+00:00';");
+		mysql_query("SET @@session.time_zone = '+00:00';");
 	}
 
 	/**

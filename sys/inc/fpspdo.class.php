@@ -86,6 +86,9 @@ class FpsPDO {
 		}
 		
 		$this->dbh->query("SET NAMES 'utf8'");
+		
+		$this->dbh->query("SET GLOBAL time_zone = '+00:00';");
+		$this->dbh->query("SET @@session.time_zone = '+00:00';");
 	}
 
 	
