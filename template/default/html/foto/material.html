@@ -15,7 +15,7 @@
 			      <b>Автор:</b><a href="{{ entity.add_markers.profile_url }}"> {{ entity.author.name }}</a>
 				  <br /><b>Альбом:</b><a href="{{ entity.add_markers.category_url }}"> {{ entity.category.title }}</a>
 			      <br /><b>Просмотров:</b> {{ entity.views }}
-			      <br /><b>Дата:</b> {{ entity.date }}
+			      <br /><b>Дата:</b> {{ AtmGetDate(entity.date) }}
 			      <br />{{ entity.add_markers.moder_panel }}
 			    </div>
 	        </div>

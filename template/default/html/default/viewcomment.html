@@ -16,7 +16,7 @@
 			                                {{ comment.add_markers.message }}
 		                                  </div>
 								          <div>
-								               {% if comment.add_markers.editdate %}<span><b>Комментарий был изменён:</b> {{ comment.add_markers.editdate }}</span>{% endif %}<span><b>Дата отправления:</b> {{ comment.date }}</span>
+								               {% if comment.add_markers.editdate %}<span><b>Комментарий был изменён:</b> {{ comment.add_markers.editdate }}</span>{% endif %}<span><b>Дата отправления:</b> {{ AtmGetDate(comment.date) }}</span>
 								          </div>
 							        </div>
                             </li>

@@ -23,7 +23,7 @@
 							</div>
 						</td>
 						<td class="meta">
-							Добавлено: {{ post.time }} | 
+							Добавлено: {{ AtmGetDate(post.time) }} | 
 							<a href="javascript://" onClick="prompt('Ссылка к сообщению','{{ post.post_number_url }}');return false;">{{ post.post_number }}</a>
 						</td>
 					</tr>
@@ -37,7 +37,7 @@
 								<div class="info">Статус: <span class="unp">{{ post.author.rank }}</span></div>
 								<div class="info">Группа: <span class="unp">{{ post.author.status_title }}</span></div>
 								<div class="info">Сообщений: <span class="unp">{{ post.author.posts }}</span></div>
-								<div class="info">Регистрация: <span class="repNums"><b>{{ post.author.puttime }}</b></span></div>
+								<div class="info">Регистрация: <span class="repNums"><b>{{ AtmGetDate(post.author.puttime) }}</b></span></div>
 								<div class="info">Состояние: <span class="unp">{{ post.author.status_on }}</span></div>
 								
 								<div class="info">

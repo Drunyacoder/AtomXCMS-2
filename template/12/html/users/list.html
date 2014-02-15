@@ -15,7 +15,7 @@
         <tr>
             <td class="userName">{{ user.add_markers.user_name }} <div style="float:right;">{{ user.add_markers.moder_panel }}</div></td>
             <td class="gTableBody1" align="center">{{ user.add_markers.status }}</td>
-            <td class="puttime" align="center">{{ user.puttime }}</td>
+            <td class="puttime" align="center">{{ AtmGetDate(user.puttime) }}</td>
             <td class="gTableBody1" align="center" style="white-space: nowrap;">{{ user.posts }}</td>
             <td class="gTableBody1" align="center" style="white-space: nowrap;">{{ user.add_markers.pm }}</td>
         </tr>

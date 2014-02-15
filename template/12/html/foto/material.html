@@ -8,7 +8,7 @@
 	</div>
 	<div class="meta">
 		<div class="icon-views"></div>Просмотров: {{ entity.views }}  
-		<div class="icon-data"></div>Дата: {{ entity.date }}
+		<div class="icon-data"></div>Дата: {{ AtmGetDate(entity.date) }}
 		<img class="pere" alt="" src="{{ template_path }}/img/pere.png">
 		<div class="rating-up" onClick="setRatingForEntity('{{ module }}', {{ entity.id }}, 2);"></div>
 		{{ entity.rating }}

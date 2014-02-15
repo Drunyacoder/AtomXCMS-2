@@ -217,7 +217,7 @@ Class ForumModule extends Module {
 			}
 			
 			
-			$last_post = $forum->getLast_theme()->getLast_post() . '<br>' . get_link(h($last_post_title), 
+			$last_post = AtmDateTime::getDate($forum->getLast_theme()->getLast_post()) . '<br>' . get_link(h($last_post_title), 
 				'/forum/view_theme/' . $forum->getLast_theme()->getId() . '?page=999', 
 				array('title' => __('To last post')))
 			    . __('Post author') . $last_theme_author;

@@ -40,12 +40,12 @@
 									<a href="javascript:void(0)" onClick="$('#addWarning_{{ post.author.id }}').show();">+</a>
 								</div>   
 				   </li>
-				   <li>Регистрация:<br>{{ post.author.puttime }}</li>
+				   <li>Регистрация:<br>{{ AtmGetDate(post.author.puttime) }}</li>
 			  </ul>
               {% endif %}			  
 		   </div>
 	       <div class="posttextuser">
-	          <div class="headpostinfo"><span class="postdate">Отправлено: {{ post.time }}</span><a class="postidlink"href="javascript://" onClick="prompt('Ссылка к сообщению','{{ post.post_number_url }}');return false;">#{{ post.post_number }}</a></div>
+	          <div class="headpostinfo"><span class="postdate">Отправлено: {{ AtmGetDate(post.time) }}</span><a class="postidlink"href="javascript://" onClick="prompt('Ссылка к сообщению','{{ post.post_number_url }}');return false;">#{{ post.post_number }}</a></div>
 	          <div class="posttext">{{ post.message }}</div>
 			  {% if post.attachment %}
 	              <div class="attaches"><div>Прикрепленные файлы:</div>{{ post.attachment }}</div>

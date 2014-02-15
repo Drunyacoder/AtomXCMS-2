@@ -21,6 +21,13 @@
 
 
 
+
+function AtmGetDate($date, $format = 'Y-m-d H:i:s') {
+	return AtmDateTime::getDate($date, $format = 'Y-m-d H:i:s');
+}
+
+
+
 function wrap_errors($errors) {
 	return '<p class="errorMsg">' . __('Some error in form') . '</p>' .
 			"\n" . '<ul class="errorMsg">' . "\n" . $errors . '</ul>' . "\n";

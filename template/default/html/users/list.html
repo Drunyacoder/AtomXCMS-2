@@ -34,7 +34,7 @@
 										       <p class="listreputation" style="background-color: #999;"><span>{{ user.rating }}</span></p>
                                            {% endif %}
 								          <div>
-								               <span><b class="group">{{ user.group }}</b></span><span>{{ user.posts }} сообщений</span><span><b>Регистрация:</b>  {{ user.puttime }}</span><span><b>Последний визит:</b> {{ user.last_visit }}</span>
+								               <span><b class="group">{{ user.group }}</b></span><span>{{ user.posts }} сообщений</span><span><b>Регистрация:</b>  {{ AtmGetDate(user.puttime) }}</span><span><b>Последний визит:</b> {{ AtmGetDate(user.last_visit) }}</span>
 								          </div>
 							        </div>
                             </li>

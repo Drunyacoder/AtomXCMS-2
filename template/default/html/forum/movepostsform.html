@@ -20,7 +20,7 @@
 </div>
 
 <div class="posttextuser">
-	          <div class="headpostinfo"><span class="postdate">Отправлено: {{ post.time }}</span>
+	          <div class="headpostinfo"><span class="postdate">Отправлено: {{ AtmGetDate(post.time) }}</span>
 			  <label class="postidlink"><input type="checkbox" {% for curr in context.posts_select %} {% if curr == post.id %} checked="checked" {% endif %} {% endfor %} value="{{ post.id }}" name="post_{{ post.id }}" /></label>
 			  </div>
 	          <div class="posttext">{{ post.message }}</div>
