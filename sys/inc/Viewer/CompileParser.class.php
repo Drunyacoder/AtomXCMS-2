@@ -8,12 +8,13 @@ class Fps_Viewer_CompileParser
     private $output;
     private $indent = 3;
     private $tmpClassName = 3;
+	public $Register;
 
 	
 	
 	public function __construct()
 	{
-	
+		$this->Register = Register::getInstance();
 	}
 	
 	
@@ -84,11 +85,15 @@ class Fps_Viewer_CompileParser
 	
 	
 	
-    public function string($value)
+    public function string($value, $quoted = true)
     {
-		$value = str_replace(array("\n\t", "\t"), array("\n", ""), $value);
-        $this->output .= sprintf('"%s"', addcslashes($value, "\0\t\"\$\\"));
-
+		if ($quoted) {
+			$value = str_replace(array("\n\t", "\t"), array("\n", ""), $value);
+			$this->output .= sprintf('"%s"', addcslashes($value, "\0\t\"\$\\"));
+		} else {
+			$this->output .= sprintf('"%s"', $value);
+		}
+		
         return $this;
     }
 	

@@ -20,6 +20,7 @@ class Fps_Viewer_Manager
 			$this->moduleTitle = $instance->module;
 			$this->layout = $instance->template;
 		}
+
 		
 		$this->tokensParser = new Fps_Viewer_TokensParser();
 		$this->treesParser = new Fps_Viewer_TreesParser();
@@ -104,10 +105,11 @@ class Fps_Viewer_Manager
 	
 	public function parseTemplate($code, $context)
 	{
-		$Register = Register::getInstance();
-		$code = $Register['DocParser']->parseSnippet($code);
-	
-	
+        // preprocess snippets
+        $obj = new AtmSnippets($code);
+        $obj->preprocess();
+
+
 		$tokens = $this->getTokens($code);
 		//pr(h($tokens)); die();
 		$nodes = $this->getTreeFromTokens($tokens);
@@ -116,12 +118,14 @@ class Fps_Viewer_Manager
 		$this->compileParser->setTmpClassName($this->getTmpClassName($code));
 		$this->compile($nodes);
 		$sourceCode = $this->compileParser->getOutput();
-		//pr(h($sourceCode)); //die();
+		//pr(h($sourceCode)); die();
 		
 
 		$output = $this->executeSource($sourceCode, $context);
-		//pr($sourceCode); 
-		//pr($context); die();
+        // replace snippets markers
+        $output = $obj->replace($output);
+
+
 		return $output;
 	}
 	

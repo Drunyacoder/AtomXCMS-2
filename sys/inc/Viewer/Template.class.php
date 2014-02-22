@@ -9,7 +9,25 @@ abstract class Fps_Viewer_Template
 	{
 		$this->context = $context;
 	}
-
+	
+	
+	public function getContext() {
+		return $this->context;
+	}
+	
+	
+	public function addToContext($array) {
+		$this->context = array_merge($this->context, $array);
+	}
+	
+	
+	public function includeFile($path, array $subcontext) {
+		$source = file_get_contents($path);
+        $context = array_merge($this->context, $subcontext);
+		$Viewer = new Fps_Viewer_Manager;
+		echo $Viewer->parseTemplate($source, $context);
+	}
+	
 	
 	protected function getValue($context, $need) 
 	{
