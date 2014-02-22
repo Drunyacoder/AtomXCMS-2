@@ -20,6 +20,7 @@ class Fps_Viewer_TreesParser
 		$this->tokenParsers = array(
 			'if' => 'Fps_Viewer_Parser_If',
 			'for' => 'Fps_Viewer_Parser_For',
+			'include' => 'Fps_Viewer_Parser_Include',
 		);
 	}
 	
@@ -95,7 +96,7 @@ class Fps_Viewer_TreesParser
 	
 	public function setStack($key)
 	{
-		$this->stack[$key] = true;
+		$this->stack[] = $key;
 	}
 	
 	
@@ -107,8 +108,7 @@ class Fps_Viewer_TreesParser
 			//TODO
 			return '';
 		}
-		//echo '>';
-		//var_dump($value);
+
 		return new $this->tokenParsers[$value]($this);
 	}
 	
@@ -189,12 +189,8 @@ class Fps_Viewer_TreesParser
 		
 		switch ($this->getEnv()) {
 			case 'if':
-			case 'for':
+			case 'for_definition':
 				if ($node instanceof Fps_Viewer_Node_Var) $node->setDef(true);
-				//$node = new Fps_Viewer_Node($node);
-				break;
-				
-			case 'for2';
 				//$node = new Fps_Viewer_Node($node);
 				break;
 				

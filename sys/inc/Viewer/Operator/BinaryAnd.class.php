@@ -15,8 +15,8 @@ class Fps_Viewer_Operator_BinaryAnd
 
     public function compile(Fps_Viewer_CompileParser $compiler)
    	{
-   		$this->right->compile($compiler);
+        $this->left->compile($compiler);
    		$compiler->raw(' && ');
-   		$this->left->compile($compiler);
+        $this->right->compile($compiler);
    	}
 }

@@ -8,7 +8,7 @@ class Fps_Viewer_Operator_BinaryIn
 	
 	public function __construct($left, $right)
 	{
-		$left->setTmpContext($left);
+		$left->setTmpContext($left->getValue());
 		$this->left = $left;
 		$this->right = $right;
 	}
