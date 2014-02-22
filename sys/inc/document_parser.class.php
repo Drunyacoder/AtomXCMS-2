@@ -3,12 +3,12 @@
 ##################################################
 ##												##
 ## Author:       Andrey Brykin (Drunya)         ##
-## Version:      1.7.5                          ##
+## Version:      1.6.5                          ##
 ## Project:      CMS                            ##
 ## package       CMS Fapos                      ##
 ## subpackege    Document parser library        ##
-## copyright     ©Andrey Brykin 2010-2014       ##
-## last mod.     2014/02/21                     ##
+## copyright     ©Andrey Brykin 2010-2013       ##
+## last mod.     2013/02/17                     ##
 ##################################################
 
 
@@ -61,7 +61,10 @@ class Document_Parser {
      */
     private $Register;
 
-
+    /**
+     * @var array
+     */
+    private $markes = array();
 
 
 
@@ -123,8 +126,67 @@ class Document_Parser {
 	 */
 	public function parseSnippet($page)
     {
-		$SnippetsParser = new AtmSnippets($page);
-        return $SnippetsParser->parse();
+		$Register = Register::getInstance();
+        $FpsDB = $Register['DB'];
+
+        $tpl = preg_match_all('#\{\[([!]*)([\d\w]+?)(\??.*)\]\}#U', $page, $mas);
+		
+		
+        for ($i= 0; $i < count($mas[2]); $i++) {
+			$cached = true;
+			$block_name = $mas[2][$i];
+			if ($mas[1][$i] === '!') $cached = false;
+
+			
+			// Check cache
+			if ($cached === true) {
+				$cache_key = 'snippet_' . strtolower($block_name);
+				$cache_key .= (!empty($_SESSION['user']['status'])) ? '_' . $_SESSION['user']['status'] : '_guest';
+				
+				if ($this->Cache->check($cache_key)) {
+					$res = $this->Cache->read($cache_key);
+					$page = str_replace($mas[0][$i], $res, $page);
+					continue;
+				}
+			}
+			
+			
+			// If no cache
+			$sql = $FpsDB->select('snippets', DB_FIRST, array('cond' => array('name' => strtolower($block_name))));
+			if (empty($sql[0])) continue;
+            $limit = $sql[0];
+			
+			if (strtolower($block_name) == strtolower($limit['name'])) {
+			
+		
+				// snippet params
+				$params = array();
+				if (!empty($mas[3][$i])) {
+					preg_match_all('#([\w]+)=([^&]+)#', $mas[3][$i], $matches);
+					
+					if (!empty($matches)) {
+						foreach ($matches[1] as $k => $v) {
+							$params[$v] = $matches[2][$k];
+						}
+					}
+				}
+				
+				
+				// eval snippet
+				ob_start();
+				$str = eval($limit['body']);
+				$res = ob_get_contents();
+				ob_end_clean();
+				
+				// replace marker to content
+				$page = str_replace($mas[0][$i], $res, $page); 
+
+				if ($cached === true) 
+					$this->Cache->write($res, $cache_key, array());
+			}
+	    }
+		
+		return $page;
 	}
 	
 		

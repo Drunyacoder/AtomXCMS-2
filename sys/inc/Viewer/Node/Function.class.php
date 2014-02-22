@@ -6,29 +6,22 @@ class Fps_Viewer_Node_Function
 {
 
 	private $func;
-	private $params;
+	private $param;
 
 
-	public function __construct($func, $params = array())
+	public function __construct($func, $param)
 	{
 		$this->func = $func;
-		$this->params = $params;
+		$this->param = $param;
 	}
 	
-
-    public function addParam($node) {
-        array_push($this->params, $node);
-    }
+	
 	
 	
 	public function compile(Fps_Viewer_CompileParser $compiler)
 	{
 		$compiler->raw("$this->func(");
-        while (count($this->params) > 0) {
-            $node = array_shift($this->params);
-            $compiler->raw($node->compile($compiler));
-            if (count($this->params) > 0) $compiler->raw(", ");
-        }
+		$compiler->raw($this->param->compile($compiler));
 		$compiler->raw(")");
 	}
 }

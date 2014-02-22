@@ -11,12 +11,4 @@ class Fps_Viewer_Operator_BinarySubtrac
 		$this->left = $left;
 		$this->left = $right;
 	}
-
-
-    public function compile(Fps_Viewer_CompileParser $compiler)
-    {
-        $this->left->compile($compiler);
-        $compiler->raw(' - ');
-        $this->right->compile($compiler);
-    }
 }

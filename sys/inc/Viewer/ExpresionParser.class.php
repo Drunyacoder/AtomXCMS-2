@@ -8,7 +8,6 @@ class Fps_Viewer_ExpresionParser
 	private $parser;
 	private $binaryOperators;
 	private $inFunc = false;
-	private $inIfDefinition = 0;
 
 	
 	
@@ -26,7 +25,7 @@ class Fps_Viewer_ExpresionParser
 			'/' => 'Fps_Viewer_Operator_BinaryDivis',
 			'%' => 'Fps_Viewer_Operator_BinaryMod',
 			'in' => 'Fps_Viewer_Operator_BinaryIn',
-			'not in' => 'Fps_Viewer_Operator_BinaryNotIn',
+			'notin' => 'Fps_Viewer_Operator_BinaryNotIn',
 			'and' => 'Fps_Viewer_Operator_BinaryAnd',
 		);
 	}
@@ -41,6 +40,9 @@ class Fps_Viewer_ExpresionParser
 		
 		switch ($currToken->getType()) {
 			case Fps_Viewer_Token::OPERATOR_TYPE:
+				if ('for2' === $this->parser->getEnv()) $this->parser->setEnv('for');
+				
+				
 				$node = $this->parseOperatorExpression($node, $currToken->getValue());
 				
 				break;
@@ -54,7 +56,8 @@ class Fps_Viewer_ExpresionParser
 	
 	public function parseOperatorExpression($left, $type)
 	{
-        $this->inIfDefinition++;
+
+		
 		if (!array_key_exists($type, $this->binaryOperators)) {
 			//TODO
 		}
@@ -64,7 +67,6 @@ class Fps_Viewer_ExpresionParser
 		// if use IF with only one parametr ( if($var) )
 		if ($stream->getCurrent()->getType() == Fps_Viewer_Token::BLOCK_END_TYPE) {
 			$right = $this->parsePrimaryExpression();
-            $this->inIfDefinition--;
 			return new $this->binaryOperators['==']($left, $right);
 		}
 		
@@ -72,17 +74,21 @@ class Fps_Viewer_ExpresionParser
 		$token = $stream->getCurrent();
 		
 
+		
+
+		
+		
 		if (!$token->test(array(Fps_Viewer_Token::VAR_START_TYPE, Fps_Viewer_Token::NUMBER_TYPE, Fps_Viewer_Token::STRING_TYPE))) {
 			// TODO
 		}
 		
 		
-		// This is tmp var seting when foreach array
-		if ('for_definition' === $this->parser->getEnv()) {
+		// This is tmp var seting when foreach array 
+		// (hwere we must use foreach->value, and not variable from current context)
+		if ('for_body' === $this->parser->getEnv() || 'for' === $this->parser->getEnv()) {
 			$this->parser->setStack($left->getValue());
 		}
 		$right = $this->parsePrimaryExpression();
-        $this->inIfDefinition--;
 		return new $this->binaryOperators[$type]($left, $right);
 	}
 	
@@ -119,9 +125,18 @@ class Fps_Viewer_ExpresionParser
                             $node = $this->getFunctionNode($token->getValue());
                         } else {
                             $node = new Fps_Viewer_Node_Var($token->getValue());
-
-							if (in_array($token->getValue(), $this->parser->getStack())) {
-							    $node->setTmpContext($token->getValue());
+							// Foreach->value use. Where we create new context, 
+							// which work only inside FOR
+                            //pr($this->parser->getEnv());
+                            //pr($this->parser->getEnv());
+							if (array_key_exists($token->getValue(), $this->parser->getStack())) {
+                                //if ('for_body' === $this->parser->getEnv() || 'for' === $this->parser->getEnv()) {
+								//    $node->setTmpContext($token->getValue());
+                                //}
+								
+                                //if ('if' != $this->parser->getEnv() && false != $this->parser->getEnv()) {
+								    $node->setTmpContext($token->getValue());
+                                //}
 							}
                         }
 						break;
@@ -150,20 +165,6 @@ class Fps_Viewer_ExpresionParser
         }
 
         $node = $this->postfixExpression($node);
-
-
-        // >2 parameters in IF block
-        if (
-            $this->parser->getCurrentToken()->test(Fps_Viewer_Token::OPERATOR_TYPE, array_keys($this->binaryOperators))
-            && $this->inIfDefinition > 0
-        ) {
-            $node = $this->parseOperatorExpression(
-                $this->parser->setNode($node, $this->inFunc),
-                $this->parser->getCurrentToken()->getValue()
-            );
-        }
-
-
 		return $this->parser->setNode($node, $this->inFunc);
     }
 	
@@ -205,23 +206,15 @@ class Fps_Viewer_ExpresionParser
 	public function getFunctionNode($func)
 	{
 		$this->parser->getStream()->next();
-		$node = $this->parser->getStream()->getCurrent();
+		$param = $this->parser->getStream()->getCurrent();
 
 		$this->inFunc = true;
 
-		if (')' === $node->getValue()) return new Fps_Viewer_Node_Text($func . '()');
+		if (')' === $param->getValue()) return new Fps_Viewer_Node_Text($func . '()');
 		
-		$expr = new Fps_Viewer_Node_Function($func); //$this->parsePrimaryExpression()
-        $expr->addParam($this->parsePrimaryExpression());
-
-        while ($this->parser->getStream()->getCurrent()->test(Fps_Viewer_Token::PUNCTUATION_TYPE, array(','))) {
-            $this->parser->getStream()->next();
-            $param = $this->parsePrimaryExpression();
-            $expr->addParam($param);
-        }
-
+		$expr = new Fps_Viewer_Node_Function($func, $this->parseExpression());
 		$this->inFunc = false;
-
+		//pr($this->parser->getStream()); die();
 		$this->parser->getStream()->next();
 		return $expr;
 	}
@@ -256,11 +249,13 @@ class Fps_Viewer_ExpresionParser
 	
     public function parseStringExpression()
     {
+		//$this->parser->getStream()->next();
 		$param = $this->parser->getStream()->getCurrent();
 		$this->parser->getStream()->next();
 		
 		$expr = new Fps_Viewer_Node_Text($param->getValue());
-
+		
+		//$this->parser->getStream()->next();
 		return $expr;
     }
 }

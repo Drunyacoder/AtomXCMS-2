@@ -20,7 +20,7 @@ class Fps_Viewer_Parser_For
 		$this->parser->getStream()->next();
 		
 		
-		$this->parser->setEnv('for_definition');
+		$this->parser->setEnv('for2');
 		$expr = $this->parser->getExpression()->parseExpression();
 		$this->parser->getStream()->expect(Fps_Viewer_Token::BLOCK_END_TYPE); 
 		$this->parser->setEnv('for_body');

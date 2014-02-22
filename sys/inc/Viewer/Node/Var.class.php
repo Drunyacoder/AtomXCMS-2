@@ -6,17 +6,13 @@ class Fps_Viewer_Node_Var
 {
 
 	private $value;
-
+	
+	//private $filter = 'e';
 	private $filter;
-
+	
+	//private $attr = array('foo1', 'foo2');
 	private $attr;
-
-    /**
-     * if @var == 1 variable should be $this->getValue(context, value)
-     * @var bool
-     */
-    private $def = false;
-
+	private $def = false;
 	private $tmpContext = false;
 
 	

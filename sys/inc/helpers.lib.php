@@ -23,7 +23,7 @@
 
 
 function AtmGetDate($date, $format = 'Y-m-d H:i:s') {
-	return AtmDateTime::getDate($date, $format);
+	return AtmDateTime::getDate($date, $format = 'Y-m-d H:i:s');
 }
 
 
