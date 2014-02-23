@@ -3,7 +3,7 @@
 
 
 //set chmod
-function setChMod($path, $mode = 0766, $recursive = true) {
+function setChMod($path, $mode = 0755, $recursive = true) {
 	clearstatcache();
 	$flag = true;
 	if (file_exists($path) && is_dir($path) && $recursive === true) {
