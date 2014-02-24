@@ -22,7 +22,7 @@ function sendPM() {
 		    <ul class="userlist">
 			   <li class="sendbutton" id="send_pm_a" onclick="sendPM()">Развернуть форму для ответа</li>
 			   <li id="send_msg_form" style="display: none;overflow: visible;">
-			      <form name="sendForm" id="sendForm" action="/users/send_pm" method="POST" enctype="multipart/form-data" onsubmit="sendu('sendForm'); return false">
+			      <form name="sendForm" id="sendForm" action="/users/send_pm" method="POST" enctype="multipart/form-data">
 			         <textarea {{ editor_text }} class="text-area" name="mainText"></textarea>
 			         <input type="text" name="toUser" id="toUser" maxlength="30" value="{{ context.interlocutor }}" style="display: none" />
 			         <input class="subm" type="submit" name="submitForm" value="Отправить" />

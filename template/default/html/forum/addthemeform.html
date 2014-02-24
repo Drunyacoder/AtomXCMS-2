@@ -11,7 +11,7 @@ function pollForm(element) {
 }
 </script>
 <form name="sendForm" id="sendForm" action="{{ context.action }}" method="POST" 
-enctype="multipart/form-data" onsubmit="if (checkForm(this)) {sendu('sendForm')}; return false">
+enctype="multipart/form-data" onsubmit="return checkForm(this)">
 <div class="material">
 	  <div class="mat-title">Coздание новой темы</div>
 	  <div class="mat-content">

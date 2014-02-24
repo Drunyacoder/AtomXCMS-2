@@ -13,7 +13,7 @@ $(function() {
 });
 </script>
 
-<form name="sendMailForm" id="sendForm" action="{{ context.action }}" method="POST" onsubmit="sendu('sendForm'); return false">
+<form name="sendMailForm" id="sendForm" action="{{ context.action }}" method="POST">
 	<div class="material">
 	  <div class="mat-title">Отправление письма на почту: {{ context.to_user }}</div>
 	  <div class="mat-content">
