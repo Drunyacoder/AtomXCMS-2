@@ -114,12 +114,10 @@ class UserAuth
         $Register = Register::getInstance();
         $FpsDB = $Register['DB'];
         
-	    $query = "SELECT a.id, MAX(UNIX_TIMESTAMP(b.time)) AS unix_last_post
-			FROM `" . $FpsDB->getFullTableName('themes') . "` a
-			INNER JOIN `" . $FpsDB->getFullTableName('posts') . "` b
-			ON a.id=b.id_theme
-			GROUP BY a.id
-			HAVING unix_last_post>" . $_SESSION['user']['unix_last_visit'];
+	    $query = "SELECT id, UNIX_TIMESTAMP(last_post) AS unix_last_post
+			FROM `" . $FpsDB->getFullTableName('themes') . "` 
+			GROUP BY id
+			HAVING unix_last_post > " . $_SESSION['user']['unix_last_visit'];
 
 	    $res = $FpsDB->query($query);
 

@@ -602,10 +602,10 @@ Class ForumModule extends Module {
 	private function __getThemeIcon($theme) 
 	{
 		$hot_theme_limit = 20;
-	
+		
 		if (isset($_SESSION['user'])) { // это для зарегистрированного пользователя
 			// Если есть новые сообщения (посты) - только для зарегистрированных пользователей
-			if (isset($_SESSION['newThemes']) and in_array($theme->getiId(), $_SESSION['newThemes'])) {
+			if (isset($_SESSION['newThemes']) and array_key_exists($theme->getId(), $_SESSION['newThemes'])) {
 				if ($theme->getLocked() == 0) // тема открыта
 					if ($theme->getPosts() > $hot_theme_limit)
 						$themeicon = get_img('/template/'.$this->Register['Config']->read('template').'/img/folder_hot_new.gif'
