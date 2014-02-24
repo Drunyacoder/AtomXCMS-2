@@ -75,7 +75,10 @@ Class NewsModule extends Module {
 			$query_params['cond']['premoder'] = 'confirmed';
 		}
 		
-		if (!empty($tag)) $query_params['cond'][] = "`tags` LIKE '%{$tag}%'";
+		if (!empty($tag)) {
+			$tag = $this->Register['DB']->escape($tag);
+			$query_params['cond'][] = "`tags` LIKE '%{$tag}%'";
+		}
 		
 		
 
@@ -107,15 +110,12 @@ Class NewsModule extends Module {
 			'limit' => $this->Register['Config']->read('per_page', $this->module),
 			'order' => getOrderParam(__CLASS__),
 		);
-		$where = array();
-		if (!$this->ACL->turn(array('other', 'can_see_hidden'), false)) $where['available'] = '1';
-		if (!empty($tag)) $where[] = "`tags` LIKE '%{$tag}%'";
 
 		
 		$this->Model->bindModel('attaches');
 		$this->Model->bindModel('author');
 		$this->Model->bindModel('category');
-		$records = $this->Model->getCollection($where, $params);
+		$records = $this->Model->getCollection($query_params['cond'], $params);
 
 
 
