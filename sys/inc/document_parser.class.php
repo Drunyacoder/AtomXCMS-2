@@ -161,6 +161,7 @@ class Document_Parser {
 		$markers['site_title'] = Config::read('site_title');
 		
 		if (isset($_SESSION['user']) && isset($_SESSION['user']['name'])) {
+			$markers['fps_user'] = $_SESSION['user'];
 			$markers['personal_page_link'] = get_url(getProfileUrl($_SESSION['user']['id']));
 			$markers['fps_user_name'] = $_SESSION['user']['name'];
 			$userGroup = $Register['ACL']->get_user_group($_SESSION['user']['status']);
@@ -169,6 +170,7 @@ class Document_Parser {
 			$markers['personal_page_link'] = get_url('/users/add_form/');
 			$markers['fps_user_name'] = 'Гость'; //TODO
 			$markers['fps_user_group'] = 'Гости';
+			$markers['fps_user'] = array();
 		}
 		
 		

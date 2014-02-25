@@ -2,7 +2,7 @@
 
 
 
-class Fps_Viewer_Parser_include
+class Fps_Viewer_Parser_Include
 {
 	public $parser;
 

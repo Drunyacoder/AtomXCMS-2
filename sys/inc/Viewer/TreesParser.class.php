@@ -21,6 +21,7 @@ class Fps_Viewer_TreesParser
 			'if' => 'Fps_Viewer_Parser_If',
 			'for' => 'Fps_Viewer_Parser_For',
 			'include' => 'Fps_Viewer_Parser_Include',
+			'set' => 'Fps_Viewer_Parser_Set',
 		);
 	}
 	
@@ -188,6 +189,8 @@ class Fps_Viewer_TreesParser
 
 		
 		switch ($this->getEnv()) {
+			case 'set':
+				break;
 			case 'if':
 			case 'for_definition':
 				if ($node instanceof Fps_Viewer_Node_Var) $node->setDef(true);

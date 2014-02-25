@@ -519,7 +519,8 @@ font: 12px Verdana !important;
 }
 .paginator div.pages .pages:hover  {background-color: #aaa;}
 .paginator div.pages strong.pages {background-color: #780 !important;}
-.meta {margin: 7px 0;display: inline-block;}
+div.meta, span.meta {margin: 7px 0;display: inline-block;}
+
 .twoblocks {overflow:hidden; padding-right:250px;}
 .content .rightbloks {width: 239px;vertical-align: top;min-height: 500px; border-radius: 10px;-moz-border-radius: 10px -webkit-border-radius: 10px; background-color: #e7e7e7; box-shadow: inset 0px 0px 2px #999;-webkit-box-shadow: inset 0px 0px 2px #999;-moz-box-shadow: inset 0px 0px 2px #999; float:right; clear:right; margin-right:-250px;}
 .content .rightbloks .block {border-radius: 10px;-moz-border-radius: 10px;-webkit-border-radius: 10px;}
@@ -597,7 +598,7 @@ box-shadow: inset 0px 0px 1px #999;-webkit-box-shadow: inset 0px 0px 1px #999;-m
 width: auto;
 }
 .content div .material .mat-content ul.userslinks {
-width: 220px;
+width: 17%;
 background: #b6b6b6;
 border: 1px solid #999;
 margin: 0;
@@ -641,7 +642,7 @@ text-overflow: ellipsis;
 .content div .material .mat-content ul.userslinks li.category a {
     color: #FFF;  text-shadow: 0 1px 0px #423F3F;
 }
-.content div .material .mat-content .userinfo {display: inline-block;vertical-align: top;width: 722px;}
+.content div .material .mat-content .userinfo {display: inline-block;vertical-align: top; width:82%;}
 .content div .material .mat-content .userinfo .upuserinfo {margin: 10px;}
 .content div .material .mat-content .userinfo .upuserinfo .profileavatar {position:relative;display: inline-block;width: 95px;height: 95px;vertical-align: top;}
 .content div .material .mat-content .userinfo .upuserinfo .userinfocell {display: inline-block;margin: 0 10px;font-size: 13px;color: #555;}

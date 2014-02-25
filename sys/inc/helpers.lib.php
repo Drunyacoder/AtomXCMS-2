@@ -19,7 +19,11 @@
 | без согласия автора, является не законным    |
 \---------------------------------------------*/
 
-
+function getUser($id){
+	$Register = Register::getInstance();
+	$model = $Register['ModManager']->getModelInstance('Users');
+	return $model->getById($id);
+}
 
 
 function AtmGetDate($date, $format = 'Y-m-d H:i:s') {

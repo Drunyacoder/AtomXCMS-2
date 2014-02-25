@@ -138,6 +138,12 @@ class Validate {
 							$errors .= $this->getErrorMessage('pattern', $params, $title);
 					}
 					
+					// user function
+					if (!empty($params['function'])) {
+						if (!empty($request[$title]) && is_callable($params['function'])) 
+							$errors .= $params['function']($errors);
+					}
+					
 				
 				// field is file
 				} else {

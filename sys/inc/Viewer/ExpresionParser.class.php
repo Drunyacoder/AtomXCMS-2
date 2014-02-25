@@ -28,6 +28,7 @@ class Fps_Viewer_ExpresionParser
 			'in' => 'Fps_Viewer_Operator_BinaryIn',
 			'not in' => 'Fps_Viewer_Operator_BinaryNotIn',
 			'and' => 'Fps_Viewer_Operator_BinaryAnd',
+			'=' => 'Fps_Viewer_Operator_BinarySet',
 		);
 	}
 	
@@ -38,7 +39,6 @@ class Fps_Viewer_ExpresionParser
 		$currToken = $this->parser->getStream()->getCurrent();
 		
 
-		
 		switch ($currToken->getType()) {
 			case Fps_Viewer_Token::OPERATOR_TYPE:
 				$node = $this->parseOperatorExpression($node, $currToken->getValue());

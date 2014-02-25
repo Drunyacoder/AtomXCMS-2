@@ -59,41 +59,21 @@
 									<li>
 										<span class="siu_title">Группа:</span>
 										<span class="siu_data">
-										   <span>
-										              {% if checkAccess([module,'edit_users']) %}
-		                                                  {% if fps_id == user.id %}
-			                                                    {{ user.group }}
-		                                                  {% else %}
-			                                                    <div class="group_edit">
-				                                                  <form id="groupForm_{{ user.id }}">
-					                                                <select name="group" onchange="document.getElementById('infomess_group_{{ user.id }}').innerHTML = ''">
-						                              {% for group in fps_users_groups %}
-							                              {% if group.id %}
-								                               <option {% if user.status == group.id %} selected {% endif %} value="{{ group.id }}">{{ group.title }}</option>
-							                          {% endif %}
-						                              {% endfor %}
-					                                           </select>
-					                                              <input type="button" value="Изменить" onClick="setGroup({{ user.id }}, 'groupForm_{{ user.id }}');" />
-					                                              <div id="infomess_group_{{ user.id }}"></div>
-				                                                  </form>
-		                                                       </div>
-		                                              {% endif %}
-	                                                  {% else %}
-		                                                  {{ user.group }}
-	                                                  {% endif %}
-									      </span>
+										   <span>{{ user.group }}</span>
 									</span>
 									</li>
 									<li>
 										<span class="siu_title">Репутация:</span>
-										<span class="siu_data"><a href="javascript:void(0)" onClick="showFpsWin('{{ www_root }}/users/votes_story/{{ user.id }}', '', 'История рейтинга ({{ user.name }})');">{{ user.rating }}</a>
-                                                                             <a href="javascript:void(0)" onClick="$('#setRating_{{ user.id }}').show();">-&nbsp;/&nbsp;+</a></a>
+										<span class="siu_data">
+                                            <a href="javascript:void(0)" onClick="showFpsWin('{{ www_root }}/users/votes_story/{{ user.id }}', '', 'История рейтинга ({{ user.name }})');">{{ user.rating }}</a>&nbsp;&nbsp;
+                                            <a href="javascript:void(0)" onClick="$('#setRating_{{ user.id }}').show();">-&nbsp;/&nbsp;+</a>
 										</span>
 									</li>
 									<li>
 										<span class="siu_title">Предупреждения:</span>
-										<span class="siu_data"><a href="javascript:void(0)" onClick="showFpsWin('{{ www_root }}/users/warnings_story/{{ user.id }}', '', 'История предупреждений ({{ user.name }})');">{{ user.warnings }}</a>&nbsp;&nbsp;&nbsp;&nbsp;
-                                                                             <a href="javascript:void(0)" onClick="$('#addWarning_{{ user.id }}').show();">-&nbsp;/&nbsp;+</a>
+										<span class="siu_data">
+                                            <a href="javascript:void(0)" onClick="showFpsWin('{{ www_root }}/users/warnings_story/{{ user.id }}', '', 'История предупреждений ({{ user.name }})');">{{ user.warnings }}</a>&nbsp;&nbsp;
+                                            <a href="javascript:void(0)" onClick="$('#addWarning_{{ user.id }}').show();">-&nbsp;/&nbsp;+</a>
 										</span>
 									</li>
 									<li>

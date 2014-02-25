@@ -651,21 +651,21 @@ Class UsersModule extends Module {
 		$this->ACL->turn(array('users', 'edit_mine'));
 
 
-        $anket = $this->Model->getById((int)$_SESSION['user']['id']);
-		if (is_object($this->AddFields) && $anket) {
-			$anket = $this->AddFields->mergeRecords(array($anket), true);
-            $anket = $anket[0];
+        $user = $this->Model->getById((int)$_SESSION['user']['id']);
+		if (is_object($this->AddFields) && $user) {
+            $user = $this->AddFields->mergeRecords(array($user), true);
+            $user = $user[0];
 		}
 
 
         // Check for preview or errors
         $data = array('email' => null, 'timezone' => null, 'icq' => null, 'jabber' => null, 'pol' => null, 'city' => null, 'telephone' => null, 'byear' => null, 'bmonth' => null, 'bday' => null, 'url' => null, 'about' => null, 'signature' => null);
-        //$data = array_merge($data, $anket);
-        $data = Validate::getCurrentInputsValues($anket, $data);
+        //$data = array_merge($data, $user);
+        $data = Validate::getCurrentInputsValues($user, $data);
 
         $errors = $this->Parser->getErrors();
         if (isset($_SESSION['FpsForm'])) unset($_SESSION['FpsForm']);
-        if (!empty($errors)) $data->setError($errors);
+        if (!empty($errors)) $data->setErrors($errors);
 
 
 	
@@ -682,8 +682,8 @@ Class UsersModule extends Module {
 		
 
 
-        if (file_exists(ROOT . '/sys/avatars/' . $anket->getId() . '.jpg')) {
-            $data->setAvatar(get_url('/sys/avatars/' . $anket->getId() . '.jpg'));
+        if (file_exists(ROOT . '/sys/avatars/' . $user->getId() . '.jpg')) {
+            $data->setAvatar(get_url('/sys/avatars/' . $user->getId() . '.jpg'));
         } else {
             $data->setAvatar(get_url('/sys/img/noavatar.png'));
         }
@@ -715,7 +715,7 @@ Class UsersModule extends Module {
         $data->setUnlinkfile($unlinkfile);
        
 		
-        $source = $this->render('edituserform.html', array('context' => $data));
+        $source = $this->render('edituserform.html', array('context' => $data, 'user' => $user));
 
 		
 		// Navigation Panel
@@ -794,24 +794,17 @@ Class UsersModule extends Module {
 		// хочет изменить его или поменять свой e-mail
 		$changePassword = false;
 		$changeEmail = false;
-		if (!empty($password)) {
-			if ( md5($password) != $_SESSION['user']['passw'] ) 
-				$errors .= '<li>' . __('Wrong current pass') . '</li>'."\n";
-				
-				
-			// want to change password
-			if (!empty($newpassword)) $changePassword = true;
 
-			
-			// user want to change email
-			if ($email != $_SESSION['user']['email']) $changeEmail = true;
-		}
-		
-		
+
 		// if new and old emails are equal, we needn't check password
-		if ($email == $_SESSION['user']['email']) {
+		if (empty($newpassword) && $email == $_SESSION['user']['email']) {
 			$this->Register['Validate']->disableFieldCheck('password');
-		}
+		} else {
+            // want to change password
+            if (!empty($newpassword)) $changePassword = true;
+            // user want to change email
+            if ($email != $_SESSION['user']['email']) $changeEmail = true;
+        }
 		
 		
 		$errors .= $this->Register['Validate']->check($this->getValidateRules());
@@ -1271,7 +1264,8 @@ Class UsersModule extends Module {
 		$markers = array();
 		$markers['user_id'] 		= intval($user->getId());
 		$markers['regdate'] 		= h($user->getPuttime());
-		$markers['status'] 		    = h($status_info['title']);
+		$markers['group_id'] 		= $user->getStatus();
+		$markers['group'] 		    = h($status_info['title']);
 		$markers['lastvisit']   	= h($user->getLast_visit());
         $markers['lastpost'] 		= h($lastPost);
         $markers['totalposts'] 	    = h($user->getPosts());
@@ -1642,11 +1636,13 @@ Class UsersModule extends Module {
 
         $markers = array('error' => '');
         $messages = $this->Model->getInputMessages();
+		
+		$user = $this->Model->getById($_SESSION['user']['id']);
 
         if (!is_array($messages) || !count($messages)) {
             $markers['messages'] = array();
-            $markers['error'] = __('This dir is empty');
-            $source = $this->render('vievinpm.html', array('context' => $markers));
+            $markers['errors'] = __('This dir is empty');
+            $source = $this->render('vievinpm.html', array('context' => $markers, 'user' => $user));
             return $this->_view($source);
         }
 
@@ -1661,7 +1657,7 @@ Class UsersModule extends Module {
         }
 
 
-		$source = $this->render('vievinpm.html', array('messages' => $messages, 'context' => $markers));
+		$source = $this->render('vievinpm.html', array('messages' => $messages, 'context' => $markers, 'user' => $user));
 		return $this->_view($source);
 	}
 
@@ -2651,7 +2647,8 @@ Class UsersModule extends Module {
 	
 	
 	public function getValidateRules() 
-	{	
+	{
+        $Register = Register::getInstance();
 		$rules = array(
 			'add' => array(
 				'login' => array(
@@ -2731,6 +2728,10 @@ Class UsersModule extends Module {
 					'min_lenght' => Config::read('min_password_lenght'),
 					'required' => true,
 					'pattern' => V_LOGIN,
+                    'function' => function($errors) use ($Register){
+                        if ( md5($_POST['password']) != $_SESSION['user']['passw'] )
+                            return '<li>' . __('Wrong current pass') . '</li>'."\n";
+                    },
 				),
 				'confirm' => array(
 					'compare' => 'newpassword',
