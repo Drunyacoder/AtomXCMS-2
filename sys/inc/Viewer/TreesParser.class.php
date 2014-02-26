@@ -189,10 +189,11 @@ class Fps_Viewer_TreesParser
 
 		
 		switch ($this->getEnv()) {
-			case 'set':
+			case 'set_left':
 				break;
 			case 'if':
 			case 'for_definition':
+			case 'set_right':
 				if ($node instanceof Fps_Viewer_Node_Var) $node->setDef(true);
 				//$node = new Fps_Viewer_Node($node);
 				break;

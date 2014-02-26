@@ -5,12 +5,14 @@
 class Fps_Viewer_Node_Set
 {
 
-	private $value;
+	private $left;
+	private $right;
 
 
-	public function __construct($value, Fps_Viewer_TreesParser $parser)
+	public function __construct($left, $right)
 	{
-		$this->value = $value;
+		$this->left = $left;
+		$this->right = $right;
 	}
 
 
@@ -18,7 +20,9 @@ class Fps_Viewer_Node_Set
     public function compile(Fps_Viewer_CompileParser $compiler)
     {
         $compiler->addIndent();
-		$this->value->compile($compiler);
+		$this->left->compile($compiler);
+        $compiler->raw(" = ");
+		$this->right->compile($compiler);
 		$compiler->raw(";\n");
     }
 
@@ -27,6 +31,9 @@ class Fps_Viewer_Node_Set
 	
 	public function __toString()
 	{
-		// TODO
+        $out = "\n";
+        $out .= '[left]:' . $this->left . "\n";
+        $out .= '[right]:' . $this->right . "\n";
+        return $out;
 	}
 }
