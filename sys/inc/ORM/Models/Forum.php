@@ -174,5 +174,36 @@ class ForumModel extends FpsModel
 		return $forums;
 	}
 
+    /**
+     * @param $user_id
+     * @return array|bool
+     */
+    function getUserStatistic($user_id) {
+        $user_id = intval($user_id);
+        if ($user_id > 0) {
+            $result = $this->getDbDriver()->select('users', DB_FIRST, array('cond' => array('`id`' => $user_id), 'limit' => 1));
+            if (is_array($result) && count($result) > 0) {
+                $res = array();
+                /*
+                if ($result[0]['themes'] > 0) {
+                    $res[] = array(
+                        'text' => __('themes'),
+                        'count' => $result[0]['themes'],
+                        'url' => get_url('/forum/user_themes/' . $user_id),
+                    );
+                }
+                */
+                if ($result[0]['posts'] > 0) {
+                    $res[] = array(
+                        'text' => __('messages'),
+                        'count' => $result[0]['posts'],
+                        'url' => get_url('/forum/user_posts/' . $user_id),
+                    );
+                }
 
+                return $res;
+            }
+        }
+        return false;
+    }
 }

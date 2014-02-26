@@ -871,7 +871,7 @@ Class ForumModule extends Module {
 								'/sys/img/icon_pm.gif', 
 								array('alt' => __('PM'), 'title' => __('PM'))
 							), 
-							'/users/send_msg_form/' . $post->getId_author(), 
+							'/users/pm_send_form/' . $post->getId_author(),
 							$icon_params
 						);
 					}

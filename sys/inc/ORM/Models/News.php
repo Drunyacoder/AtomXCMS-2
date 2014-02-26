@@ -53,4 +53,25 @@ class NewsModel extends FpsModel
     );
 
 
+
+    /**
+     * @param $user_id
+     * @return array|bool
+     */
+    function getUserStatistic($user_id) {
+        $user_id = intval($user_id);
+        if ($user_id > 0) {
+            $result = $this->getTotal(array('cond' => array('author_id' => $user_id)));
+            if ($result) {
+                $res = array(
+                    'text' => __('News'),
+                    'count' => intval($result),
+                    'url' => get_url('/news/user/' . $user_id),
+                );
+
+                return $res;
+            }
+        }
+        return false;
+    }
 }

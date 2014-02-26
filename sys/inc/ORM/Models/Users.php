@@ -130,6 +130,128 @@ class UsersModel extends FpsModel
 
         return $messages;
     }
+
+
+    /**
+     * Get all users collocutors with last message from the correspondence
+     *
+     * @param $user_id
+     * @return mixed
+     */
+    public function getUserDialogs($user_id)
+    {
+        $Register = Register::getInstance();
+        $messagesModel = $Register['ModManager']->getModelName('Messages');
+        $messagesModel = new $messagesModel;
+        $messagesModel->bindModel('touser');
+        $messagesModel->bindModel('fromuser');
+
+
+        $condition = "(to_user = '" . $user_id . "' OR from_user = '" . $user_id . "')";
+        $condition2 = "id_rmv <> '" . $user_id . "'";
+        $messages = $messagesModel->getCollection(array(
+            $condition,
+            $condition2,
+            "`sendtime` IN (SELECT MAX(sendtime) FROM `" . $messagesModel->getTable() . "`
+                WHERE " . $condition ." AND " . $condition2 . " GROUP BY to_user, from_user)",
+        ), array(
+            'order' => 'sendtime DESC',
+        ));
+
+
+
+        if (is_array($messages) && count($messages)) {
+            $users = array();
+            foreach ($messages as $k => &$message) {
+                if ($message->getTo_user() === $user_id) {
+                    if (in_array($message->getFrom_user(), $users)) unset($messages[$k]);
+                    else $users[] = $message->getFrom_user();
+                } else {
+                    if (in_array($message->getTo_user(), $users)) unset($messages[$k]);
+                    else $users[] = $message->getTo_user();
+                }
+                $message->setDirection(($message->getTo_user() === $user_id) ? 'in' : 'out');
+            }
+        }
+
+        return $messages;
+    }
+
+
+    /**
+     * Get users dialog with one collocutor with all messages from the correspondence
+     *
+     * @param $owner_id
+     * @param $collocutor_id
+     * @return mixed
+     */
+    public function getDialog($owner_id, $collocutor_id)
+    {
+        $Register = Register::getInstance();
+        $messagesModel = $Register['ModManager']->getModelName('Messages');
+        $messagesModel = new $messagesModel;
+        $messagesModel->bindModel('touser');
+        $messagesModel->bindModel('fromuser');
+
+
+        $condition = "(to_user = '" . $owner_id . "' AND from_user = '" . $collocutor_id . "') "
+            . "OR (from_user = '" . $owner_id . "' AND to_user = '" . $collocutor_id . "')";
+        $condition2 = "id_rmv <> '" . $owner_id . "'";
+        $messages = $messagesModel->getCollection(array(
+            $condition,
+            $condition2,
+        ), array(
+            'order' => 'sendtime DESC',
+        ));
+
+        if (is_array($messages) && count($messages)) {
+            foreach ($messages as $k => &$message) {
+                $message->setDirection(($message->getTo_user() === $owner_id) ? 'in' : 'out');
+            }
+        }
+
+        return $messages;
+    }
+
+
+    public function getFullUserStatistic($user_id)
+    {
+        $Register = Register::getInstance();
+        $stat = array();
+        $modules = glob(ROOT . '/modules/*', GLOB_ONLYDIR);
+        if (count($modules)) {
+            foreach ($modules as $path) {
+                $title = substr(strrchr($path, '/'), 1);
+                $classname = $Register['ModManager']->getModelName($title);
+
+                // Is module on?
+                if (Config::read($title . '.active') && class_exists($classname)) {
+                    @$mod = new $classname;
+
+                    if (isset($mod)) {
+                        if (is_callable(array($mod, 'getUserStatistic'))) {
+                            $stats = $mod->getUserStatistic($user_id);
+                            if (is_array($stats) && count($stats)) {
+                                $stat[] = $stats;
+                            }
+                        }
+                        unset($mod);
+                    }
+                }
+            }
+        }
+
+        uasort($stat, function($a, $b){
+            if (!empty($a['text']) && !empty($b['text'])) {
+                if ($a['text'] == $b['text']) {
+                    return ($a['text'] < $b['text']) ? -1 : 1;
+                }
+            }
+            return 0;
+        });
+
+        return $stat;
+    }
 	
 	
 	public function getByName($name)

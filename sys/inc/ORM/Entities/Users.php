@@ -99,10 +99,11 @@ class UsersEntity extends FpsEntity
 	
 
 	public function getAvatar() {
+        $template = Config::read('template');
 		if (file_exists(ROOT . '/sys/avatars/' . $this->getId() . '.jpg')) {
 			$avatar = get_url('/sys/avatars/' . $this->getId() . '.jpg');
 		} else {
-			$avatar = get_url('/sys/img/noavatar.png');
+			$avatar = get_url('/template/' . $template . '/img/noavatar.png');
 		}
 		return $avatar;
 	}

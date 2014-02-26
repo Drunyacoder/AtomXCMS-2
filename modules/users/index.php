@@ -104,7 +104,7 @@ Class UsersModule extends Module {
 			$markers['status'] = h($status['title']);
 
 			if (isset($_SESSION['user'])) {
-				$markers['pm'] = get_link(__('Write'), '/users/send_msg_form/' . $uid);
+				$markers['pm'] = get_link(__('Write'), '/users/pm_send_form/' . $uid);
 			} else {
 				$markers['pm'] = __('You are not authorized');
 			}
@@ -1241,7 +1241,7 @@ Class UsersModule extends Module {
 		
 		if (isset($_SESSION['user'])) {
 			$email = get_link(__('Send mail'), '/users/send_mail_form/' . $id);
-			$privateMessage = get_link(__('Send PM'), '/users/send_msg_form/' . $id);
+			$privateMessage = get_link(__('Send PM'), '/users/pm_send_form/' . $id);
 		} else {
 			$email = __('Only registered users');
 			$privateMessage = __('Only registered users');
@@ -1314,7 +1314,10 @@ Class UsersModule extends Module {
 		} else if ($this->ACL->turn(array('users', 'edit_users'), false)) {
 			$markers['edit_profile_link'] = get_link(__('Edit profile'), '/users/edit_form_by_admin/' . $user->getId());
 		}
-		
+
+
+        $user->setStatistic($this->Model->getFullUserStatistic($id));
+
 		
 		// Navigation Panel
 		$nav = array();
@@ -1327,6 +1330,7 @@ Class UsersModule extends Module {
             $setter = 'set' . ucfirst($k);
             $user->$setter($v);
         }
+
 		$source = $this->render('showuserinfo.html', array('user' => $user));
 		return $this->_view($source);
 	}
@@ -1334,14 +1338,12 @@ Class UsersModule extends Module {
 
 
 	// Функция возвращает html формы для отправки личного сообщения
-	public function send_msg_form($id = null)
+	public function pm_send_form($id = null)
     {
 		// Незарегистрированный пользователь не может отправлять личные сообщения
 		if (!isset($_SESSION['user'])) redirect('/');
 		$writer_status = (!empty($_SESSION['user']['status'])) ? $_SESSION['user']['status'] : 0;
 
-
-		$menu = $this->_getMessagesMenu();
 
 		$toUser = '';
 		if (isset($id)) {
@@ -1380,7 +1382,7 @@ Class UsersModule extends Module {
 			unset($_SESSION['viewMessage']);
 		}
 
-		$action = get_url('/users/send_message');
+		$action = get_url('/users/pm_send');
         $error = '';
 		// Если при заполнении формы были допущены ошибки
 		if (isset($_SESSION['sendMessageForm'])) {
@@ -1393,7 +1395,7 @@ Class UsersModule extends Module {
 
 
 		$markers = array();
-		$markers['error'] = $error;
+		$markers['errors'] = $error;
 		$markers['action'] = $action;
 		$markers['touser'] = $toUser;
 		$markers['subject'] = $subject;
@@ -1415,7 +1417,7 @@ Class UsersModule extends Module {
 	
 
 	// Отправка личного сообщения (добавляется новая запись в таблицу БД TABLE_MESSAGES)
-	public function send_message()
+	public function pm_send()
     {
 		// Незарегистрированный пользователь не может отправлять личные сообщения
 		if ( !isset( $_SESSION['user'] ) ) {
@@ -1434,7 +1436,7 @@ Class UsersModule extends Module {
 			$_SESSION['viewMessage']['toUser']   = $toUser;
 			$_SESSION['viewMessage']['subject']  = $subject;
 			$_SESSION['viewMessage']['message'] = $message;
-			redirect('/users/send_msg_form/' );
+			redirect('/users/pm_send_form/' );
 		}
 		
 		
@@ -1500,7 +1502,7 @@ Class UsersModule extends Module {
 			$_SESSION['sendMessageForm']['toUser'] = $toUser;
 			$_SESSION['sendMessageForm']['subject'] = $subject;
 			$_SESSION['sendMessageForm']['message'] = $message;
-			redirect('/users/send_msg_form/' );
+			redirect('/users/pm_send_form/' );
 		}
 
 		// Все поля заполнены правильно - "посылаем" сообщение
@@ -1525,94 +1527,56 @@ Class UsersModule extends Module {
 		/* clean DB cache */
 		$this->Register['DB']->cleanSqlCache();
 		if ($this->Log) $this->Log->write('adding pm message', 'message id(' . $last_id . ')');
-		return $this->showInfoMessage(__('Message successfully send'), '/users/out_msg_box/' );
+		return $this->showInfoMessage(__('Message successfully send'), '/users/pm/' );
 	}
 
 
 
 	// Функция возвращает личное сообщение для просмотра пользователем
-	public function get_message($id_msg = null)
+	public function pm_view($user_id = null)
     {
-		if (!isset($_SESSION['user'])) redirect('/users/');
-		$idMsg = (int)$id_msg;
-		if ($idMsg < 1) redirect('/users/in_msg_box/' );
+		if (!isset($_SESSION['user'])) redirect('/' . $this->module . '/');
+        $user_id = (int)$user_id;
+		if ($user_id < 1) redirect('/' . $this->module . '/pm/' );
 
-		
+        $collocutor = $this->Model->getById($user_id);
+        if (!$collocutor) $this->showInfoMessage(__('Some error occurred'), '/' . $this->module . '/' );
+
+
 		// Navigation Panel
 		$nav = array();
 		$nav['navigation'] = get_link(__('Home'), '/') . __('Separator')
-			. get_link(h($this->module_title), '/users/') . __('Separator') . __('Message');
+			. get_link(h($this->module_title), '/' . $this->module . '/') . __('Separator') . __('Message');
 		$this->_globalize($nav);
-		
-		
-		// Получаем из БД информацию о сообщении.
-		// В этом запросе дополнительное условие нужно для того, чтобы
-		// пользователь не смог просмотреть чужое сообщение, просто указав
-		// ID сообщения в адресной строке браузера
-        $message = $this->Model->getMessage($idMsg);
-		if (!$message) {
-			redirect('/users/in_msg_box/' );
+
+
+        $messages = $this->Model->getDialog($_SESSION['user']['id'], $user_id);
+		if (!$messages) {
+			redirect('/' . $this->module . '/pm/' );
 		}
-		
-		if (!$message->getFromuser() || !$message->getTouser()) {
-			$this->showInfoMessage(__('Some error occurred'), '/' . $this->module . '/' );
-		}
-		
-		
-		// Далее мы должны выяснить, запрашивается входящее или исходящее
-		// сообщение? Это нужно, чтобы правильно указать "Отправитель"
-		// или "Получатель" и вывести заголовок страницы: "Входящие"
-		// или "Исходящие"
+
         $markers = array();
-		if ($message->getTo_user() == $_SESSION['user']['id']) {
-			$markers['redirect'] = get_url('/users/in_msg_box/');
-			$inBox = true;
-		} else {
-            $markers['redirect'] = get_url('/users/out_msg_box/');
-			$inBox = false;
-		}
-		
-		// Формируем заголовок страницы
-		if ($inBox)  // Папка "Входящие"
-			$markers['h1'] = __('PM in');
-		else           // Папка "Исходящие"
-            $markers['h1'] = __('PM on');
-		$markers['menu'] = $this->_getMessagesMenu();
+        $markers['response'] = get_url('/' . $this->module . '/pm_send_form/' . $user_id);
 
-		
-		if ( $inBox ) {
-			$markers['in_on'] = __('From');
-			$markers['in_on_user'] = $message->getFromuser()->getName();
-			$markers['in_on_user_id'] = $message->getFrom_user();
-		} else {
-			$markers['in_on'] = __('To');
-			$markers['in_on_user'] = $message->getTouser()->getName();
-			$markers['in_on_user_id'] = $message->getTo_Suser();
-		}
+        foreach ($messages as $message) {
+            if (!$message->getFromuser() || !$message->getTouser()) {
+                $this->showInfoMessage(__('Some error occurred'), '/' . $this->module . '/' );
+            }
 
-		
-		if ($inBox)
-			$markers['in_on_message'] = __('Sended');
-		else
-			$markers['in_on_message'] = __('Getting');
-			
+            $text = $this->Textarier->print_page($message->getMessage(), $message->getFromuser()->getStatus());
+            $message->setMessage($text);
 
-		$text = $this->Textarier->print_page($message->getMessage(), $message->getFromuser()->getStatus());
-		$_SESSION['response_pm'] = $message->getSubject();
-		
+            // Помечаем сообщение, как прочитанное
+            if ($_SESSION['user']['id'] === $message->getTouser() && $message->getViewed() != 1) {
+                $message->setViewed(1);
+                $message->save();
+            }
+        }
 
-		$markers['response'] = get_url('/users/send_msg_form/' . $markers['in_on_user_id']);
-
-		
-		// Помечаем сообщение, как прочитанное
-		if ($inBox and $message->getViewed() != 1) {
-            $message->setViewed($message->getViewed());
-            $message->save();
-		}
-        $message->setMessage($text);
-        $source = $this->render('vievpmmessage.html', array(
+        $source = $this->render('pm_view.html', array(
             'context' => $markers,
-            'message' => $message,
+            'messages' => $messages,
+            'collocutor' => $collocutor,
         ));
 		
 		return $this->_view($source);
@@ -1621,100 +1585,58 @@ Class UsersModule extends Module {
 
 
 	// Папка личных сообщений (входящие)
-	public function in_msg_box()
+	public function pm()
     {
 		if (!isset($_SESSION['user'])) redirect('/');
 
 
         // Navigation Panel
         $nav = array();
-		$nav['messages_menu'] = $this->_getMessagesMenu();
         $nav['navigation'] = get_link(__('Home'), '/') . __('Separator')
             . get_link(h($this->module_title), '/users/') . __('Separator') . __('PM nav');
         $this->_globalize($nav);
 
 
         $markers = array('error' => '');
-        $messages = $this->Model->getInputMessages();
-		
-		$user = $this->Model->getById($_SESSION['user']['id']);
+        $messages = $this->Model->getUserDialogs($_SESSION['user']['id']);
+
 
         if (!is_array($messages) || !count($messages)) {
             $markers['messages'] = array();
             $markers['errors'] = __('This dir is empty');
-            $source = $this->render('vievinpm.html', array('context' => $markers, 'user' => $user));
+            $source = $this->render('pm.html', array('context' => $markers));
             return $this->_view($source);
         }
-
 
 
         foreach ($messages as $message) {
             // Если сообщение еще не прочитано
             $icon = ($message->getViewed() == 0) ? 'folder_new' : 'folder';
             $message->setIcon(get_img('/template/'.Config::read('template').'/img/' . $icon . '.gif'));
-            $message->setTheme(get_link(h($message->getSubject()), '/users/get_message/' . $message->getId()));
-            $message->setDelete(get_link(__('Delete'), '/users/delete_message/' . $message->getId(), array('onClick' => "return confirm('" . __('Are you sure') . "')")));
+            $message->setEntryLink(get_link(h($message->getSubject()), '/users/pm_view/' . $message->getId()));
+            $message->setEntryUrl(get_url('/users/pm_view/' . $message->getId()));
+            $message->setDeleteLink(get_link(__('Delete'), '/users/pm_delete/' . $message->getId(), array('onClick' => "return confirm('" . __('Are you sure') . "')")));
+            $message->setMessage(h($message->getMessage()));
         }
 
-
-		$source = $this->render('vievinpm.html', array('messages' => $messages, 'context' => $markers, 'user' => $user));
+        //pr($messages[0]->getTouser()->getAvatar()); die();
+		$source = $this->render('pm.html', array('messages' => $messages, 'context' => $markers));
 		return $this->_view($source);
 	}
-
-
-
-	// Папка личных сообщений (исходящие)
-	public function out_msg_box()
-    {
-		if (!isset($_SESSION['user'])) redirect('/');
-
-
-        // Navigation Panel
-        $nav = array();
-		$nav['messages_menu'] = $this->_getMessagesMenu();
-        $nav['navigation'] = get_link(__('Home'), '/') . __('Separator')
-            . get_link(h($this->module_title), '/users/') . __('Separator') . __('PM nav');
-        $this->_globalize($nav);
-
-
-        $markers = array('error' => '');
-        $messages = $this->Model->getOutputMessages();
-        if (!is_array($messages) || !count($messages)) {
-            $markers['messages'] = array();
-            $markers['error'] = __('This dir is empty');
-            $source = $this->render('vievonpm.html', array('context' => $markers));
-            return $this->_view($source);
-        }
-
-
-
-        foreach ($messages as $message) {
-            // Если сообщение еще не прочитано
-            $icon = ($message->getViewed() == 0) ? 'folder_new' : 'folder';
-            $message->setIcon(get_img('/template/'.Config::read('template').'/img/' . $icon . '.gif'));
-            $message->setTheme(get_link(h($message->getSubject()), '/users/get_message/' . $message->getId()));
-            $message->setDelete(get_link(__('Delete'), '/users/delete_message/' . $message->getId(), array('onClick' => "return confirm('" . __('Are you sure') . "')")));
-        }
-
-
-		$source = $this->render('vievonpm.html', array('messages' => $messages, 'context' => $markers));
-		return $this->_view($source);
-	}
-
 
 
 	/**
 	 * Multi message Delete
 	 */
-	public function delete_message_pack()
+	public function pm_delete_pack()
     {
-		$this->delete_message();
+		$this->pm_delete();
 	}
 	
 	
 
 	// Функция удаляет личное сообщение; ID сообщения передается методом GET
-	public function delete_message($id_msg = null)
+	public function pm_delete($id_msg = null)
     {
 		if (!isset( $_SESSION['user'])) redirect('/');
 		$messagesModel = $this->Register['ModManager']->getModelName('Messages');
@@ -1762,9 +1684,9 @@ Class UsersModule extends Module {
 			$toUser = $message->getTo_user();
 			$id_rmv = $message->getId_rmv();
 			if ( $toUser == $_SESSION['user']['id'] )
-				$redirect = get_url('/users/in_msg_box/');
+				$redirect = get_url('/users/pm/');
 			else
-				$redirect = get_url('/users/out_msg_box/');
+				$redirect = get_url('/users/pm/');
 			// id_rmv - это поле указывает на то, что это сообщение уже удалил
 			// один из пользователей. Т.е. сначала id_rmv=0, после того, как
 			// сообщение удалил один из пользователей, id_rmv=id_user. И только после
@@ -1786,22 +1708,6 @@ Class UsersModule extends Module {
 
 
 
-	// Функция возвращает меню для раздела "Личные сообщения"
-	private function _getMessagesMenu()
-    {
-
-		$html = get_img('/sys/img/msg_inbox.png', array('alt' => __('In box'), 'title' => __('In box')))
-			. get_link(__('In box'), '/users/in_msg_box/');
-		$html .= get_img('/sys/img/msg_outbox.png', array('alt' => __('On box'), 'title' => __('On box')))
-			. get_link(__('On box'), '/users/out_msg_box/');
-		$html .= get_img('/sys/img/msg_newpost.png', array('alt' => __('Write PM'), 'title' => __('Write PM')))
-			. get_link(__('Write PM'), '/users/send_msg_form/');
-
-		return $html;
-	}
-
-
-
 	/**
 	 *
 	 */
@@ -1810,12 +1716,13 @@ Class UsersModule extends Module {
 		if (!isset($_SESSION['user'])) redirect('/');
 		$id = intval($id);
 		if (!$id) redirect('/');
+        if ($id == $_SESSION['user']['id'])
+            return $this->showInfoMessage(__('You can not send message to yourself'), '/' . $this->module);
+
 		
 		$toUser = null;
-		
 		$user = $this->Model->getById($id);
 		if (!empty($user)) $toUser = $user->getName();
-
 
 		$markers = array(
 			'message' => '',
@@ -2643,7 +2550,32 @@ Class UsersModule extends Module {
 
 		return $this->_view('');
 	}
-	
+
+
+
+    public function search_niks() {
+        $result = array();
+        if (empty($_GET['name']))
+            return $this->showAjaxResponse($result);
+
+        $name = $this->Register['DB']->escape($_GET['name']);
+        $params = array("`name` LIKE '%$name%'");
+        if (isset($_SESSION['user'])) {
+            $authorizedName = $this->Register['DB']->escape($_SESSION['user']['name']);
+            $params[] = "`name` NOT LIKE '$authorizedName'";
+        }
+
+        $result = $this->Model->getCollection($params, array('limit' => 20));
+        if (is_array($result) && count($result))
+            $result = array_map(function($row){
+                return array(
+                    'name' => h($row->getName()),
+                    'id' => h($row->getId()),
+                );
+            }, $result);
+        return $this->showAjaxResponse($result);
+    }
+
 	
 	
 	public function getValidateRules() 
@@ -2864,7 +2796,7 @@ Class UsersModule extends Module {
 					'max_size' => Config::read('max_avatar_size', 'users'),
 				),
 			),
-			'send_message' => array(
+			'pm_send' => array(
 				'toUser' => array(
 					'required' => true,
 					'max_lenght' => 20,

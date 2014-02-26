@@ -79,6 +79,7 @@ class ModulesManager
 	public function getModelInstance($modelName)
 	{
 		$modelName = $this->getModelName($modelName);
+        if (!class_exists($modelName)) throw new Exception("Model '$modelName' not found in ModelManager::getModelInstance()");
 		return new $modelName;
 	}
 

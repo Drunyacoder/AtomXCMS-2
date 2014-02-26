@@ -19,19 +19,68 @@
 | без согласия автора, является не законным    |
 \---------------------------------------------*/
 
-function getUser($id){
+
+/**
+ * Get one or couple entities.
+ * If get one entity of the UsersModel, we also get user statistic
+ *
+ * @param $modelName
+ * @param array $id
+ * @return array
+ * @throws Exception
+ */
+function fetch($modelName, $id = array()){
 	$Register = Register::getInstance();
-	$model = $Register['ModManager']->getModelInstance('Users');
-	return $model->getById($id);
+    try {
+	    $model = $Register['ModManager']->getModelInstance($modelName);
+
+        // get collection of entities
+        if (is_array($id) && count($id)) {
+
+            $id = array_map(function($n){
+                $n = intval($n);
+                if ($n < 1) throw new Exception('Only integer value might send as ID.');
+                return $n;
+            }, $id);
+            $ids = implode(", ", $id);
+            $result = $model->getCollection(array("`id` IN ($ids)"));
+
+        // get one entity
+        } else if (is_numeric($id)) {
+            $id = intval($id);
+            if ($id < 1) throw new Exception('Only integer value might send as ID.');
+            $result = $model->getById($id);
+
+            if ($result && strtolower($modelName) == 'users') {
+                $stat = $model->getFullUserStatistic($id);
+                $result->setStatistic($stat);
+            }
+        }
+
+    } catch (Exception $e) {
+        throw new Exception($e->getMessage());
+    }
+
+	return (!empty($result)) ? $result : array();
 }
 
 
+/**
+ * Template operator for date formating
+ *
+ * @param $date
+ * @param string $format
+ * @return string
+ */
 function AtmGetDate($date, $format = 'Y-m-d H:i:s') {
 	return AtmDateTime::getDate($date, $format);
 }
 
 
-
+/**
+ * @param $errors
+ * @return string
+ */
 function wrap_errors($errors) {
 	return '<p class="errorMsg">' . __('Some error in form') . '</p>' .
 			"\n" . '<ul class="errorMsg">' . "\n" . $errors . '</ul>' . "\n";
