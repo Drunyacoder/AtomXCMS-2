@@ -653,7 +653,7 @@ text-overflow: ellipsis;
 .content div .material .mat-content .userinfo .upuserinfo .userReputation {border: 1px solid #777;margin: 8px;float: right;border-radius: 10px;height: 80px;width: 235px;color: #fff;text-align: center;}
 .content div .material .mat-content .userinfo .upuserinfo .userReputation .Rep-number {font-size: 30px;margin-top: 10px;}
 .content div .material .mat-content .userinfo .bottomuserinfo {background: #F6F6F6;margin: 10px;border: 1px solid #96a28e;border-radius: 0 0 10px;-moz-border-radius: 0 0 10px;-webkit-border-radius: 0 0 10px;}
-.content div .material .mat-content .userinfo .bottomuserinfo div {padding: 8px 10px;background: #96a28e;  color: #39332F;}
+.content div .material .mat-content .userinfo .bottomuserinfo div.head {padding: 8px 10px;background: #96a28e;  color: #39332F;}
 .content div .material .mat-content .userinfo .bottomuserinfo .spisokinfouser {list-style:none;margin: 10px 0;padding: 0;}
 .content div .material .mat-content .userinfo .bottomuserinfo .spisokinfouser li {margin-bottom: 5px; line-height: 1.3;padding: 0 6px 0 0;}
 .content div .material .mat-content .userinfo .bottomuserinfo .spisokinfouser li span {display:inline-block; font-size: 13px;vertical-align: top;}
@@ -766,6 +766,10 @@ color: #333;}
 .userlist .sendbutton {cursor: pointer;text-align: center;text-transform: uppercase;background: #ccc;border-color: #999 !important;}
 .userlist .sendbutton:hover {background: #BEBEBE;}
 .userlist li .listuser .text {display: block;float: none;color: #3c3c3c;}
+
+table.cat-tb {padding:5px;}
+table.cat-tb tr.head td {border-bottom:1px solid #aaa;}
+table.cat-tb td.message div {max-height: 1000px; overflow:auto; padding:10px 10px 20px 10px; background:#a6b29e !important;}
 /*--------------------------------------------------------------FORUM----------------------------------------------------------------------------*/
 .content .lastpostsbutton {float: right;}
 .content .newtembutton {display: inline-block; margin: 0 0 10px 1px;}

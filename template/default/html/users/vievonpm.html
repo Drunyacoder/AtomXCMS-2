@@ -1,42 +1,88 @@
-﻿<table cellspacing="0" cellpadding="0" class="cat-tb">
-	<tr>
-		<td colspan="5" class="title">Исходящие</td>
-	</tr>
-	<tr>
-		<td colspan="5" class="meta">{{ messages_menu }}</td>
-	</tr>
-{% if context.error %}
-	<tr>
-		<td colspan="5" class="meta">{{ context.error }}</td>
-	</tr>
-{% endif %}
-{% if messages %}
-	<tr class="meta">
-		<td class="meta" align="center" width="10%">Статус</td>
-		<td class="meta" align="center" width="20%">Получатель</td>
-		<td class="meta" align="center" width="35%">Тема</td>
-		<td class="meta" align="center" width="20%">Дата</td>
-		<td class="meta" align="left">Удалить<input type="checkbox" onClick="checkAll('packPoint', this.checked)"></td>
-	</tr>
-{% for message in messages %}
-	<tr>
-		<td class="col">{{ message.icon }}</td>
-		<td class="col">{{ message.touser.name }}</td>
-		<td class="col">{{ message.theme }}</td>
-		<td class="puttime">{{ message.sendtime }}</td>
-		<td class="col">{{ message.delete }}<input type="checkbox" class="packPoint" onClick="if(this.checked){addToPackage(this.value);}else{delFromPackage(this.value);}" value="{{ message.id }}" /></td>
-	</tr>
-{% endfor %}	
-{% endif %}	
-</table>
-{% if messages %}
-<div class="fps-control">
-	<select style="width:100px;">
-		<option>Удалить</option>
-	</select>
-	<input id="packButton" type="button" disabled="disabled" onClick="sendPack('/users/delete_message_pack/');" value="(0)">
-	<div style="display:none;">
-		<form id="actionPack" action="" method="POST"></form>
-	</div>
+﻿{% set user = fetch('users', fps_user_id) %}
+<div class="material">
+    <div class="mat-title">Профиль пользователя - {{ user.name }}</div>
+    <div class="mat-content">
+        <ul class="userslinks">
+            <li><a href="{{ www_root }}/users/info/{{ user.id }}">Обзор Профиля</a></li>
+            {% if checkAccess(['users', 'edit_mine']) %}
+            <li><a href="{{ www_root }}/users/edit_form/">{{ __('Edit profile') }}</a></li>
+            {% endif %}
+            {% if checkAccess(['users', 'edit_users']) %}
+            <li><a href="{{ www_root }}/users/edit_form_by_admin/{{ user.id }}">{{ __('Edit profile') }}</a></li>
+            {% endif %}
+            <li><a href="{{ www_root }}/users/pm/">Личные сообщения</a></li>
+            <li class="active"><a href="{{ www_root }}/users/pm/">Отправленные</a></li>
+            <li><a href="{{ www_root }}/users/pm_send_form/">Отправить ЛС</a></li>
+
+            {% if user.stat %}
+            <li class="category"><a>Публикации</a></li>
+            <li class="submenu">
+                {% for stat in user.stat %}
+                {% if stat.count %}
+                <a href="{{ stat.url }}">{{ stat.text }} ({{ stat.count }})</a>
+                {% endif %}
+                {% endfor %}
+            </li>
+            {% endif %}
+        </ul>
+        <div class="userinfo">
+            <div class="upuserinfo">
+                <div class="profileavatar"><img class="avatar"  title="{{ user.name }}" src="{{ user.avatar }}"></div>
+                <div class="userinfocell">
+                    <div class="nameuser">{{ user.name }}</div>
+                    <div>Регистрация: {{ user.puttime }}</div>
+                    <div class="lastrun"><img src="{{ template_path }}/img/online.png" title="online" alt="online"> Активность: {{ user.last_visit }}</div>
+                    <div class="shkalakrut">Сообщений: {{ user.posts }}</div>
+                </div>
+                {% if user.rating %}
+                {% if user.rating >= 1 %}
+                <div class="userReputation" style="background-color: #780;"><div class="Rep-number">{{ user.rating }}</div><div>Положительная</div></div>
+                {% else %}
+                <div class="userReputation" style="background-color: #C54C4C;"><div class="Rep-number">{{ user.rating }}</div><div>Отрицательная</div></div>
+                {% endif %}
+                {% else %}
+                <div class="userReputation" style="background-color: #999;"><div class="Rep-number">{{ user.rating }}</div><div>Нейтральная</div></div>
+                {% endif %}
+            </div>
+            <div class="bottomuserinfo">
+                <div>Личные сообщения(исходящие)</div>
+                <table cellspacing="0" cellpadding="0" class="cat-tb" style="width:100%;">
+                    {% if context.error %}
+                    <tr>
+                        <td colspan="5" class="meta">{{ context.error }}</td>
+                    </tr>
+                    {% endif %}
+                    {% if messages %}
+                    <tr class="meta">
+                        <td class="meta" align="center" width="4%"></td>
+                        <td class="meta" align="left" width="20%">Получатель</td>
+                        <td class="meta" align="left" width="45%">Тема</td>
+                        <td class="meta" align="left" width="20%">Дата</td>
+                        <td class="meta" align="left">Удалить<input type="checkbox" onClick="checkAll('packPoint', this.checked)"></td>
+                    </tr>
+                    {% for message in messages %}
+                    <tr>
+                        <td class="col">{{ message.icon }}</td>
+                        <td class="col">{{ message.touser.name }}</td>
+                        <td class="col">{{ message.theme }}</td>
+                        <td class="puttime">{{ message.sendtime }}</td>
+                        <td class="col">{{ message.delete }}<input type="checkbox" class="packPoint" onClick="if(this.checked){addToPackage(this.value);}else{delFromPackage(this.value);}" value="{{ message.id }}" /></td>
+                    </tr>
+                    {% endfor %}
+                    {% endif %}
+                </table>
+                {% if messages %}
+                <div class="fps-control">
+                    <select style="width:100px;">
+                        <option>Удалить</option>
+                    </select>
+                    <input id="packButton" type="button" disabled="disabled" onClick="sendPack('{{ www_root }}/users/pm_delete_pack/');" value="(0)">
+                    <div style="display:none;">
+                        <form id="actionPack" action="" method="POST"></form>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 </div>
-{% endif %}	

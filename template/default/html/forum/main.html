@@ -52,13 +52,13 @@ $(document).ready(function() {
 <div><a href="http://fapos.net/forum/">Поддержка</a></div></div>
  <div class="userlinksap">
 {% if fps_user_id %}
-<div><a href="{{ www_root }}/users/in_msg_box/">Сообщения</a></div>
+<div><a href="{{ www_root }}/users/pm/">Сообщения</a></div>
 <div class="activewindow"><a href="{{ personal_page_link }}">{{ fps_user_name }}</a><div class="miniprofileadm" style="width: 300px;padding: 10px;{% if fps_admin_access == 1 %}height:150px;{% endif %}">
     <span class="avatarminpro"><img class="avatar" src="{{ fps_user_avatar_url }}"></span>
     <span class="uslinkminpro">
         <a href="{{ personal_page_link }}">Мой профиль</a>
-        <a href="{{ www_root }}/users/send_msg_form/">Отправить сообщение</a>
-		<a href="{{ www_root }}/users/out_msg_box/">Отправленные</a>
+        <a href="{{ www_root }}/users/pm_send_form/">Отправить сообщение</a>
+		<a href="{{ www_root }}/users/pm/">Отправленные</a>
 		<a href="{{ www_root }}/users/edit_form/{{ fps_user_id }}">Настройки</a>
         {% if fps_admin_access == 1 %}
 		<a href="{{ www_root }}/admin/" target="_blank">Админка</a>

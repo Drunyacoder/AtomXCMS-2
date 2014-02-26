@@ -1,9 +1,59 @@
-﻿<table cellspacing="0" cellpadding="0" class="cat-tb">
-	<tr colspan="2"><td colspan="2" class="title">{{ context.h1 }}</td></tr>
-	<tr colspan="2"><td colspan="2" class="meta">{{ context.menu }}</td></tr>
-	<tr><td class="col">{{ context.in_on }}</td><td class="col"><b>{{ context.in_on_user }}</b></td></tr>
-	<tr><td class="col">{{ context.in_on_message }}</td><td class="col">{{ message.sendtime }}</td></tr>
-	<tr><td class="col">Тема</td><td class="col"><b>{{ message.subject }}</b></td></tr>
-	<tr><td colspan="2" class="message">{{ message.message }}</td></tr>
-	<tr><td class="col" colspan="2"align="center"><a href="{{ context.response }}">Ответить</a></td></tr>
-</table>
+﻿{% set user = fetch('users', fps_user_id) %}
+<div class="material">
+    <div class="mat-title">Профиль пользователя - {{ user.name }}</div>
+    <div class="mat-content">
+        <ul class="userslinks">
+            <li><a href="{{ www_root }}/users/info/{{ user.id }}">Обзор Профиля</a></li>
+            {% if checkAccess(['users', 'edit_mine']) %}
+            <li><a href="{{ www_root }}/users/edit_form/">{{ __('Edit profile') }}</a></li>
+            {% endif %}
+            {% if checkAccess(['users', 'edit_users']) %}
+            <li><a href="{{ www_root }}/users/edit_form_by_admin/{{ user.id }}">{{ __('Edit profile') }}</a></li>
+            {% endif %}
+            <li><a href="{{ www_root }}/users/pm/">Личные сообщения</a></li>
+            <li class="active"><a href="{{ www_root }}/users/pm/">Отправленные</a></li>
+            <li><a href="{{ www_root }}/users/pm_send_form/">Отправить ЛС</a></li>
+
+            {% if user.stat %}
+            <li class="category"><a>Публикации</a></li>
+            <li class="submenu">
+                {% for stat in user.stat %}
+                {% if stat.count %}
+                <a href="{{ stat.url }}">{{ stat.text }} ({{ stat.count }})</a>
+                {% endif %}
+                {% endfor %}
+            </li>
+            {% endif %}
+        </ul>
+        <div class="userinfo">
+            <div class="upuserinfo">
+                <div class="profileavatar"><img class="avatar"  title="{{ user.name }}" src="{{ user.avatar }}"></div>
+                <div class="userinfocell">
+                    <div class="nameuser">{{ user.name }}</div>
+                    <div>Регистрация: {{ user.puttime }}</div>
+                    <div class="lastrun"><img src="{{ template_path }}/img/online.png" title="online" alt="online"> Активность: {{ user.last_visit }}</div>
+                    <div class="shkalakrut">Сообщений: {{ user.posts }}</div>
+                </div>
+                {% if user.rating %}
+                {% if user.rating >= 1 %}
+                <div class="userReputation" style="background-color: #780;"><div class="Rep-number">{{ user.rating }}</div><div>Положительная</div></div>
+                {% else %}
+                <div class="userReputation" style="background-color: #C54C4C;"><div class="Rep-number">{{ user.rating }}</div><div>Отрицательная</div></div>
+                {% endif %}
+                {% else %}
+                <div class="userReputation" style="background-color: #999;"><div class="Rep-number">{{ user.rating }}</div><div>Нейтральная</div></div>
+                {% endif %}
+            </div>
+            <div class="bottomuserinfo">
+                <div>Личные сообщения(просмотр)</div>
+                <table cellspacing="0" cellpadding="0" class="cat-tb">
+                    <tr class="head"><td class="col">{{ context.in_on }}</td><td class="col"><b>{{ context.in_on_user }}</b></td></tr>
+                    <tr class="head"><td class="col">{{ context.in_on_message }}</td><td class="col">{{ message.sendtime }}</td></tr>
+                    <tr class="head"><td class="col">Тема</td><td class="col"><b>{{ message.subject }}</b></td></tr>
+                    <tr><td colspan="2" class="message"><div>{{ message.message }}</div></td></tr>
+                    <tr><td class="col" colspan="2"align="center"><a href="{{ context.response }}">Ответить</a></td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

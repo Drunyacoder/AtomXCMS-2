@@ -593,7 +593,7 @@ function drag_object( evt, obj )
  * Selector for package actions
  */
 function addToPackage(id) {
-	packIds.push(id);
+	if ($.inArray(id, packIds) == -1) packIds.push(id);
 	var button = document.getElementById('packButton');
 	button.value = '(' + packIds.length + ')';
 	if (packIds.length > 0) button.disabled = false;
@@ -617,6 +617,7 @@ function sendPack(action) {
 	pack.submit();
 }
 function checkAll(_className, check) {
+    var allPoints = $('input.' + _className + ':checked');
 	var f = $('input.' + _className);
 	for (key in f) {
 		var ent = f[key];
@@ -632,7 +633,7 @@ function check_pm(uid){
 	if (uid > 0) {
 		$.get('/users/get_count_new_pm/'+uid, {}, function(data){
 			if (typeof data != 'undefined' && parseInt(data) == data && data > 0) {
-				$('body').append(createFpsWin('Новые сообщения', '<div style="text-align:center;">' + data + ' Новых сообщений!<br><br><a href="/users/in_msg_box/'+uid+'">Прочитать</a></div>', 'top:0px;left:0px;')); 
+				$('body').append(createFpsWin('Новые сообщения', '<div style="text-align:center;">' + data + ' Новых сообщений!<br><br><a href="/users/pm/'+uid+'">Прочитать</a></div>', 'top:0px;left:0px;'));
 			} else {
 				setTimeout("check_pm("+uid+")", 20000);
 			}
