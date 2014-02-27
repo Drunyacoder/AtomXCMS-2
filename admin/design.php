@@ -79,6 +79,9 @@ $allowedFiles = array(
         'loginform',
         'baned',
         'showuserinfo',
+        'pm_send_form',
+        'pm_view',
+        'pm',
     ),
     'forum' => array(
         'addthemeform',
@@ -122,7 +125,9 @@ $entities = array(
     'search_form' 		=> __('Search form'),
     'search_row' 		=> __('Search results'),
     'infomessagegrand' 	=> 'Страница ошибки',
-    'infomessagegrand_en' => 'Страница ошибки (en)',
+    'pm_send_form' 		=> __('Send PM message form'),
+    'pm_view' 			=> __('View one dialog'),
+    'pm' 				=> __('List of dialogs'),
 );
 
 

@@ -324,6 +324,9 @@ $language = array(
     '%s second ago'                 => '%s секунду назад',
     '%s seconds ago(<=4)'            => '%s секунды назад',
     '%s seconds ago(>4)'            => '%s секунд назад',
+    'Send PM message form'          => 'Форма отправки ЛС',
+    'View one dialog'          		=> 'Диалог(ЛС)',
+    'List of dialogs'          		=> 'Список диалогов(ЛС)',
 
 	// BACKEND
 	'Yes'                           => 'Да',
