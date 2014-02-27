@@ -29,7 +29,7 @@ class Fps_Viewer_Parser_For
 		$body = $this->parser->parse($this->parser->getStream(), array($this, 'endWork')); 
 		$this->parser->getStream()->next();
 
-		array_pop($this->parser->stack);
+		//array_pop($this->parser->stack);
         $this->parser->setEnv(false);
 		
 		return new Fps_Viewer_Node_For($expr, $body);
