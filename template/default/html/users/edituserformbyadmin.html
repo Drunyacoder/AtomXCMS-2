@@ -4,26 +4,24 @@
     <div class="mat-content">
         <ul class="userslinks">
             <li><a href="{{ www_root }}/users/info/{{ user.id }}">Обзор Профиля</a></li>
-            {% if user.id == fps_user_id and checkAccess(['users', 'edit_mine']) %}
-            <li class="active"><a href="{{ www_root }}/users/edit_form/">{{ __('Edit profile') }}</a></li>
-            {% endif %}
-            {% if user.id != fps_user_id and checkAccess(['users', 'edit_users']) %}
-            <li><a href="{{ www_root }}/users/edit_form_by_admin/{{ user.id }}">{{ __('Edit profile') }}</a></li>
+            {% if checkAccess(['users', 'edit_users']) %}
+            <li class="active"><a href="{{ www_root }}/users/edit_form_by_admin/{{ user.id }}">{{ __('Edit profile') }}</a></li>
+			{% else %}
+				{% if user.id == fps_user_id and checkAccess(['users', 'edit_mine']) %}
+				<li class="active"><a href="{{ www_root }}/users/edit_form/">{{ __('Edit profile') }}</a></li>
+				{% endif %}
             {% endif %}
             {% if fps_user_id == user.id %}
             <li><a href="{{ www_root }}/users/pm/">Личные сообщения</a></li>
-            <li><a href="{{ www_root }}/users/pm/">Отправленные</a></li>
             {% endif %}
-            {% if user.privatemessage %}
-            <li><a href="{{ www_root }}/users/pm_send_form/{% if fps_user_id != user.id %}{{ user.id }}{% endif %}">Отправить ЛС</a></li>
-            {% endif %}
+			<li><a href="{{ www_root }}/users/pm_send_form/{% if fps_user_id != user.id %}{{ user.id }}{% endif %}">Отправить ЛС</a></li>
             {% if fps_user_id != user.id %}
-            <li><a href="{{ www_root }}/users/send_mail_form/{{ user.id }}">Отправить на почту</a></li>
+			<li><a href="{{ www_root }}/users/send_mail_form/{{ user.id }}">Отправить на почту</a></li>
             {% endif %}
-            {% if user.stat %}
+            {% if user.statistic %}
             <li class="category"><a>Публикации</a></li>
             <li class="submenu">
-                {% for stat in user.stat %}
+                {% for stat in user.statistic %}
                 {% if stat.count %}
                 <a href="{{ stat.url }}">{{ stat.text }} ({{ stat.count }})</a>
                 {% endif %}
@@ -32,31 +30,13 @@
             {% endif %}
         </ul>
         <div class="userinfo">
-            <div class="upuserinfo">
-                <div class="profileavatar"><img class="avatar"  title="{{ user.name }}" src="{{ user.avatar }}"></div>
-                <div class="userinfocell">
-                    <div class="nameuser">{{ user.name }}</div>
-                    <div>Регистрация: {{ user.puttime }}</div>
-                    <div class="lastrun"><img src="{{ template_path }}/img/online.png" title="online" alt="online"> Активность: {{ user.last_visit }}</div>
-                    <div class="shkalakrut">Сообщений: {{ user.posts }}</div>
-                </div>
-                {% if user.rating %}
-                {% if user.rating >= 1 %}
-                <div class="userReputation" style="background-color: #780;"><div class="Rep-number">{{ user.rating }}</div><div>Положительная</div></div>
-                {% else %}
-                <div class="userReputation" style="background-color: #C54C4C;"><div class="Rep-number">{{ user.rating }}</div><div>Отрицательная</div></div>
-                {% endif %}
-                {% else %}
-                <div class="userReputation" style="background-color: #999;"><div class="Rep-number">{{ user.rating }}</div><div>Нейтральная</div></div>
-                {% endif %}
-            </div>
             <div class="bottomuserinfo">
-                <div class="head">Редактирование</div>
+				{{ context.errors }}
                 <form name="addNewUserFormByAdmin" id="sendForm" action="{{ context.action }}" method="POST" enctype="multipart/form-data">
                     <ul class="spisok-all">
                         <li>
                             <span class="siu_title"><strong>Логин:</strong></span>
-                            <span class="siu_data"><input type="text" name="name" maxlength="30" value="{{ context.login }}" /></span>
+                            <span class="siu_data"><input type="text" name="name" maxlength="30" value="{{ context.name }}" /></span>
                         </li>
                         <li>
                             <span class="siu_title"><strong>Адрес e-mail:</strong></span>
@@ -135,8 +115,8 @@
                             <span class="siu_data"><input type="text" name="jabber" maxlength="100" value="{{ context.jabber }}" /></span>
                         </li>
                         <li>
-                            <span class="siu_title"><strong>Оформление сайта:</strong>Выберите то, что вам по душе.</span>
-                            <span class="siu_data"><select name="template">{{ context.template }}</select></span>
+                            <span class="siu_title"><strong>Статус:</strong></span>
+                            <span class="siu_data">{{ context.status }}</span>
                         </li>
                         <li>
                             <span class="siu_title"><strong>Активация:</strong></span>

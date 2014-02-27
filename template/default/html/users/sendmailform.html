@@ -9,7 +9,7 @@
                     AtomX.autocompletePastValue = $('[list=findusers]').val();
                     $.get('/users/search_niks/?name='+$('[list=findusers]').val(), {}, function(data){
                         if (data.length) {
-                            var data = $.parseJSON(data);
+                            //var data = $.parseJSON(data);
                             $('#findusers').html('');
                             $(data).each(function(key, row){
                                 $('#findusers').html($('#findusers').html() + '<option value="' + row.name + '">');
@@ -39,10 +39,10 @@
             <li><a href="{{ www_root }}/users/pm_send_form/{{ user.id }}">Отправить ЛС</a></li>
             <li class="active"><a href="{{ www_root }}/users/send_mail_form/{{ user.id }}">Отправить на почту</a></li>
 
-            {% if user.stat %}
+            {% if user.statistic %}
             <li class="category"><a>Публикации</a></li>
             <li class="submenu">
-                {% for stat in user.stat %}
+                {% for stat in user.statistic %}
                 {% if stat.count %}
                 <a href="{{ stat.url }}">{{ stat.text }} ({{ stat.count }})</a>
                 {% endif %}
@@ -56,8 +56,8 @@
                 <div class="userinfocell">
                     <div class="nameuser">{{ user.name }}</div>
                     <div>Регистрация: {{ user.puttime }}</div>
-                    <div class="lastrun"><img src="{{ template_path }}/img/online.png" title="online" alt="online"> Активность: {{ user.last_visit }}</div>
-                    <div class="shkalakrut">Сообщений: {{ user.posts }}</div>
+                    <div class="lastrun">{% if CheckUserOnline(user.id) %}<img src="{{ template_path }}/img/online.png" title="online" alt="online">{% else %}Последняя активность: {{ user.last_visit }}{% endif %}</div>
+                    <div class="shkalakrut"><img border="0" src="{{ template_path }}/img/{{ getUserRatingImg(user.posts) }}" alt="" /></div>
                 </div>
                 {% if user.rating %}
                 {% if user.rating >= 1 %}
@@ -70,7 +70,7 @@
                 {% endif %}
             </div>
             <div class="bottomuserinfo">
-                <div>Отправление письма на почту: {{ context.to_user }}</div>
+                <div class="head">Отправление письма на почту: {{ context.to_user }}</div>
                 <form name="sendForm" id="sendForm" action="{{ context.action }}" method="POST" enctype="multipart/form-data" onsubmit="return checkForm(this)">
                     {{ context.errors }}
                     <ul class="spisok-all">

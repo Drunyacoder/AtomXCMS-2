@@ -82,6 +82,28 @@ class UsersModel extends FpsModel
     }
 
 
+    public function getUserMessage($mid)
+    {
+        if (empty($_SESSION['user'])) return false;
+        $Register = Register::getInstance();
+        $user_id = $_SESSION['user']['id'];
+
+        $messagesModel = $Register['ModManager']->getModelInstance('Messages');
+        $messagesModel->bindModel('touser');
+        $messagesModel->bindModel('fromuser');
+
+        $condition = "(to_user = '" . $user_id . "' OR from_user = '" . $user_id . "')";
+        $condition2 = "id_rmv <> '" . $user_id . "'";
+        $message = $messagesModel->getCollection(array(
+            $condition,
+            $condition2,
+            'id' => $mid,
+        ));
+
+        return (!empty($message[0])) ? $message[0] : false;
+    }
+
+
     public function getInputMessages()
     {
         // Запрос на выборку входящих сообщений
@@ -185,7 +207,7 @@ class UsersModel extends FpsModel
      * @param $collocutor_id
      * @return mixed
      */
-    public function getDialog($owner_id, $collocutor_id)
+    public function getDialog($owner_id, $collocutor_id, $from_time = false)
     {
         $Register = Register::getInstance();
         $messagesModel = $Register['ModManager']->getModelName('Messages');
@@ -194,12 +216,14 @@ class UsersModel extends FpsModel
         $messagesModel->bindModel('fromuser');
 
 
-        $condition = "(to_user = '" . $owner_id . "' AND from_user = '" . $collocutor_id . "') "
-            . "OR (from_user = '" . $owner_id . "' AND to_user = '" . $collocutor_id . "')";
+        $condition = "((to_user = '" . $owner_id . "' AND from_user = '" . $collocutor_id . "') "
+            . "OR (from_user = '" . $owner_id . "' AND to_user = '" . $collocutor_id . "'))";
         $condition2 = "id_rmv <> '" . $owner_id . "'";
+        $condition3 = (!empty($from_time)) ? "`sendtime` > '" . $from_time . "'" : '';
         $messages = $messagesModel->getCollection(array(
             $condition,
             $condition2,
+            $condition3
         ), array(
             'order' => 'sendtime DESC',
         ));
@@ -216,6 +240,8 @@ class UsersModel extends FpsModel
 
     public function getFullUserStatistic($user_id)
     {
+		if (empty($user_id)) return false;
+	
         $Register = Register::getInstance();
         $stat = array();
         $modules = glob(ROOT . '/modules/*', GLOB_ONLYDIR);

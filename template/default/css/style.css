@@ -80,21 +80,21 @@ textarea {margin: 0;padding: 2px 1px;}
 .comment-ta {width:100%; height:100px;}
 
 button, .blockstop , .mat-title, .button, input[type="submit"], input[type="button"] {
-background: #6c6c6c url('../img/button.png') repeat-x top;
-border: 1px solid #525252;
--moz-border-radius: 3px;-webkit-border-radius: 3px;border-radius: 3px;
-color: #f3f3f3 !important;
-text-shadow: 0 1px 0 #313131 !important;
-box-shadow: inset 0 1px 0 rgba(253,253,255,0.2), 0 1px 1px rgba(0,0,2,0.2); -webkit-box-shadow: inset 0 1px 0 rgba(253,253,255,0.2), 0 1px 1px rgba(0,0,2,0.2); -moz-box-shadow: inset 0 1px 0 rgba(253,253,255,0.2), 0 1px 1px rgba(0,0,2,0.2);
-font: 300 12px/1.3 Helvetica, Arial, sans-serif;
-line-height: 28px;
-height: 28px;
-padding: 0 10px;
-text-align: center;
-min-width: 100px;
-display: inline-block;
-cursor: pointer;
-text-transform: uppercase;
+    background: #6c6c6c url('../img/button.png') repeat-x top;
+    border: 1px solid #525252;
+    -moz-border-radius: 3px;-webkit-border-radius: 3px;border-radius: 3px;
+    color: #f3f3f3 !important;
+    text-shadow: 0 1px 0 #313131 !important;
+    box-shadow: inset 0 1px 0 rgba(253,253,255,0.2), 0 1px 1px rgba(0,0,2,0.2); -webkit-box-shadow: inset 0 1px 0 rgba(253,253,255,0.2), 0 1px 1px rgba(0,0,2,0.2); -moz-box-shadow: inset 0 1px 0 rgba(253,253,255,0.2), 0 1px 1px rgba(0,0,2,0.2);
+    font: 300 12px/1.3 Helvetica, Arial, sans-serif;
+    line-height: 28px;
+    height: 28px;
+    padding: 0 10px;
+    text-align: center;
+    min-width: 100px;
+    display: inline-block;
+    cursor: pointer;
+    text-transform: uppercase;
 }
 button:hover, .button:hover,  input[type="submit"]:hover, input[type="button"]:hover {background-position: bottom;color: #fff; text-decoration:none !important;}
 
@@ -133,6 +133,7 @@ a.downloadbutton div div.nameload {}
 a.downloadbutton div div.infoload {height: 15px;font-size: 11px;color: #777;}
 a.downloadbutton:hover {background-position:  left -61px, right -61px;}
 a.downloadbutton:hover > div {background-position: bottom;}
+.autoheight {height:auto !important;}
 /*------------------------------------------------------------RAZMETKA------------------------------------------------------------------------------*/
 .global {max-width:1500px;margin: 0 auto;padding-bottom: 1px;}
 .header {width: 100%;height: 300px;}
@@ -707,7 +708,8 @@ text-overflow: ellipsis;
     display: block;    
     clear: both;    
     overflow: hidden;
-    line-height: 120%;
+    /*line-height: 120%;*/
+	position:relative;
 }
 .userlist li:first-child {border-top: none;}
 .userlist li .userlistavatar {
@@ -723,9 +725,7 @@ text-overflow: ellipsis;
 	background: #fff;
 	-webkit-box-shadow: 0px 2px 2px rgba(0,0,0,0.1);  -moz-box-shadow: 0px 2px 2px rgba(0,0,0,0.1);  box-shadow: 0px 2px 2px rgba(0,0,0,0.1);
 }
-.userlist li .listuser {
-    margin-left: 75px;  
-}
+.userlist li .listuser {margin-left: 75px;  width:20%; min-width:150px; height: 70px;}
 .userlist li .listuser div {
 float: left;
 margin-top: 5px;
@@ -737,19 +737,20 @@ color: #818181;
 }
 .userlist li .listuser div span .group {font-size: 13px;
 color: #333;}
-.userlist li .listuser .listuserbuttons {
-    float: right;
-    margin: 0;
-    padding: 0;
+.userlist li .listuserbuttons {
+    display: block;
+    position: absolute;
+    right: 5px;
+    top: 5px;
 }
-.userlist li .listuser .listuserbuttons li {
+.userlist li .listuserbuttons li {
     border: 0;
     padding: 2px;
     text-align: right;
 	display: inline-block;
 	vertical-align: top;
 }
-.userlist li .listuser .listuserbuttons li a {}
+.userlist .listuserbuttons li a {vertical-align: top; line-height: 21px;}
 .userlist li .listuser .userlisttitle {
     font-size: 18px;
     margin: 0 0 15px 0;
@@ -765,7 +766,9 @@ color: #333;}
 .userlist .send {background: #DDD;}
 .userlist .sendbutton {cursor: pointer;text-align: center;text-transform: uppercase;background: #ccc;border-color: #999 !important;}
 .userlist .sendbutton:hover {background: #BEBEBE;}
-.userlist li .listuser .text {display: block;float: none;color: #3c3c3c;}
+.userlist li .text {display: block; position:relative; color:#3c3c3c; left:25%; top:-65px; margin-bottom:-65px; height:65px; width:60%; font-size: 12px; overflow:hidden;}
+.userlist li .text .shadow {position:absolute; color:#3c3c3c; left:0; top:65px; height:5px; width:100%; box-shadow:0px -3px 3px #ddd;}
+
 
 table.cat-tb {padding:5px;}
 table.cat-tb tr.head td {border-bottom:1px solid #aaa;}

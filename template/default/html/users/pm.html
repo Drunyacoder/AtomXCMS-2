@@ -5,19 +5,23 @@
         <ul class="userslinks">
             <li><a href="{{ www_root }}/users/info/{{ user.id }}">Обзор Профиля</a></li>
             {% if checkAccess(['users', 'edit_users']) %}
-                <li><a href="{{ www_root }}/users/edit_form_by_admin/{{ user.id }}">{{ __('Edit profile') }}</a></li>
-            {% else %}
-                {% if checkAccess(['users', 'edit_mine']) %}
-                <li><a href="{{ www_root }}/users/edit_form/">{{ __('Edit profile') }}</a></li>
-                {% endif %}
+            <li><a href="{{ www_root }}/users/edit_form_by_admin/{{ user.id }}">{{ __('Edit profile') }}</a></li>
+			{% else %}
+				{% if user.id == fps_user_id and checkAccess(['users', 'edit_mine']) %}
+				<li><a href="{{ www_root }}/users/edit_form/">{{ __('Edit profile') }}</a></li>
+				{% endif %}
             {% endif %}
+            {% if fps_user_id == user.id %}
             <li class="active"><a href="{{ www_root }}/users/pm/">Личные сообщения</a></li>
-            <li><a href="{{ www_root }}/users/pm_send_form/">Отправить ЛС</a></li>
-
-            {% if user.stat %}
+            {% endif %}
+			<li><a href="{{ www_root }}/users/pm_send_form/{% if fps_user_id != user.id %}{{ user.id }}{% endif %}">Отправить ЛС</a></li>
+            {% if fps_user_id != user.id %}
+			<li><a href="{{ www_root }}/users/send_mail_form/{{ user.id }}">Отправить на почту</a></li>
+            {% endif %}
+            {% if user.statistic %}
             <li class="category"><a>Публикации</a></li>
             <li class="submenu">
-                {% for stat in user.stat %}
+                {% for stat in user.statistic %}
                 {% if stat.count %}
                 <a href="{{ stat.url }}">{{ stat.text }} ({{ stat.count }})</a>
                 {% endif %}
@@ -29,10 +33,10 @@
             <div class="upuserinfo">
                 <div class="profileavatar"><img class="avatar"  title="{{ user.name }}" src="{{ user.avatar }}"></div>
                 <div class="userinfocell">
-                    <div class="nameuser">{{ user.name }}</div>
-                    <div>Регистрация: {{ user.puttime }}</div>
-                    <div class="lastrun"><img src="{{ template_path }}/img/online.png" title="online" alt="online"> Активность: {{ user.last_visit }}</div>
-                    <div class="shkalakrut">Сообщений: {{ user.posts }}</div>
+				       <div class="nameuser">{{ user.name }}</div>
+					   <div>Регистрация: {{ user.puttime }}</div>
+					   <div class="lastrun">{% if CheckUserOnline(user.id) %}<img src="{{ template_path }}/img/online.png" title="online" alt="online">{% else %}Последняя активность: {{ user.last_visit }}{% endif %}</div>
+					   <div class="shkalakrut"><img border="0" src="{{ template_path }}/img/{{ getUserRatingImg(user.posts) }}" alt="" /></div>
                 </div>
                 {% if user.rating %}
                 {% if user.rating >= 1 %}
@@ -45,8 +49,6 @@
                 {% endif %}
             </div>
             <div class="bottomuserinfo">
-                <div class="head">Личная переписка</div>
-
                 <ul class="userlist">
                     {% if messages %}
                     {% for message in messages %}
@@ -57,27 +59,27 @@
                         {% set messageUser = message.fromuser %}
                     {% endif %}
 
-                    <li {% if message.viewed != 1 %}class="send"{% endif %} onclick="location.href='{{ www_root }}/users/pm_view/{{ messageUser.id }}'">
-
+                    <li {% if message.viewed != 1 %}class="send"{% endif %}>
                         <div class="userlistavatar" onclick="location.href='{{ www_root }}/users/info/{{ messageUser.id }}'">
                             <img src="{{ messageUser.avatar }}" class="avatar">
                         </div>
-
-                        <div class="listuser" style="display:;">
-                            <ul class="listuserbuttons">
-                                <!--<li><a href="{{ www_root }}/users/info/{{ messageUser.id }}" class="button2">Профиль собеседника</a></li>-->
-                                <li>{{ message.deleteLink }}<input type="checkbox" class="packPoint" onClick="if(this.checked){addToPackage(this.value);}else{delFromPackage(this.value);}" value="{{ messageUser.id }}" /></li>
-                            </ul>
-                            <h3 class="userlisttitle"><a href="{{ www_root }}/users/info/{{ messageUser.id }}">{{ messageUser.name }}</a>
-                                <span style="color:{% if message.direction == 'in'  %}blue;">&rArr;{% else %}red;">&lArr;{% endif %}</span>
+                        <div class="listuser">
+                            <h3 class="userlisttitle">
+                                <a href="{{ www_root }}/users/info/{{ messageUser.id }}">{{ messageUser.name }}</a>
+                                <span onclick="location.href='{{ www_root }}/users/pm_view/{{ messageUser.id }}'" style="cursor: pointer; color:{% if message.direction == 'in'  %}blue;">&rArr;{% else %}red;">&lArr;{% endif %}</span>
                             </h3>
-                            <div class="text" style="cursor: pointer;">
-                                {{ message.message }}
-                            </div>
                             <div>
-                                <span>{{ message.sendtime }}</span>
+                                <span>{{ AtmGetSimpleDate(message.sendtime) }}</span>
                             </div>
                         </div>
+                        <div class="text" style="cursor: pointer;" onclick="location.href='{{ www_root }}/users/pm_view/{{ messageUser.id }}'">
+                            {{ message.message }}
+                            <div class="shadow"></div>
+                        </div>
+                        <ul class="listuserbuttons">
+                            <!--<li><a href="{{ www_root }}/users/info/{{ messageUser.id }}" class="button2">Профиль собеседника</a></li>-->
+                            <li onClick="return false;">{{ message.deleteLink }}<input type="checkbox" class="packPoint" onClick="if(this.checked){addToPackage(this.value);}else{delFromPackage(this.value);}" value="{{ messageUser.id }}" /></li>
+                        </ul>
                     </li>
                     {% endfor %}
                     {% endif %}

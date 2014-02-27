@@ -167,10 +167,16 @@ class Document_Parser {
 			$userGroup = $Register['ACL']->get_user_group($_SESSION['user']['status']);
 			$markers['fps_user_group'] = $userGroup['title'];
 		} else {
+			$userGroup = $Register['ACL']->get_user_group(0);
 			$markers['personal_page_link'] = get_url('/users/add_form/');
-			$markers['fps_user_name'] = 'Гость'; //TODO
-			$markers['fps_user_group'] = 'Гости';
-			$markers['fps_user'] = array();
+			$markers['fps_user_name'] = __('Гость'); //TODO
+			$markers['fps_user_group'] = $userGroup['title'];
+			$markers['fps_user'] = array(
+				'id' => 0,
+				'name' => $markers['fps_user_name'],
+				'group' => $markers['fps_user_group'],
+				'avatar' => get_url('/template/' . Config::read('template') . '/img/noavatar.png'),
+			);
 		}
 		
 		

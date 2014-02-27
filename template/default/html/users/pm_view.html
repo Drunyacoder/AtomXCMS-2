@@ -1,64 +1,144 @@
-
-{{ editor_body }}
-
-<script>
-function sendPM() {
-    $('#send_pm_a').hide();
-    $('#pm_send_form').show();
-}
-</script>
-
+{% set user = fetch('users', fps_user_id) %}
 <div class="material">
-	  <div class="mat-title">Беседа с {{ collocutor.name }}</div>
-	  <div class="mat-content">
-		  <ul class="userslinks">
-		         <li><a href="{{ www_root }}/users/info/{{ fps_user_id }}">Мой профиль</a></li>
-				 <li class="active"><a href="{{ www_root }}/users/pm/">Личные сообщения</a></li>
-				 <li><a href="{{ www_root }}/users/pm_send_form/">Отправить ЛС</a></li>
-				 <li><a href="{{ www_root }}/users/send_mail_form/{{ collocutor.id }}">Отправить на почту</a></li>
-		  </ul>
-	      <div class="userinfo">
-		    <ul class="userlist">
-			   <li class="sendbutton" id="send_pm_a" onclick="sendPM()">Развернуть форму для ответа</li>
-			   <li id="pm_send_form" style="display: none;overflow: visible;">
-			      <form name="sendForm" id="sendForm" action="/users/send_pm" method="POST" enctype="multipart/form-data">
-			         <textarea {{ editor_text }} class="text-area" name="mainText"></textarea>
-			         <input type="text" name="toUser" id="toUser" maxlength="30" value="{{ context.interlocutor }}" style="display: none" />
-			         <input class="subm" type="submit" name="submitForm" value="Отправить" />
-                  </form>
-			   </li>
-			
-		     {% if messages %}
-             {% for message in messages %}
-                <li {% if message.viewed != 1 %}class="send"{% endif %}>
-                   <div class="userlistavatar"><img src="{% if message.direction == 'in'  %} {{ getAvatar(collocutor.id) }} {% else %} {{ getAvatar(fps_user_id) }} {% endif %}" class="avatar"></div>
-                    <div class="listuser">
-                          <ul class="listuserbuttons">
-                              <li>{{ message.delete }}<input type="checkbox" class="packPoint" onClick="if(this.checked){addToPackage(this.value);}else{delFromPackage(this.value);}" value="{{ message.id }}" /></li>
-                          </ul>
-                          <h3 class="userlisttitle">
-                          {% if message.direction == 'in'  %}
-                          <a href="{{ www_root }}/users/info/{{ collocutor.id }}">{{ collocutor.name }}
-                          {% else %}
-                          <a style="color: #787C88;text-decoration: none;cursor: default;">{{ fps_user_name }}</a>
-                          {% endif %}
-                          </h3>
-                          <div class="text">
-                            {{ message.message }}
-                          </div>
-                          <div>
-                               <span>{{ message.sendtime }}</span>
-                          </div>
-                    </div>
-                </li>
-			{% endfor %}
+    <div class="mat-title">Кажется это твоя переписка, {{ user.name }}</div>
+    <div class="mat-content">
+        <ul class="userslinks">
+            <li><a href="{{ www_root }}/users/info/{{ user.id }}">Обзор Профиля</a></li>
+            {% if checkAccess(['users', 'edit_users']) %}
+            <li><a href="{{ www_root }}/users/edit_form_by_admin/{{ user.id }}">{{ __('Edit profile') }}</a></li>
+            {% else %}
+                {% if user.id == fps_user_id and checkAccess(['users', 'edit_mine']) %}
+                <li><a href="{{ www_root }}/users/edit_form/">{{ __('Edit profile') }}</a></li>
+                {% endif %}
             {% endif %}
-			
-	           <li>	
-			     Удалить отмеченные сообщения: <input id="packButton" type="button" disabled="disabled" onClick="sendPack('/users/pm_delete_pack/');" value="(0)">
-	            <div style="display:none;"><form id="actionPack" action="" method="POST"></form></div>
-	           <li>
-           </ul>	
-	      </div>
-	  </div>
+            {% if fps_user_id == user.id %}
+            <li class="active"><a href="{{ www_root }}/users/pm/">Личные сообщения</a></li>
+            {% endif %}
+            <li><a href="{{ www_root }}/users/pm_send_form/{% if fps_user_id != user.id %}{{ user.id }}{% endif %}">Отправить ЛС</a></li>
+            {% if fps_user_id != user.id %}
+            <li><a href="{{ www_root }}/users/send_mail_form/{{ user.id }}">Отправить на почту</a></li>
+            {% endif %}
+            {% if user.statistic %}
+            <li class="category"><a>Публикации</a></li>
+            <li class="submenu">
+                {% for stat in user.statistic %}
+                {% if stat.count %}
+                <a href="{{ stat.url }}">{{ stat.text }} ({{ stat.count }})</a>
+                {% endif %}
+                {% endfor %}
+            </li>
+            {% endif %}
+        </ul>
+        <div class="userinfo">
+            <div class="upuserinfo">
+                <div class="profileavatar"><img class="avatar"  title="{{ user.name }}" src="{{ user.avatar }}"></div>
+                <div class="userinfocell">
+                    <div class="nameuser">{{ user.name }}</div>
+                    <div>Регистрация: {{ user.puttime }}</div>
+                    <div class="lastrun">{% if CheckUserOnline(user.id) %}<img src="{{ template_path }}/img/online.png" title="online" alt="online">{% else %}Последняя активность: {{ user.last_visit }}{% endif %}</div>
+                    <div class="shkalakrut"><img border="0" src="{{ template_path }}/img/{{ getUserRatingImg(user.posts) }}" alt="" /></div>
+                </div>
+                {% if user.rating %}
+                {% if user.rating >= 1 %}
+                <div class="userReputation" style="background-color: #780;"><div class="Rep-number">{{ user.rating }}</div><div>Положительная</div></div>
+                {% else %}
+                <div class="userReputation" style="background-color: #C54C4C;"><div class="Rep-number">{{ user.rating }}</div><div>Отрицательная</div></div>
+                {% endif %}
+                {% else %}
+                <div class="userReputation" style="background-color: #999;"><div class="Rep-number">{{ user.rating }}</div><div>Нейтральная</div></div>
+                {% endif %}
+            </div>
+            <div class="bottomuserinfo">
+
+                {{ editor_body }}
+                <script>
+                    function sendPM() {
+                        $('#send_pm_a').hide();
+                        $('#pm_send_form').show();
+                    }
+
+                    /**
+                     * Callback
+                     * @param response
+                     */
+                    var appendNewMessages = function(messages){
+                        var content = '';
+                        $(messages).each(function(key, message){
+                            if (key == 0) AtomX.lastMessageId = message.id;
+                            var messageBlock = '<li><div class="userlistavatar"><img src="'+message.sender.avatar+'" class="avatar"></div>'
+                                +'<div class="listuser"><h3 class="userlisttitle">'
+                                +'<a href="{{ www_root }}/users/info/'+message.sender.id+'">'+message.sender.name+'</a>'
+                                +'</h3><div><span>'+message.sendtime+'</span>'
+                                +'</div></div><div class="text autoheight">'+message.message+'</div>'
+                                +'<ul class="listuserbuttons">'
+                                +'<li><a href="{{ www_root }}/users/pm_delete/'+message.id+'" onClick="return confirm(\'Are you sure?\');">Удалить</a><input type="checkbox" class="packPoint" onClick="if(this.checked){addToPackage(this.value);}else{delFromPackage(this.value);}" value="'+message.id+'" /></li>'
+                                +'</ul></li>';
+                            content = content + messageBlock;
+                        });
+                        $('#messages-agregator').html(content + $('#messages-agregator').html());
+                    }
+
+                    $(function(){
+                        setInterval(function(){
+                            AtomX.updatePmList(appendNewMessages);
+                        }, 10000);
+                    });
+
+                </script>
+
+                <ul class="userlist">
+                    <li class="sendbutton" id="send_pm_a" onclick="sendPM()">Развернуть форму для ответа</li>
+                    <li id="pm_send_form" style="display:none; overflow:visible;">
+                        <form name="sendForm" id="sendForm" action="/users/pm_send" onsubmit="return AtomX.sendPm(this, appendNewMessages);" method="POST">
+                            <textarea {{ editor_text }} class="text-area" name="mainText"></textarea>
+                            <input type="text" name="toUser" id="toUser" maxlength="30" value="{{ collocutor.name }}" style="display: none" />
+                            <input class="subm" type="submit" name="submitForm" value="Отправить" />
+                        </form>
+                    </li>
+
+                    <div id="messages-agregator">
+                        {% if messages %}
+                        {% for message in messages %}
+                        <script>
+                            if (typeof AtomX.lastMessageId == 'undefined') AtomX.lastMessageId = {{ message.id }};
+                        </script>
+                        <li {% if message.viewed != 1 %}class="send"{% endif %}>
+                            <div class="userlistavatar">
+                                <img src="{% if message.direction == 'in'  %} {{ getAvatar(collocutor.id) }} {% else %} {{ getAvatar(fps_user_id) }} {% endif %}" class="avatar">
+                            </div>
+                            <div class="listuser">
+                                <h3 class="userlisttitle">
+                                    {% if message.direction == 'in'  %}
+                                    <a href="{{ www_root }}/users/info/{{ collocutor.id }}">{{ collocutor.name }}</a>
+                                    {% else %}
+                                    <a style="color: #787C88;text-decoration: none;cursor: default;">{{ fps_user_name }}</a>
+                                    {% endif %}
+                                </h3>
+                                <div>
+                                    <span>{{ AtmGetSimpleDate(message.sendtime) }}</span>
+                                </div>
+                            </div>
+                            <div class="text autoheight">
+                                {{ message.message }}
+                            </div>
+                            <ul class="listuserbuttons">
+                                <li>{{ message.deleteLink }}<input type="checkbox" class="packPoint" onClick="if(this.checked){addToPackage(this.value);}else{delFromPackage(this.value);}" value="{{ message.id }}" /></li>
+                            </ul>
+                        </li>
+                        {% endfor %}
+                        {% endif %}
+                    </div>
+                    <li>
+                        Удалить отмеченные сообщения: <input id="packButton" type="button" disabled="disabled" onClick="sendPack('/users/pm_delete_pack/');" value="(0)">
+                        <div style="display:none;"><form id="actionPack" action="" method="POST"></form></div>
+                    <li>
+                </ul>
+            </div>
+        </div>
     </div>
+</div>
+
+
+
+
+

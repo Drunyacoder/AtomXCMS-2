@@ -76,6 +76,10 @@ function AtmGetDate($date, $format = 'Y-m-d H:i:s') {
 	return AtmDateTime::getDate($date, $format);
 }
 
+function AtmGetSimpleDate($date) {
+	return AtmDateTime::getSimpleDate($date);
+}
+
 
 /**
  * @param $errors
@@ -594,6 +598,11 @@ function createOptionsFromParams($offset, $limit, $selected = false) {
 }
 
 
+
+function CheckUserOnline($user_id) {
+	$users = getOnlineUsers();
+	return array_key_exists($user_id, $users);
+}
 
 /*
 * return who online

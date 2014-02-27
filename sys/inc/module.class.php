@@ -269,7 +269,7 @@ class Module {
 	protected function afterRender()
     {
 		// Cron
-		if ($this->Register['Config']->read('auto_sitemap')) {
+		if (Config::read('auto_sitemap')) {
 			fpsCron('createSitemap', 86400);
 		}
 		
@@ -283,7 +283,7 @@ class Module {
 		
 		if (substr($_SERVER['PHP_SELF'], 1, 5) != 'admin') {
 			include_once ROOT . '/modules/statistics/index.php';
-			if ($this->Register['Config']->read('active', 'statistics') == 1) {
+			if (Config::read('active', 'statistics') == 1) {
 				StatisticsModule::index();
 			} else {
 				StatisticsModule::viewOffCounter();
@@ -710,6 +710,7 @@ class Module {
 	
 	public function showAjaxResponse($array)
 	{
+        header('Content-type: application/json');
 		echo json_encode($array); die();
 	}
 }

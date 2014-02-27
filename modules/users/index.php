@@ -180,7 +180,7 @@ Class UsersModule extends Module {
 
         // Check for preview or errors
         $data = array(
-            'login' => null,
+            'name' => null,
             'email' => null,
             'timezone' => null,
             'icq' => null,
@@ -200,12 +200,12 @@ Class UsersModule extends Module {
 
         $errors = $this->Parser->getErrors();
         if (isset($_SESSION['FpsForm'])) unset($_SESSION['FpsForm']);
-        if (!empty($errors)) $markers['error'] = $errors;
-		else $markers['error'] = '';
+        if (!empty($errors)) $markers['errors'] = $errors;
+		else $markers['errors'] = '';
 		
 
         $markers['captcha'] = get_url('/sys/inc/kcaptcha/kc.php?'.rand(0, 999999));
-        $markers['name']    = $data['login'];
+        $markers['name']    = $data['name'];
         $markers['fpol']  	= (!empty($data['pol']) && $data['pol'] === 'f') ? ' checked="checked"' : '';
         $markers['mpol']  	= (!empty($data['pol']) && $data['pol'] === 'm') ? ' checked="checked"' : '';
 
@@ -249,7 +249,7 @@ Class UsersModule extends Module {
 
 
 		// Обрезаем переменные до длины, указанной в параметре maxlength тега input
-		$fields = array('login', 'password', 'confirm', 'email', 'icq', 'jabber', 'pol', 'city', 'telephone', 
+		$fields = array('name', 'password', 'confirm', 'email', 'icq', 'jabber', 'pol', 'city', 'telephone', 
 			'byear', 'bmonth', 'bday', 'url', 'about', 'signature', 'keystring');
 		
 		$fields_settings = (array)$this->Register['Config']->read('fields', 'users');
@@ -267,7 +267,7 @@ Class UsersModule extends Module {
 
 	
 		// Обрезаем переменные до длины, указанной в параметре maxlength тега input
-		$name    	  = mb_substr($login, 0, 30);
+		$name    	  = mb_substr($name, 0, 30);
 		$password     = mb_substr($password, 0, 30);
 		$confirm      = mb_substr($confirm, 0, 30);
 		$email        = mb_substr($email, 0, 60);
@@ -336,7 +336,9 @@ Class UsersModule extends Module {
 		
 		// Если были допущены ошибки при заполнении формы - перенаправляем посетителя на страницу регистрации
 		if (!empty($errors)) {
-			$_SESSION['FpsForm'] = array_merge(array('login' => null, 'email'=> null, 'timezone' => null, 'icq' => null, 'url' => null, 'about' => null, 'signature' => null, 'pol' => $pol, 'telephone' => null, 'city' => null, 'jabber' => null, 'byear' => null, 'bmonth' => null, 'bday' => null), $_POST);
+			$_SESSION['FpsForm'] = array_merge(array('name' => null, 'email'=> null, 'timezone' => null, 'icq' => null,
+                'url' => null, 'about' => null, 'signature' => null, 'pol' => $pol, 'telephone' => null, 'city' => null,
+                'jabber' => null, 'byear' => null, 'bmonth' => null, 'bday' => null), $_POST);
 			$_SESSION['FpsForm']['error'] 	= '<p class="errorMsg">' . __('Some error in form') . '</p>'.
 			"\n".'<ul class="errorMsg">'."\n".$errors.'</ul>'."\n";
 			redirect('/users/add_form/yes');
@@ -656,6 +658,7 @@ Class UsersModule extends Module {
             $user = $this->AddFields->mergeRecords(array($user), true);
             $user = $user[0];
 		}
+		$user->setStatistic($this->Model->getFullUserStatistic($_SESSION['user']['id']));
 
 
         // Check for preview or errors
@@ -932,16 +935,15 @@ Class UsersModule extends Module {
 
 
         // Check for preview or errors
-        $data = array('login' => null, 'email' => null, 'timezone' => null, 'icq' => null, 'jabber' => null
+        $data = array('name' => null, 'email' => null, 'timezone' => null, 'icq' => null, 'jabber' => null
         , 'pol' => null, 'city' => null, 'telephone' => null, 'byear' => null, 'bmonth' => null, 'bday' => null
         , 'url' => null, 'about' => null, 'signature' => null);
         $data = Validate::getCurrentInputsValues($user, $data);
-        $name = $data->getName();
-        //pr($data); die();
+
 
         $errors = $this->Parser->getErrors();
         if (isset($_SESSION['FpsForm'])) unset($_SESSION['FpsForm']);
-        if (!empty($errors)) $data->setError($errors);
+        if (!empty($errors)) $data->setErrors($errors);
 
 
 
@@ -1008,7 +1010,6 @@ Class UsersModule extends Module {
         $userStatus = $userStatus . '</select>' . "\n";
         $data->setStatus($userStatus);
         $data->setOldemail(h($user->getEmail()));
-        $data->setLogin($name);
 
 
         $activation = ($user->getActivation())
@@ -1054,7 +1055,7 @@ Class UsersModule extends Module {
 
 
 		$errors = '';
-		$fields = array('login', 'email', 'oldEmail', 'icq', 'jabber', 'pol', 'city', 
+		$fields = array('name', 'email', 'oldEmail', 'icq', 'jabber', 'pol', 'city', 
 			'telephone', 'byear', 'bmonth', 'bday', 'url', 'about', 'signature');
 		
 		$fields_settings = (array)Config::read('fields', 'users');
@@ -1064,7 +1065,7 @@ Class UsersModule extends Module {
 			$$field = (isset($_POST[$field])) ? trim($_POST[$field]) : '';
 		}
 		
-		
+
 		if ('1' === $pol) $pol =  'm';
 		else if ('2' === $pol) $pol = 'f';
 		else $pol = '';
@@ -1194,7 +1195,7 @@ Class UsersModule extends Module {
 		if (isset($_POST['activation'])) {
 			$user->setActivation('');
 		}
-        $user->setLogin($login);
+        $user->setName($name);
         $user->setStatus($status);
         $user->setTimezone($timezone);
         $user->setUrl($url);
@@ -1350,9 +1351,7 @@ Class UsersModule extends Module {
 			$id = (int)$id;
 			if ($id > 0) {
 				$res = $this->Model->getById($id);
-				if ($res) {
-					if (count($res) > 0) $toUser = $res->getName();
-				}
+				if ($res) $toUser = $res->getName();
 			}
 		}
 		
@@ -1385,23 +1384,24 @@ Class UsersModule extends Module {
 		$action = get_url('/users/pm_send');
         $error = '';
 		// Если при заполнении формы были допущены ошибки
-		if (isset($_SESSION['sendMessageForm'])) {
-			$error = $this->render('infomessage.html', array('info_message' => $_SESSION['sendMessageForm']['error']));
-			$toUser  = h( $_SESSION['sendMessageForm']['toUser'] );
-			$subject = h( $_SESSION['sendMessageForm']['subject'] );
-			$message = h( $_SESSION['sendMessageForm']['message'] );
-			unset($_SESSION['sendMessageForm']);
+		if (isset($_SESSION['FpsForm'])) {
+			$error = $this->render('infomessage.html', array('info_message' => $_SESSION['FpsForm']['error']));
+			$toUser  = h( $_SESSION['FpsForm']['toUser'] );
+			$subject = h( $_SESSION['FpsForm']['subject'] );
+			$message = h( $_SESSION['FpsForm']['message'] );
+			unset($_SESSION['FpsForm']);
 		}
 
 
 		$markers = array();
+		$markers['to_user_id'] = $id;
 		$markers['errors'] = $error;
 		$markers['action'] = $action;
 		$markers['touser'] = $toUser;
 		$markers['subject'] = $subject;
 		$markers['main_text'] = $message;
 		$markers['preview'] = (!empty($prevSource)) ? $prevSource : '';
-		$source = $this->render('sendmessageform.html', array('context' => $markers));
+		$source = $this->render('pm_send_form.html', array('context' => $markers));
 		
 		
 		// Navigation Panel
@@ -1426,12 +1426,12 @@ Class UsersModule extends Module {
 
 		// Обрезаем лишние пробелы
 		$toUser  = trim($_POST['toUser']);
-		$subject = trim($_POST['subject']);
+		$subject = (!empty($_POST['subject'])) ? trim($_POST['subject']) : '';
 		$message = trim($_POST['mainText']);
 
 		
 		// Если пользователь хочет посмотреть на сообщение перед отправкой
-		if (isset($_POST['viewMessage'])) {
+		if (isset($_POST['viewMessage']) && !isset($_REQUEST['ajax'])) {
 			$_SESSION['viewMessage']             = array();
 			$_SESSION['viewMessage']['toUser']   = $toUser;
 			$_SESSION['viewMessage']['subject']  = $subject;
@@ -1448,12 +1448,8 @@ Class UsersModule extends Module {
 		if (!empty($toUser)) {
 			$to = preg_replace( "#[^- _0-9a-zА-Яа-я]#iu", '', $toUser );
             $res = $this->Model->getCollection(
-                array(
-                    'name' => $toUser
-                ),
-                array(
-                    'limit' => 1
-                )
+                array('name' => $toUser),
+                array('limit' => 1)
             );
 
 
@@ -1496,18 +1492,24 @@ Class UsersModule extends Module {
 		
 		// Errors
 		if (!empty($errors )) {
-			$_SESSION['sendMessageForm'] = array();
-			$_SESSION['sendMessageForm']['error'] = '<p class="errorMsg">' . __('Some error in form') . '</p>'.
+			$_SESSION['FpsForm'] = array();
+			$_SESSION['FpsForm']['error'] = '<p class="errorMsg">' . __('Some error in form') . '</p>'.
 			"\n".'<ul class="errorMsg">'."\n".$errors.'</ul>'."\n";
-			$_SESSION['sendMessageForm']['toUser'] = $toUser;
-			$_SESSION['sendMessageForm']['subject'] = $subject;
-			$_SESSION['sendMessageForm']['message'] = $message;
-			redirect('/users/pm_send_form/' );
+			$_SESSION['FpsForm']['toUser'] = $toUser;
+			$_SESSION['FpsForm']['subject'] = $subject;
+			$_SESSION['FpsForm']['message'] = $message;
+            if (isset($_REQUEST['ajax'])) {
+                $data = $_SESSION['FpsForm'];
+                unset($_SESSION['FpsForm']);
+                $this->showAjaxResponse($data);
+            } else {
+                redirect('/users/pm_send_form/');
+            }
 		}
 
 		// Все поля заполнены правильно - "посылаем" сообщение
-        $res = $res[0];
-		$to = $res->getId();
+        $toUser = $res[0];
+		$to = $toUser->getId();
 		$from = $_SESSION['user']['id'];
 
 
@@ -1524,10 +1526,37 @@ Class UsersModule extends Module {
         $message = new $className($data);
         $last_id = $message->save();
 
+        /*
+        if ($last_id) {
+            if (Config::read('new_pm_mail', $this->module) == 1) {
+                // формируем заголовки письма
+                $headers = "From: " . $_SERVER['SERVER_NAME'] . " <" . Config::read('admin_email') . ">\n";
+                $headers = $headers . "Content-type: text/html; charset=\"utf-8\"\n";
+                $headers = $headers . "Return-path: <" . Config::read('admin_email') . ">\n";
+                $link = 'http://' . $_SERVER['SERVER_NAME'] . get_url('/' . $this->module . '/get_message/' . $last_id);
+
+                $mail = array(
+                    'name' => $toUser->getName(),
+                    'email' => $toUser->getEmail(),
+                    'link' => $link,
+                );
+                $from = array(
+                    'name' => $_SESSION['user']['name'],
+                    'email' => $_SESSION['user']['email'],
+                );
+                $context = $this->render('newpm.msg', array('from' => $from, 'mail' => $mail));
+                $body = $this->render('main.msg', array('from' => $from, 'mail' => $mail, 'context' => $context));
+
+                mail($user->getEmail(), __('New PM on forum'), $body, $headers);
+            }
+        }
+        */
+
 		/* clean DB cache */
 		$this->Register['DB']->cleanSqlCache();
 		if ($this->Log) $this->Log->write('adding pm message', 'message id(' . $last_id . ')');
-		return $this->showInfoMessage(__('Message successfully send'), '/users/pm/' );
+        if (isset($_REQUEST['ajax'])) $this->pm_view_update($last_id);
+		return $this->showInfoMessage(__('Message successfully send'), '/' . $this->module . '/pm_view/' . $to);
 	}
 
 
@@ -1565,9 +1594,10 @@ Class UsersModule extends Module {
 
             $text = $this->Textarier->print_page($message->getMessage(), $message->getFromuser()->getStatus());
             $message->setMessage($text);
+            $message->setDeleteLink(get_link(__('Delete'), '/users/pm_delete/' . $message->getId(), array('onClick' => "return confirm('" . __('Are you sure') . "');")));
 
             // Помечаем сообщение, как прочитанное
-            if ($_SESSION['user']['id'] === $message->getTouser() && $message->getViewed() != 1) {
+            if ($_SESSION['user']['id'] === $message->getTo_user() && $message->getViewed() != 1) {
                 $message->setViewed(1);
                 $message->save();
             }
@@ -1581,6 +1611,52 @@ Class UsersModule extends Module {
 		
 		return $this->_view($source);
 	}
+
+
+    public function pm_view_update($pm_id = null) {
+        $this->counter = false;
+
+        $result = array('errors' => null, 'data' => array());
+        if (empty($pm_id)) $this->showAjaxResponse($result);
+        if (empty($_SESSION['user'])) $this->showAjaxResponse($result);
+
+        $message = $this->Model->getUserMessage($pm_id);
+        if (!$message) {
+            $result['errors'] = __('Message not found');
+            $this->showAjaxResponse($result);
+        }
+
+        $last_date = $message->getSendtime();
+        $owner = $_SESSION['user']['id'];
+        $collocutor = ($owner == $message->getTo_user()) ? $message->getFrom_user() : $message->getTo_user();
+
+        $newMessages = $this->Model->getDialog($owner, $collocutor, $last_date);
+        if (is_array($newMessages) && count($newMessages)) {
+            foreach ($newMessages as &$mes) {
+                $message_text = $this->Textarier->print_page($mes->getMessage(), $mes->getFromuser()->getStatus());
+                $mes_ = array(
+                    'touser' => array(
+                        'id' => $mes->getTouser()->getId(),
+                        'name' => $mes->getTouser()->getName(),
+                        'avatar' => $mes->getTouser()->getAvatar(),
+                    ),
+                    'fromuser' => array(
+                        'id' => $mes->getFromuser()->getId(),
+                        'name' => $mes->getFromuser()->getName(),
+                        'avatar' => $mes->getFromuser()->getAvatar(),
+                    ),
+                );
+                $mes_['sender'] = $mes_['fromuser'];
+                $mes = array_merge($mes->asArray(), $mes_);
+                $mes['message'] = $message_text;
+                $mes['sendtime'] = AtmDateTime::getSimpleDate($mes['sendtime']);
+            }
+            $result['data'] = $newMessages;
+            $this->showAjaxResponse($result);
+        }
+
+        $this->showAjaxResponse($result);
+    }
 
 
 
@@ -1615,7 +1691,7 @@ Class UsersModule extends Module {
             $message->setIcon(get_img('/template/'.Config::read('template').'/img/' . $icon . '.gif'));
             $message->setEntryLink(get_link(h($message->getSubject()), '/users/pm_view/' . $message->getId()));
             $message->setEntryUrl(get_url('/users/pm_view/' . $message->getId()));
-            $message->setDeleteLink(get_link(__('Delete'), '/users/pm_delete/' . $message->getId(), array('onClick' => "return confirm('" . __('Are you sure') . "')")));
+            $message->setDeleteLink(get_link(__('Delete'), '/users/pm_delete/' . $message->getId(), array('onClick' => "return confirm('" . __('Are you sure') . "');")));
             $message->setMessage(h($message->getMessage()));
         }
 
@@ -1666,11 +1742,6 @@ Class UsersModule extends Module {
 
 		
 		foreach ($ids as $idMsg) {
-			// Далее мы должны выяснить, удаляется входящее или исходящее
-			// сообщение. Это нужно, чтобы сделать редирект на нужный ящик.
-			// В этом запросе дополнительное условие нужно для того, чтобы
-			// пользователь не смог удалить чужое сообщение, просто указав
-			// ID сообщения в адресной строке браузера
 			$messages = $messagesModel->getCollection(array(
 				'id' => $idMsg,
 				"(`to_user` = '" . $_SESSION['user']['id'] . "' OR `from_user` = '" . $_SESSION['user']['id'] . "')"
@@ -1683,10 +1754,8 @@ Class UsersModule extends Module {
 			$message = $messages[0];
 			$toUser = $message->getTo_user();
 			$id_rmv = $message->getId_rmv();
-			if ( $toUser == $_SESSION['user']['id'] )
-				$redirect = get_url('/users/pm/');
-			else
-				$redirect = get_url('/users/pm/');
+			$redirect = get_url('/' . $this->module . '/pm/');
+
 			// id_rmv - это поле указывает на то, что это сообщение уже удалил
 			// один из пользователей. Т.е. сначала id_rmv=0, после того, как
 			// сообщение удалил один из пользователей, id_rmv=id_user. И только после
@@ -1724,6 +1793,8 @@ Class UsersModule extends Module {
 		$user = $this->Model->getById($id);
 		if (!empty($user)) $toUser = $user->getName();
 
+        $user->setStatistic($this->Model->getFullUserStatistic($id));
+
 		$markers = array(
 			'message' => '',
 			'subject' => '',
@@ -1734,14 +1805,14 @@ Class UsersModule extends Module {
 		
 		
 		// Если при заполнении формы были допущены ошибки
-		if (isset($_SESSION['sendMailForm'])) {
+		if (isset($_SESSION['FpsForm'])) {
 			$markers['error'] = $this->render('infomessage.html', array(
-				'info_message' => $_SESSION['sendMailForm']['error']
+				'info_message' => $_SESSION['FpsForm']['error']
 			));
-			$markers['to_user']  = $_SESSION['sendMailForm']['toUser'];
-			$markers['subject'] = $_SESSION['sendMailForm']['subject'];
-			$markers['message'] = $_SESSION['sendMailForm']['message'];
-			unset($_SESSION['sendMailForm']);
+			$markers['to_user']  = $_SESSION['FpsForm']['toUser'];
+			$markers['subject'] = $_SESSION['FpsForm']['subject'];
+			$markers['message'] = $_SESSION['FpsForm']['message'];
+			unset($_SESSION['FpsForm']);
 		}
 
 		
@@ -1779,12 +1850,12 @@ Class UsersModule extends Module {
 		// Если были допущены ошибки при заполнении формы -
 		// перенаправляем посетителя для исправления ошибок
 		if (!empty($errors)) {
-			$_SESSION['sendMailForm'] = array();
-			$_SESSION['sendMailForm']['error'] = '<p class="errorMsg">' . __('Some error in form') . '</p>'.
+			$_SESSION['FpsForm'] = array();
+			$_SESSION['FpsForm']['error'] = '<p class="errorMsg">' . __('Some error in form') . '</p>'.
 			"\n".'<ul class="errorMsg">'."\n".$errors.'</ul>'."\n";
-			$_SESSION['sendMailForm']['toUser']  = $toUser;
-			$_SESSION['sendMailForm']['subject'] = $subject;
-			$_SESSION['sendMailForm']['message'] = $message;
+			$_SESSION['FpsForm']['toUser']  = $toUser;
+			$_SESSION['FpsForm']['subject'] = $subject;
+			$_SESSION['FpsForm']['message'] = $message;
 			redirect('/users/send_mail_form/' . $user->getId());
 		}
 		
@@ -2583,7 +2654,7 @@ Class UsersModule extends Module {
         $Register = Register::getInstance();
 		$rules = array(
 			'add' => array(
-				'login' => array(
+				'name' => array(
 					'required' => true,
 					'max_lenght' => 20,
 					'min_lenght' => 3,
@@ -2728,7 +2799,7 @@ Class UsersModule extends Module {
 				),
 			),
 			'update_by_admin' => array(
-				'login' => array(
+				'name' => array(
 					'required' => true,
 					'max_lenght' => 20,
 					'min_lenght' => 3,
@@ -2803,7 +2874,7 @@ Class UsersModule extends Module {
 					'pattern' => V_LOGIN,
 				),
 				'subject' => array(
-					'required' => true,
+					'required' => false,
 					'max_lenght' => 200,
 				),
 				'mainText' => array(

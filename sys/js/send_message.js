@@ -648,6 +648,58 @@ function setRatingForEntity(module, entity_id, vote){
 }
 
 
+/**
+ *
+ * AtomX JS class for frontend part
+ *
+ */
+AtomX = new function(){
+    this.sendPm = function(form, callback){
+
+        var title = '';
+        fpsWnd('fpsWinSendu', title, '<span id="loader"><img src="../img/ajaxload.gif" alt="loading"></span>', params)
+        setTimeout(function(){
+
+            // иначе старым способом
+            jQuery.ajax({
+                url:     $(form).attr("action") + '?ajax=1',
+                type:     "POST",
+                dataType: "json",
+                data: $(form).serialize(),
+                success: function(response) {
+                    if (response.errors != undefined && response.errors.length) {
+                        fpsWnd.content('fpsWinSendu', response.errors);
+                    } else if (response.data != undefined && response.data.length) {
+                        callback(response.data);
+                    }
+                },
+                error: function(response) {
+                    fpsWnd.content('fpsWinSendu', "Ошибка при отправке формы");
+                }
+            });
+        }, 1);
+        return false;
+    };
+
+    this.updatePmList = function(callback) {
+        var pmid = this.lastMessageId;
+        if (typeof pmid == 'undefined') return false;
+
+        jQuery.ajax({
+            url:     '/users/pm_view_update/'+pmid+'/?ajax=1',
+            type:     "GET",
+            dataType: "json",
+            data: {},
+            success: function(response) {
+                if (response.data != undefined && response.data.length) {
+                    callback(response.data);
+                }
+            }
+        });
+        return false;
+    }
+}
+
 
 
 /* 

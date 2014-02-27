@@ -76,4 +76,14 @@ function getUserRating($rating, $settings) {
 	
 }
 
+function getUserRatingImg($rating) {
+	$Register = Register::getInstance();
+	$settingsModel = $Register['ModManager']->getModelInstance('UsersSettings');
+	$rating_settings = $settingsModel->getCollection(array('type' => 'rating'));
+	$rating_settings = (count($rating_settings) > 0) ? $rating_settings[0]->getValues() : ''; 
+	
+	$rank = getUserRating($rating, $rating_settings);
+	return $rank['img'];
+}
+
 ?>

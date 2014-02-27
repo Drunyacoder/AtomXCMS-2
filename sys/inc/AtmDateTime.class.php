@@ -70,8 +70,6 @@ class AtmDateTime {
                     $result = sprintf(__('%s hour ago'), $h);
                     break;
                 case 2:
-                    $result = sprintf(__('%s hours ago'), $h);
-                    break;
                 case 3:
                     $result = sprintf(__('%s hours ago'), $h);
                     break;
@@ -113,10 +111,7 @@ class AtmDateTime {
         }
 
 
-        pr($diff);
-        pr($currentDate->format('Y-m-d H:i:s'));
-        pr($result); die();
-        return $dateObj->format($format);
+        return $result;
     }
 }
 

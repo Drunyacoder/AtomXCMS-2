@@ -6,9 +6,11 @@
 				 {% if user.edit_profile_link %}				 
 				 <li>{{ user.edit_profile_link }}</li>
 				 {% endif %}
+				 {% if checkAccess(['users', 'edit_users']) %}
+				 <li><a href="{{ www_root }}/users/edit_form_by_admin/{{ user.id }}">{{ __('Edit profile') }}</a></li>
+				 {% endif %}
 				 {% if fps_user_id == user.id %}
 				 <li><a href="{{ www_root }}/users/pm/">Личные сообщения</a></li>
-                 <li><a href="{{ www_root }}/users/pm/">Отправленные</a></li>
 				 {% endif %}
 				 {% if user.privatemessage %}	
 				 <li><a href="{{ www_root }}/users/pm_send_form/{% if fps_user_id != user.id %}{{ user.id }}{% endif %}">Отправить ЛС</a></li>
@@ -32,9 +34,10 @@
 			      <div class="profileavatar"><img class="avatar"  title="{{ user.name }}" src="{{ user.avatar }}"></div>
 				  <div class="userinfocell">
 				       <div class="nameuser">{{ user.name }}</div>
-					   <div>Регистрация: {{ user.regdate }}</div>
-					   <div class="lastrun"><img src="{{ template_path }}/img/online.png" title="online" alt="online"> Активность: {{ user.lastvisit }}</div>
-					   <div class="shkalakrut">Сообщений: {{ user.posts }}</div>
+					   <div>Регистрация: {{ user.puttime }}</div>
+					   <div class="lastrun">{% if CheckUserOnline(user.id) %}<img src="{{ template_path }}/img/online.png" title="online" alt="online">{% else %}Последняя активность: {{ user.lastvisit }}{% endif %}</div>
+					   <div class="shkalakrut"><img border="0" src="{{ template_path }}/img/{{ getUserRatingImg(user.posts) }}" alt="" /></div>
+
 				  </div>
                      {% if user.rating %}
 				        {% if user.rating >= 1 %}
@@ -48,7 +51,7 @@
 			  </div>
 			  
 			  <div class="bottomuserinfo">
-								<div>Статистика</div>
+								<div class="head">Статистика</div>
 								<ul class="spisokinfouser">
 								    {% if user.full_name %}
 								    <li>
