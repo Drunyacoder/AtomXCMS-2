@@ -82,7 +82,7 @@ class UsersModel extends FpsModel
     }
 
 
-    public function getUserMessage($mid)
+    public function getUserMessage($params)
     {
         if (empty($_SESSION['user'])) return false;
         $Register = Register::getInstance();
@@ -97,7 +97,7 @@ class UsersModel extends FpsModel
         $message = $messagesModel->getCollection(array(
             $condition,
             $condition2,
-            'id' => $mid,
+            $params,
         ));
 
         return (!empty($message[0])) ? $message[0] : false;

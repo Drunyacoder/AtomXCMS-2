@@ -1555,7 +1555,11 @@ Class UsersModule extends Module {
 		/* clean DB cache */
 		$this->Register['DB']->cleanSqlCache();
 		if ($this->Log) $this->Log->write('adding pm message', 'message id(' . $last_id . ')');
-        if (isset($_REQUEST['ajax'])) $this->pm_view_update($last_id);
+        if (isset($_REQUEST['ajax'])) {
+			$message = $this->Model->getUserMessage(array("`id` < '" . $last_id . "'"));
+			$id = ($message) ? $message->getId() : $last_id;
+			$this->pm_view_update($id);
+		}
 		return $this->showInfoMessage(__('Message successfully send'), '/' . $this->module . '/pm_view/' . $to);
 	}
 
@@ -1620,7 +1624,7 @@ Class UsersModule extends Module {
         if (empty($pm_id)) $this->showAjaxResponse($result);
         if (empty($_SESSION['user'])) $this->showAjaxResponse($result);
 
-        $message = $this->Model->getUserMessage($pm_id);
+        $message = $this->Model->getUserMessage(array('id' => $pm_id));
         if (!$message) {
             $result['errors'] = __('Message not found');
             $this->showAjaxResponse($result);

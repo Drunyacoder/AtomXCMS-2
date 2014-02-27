@@ -76,12 +76,23 @@
                             content = content + messageBlock;
                         });
                         $('#messages-agregator').html(content + $('#messages-agregator').html());
+						fpsWnd.hide('AtmPmLoader');
+						$('textarea[name="mainText"]').val('');
+						return false;
                     }
 
                     $(function(){
                         setInterval(function(){
                             AtomX.updatePmList(appendNewMessages);
                         }, 10000);
+						
+						$('#sendForm').submit(function(){
+							setTimeout(function(){
+								AtomX.sendPm($('#sendForm'), appendNewMessages);
+							}, 0);
+							
+							return false;
+						});
                     });
 
                 </script>
@@ -89,10 +100,10 @@
                 <ul class="userlist">
                     <li class="sendbutton" id="send_pm_a" onclick="sendPM()">Развернуть форму для ответа</li>
                     <li id="pm_send_form" style="display:none; overflow:visible;">
-                        <form name="sendForm" id="sendForm" action="/users/pm_send" onsubmit="return AtomX.sendPm(this, appendNewMessages);" method="POST">
+                        <form name="sendForm" id="sendForm" action="/users/pm_send"  method="POST">
                             <textarea {{ editor_text }} class="text-area" name="mainText"></textarea>
                             <input type="text" name="toUser" id="toUser" maxlength="30" value="{{ collocutor.name }}" style="display: none" />
-                            <input class="subm" type="submit" name="submitForm" value="Отправить" />
+                            <input class="subm" type="submit" name="submitForm" onClick="" value="Отправить" />
                         </form>
                     </li>
 
