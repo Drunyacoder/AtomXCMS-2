@@ -25,7 +25,7 @@ enctype="multipart/form-data" onsubmit="return checkForm(this)">
             <span class="siu_data"><input type="text" name="description" maxlength="128" value="{{ context.description }}" /></span>
           </li>
 		  <li>
-            <div class="answertextarea"><textarea {{ editor_text }} class="text-area" name="mainText">{{ context.main_text }}</textarea></div>
+            <div class="answertextarea" style="width:98%"><textarea {{ editor_text }} id="editor" class="text-area" name="mainText">{{ context.main_text }}</textarea></div>
           </li>
 		   {% if fps_admin_access == 1 %}
 		  <li>
