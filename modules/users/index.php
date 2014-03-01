@@ -141,8 +141,6 @@ Class UsersModule extends Module {
 	 */
 	public function add_form($key = null)
     {
-		if (!empty($_SESSION['user']['id'])) redirect('/');
-	
 		// Registration denied
 		if (!$this->Register['Config']->read('open_reg')) {
 			return $this->showInfoMessage(__('Registration denied'), '/');
@@ -161,7 +159,8 @@ Class UsersModule extends Module {
 			$this->_view($content);
 			die();
 		}
-
+		
+		if (!empty($_SESSION['user']['id'])) redirect('/');
 
 		// View Register Form
 		$markers = array();
