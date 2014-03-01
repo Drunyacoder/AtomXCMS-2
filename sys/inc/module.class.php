@@ -629,11 +629,14 @@ class Module {
 	}
 	
 	
-	function showInfoMessage($message, $queryString = null) 
+	function showInfoMessage($message, $queryString = null, $requestIsOk = false) 
 	{
 		// AJAX request
 		if (isset($_GET['ajax'])) {
-			$data = array('errors' => wrap_errors($message));
+			$data = array();
+			$data['redirect'] = get_url($queryString);
+			if ($requestIsOk) $data = array('result' => $message);
+			else $data = array('errors' => wrap_errors($message));
 			return $this->showAjaxResponse($data);
 		}
 		

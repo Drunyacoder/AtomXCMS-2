@@ -102,6 +102,7 @@ $language = array(
 	'Empty field "bday"' 			=> 'Заполните день рождения',
 	'Wrong chars in field "bday"'	=> '"День рождения" содержит недопустимые символы',
 	'Empty parameters'				=> 'Не переданы параметры',
+	'Not enough posts'				=> 'Нет постов для перемещения',
 	
 	'Wrong chars in field "code"' 	=> 'поле "Код" содержит недопустимые символы',
 	'Wrong protection code' 		=> 'не совпадает код с картинки',
@@ -328,6 +329,7 @@ $language = array(
     'Send PM message form'          => 'Форма отправки ЛС',
     'View one dialog'          		=> 'Диалог(ЛС)',
     'List of dialogs'          		=> 'Список диалогов(ЛС)',
+    'Move posts'          			=> 'Перемещение сообщений',
 
 	// BACKEND
 	'Yes'                           => 'Да',
