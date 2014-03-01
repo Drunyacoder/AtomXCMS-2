@@ -324,7 +324,7 @@ border-radius: 20px; -moz-border-radius: 20px; -webkit-border-radius: 20px;
 box-shadow: inset 0 0 5px #000; -webkit-box-shadow: inset 0 0 5px #000; -moz-box-shadow: inset 0 0 5px #000;
 padding: 10px;
 }
-.infohead .infoblock div.download {width: 222px;float: left;font-size: 15px;padding: 0 6px}
+.infohead .infoblock div.download {width: 222px;float: left;font-size: 14px;padding: 0 6px}
 .infohead .infoblock div.download .downloadbutton {width: 219px;}
 .infohead .infoblock div a {display: block;}
 .infohead .infoblock div a.ahother, .infohead .infoblock div a.knownot {
