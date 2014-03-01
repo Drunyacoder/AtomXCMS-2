@@ -273,7 +273,7 @@ box-shadow: inset 0 0 3px #000;-webkit-box-shadow: inset 0 0 3px #000;-moz-box-s
 .activewindow div .uslinkminpro a:first-child {border-radius:5px 5px 0 0; -moz-border-radius: 5px 5px 0 0; -webkit-border-radius: 5px 5px 0 0; -khtml-border-radius: 5px 5px 0 0;}
 .activewindow div .uslinkminpro a:last-child {border-radius:0 0 5px 5px; -moz-border-radius: 0 0 5px 5px; -webkit-border-radius: 0 0 5px 5px; -khtml-border-radius: 0 0 5px 5px;}
 /*--------------------------------------------------------------LOGOFAPOS----------------------------------------------------------------------------*/
-.logohead {width: 380px;height: 100%;float: left;background: url('../img/globalogo.png') 0 87px no-repeat;}
+.logohead {width: 380px;height: 100%;float: left; margin-top:75px; height:175px;}
 .logohead .antihover {position: absolute; width: 311px; height: 91px; z-index: 4;}
 .logohead .fast {
 width: 209px;

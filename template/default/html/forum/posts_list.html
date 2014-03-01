@@ -140,6 +140,7 @@
 			{% endfor %}
 		
 	</div>
+	{% if checkAccess(['forum', 'edit_themes']) or checkAccess(['forum', 'delete_themes']) %}
 	<div>
 		<select id="packAction">
 			<option value="/forum/delete_posts_pack/">Удалить</value>
@@ -148,6 +149,7 @@
 		<input id="packButton" type="button" disabled="disabled" onClick="sendPack($('#packAction').val());" value="(0)">
 		<div style="display:none;"><form id="actionPack" action="" method="POST"></form></div>
 	</div>
+	{% endif %}
 	<div class="mezdyblock">
 	     <div class="paginator">
             <div class="pages">{{ pagination }}</div>
