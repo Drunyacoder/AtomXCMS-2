@@ -11,8 +11,8 @@
 
 <div style="float: right">{% if message.user_id %}<a class="fps-user" href="{{ www_root }}/users/info/{{ message.user_id }}" target="_blank"></a>{% endif %} {{ message.ip }} {% if message.del %}<a class="fps-del" href="{{ message.del }}"></a>{% endif %}</div>
 
-({{ AtmGetSimpleDate(message.date) }}) <a href="javascript:void('Ответить на сообщение')" onclick="parent.window.document.getElementById('chatModule').value+='[b]{{ message.name }}[/b], ';return false;" class="name">{{ message.name }}</a>:
-<div class="mess">{{ message.message }}</div>
+<span class="mess">({{ AtmGetSimpleDate(message.date) }})</span> <a href="javascript:void('Ответить на сообщение')" onclick="parent.window.document.getElementById('chatModule').value+='[b]{{ message.name }}[/b], ';return false;" class="name">{{ message.name }}</a>:
+<div style="padding:5px 2px;">{{ message.message }}</div>
 
 </div>
 
