@@ -157,7 +157,7 @@ class Document_Parser {
 		
 		
 		
-		$markers['powered_by'] = 'Fapos';
+		$markers['powered_by'] = '©AtomX CMS';
 		$markers['site_title'] = Config::read('site_title');
 		
 		if (isset($_SESSION['user']) && isset($_SESSION['user']['name'])) {
