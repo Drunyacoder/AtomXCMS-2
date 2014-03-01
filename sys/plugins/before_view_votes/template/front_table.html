@@ -1,8 +1,14 @@
+<style>
+.pl-vote {}
+.pl-vote-title {color: #DB5903; text-align: center; font-size:17px; margin:0px;}
+.pl-vote-ansvers {background:#F1F1F1; border: 1px solid #D3D3D3; color: #444444; font-size: 12px; margin-bottom: 5px; padding: 5px;}
+.pl-vote-ansvers .pl-vote-ansver {}
+.pl-vote-meta {}
+</style>
 <div id="vote_cont">
-	<h3 style="color:#DB5903; text-align:center;">{PLTITLE}</h3>
-	{PLCONTENT}
+	<div class="pl-vote-ansvers"><h3 class="pl-vote-title">{PLTITLE}</h3></div>
+	<div class="pl-vote-ansvers">{PLCONTENT}</div>
 	<img id="ajaxLoader" style="display:none;" src="/sys/img/ajaxs.gif" />
-	<br>
 	<input style="font-size:10px;" onClick="sendVote('{PLTITLE}');" type="button" name="vote" value="Проголосовать" />
 	<input style="font-size:10px;" onClick="showRes('{PLTITLE}');" type="button" name="view" value="Посмотреть" />
 </div>
