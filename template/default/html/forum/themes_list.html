@@ -29,7 +29,34 @@
 	  <div class="forumhead"><div class="forstatus"></div><div class="fornametemes">{{ getOrderLink(['title','Тема']) }}</div><div class="foranswerteme">{{ getOrderLink(['posts','Ответы']) }}</div><div class="forviuwteme">{{ getOrderLink(['views','Просмотры']) }}</div><div class="forautorteme">Автор</div><div class="fornewposts">{{ getOrderLink(['last_post','Обновления']) }}</div></div>
       {% if themes %}
 	  {% for theme in themes %}  
-	  <div class="forumcontent {{ theme.fps_css_class }}"><div class="forstatus"><span>{{ theme.themeicon }}</span></div><div class="fornametemes"><div class="mozilacostil"><div class="forinfoteme">{{ theme.importantly }}<a class="namefor" href="{{ theme.theme_url }}">{{ theme.title }}</a>{{ theme.near_pages }}<div class="fordescriptionteme">{{ theme.description }}</div></div>{% if theme.adminbar %}<div class="moderforum">{{ theme.adminbar }}</div>{% endif %}</div></div><div class="foranswerteme">{{ theme.posts }}</div><div class="forviuwteme">{{ theme.views }}</div><div class="forautorteme">{{ theme.author.name }}</div><div class="fornewposts">{{ theme.last_post }}<br />Сообщение от: <span class="lastPostUser">{{ theme.last_user }}</span><br />{{ theme.last_page }}</div></div>
+	  <div class="forumcontent {{ theme.fps_css_class }}">
+		<div class="forstatus"><span>{{ theme.themeicon }}</span></div>
+		<div class="fornametemes">
+			<div class="mozilacostil">
+				<div class="forinfoteme">
+					{{ theme.importantly }}<a class="namefor" href="{{ theme.theme_url }}">{{ theme.title }}</a>{{ theme.near_pages }}
+					<div class="fordescriptionteme">{{ theme.description }}</div>
+				</div>
+				<!--
+				{% if theme.moved_from %}
+				<div style="border:none; position:absolute; right:80px; top:17px; width:200px; height:20px; text-overflow:ellipsis; white-space: nowrap; overflow:hidden; font-size:12px;">
+					{% if forum.id == theme.moved_from %}
+						Перенесено в <a href="/forum/view_forum/{{ theme.toforum.id }}">{{ theme.toforum.title }}</a>
+					{% else %}
+						Перенесено из <a href="/forum/view_forum/{{ theme.fromforum.id }}">{{ theme.fromforum.title }}</a>
+					{% endif %}
+				</div>
+				{% endif %}
+				-->
+				{% if theme.adminbar %}
+				<div class="moderforum">{{ theme.adminbar }}</div>
+				{% endif %}
+			</div>
+		</div>
+		<div class="foranswerteme">{{ theme.posts }}</div>
+		<div class="forviuwteme">{{ theme.views }}</div>
+		<div class="forautorteme">{{ theme.author.name }}</div>
+		<div class="fornewposts">{{ theme.last_post }}<br />Сообщение от: <span class="lastPostUser">{{ theme.last_user }}</span><br />{{ theme.last_page }}</div></div>
 	  {% endfor %}
 	  {% else %}
 	  <div class="forumcontent">Тем еще не создано.</div>

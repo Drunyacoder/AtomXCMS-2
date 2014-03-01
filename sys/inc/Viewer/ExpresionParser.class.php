@@ -189,6 +189,20 @@ class Fps_Viewer_ExpresionParser
 	}
 	
 	
+	public function parseFilterExpression($node) {
+		while($this->parser->getStream()->getCurrent()->test(Fps_Viewer_Token::PUNCTUATION_TYPE, array('|'))) {
+			$this->parser->getStream()->next();
+			$filterName = $this->parser->getStream()->getCurrent()->getValue();
+			$filterName = 'Fps_Viewer_Filter_' . ucfirst($filterName);
+			if (class_exists($filterName)) {
+				$node->addFilter(new $filterName);
+			}
+			$this->parser->getStream()->next();
+		}
+		return $node;
+	}
+	
+	
 	public function parseSubscriptExpression($node)
 	{
 		$stream = $this->parser->getStream();
