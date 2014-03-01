@@ -1779,6 +1779,58 @@ Class UsersModule extends Module {
 		return $this->showInfoMessage(__('Operation is successful'), $redirect );
 	}
 
+	
+	// Функция удаляет личное сообщение; ID сообщения передается методом GET
+	public function pm_delete_by_user($id_msg = null)
+    {
+		if (!isset( $_SESSION['user'])) redirect('/');
+		$messagesModel = $this->Register['ModManager']->getModelInstance('Messages');
+		
+		$multi_del = true;
+		if (empty($_POST['ids']) 
+		|| !is_array($_POST['ids'])
+		|| count($_POST['ids']) < 1) $multi_del = false;
+
+		$idMsg = (int)$id_msg;
+		if ($idMsg < 1 && $multi_del === false) redirect('/');
+		
+		
+		// We create array with ids for delete
+		// There are ids of users
+		$ids = array();
+		if ($multi_del === false) {
+			$ids[] = $idMsg;
+		} else {
+			foreach ($_POST['ids'] as $id) {
+				$id = intval($id);
+				if ($id < 1) continue;
+				$ids[] = $id;
+			}
+		}
+		if (count($ids) < 1) redirect('/');
+
+		
+		foreach ($ids as $user_id) {
+			$messages = $this->Model->getDialog($_SESSION['user']['id'], $user_id);
+			if (!$messages) continue;
+			
+			foreach ($messages as $message) {
+				$id_rmv = $message->getId_rmv();
+			
+				if ($id_rmv == 0) {
+					$message->setId_rmv($_SESSION['user']['id']);
+					$message->save();
+				} else {
+					$message->delete();
+				}
+			}
+		}
+		
+		/* clean DB cache */
+		$this->Register['DB']->cleanSqlCache();
+		if ($this->Log) $this->Log->write('delete pm by user message(s)', 'user(s) id(' . implode(', ', $ids) . ')');
+		return $this->showInfoMessage(__('Operation is successful'), '/' . $this->module . '/pm/' );
+	}
 
 
 	/**

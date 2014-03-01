@@ -179,7 +179,8 @@ class Document_Parser {
 			);
 		}
 		
-		
+
+        $markers['atm_users_groups'] = $Register['ACL']->getGroups();
 		$markers['fps_admin_access'] = ($Register['ACL']->turn(array('panel', 'entry'), false)) ? '1' : '0';
 		$markers['fps_user_id'] = (!empty($_SESSION['user']['id'])) ? $_SESSION['user']['id'] : 0;
 		

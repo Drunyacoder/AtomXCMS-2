@@ -101,6 +101,7 @@ $language = array(
 	'Wrong chars in field "bmonth"'	=> '"Месяц рождения" содержит недопустимые символы',
 	'Empty field "bday"' 			=> 'Заполните день рождения',
 	'Wrong chars in field "bday"'	=> '"День рождения" содержит недопустимые символы',
+	'Empty parameters'				=> 'Не переданы параметры',
 	
 	'Wrong chars in field "code"' 	=> 'поле "Код" содержит недопустимые символы',
 	'Wrong protection code' 		=> 'не совпадает код с картинки',

@@ -1,0 +1,106 @@
+<script type="text/javascript">
+$(function() {
+    var AtomX = window.AtomX || {};
+    AtomX.autocompletePastValue = '';
+    $('[list=findthemes]').keyup(function() {
+        if ($('[list=findthemes]').val().length > 2) {
+            if ($('[list=findthemes]').val() != AtomX.autocompletePastValue) {
+                AtomX.autocompletePastValue = $('[list=findthemes]').val();
+                $.get('/forum/search_themes/?name='+$('[list=findthemes]').val(), {}, function(data){
+                    if (data.length) {
+                        //var data = $.parseJSON(data);
+                        $('#findthemes').html('');
+                        $(data).each(function(key, row){
+                            $('#findthemes').html($('#findthemes').html() + '<option value="' + row.title + '(' + row.id + ')">');
+                        });
+                    }
+                });
+            }
+        } else {
+            $('#findthemes').html('');
+        };
+    });
+    return;
+});
+</script>
+{{ context.errors }}
+<form name='editThemeForm' action="{{ context.action }}" method="POST">
+<div class="forumblock">
+	  <div class="forumtitle">Разделение темы: {{ theme.title }}</div> 
+	  <div class="mat-content">
+          <ul class="spisok-all">
+
+		  <li>
+			<span class="siu_title">
+				<strong>Новая тема(найти):</strong><br>
+				Поиск по названию
+			</span>
+			<span class="siu_data">
+				<input type="text" name="theme" maxlength="55" list="findthemes" value="{{ context.theme }}" />
+				<datalist id="findthemes"></datalist>
+			</span>
+		  </li>
+		  <li>
+			<span class="siu_title"><strong>Создать тему и <br>перенести сообщения в нее:</strong></span>
+			<span class="siu_data"><input type="checkbox" onClick="if($('#new_theme').is(':visible')){$('#new_theme').hide();}else{$('#new_theme').show();}" value="1" name="new_theme" /></span>
+		  </li>
+		  <div id="new_theme" style="display:none;">
+			  <li>
+				<span class="siu_title"><strong>Форум новой темы:</strong></span>
+				<span class="siu_data"><select name="forum_id"> {{ context.options }}</select></span>
+			  </li>
+			  <li>
+				<span class="siu_title"><strong>Название новой темы:</strong></span>
+				<span class="siu_data"><input type="text" name="title" maxlength="55" value="{{ context.theme }}" /></span>
+			  </li>
+			  <li>
+				<span class="siu_title"><strong>Описание новой темы:</strong></span>
+				<span class="siu_data"><input type="text" name="description" maxlength="128" value="{{ context.description }}" /></span>
+			  </li>
+			  <li>
+				<span class="siu_title"><strong>Закрыть доступ:</strong></span>
+				<span class="siu_data">
+				{% for group in atm_users_groups %}
+						<label><input type="checkbox" {% for curr in context.gr_access %} {% if curr == group.id %} checked="checked" {% endif %} {% endfor %} value="{{ group.id }}" name="gr_access_{{ group.id }}" />&nbsp;{{ group.title }}</label><br />
+				{% endfor %}
+				</span>
+			  </li>
+			  <li>
+				<span class="siu_title"><strong>Закрепить первое сообщение темы:</strong></span>
+				<span class="siu_data"><input type="checkbox" name="first_top" {% if context.first_top %} checked="checked" {% endif %} /></span>
+			  </li>
+			  {% if checkAccess([module,'close_themes']) %}
+			  <li>
+				<span class="siu_title"><strong>Закрыть тему:</strong>Запрет на добавление сообщений в теме</span>
+				<span class="siu_data"><input type="checkbox" name="locked" {% if context.locked %} checked="checked" {% endif %} /></span>
+			  </li>
+			  {% endif %}
+
+		  </div>
+		  <li>
+			<input type="submit" name="sendForm" value="Разделить" />
+			<br />Будет создана новая тема с выделенными сообщениями.
+		  </li>
+		  </ul>
+	  </div>
+{% for post in posts %}
+<input type="hidden" name="posts_ids[]" value="{{ post.id }}" />
+<div class="forumpost" id="post{{ post.id }}">
+<div class="poststarterinfo">
+<a class="postusername">{% if post.author.name %}{{ post.author.name }}{% else %} Гость {% endif %}</a>
+</div>
+
+<div class="posttextuser">
+	          <div class="headpostinfo"><span class="postdate">Отправлено: {{ AtmGetSimpleDate(post.time) }}</span>
+			  </div>
+	          <div class="posttext">{{ post.message }}</div>
+	       </div>
+</div>
+{% endfor %}
+</div>
+<div class="mezdyblock">
+	     <div class="paginator">
+            <div class="pages">{{ pagination }}</div>
+         </div>
+</div>
+</form>

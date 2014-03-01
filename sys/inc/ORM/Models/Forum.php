@@ -92,7 +92,7 @@ class ForumModel extends FpsModel
 	}
 	
 	
-	public function upThemesPostsCounters($theme)
+	public function upThemesPostsCounters($theme, $self_update = false)
 	{
 		// Обновляем таблицу USERS
 		$this->getDbDriver()->query(
@@ -114,6 +114,19 @@ class ForumModel extends FpsModel
 			`last_theme_id`=(SELECT `id` FROM `" . $this->getDbDriver()->getFullTableName('themes') . "` 
 			WHERE `id_forum`='" . $theme->getId_forum() . "'
 			ORDER BY `last_post` DESC  LIMIT 1) WHERE `id` = '" . $theme->getId_forum() . "'" );
+
+        // update theme
+        if ($self_update === true) {
+            $this->getDbDriver()->query(
+            "UPDATE `" . $this->getDbDriver()->getFullTableName('themes') . "`
+            SET `posts` = (SELECT COUNT(*) FROM `" . $this->getDbDriver()->getFullTableName('posts') . "`
+			WHERE `id_theme` = '" . $theme->getId() . "') - 1,
+			`id_last_author` = (SELECT `id_author` FROM `" . $this->getDbDriver()->getFullTableName('posts') . "`
+			WHERE `id_theme` = '" . $theme->getId() . "' ORDER BY `time` DESC LIMIT 1),
+			`last_post`= (SELECT `id` FROM `" . $this->getDbDriver()->getFullTableName('posts') . "`
+			WHERE `id_theme` = '" . $theme->getId() . "'
+			ORDER BY `time` DESC  LIMIT 1) WHERE `id` = '" . $theme->getId() . "'" );
+        }
 	}
 	
 	
@@ -173,6 +186,32 @@ class ForumModel extends FpsModel
 		}
 		return $forums;
 	}
+
+
+    public function movePostsToTheme($old_theme, $new_theme, $posts_ids) {
+        $Register = Register::getInstance();
+        $postsModel = $Register['ModManager']->getModelInstance('Posts');
+
+
+        $post = $this->getDbDriver()->select('posts', DB_FIRST, array('cond' => array('`id_theme`' => $new_theme->getId()), 'limit' => 1, 'order' => 'time ASC'));
+        $this->getDbDriver()->query("UPDATE `" . $this->getDbDriver()->getFullTableName('posts') . "`
+            SET `id_theme` = " . $new_theme->getId() . " WHERE `id` IN (" . implode(',', (array)$posts_ids) . ")");
+
+        if (is_array($post) && count($post) > 0) {
+            $time = $post[0]['time'];
+            $this->getDbDriver()->query("UPDATE `" . $this->getDbDriver()->getFullTableName('posts') . "`
+                SET `time` = '" . $time . "' + INTERVAL 1 SECOND
+                WHERE `id` IN (" . implode(',', (array)$posts_id) . ") AND `time` < '" . $time . "'");
+        }
+        $this->getDbDriver()->query("UPDATE `" . $this->getDbDriver()->getFullTableName('forum_attaches') . "`
+            SET `theme_id` = " . $new_theme->getId() . " WHERE `post_id` IN (" . implode(',', (array)$posts_ids) . ")");
+
+
+        $this->upThemesPostsCounters($old_theme, true);
+        $this->upThemesPostsCounters($new_theme, true);
+		return true;
+    }
+
 
     /**
      * @param $user_id

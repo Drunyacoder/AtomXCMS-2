@@ -58,4 +58,11 @@ class PostsModel extends FpsModel
 		$this->getDbDriver()->query("DELETE FROM `" . $this->getDbDriver()->getFullTableName('posts') . "` WHERE `id_theme` = '" . $theme_id . "'");
 	}
 
+
+    public function getFirst($where, $params)
+    {
+        $params['limit'] = 1;
+        $post = $this->getCollection($where, $params);
+        return (!empty($post[0])) ? $post[0] : false;
+    }
 }

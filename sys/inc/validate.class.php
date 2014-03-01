@@ -55,7 +55,8 @@ class Validate {
 	
 	
 	public function disableFieldCheck($key) {
-		$this->disabledFields[] = $key;
+        if (is_array($key)) $this->disabledFields = array_merge($this->disabledFields, $key);
+		else $this->disabledFields[] = $key;
 	}
 	
 
@@ -65,8 +66,7 @@ class Validate {
 		$Register = Register::getInstance();
 		$request = $_POST;
 		$errors = '';
-		
-		
+
 		$rules = @$rules[$this->pathParams[0]][$this->pathParams[1]];
 		if (empty($rules) || count($rules) < 1) throw new Exception("Rules for ".$this->pathParams[0]." - ".$this->pathParams[1]." not found.");
 		
@@ -75,7 +75,6 @@ class Validate {
 			if (in_array($title_, $this->disabledFields)) continue;
 			
 			$fields = array();
-			
 			
 			// multiple fialeds (for examole attaches)
 			if (!empty($params['for'])) {
@@ -87,16 +86,13 @@ class Validate {
 				$fields[] = $title_;
 			}
 			
-			
-			
-			
+
 			// process
 			foreach ($fields as $field) {
 				$title = (substr($field,0, 7) == 'files__') ? substr($field, 7) : $field;
 				$publicTitle = (!empty($params['title'])) ? $params['title'] : $title_;
 			
 
-				
 				// file or field
 				if (substr($field, 0, 7) != 'files__') {
 					// required
@@ -200,12 +196,20 @@ class Validate {
 				}
 			}
 		}
-		//die();
 		return $errors;
 	}
 
 
-	public static function getCurrentInputsValues($entity, $pattern = array())
+    /**
+     * Merge entity with form session(viewMessage|FpsForm).
+     * Geting [object|array] entity and array pattern. Fill entity from session by pattern.
+     * Geting array entity and nothing pattern. Pattern = entity and fill entity from session by pattern
+     *
+     * @param $entity
+     * @param array $pattern
+     * @return array
+     */
+    public static function getCurrentInputsValues($entity, $pattern = array())
     {
         if (!empty($_SESSION['viewMessage'])) {
 			$session = $_SESSION['viewMessage'];
@@ -328,7 +332,5 @@ class Validate {
 
 		return (count($query) > 0) ? false : true;
 	}
-	
-}
 
-?>
+}

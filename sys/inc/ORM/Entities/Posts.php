@@ -115,7 +115,7 @@ class PostsEntity extends FpsEntity
 			
 			} else {
 				$Model = new PostsModel('posts');
-				$this->author = $Model->getAuthorByEntity($this); // TODO (function is not exists)
+				$this->author = $Model->getById($this->getId_author()); // TODO (function is not exists)
 			}
         }
 		return $this->author;

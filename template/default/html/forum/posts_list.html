@@ -73,6 +73,10 @@
 			  {% endif %}
 	          {% if post.edit_link %}<a href="{{ www_root }}/forum/edit_post_form/{{ post.id }}" class="footerpostbuttons">Изменить</a>{% endif %} 
 			  {% if post.delete_link %}<a onclick="return confirm('Вы уверены?')" href="{{ www_root }}/forum/delete_post/{{ post.id }}" class="footerpostbuttons">Удалить</a>{% endif %}<span {{ editor_forum_quote }}>Цитировать</span>
+			  
+			  {% if checkAccess(['forum', 'edit_themes']) or checkAccess(['forum', 'delete_themes']) %}
+			  <input type="checkbox" class="packPoint" onClick="if(this.checked){addToPackage(this.value);}else{delFromPackage(this.value);}" value="{{ post.id }}" />
+			  {% endif %}
 	       </div>
 	    </div>
 		
@@ -135,6 +139,14 @@
 			</div>
 			{% endfor %}
 		
+	</div>
+	<div>
+		<select id="packAction">
+			<option value="/forum/delete_posts_pack/">Удалить</value>
+			<option value="/forum/move_posts_form/{{ theme.id }}">Переместить</value>
+		</select>
+		<input id="packButton" type="button" disabled="disabled" onClick="sendPack($('#packAction').val());" value="(0)">
+		<div style="display:none;"><form id="actionPack" action="" method="POST"></form></div>
 	</div>
 	<div class="mezdyblock">
 	     <div class="paginator">

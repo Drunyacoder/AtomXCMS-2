@@ -78,7 +78,7 @@
                         </div>
                         <ul class="listuserbuttons">
                             <!--<li><a href="{{ www_root }}/users/info/{{ messageUser.id }}" class="button2">Профиль собеседника</a></li>-->
-                            <li onClick="return false;">{{ message.deleteLink }}<input type="checkbox" class="packPoint" onClick="if(this.checked){addToPackage(this.value);}else{delFromPackage(this.value);}" value="{{ messageUser.id }}" /></li>
+                            <li>{{ message.deleteLink }}<input type="checkbox" class="packPoint" onClick="if(this.checked){addToPackage(this.value);}else{delFromPackage(this.value);}" value="{{ messageUser.id }}" /></li>
                         </ul>
                     </li>
                     {% endfor %}

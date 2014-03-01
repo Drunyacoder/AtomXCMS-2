@@ -657,7 +657,7 @@ AtomX = new function(){
     this.sendPm = function(form, callback){
 
         var title = '';
-        fpsWnd('AtmPmLoader', title, '<span id="loader"><img src="../img/ajaxload.gif" alt="loading"></span>', {})
+        fpsWnd('AtmPmLoader', title, '<span id="loader" style="text-align:center; display:block;"><img src="/sys/img/ajaxload.gif" alt="loading"></span>', {})
 
 		jQuery.ajax({
 			url:     $(form).attr("action") + '?ajax=1',

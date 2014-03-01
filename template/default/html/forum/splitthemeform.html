@@ -18,7 +18,7 @@
 		  <li>
             <span class="siu_title"><strong>Закрыть доступ:</strong></span>
             <span class="siu_data">
-			{% for group in fps_users_groups %}
+			{% for group in atm_users_groups %}
 					<label><input type="checkbox" {% for curr in context.gr_access %} {% if curr == group.id %} checked="checked" {% endif %} {% endfor %} value="{{ group.id }}" name="gr_access_{{ group.id }}" />&nbsp;{{ group.title }}</label><br />
 			{% endfor %}
 			</span>
@@ -42,11 +42,11 @@
 {% for post in posts %}
 <div class="forumpost" id="post{{ post.id }}">
 <div class="poststarterinfo">
-<a class="postusername">{{ post.author_name }}</a>
+<a class="postusername">{% if post.author.name %}{{ post.author.name }}{% else %} Гость {% endif %}</a>
 </div>
 
 <div class="posttextuser">
-	          <div class="headpostinfo"><span class="postdate">Отправлено: {{ AtmGetDate(post.time) }}</span>
+	          <div class="headpostinfo"><span class="postdate">Отправлено: {{ AtmGetSimpleDate(post.time) }}</span>
 			  <label class="postidlink"><input type="checkbox" {% for curr in context.posts_select %} {% if curr == post.id %} checked="checked" {% endif %} {% endfor %} value="{{ post.id }}" name="post_{{ post.id }}" /></label>
 			  </div>
 	          <div class="posttext">{{ post.message }}</div>

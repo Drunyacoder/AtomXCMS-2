@@ -28,6 +28,7 @@ class Fps_Viewer_ExpresionParser
 			'in' => 'Fps_Viewer_Operator_BinaryIn',
 			'not in' => 'Fps_Viewer_Operator_BinaryNotIn',
 			'and' => 'Fps_Viewer_Operator_BinaryAnd',
+			'or' => 'Fps_Viewer_Operator_BinaryOr',
 		);
 	}
 	
