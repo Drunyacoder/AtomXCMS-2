@@ -52,7 +52,7 @@ class AtmDateTime {
 
         $y = $diff->y; $m = $diff->m; $d = $diff->d; $h = $diff->h; $i = $diff->i; $s = $diff->s;
 
-
+		
         if (!empty($y)) {
             $result = $dateObj->format('j M Y');
 
@@ -109,7 +109,24 @@ class AtmDateTime {
                     break;
             }
         }
-
+		
+		
+		$translate = array(
+			'Jan' => __('Jan'),
+			'Feb' => __('Feb'),
+			'Mar' => __('Mar'),
+			'Apr' => __('Apr'),
+			'May' => __('May'),
+			'Jun' => __('Jun'),
+			'Jul' => __('Jul'),
+			'Aug' => __('Aug'),
+			'Sept' => __('Sept'),
+			'Oct' => __('Oct'),
+			'Nov' => __('Nov'),
+			'Dec' => __('Dec'),
+			'at' => __('at'),
+		);
+		$result = str_replace(array_keys($translate), $translate, $result);
 
         return $result;
     }

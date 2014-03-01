@@ -323,8 +323,8 @@ class UsersModel extends FpsModel
 				FROM `" . $this->getDbDriver()->getFullTableName('messages') . "` 
 				WHERE `to_user` = ".$uid."
 				AND `viewed` = 0 AND `id_rmv` <> ".$uid);
-
-		return (!empty($res[0]) && !empty($res[0]['cnt'])) ? (string)$res[0]['cnt'] : 0;
+		
+		return (!empty($res[0]) && !empty($res[0]['cnt'])) ? $res[0]['cnt'] : 0;
 	}
 	
 	
