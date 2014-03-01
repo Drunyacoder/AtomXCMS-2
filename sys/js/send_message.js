@@ -633,7 +633,11 @@ function check_pm(uid){
 	if (uid > 0) {
 		$.get('/users/get_count_new_pm/'+uid, {}, function(data){
 			if (typeof data != 'undefined' && parseInt(data) == data && data > 0) {
-				$('body').append(createFpsWin('Новые сообщения', '<div style="text-align:center;">' + data + ' Новых сообщений!<br><br><a href="/users/pm/'+uid+'">Прочитать</a></div>', 'top:0px;left:0px;'));
+				$('body').append(createFpsWin('Новые сообщения', '<div style="text-align:center;">' + data + ' Новых сообщений!<br><br><a href="/users/pm/'+uid+'">Прочитать</a></div>', ''));
+				document.getElementById('pm-sound-notification').play();
+				setTimeout(function(){
+					document.getElementById('pm-sound-notification').pause();
+				}, 300);
 			} else {
 				setTimeout("check_pm("+uid+")", 20000);
 			}

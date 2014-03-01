@@ -40,6 +40,7 @@ $(document).ready(function() {
 });
 </script>
 <!--/FancyBOX -->
+
 </head>
 
 
@@ -205,14 +206,10 @@ $(document).ready(function() {
 </div>
 <div style="float:right;"><img src="{{ counter }}" /></div>
 </div>
-<script type="text/javascript">
-	var links = $('.fps-show-mat');
-	for (var key in links) {
-		if(!links.hasOwnProperty(key)) continue;
-	
-		links[key].innerHTML = '';
-	}
-	</script>
+
 </div>
+<audio id="pm-sound-notification"> 
+  <source src="{{ template_path }}/sound_notify.mp3"> 
+</audio>
 </body>
 </html>

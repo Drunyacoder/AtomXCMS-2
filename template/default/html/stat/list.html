@@ -8,7 +8,10 @@
 				<span>Комментарии: {{ entity.comments }}</span>
 		        <span class="right">Автор: <a href="{{ entity.add_markers.profile_url }}">{{ entity.author.name }}</a></span>
 		    </div>
-		    <div class="announce">{{ entity.add_markers.announce }}</div>
+		    <div class="announce">
+				{{ entity.add_markers.announce }}
+				<div style="clear:both;"></div> <a class="fps-show-mat" href="{{ entity.add_markers.entry_url }}">Подробнее</a>
+			</div>
 		    <div class="footerinfo">
 		       Добавлено: {{ AtmGetDate(entity.date) }}
 	       </div>
