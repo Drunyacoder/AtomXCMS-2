@@ -109,7 +109,11 @@ class SearchModule extends Module {
 				redirect($this->getModuleURL());
 			}
 
+			
+			$str = Plugins::intercept('before_search', $str);
 			$results = $this->__search($str, $modules);
+			$results = Plugins::intercept('search_results', $results);
+			
 			if (count($results) && is_array($results)) {
 				foreach ($results as $result) {
 					if (preg_match('#(.{0,100}' . $str . '.{0,100})#miu', $result->getIndex(), $match)) {

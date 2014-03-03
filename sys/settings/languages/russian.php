@@ -343,6 +343,7 @@ $language = array(
     'Nov'          					=> 'Ноя',
     'Dec'          					=> 'Дек',
     'at'          					=> 'в',
+    'New PM on forum'          		=> 'Новое ЛС сообщение',
 
 	// BACKEND
 	'Yes'                           => 'Да',
