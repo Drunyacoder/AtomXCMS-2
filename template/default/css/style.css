@@ -1,4 +1,5 @@
 /*----------------------------------------------------------FONT--------------------------------------------------------------------------------*/
+
 @font-face {
     font-family: ArialNarrow; 
     src: url('../fonts/arialnarrow.eot'); 
@@ -9,13 +10,14 @@
     src: url('../fonts/helveticacy.eot'); 
     src: local(HelveticaCY), url('../fonts/helveticacy.ttf'); 
    }
+   
 @font-face {
     font-family: 'IcoMoon';
-    src: url('../fonts/icomoon-webfont.eot');
-    src: url('../fonts/icomoon-webfont.eot?#iefix') format('embedded-opentype'),
-        url('../fonts/icomoon.svg#IcoMoon') format('svg'),                                              /* For CSSLOADERS*/
-        url('../fonts/icomoon-webfont.woff') format('woff'),
-        url('../fonts/icomoon-webfont.ttf') format('truetype');
+    src: url('/template/default/fonts/icomoon.eot');
+    src: url('/template/default/fonts/icomoon.eot?#iefix') format('embedded-opentype'),
+        url('/template/default/fonts/icomoon.svg#IcoMoon') format('svg'),                                              /* For CSSLOADER*/
+        url('/template/default/fonts/icomoon.woff') format('woff'),
+        url('/template/default/fonts/icomoon.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
@@ -39,6 +41,10 @@ a:hover {color: #fff;}
 .vectorcssloader {font-size: 200px;margin: 0;text-align: center;}
 .css3loading:before {content: attr(data-icon1);font-family: 'IcoMoon';vertical-align: top;text-shadow: 0 0 .1em #8FFF00, 0 0 .3em #780;}
 
+#loader {text-align:center; display:block; font-size: 60px; color: #E8FFC6; line-height: 1; margin: 40px;}
+#loader:before {text-shadow: 0 0 0.1em #8FFF00, 0 0 0.3em #778800; content: "\e60f"; font-family: 'IcoMoon';}
+#loader img, #ajaxLoader img {display:none}
+
 .css3loading {display: inline-block;line-height: 1;color: #E8FFC6;}
 @-webkit-keyframes anim-rotate {
     0%   { -webkit-transform: rotate(0); }
@@ -57,12 +63,13 @@ a:hover {color: #fff;}
     100% {transform: rotate(360deg); }
 }
 
-.anim-rotate, .css3loading {
+.anim-rotate, .css3loading, #loader {
     -webkit-animation: anim-rotate 1s linear infinite;
     -moz-animation: anim-rotate 1s linear infinite;
     -ms-animation: anim-rotate 1s linear infinite;
 	animation: anim-rotate 1s linear infinite;
 }
+
 /*-----------------------------/CSSLOADER---------------------------------*/
 input {
 border: 1px solid #c4c4c4;
@@ -1036,6 +1043,7 @@ padding: 10px;
 .mat-content .screenshots div a img {max-height: 150px;}
 /*--------------------------------------------------------------/MATERIALS----------------------------------------------------------------------------*/
 /*--------------------------------------------------------------AJAX-WINDOW----------------------------------------------------------------------------*/
+
 .fps-fwin {position:fixed;top:200px;left:70%;z-index: 99999;}
 .fps-fwin a {
 display: inline-block;
@@ -1076,6 +1084,7 @@ border-radius: 10px 10px 0 0;  -moz-border-radius: 10px 10px 0 0;  -webkit-borde
 border: 1px solid #780;
 padding: 5px;
 max-height: 400px;
+min-height: 100px;
 overflow: auto;
 margin: 8px 10px 20px 10px;
 background: rgba(177, 199, 150, 1);

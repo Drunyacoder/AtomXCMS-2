@@ -21,7 +21,9 @@ Class Pather {
 			header('Location: ' . $this->Register['Config']->read('redirect') . '');
 			die();
 		}
-		$params = $this->parsePath();
+		
+		$url = (!empty($_GET['url'])) ? $this->decodeUrl($_GET['url']) : '';
+		$params = $this->parsePath($url);
 		$data = $this->callAction($params);
 	}
 	
@@ -64,59 +66,48 @@ Class Pather {
     /**
      * @return array
      */
-	function parsePath() {
+	function parsePath($url) {
 		$pathParams = array();
-		$url = (!empty($_GET['url'])) ? $this->decodeUrl($_GET['url']) : '';
+		
+		
+		$url_params = parse_url('http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+		if (!empty($url_params['path'])) {
+			if (false !== (strpos($url_params['path'], '//')) || substr($url_params['path'], -1) !== '/') {
+				$url_params['path'] = preg_replace('#/+#', '/', $url_params['path'] . '/');
+				$redirect_url = $url_params['path'] . ((!empty($url_params['query'])) ? '?' . $url_params['query'] : '');
+				redirect($redirect_url);
+			}
+		}
 		
 
-		
+		$url = rtrim($url, '/');
 		if (empty($url)) {
 			if ($this->Register['Config']->read('start_mod')) {
-				$_GET['url'] = $this->Register['Config']->read('start_mod');
-				$pathParams = $this->parsePath();
+				$start_mod = $this->Register['Config']->read('start_mod');
+				$pathParams = $this->parsePath($start_mod);
 				return $pathParams;
 			}
-
-			
 		} else {
 			if ($this->Register['Config']->read('start_mod') && $url === $this->Register['Config']->read('start_mod')) {
 				$this->Register['is_home_page'] = true;
 			}
 			
 			$pathParams = explode('/', $url);
-			
-			foreach ($pathParams as $key => $value) {
-				if (empty($value)) unset($pathParams[$key]);
-			}
-			//sort($pathParams);
 		}
 		
+		
+		
+		if (empty($pathParams)) {
+			$pathParams = array(
+				'pages',
+				'index',
+			);
+		}
 		
 		// sort array(keys begins from 0)
-		$pathParams_ = array();
-		foreach ($pathParams as $key => $val) $pathParams_[] = trim($val);
-		$pathParams = $pathParams_;
-
-
-		if (empty($pathParams)) {
-			if ($this->Register['Config']->read('start_mod')) {
-				$url = Config::read('start_mod');
-				$pathParams = $this->parsePath();
-				return $pathParams;
-			}
-		}
-		
-		//may be i need upgrade this...hz
-		/*if (count($pathParams) == 1 && !file_exists(ROOT . '/modules/' . $pathParams[0] . '/index.php')) {
-			$pathParams = array(
-				0 => 'pages',
-				1 => 'index',
-				2 => implode('/', $pathParams),
-			);
-		} else*/ if (count($pathParams) == 0 ) {
-			$pathParams[1] = 'index';
-			$pathParams[0] = 'pages';
-		}
+		$pathParams = array_map(function($r){
+			return trim($r);
+		}, $pathParams);
 
 
 		// Redirect from not HLU to HLU

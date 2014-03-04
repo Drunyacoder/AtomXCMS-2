@@ -490,6 +490,7 @@ Class UsersModule extends Module {
 	// Функция высылает на e-mail пользователя новый пароль
 	public function send_new_password()
     {
+		if (empty($_POST['username']) || empty($_POST['email'])) redirect('/' . $this->module . '/');
 		// Обрезаем переменные до длины, указанной в параметре maxlength тега input
 		$name  = mb_substr( $_POST['username'], 0, 30 );
 		$email = mb_substr( $_POST['email'], 0, 60 );
@@ -1979,7 +1980,7 @@ Class UsersModule extends Module {
 				return $this->showInfoMessage(__('Use authorize form'), '/');
 			}
 		}
-		
+
 		$errors = $this->Register['Validate']->check($this->getValidateRules());
 		
 		
