@@ -71,7 +71,7 @@ Class Pather {
 		
 		
 		$url_params = parse_url('http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
-		if (!empty($url_params['path'])) {
+		if (!empty($url_params['path']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 			if (false !== (strpos($url_params['path'], '//')) || substr($url_params['path'], -1) !== '/') {
 				$url_params['path'] = preg_replace('#/+#', '/', $url_params['path'] . '/');
 				$redirect_url = $url_params['path'] . ((!empty($url_params['query'])) ? '?' . $url_params['query'] : '');
