@@ -554,7 +554,7 @@ Class ForumModule extends Module {
 		if ($theme->getId_last_author()) {
 			$last_user = get_link(h($theme->getLast_author()->getName()), getProfileUrl($theme->getId_last_author()));
 		}
-		$last_page = get_link(__('To last'), '/forum/view_theme/' . $theme->getId() . '&page=99999');
+		$last_page = get_link(__('To last'), '/forum/view_theme/' . $theme->getId() . '?page=99999');
 		
 		
 		//NEAR PAGES
