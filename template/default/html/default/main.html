@@ -156,7 +156,8 @@ $(document).ready(function() {
 
 	<div class="twoblocks">
 		<div class="materials"> 
-			{% if pagination %}<div class="mezdyblock"><span class="meta">{{ meta }}</span><div class="paginator"><div class="pages">{{ pagination }}</div></div></div>{% endif %}
+			{% if pagination %}<div class="mezdyblock"><span class="meta">{{ meta }}</span><div class="paginator">
+			<div class="pages">Страницы: {{ pagination }}</div></div></div>{% endif %}
 			{{ content }}
 			<div class="paginator"><div class="pages">{{ comments_pagination }}</div></div>
 			{{ comments }}

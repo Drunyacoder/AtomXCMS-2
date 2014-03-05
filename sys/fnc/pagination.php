@@ -53,7 +53,7 @@ function pagination( $total, $perPage, $url )
 
 
 	$url = get_url($url);
-	$html = '&nbsp;Страницы: ';
+	$html = '';
 	// Проверяем нужна ли стрелка "В начало"
 	if ( $page > 3 )
 		$startpage = '<a class="pages" href="'.$url.'&page=1"><<</a> ... ';

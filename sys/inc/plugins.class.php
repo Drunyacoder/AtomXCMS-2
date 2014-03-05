@@ -3,13 +3,13 @@
 | 												 |
 |  @Author:       Andrey Brykin (Drunya)         |
 |  @Email:        drunyacoder@gmail.com          |
-|  @Site:         http://fapos.net			     |
-|  @Version:      1.0.1                          |
+|  @Site:         http://atomx.net			     |
+|  @Version:      1.1.0                          |
 |  @Project:      CMS                            |
 |  @Package       CMS Fapos                      |
 |  @Subpackege    Plugins Class                  |
-|  @Copyright     ©Andrey Brykin 2010-2013       |
-|  @Last mod.     2013/01/17                     |
+|  @Copyright     ï¿½Andrey Brykin                 |
+|  @Last mod.     2014/03/05                     |
 \-----------------------------------------------*/
 
 /*-----------------------------------------------\
@@ -18,9 +18,9 @@
 |  CMS Fapos,without the consent of the          |
 |  author, is illegal                            |
 |------------------------------------------------|
-|  Ëþáîå ðàñïðîñòðàíåíèå                         |
-|  CMS Fapos èëè åå ÷àñòåé,                      |
-|  áåç ñîãëàñèÿ àâòîðà, ÿâëÿåòñÿ íå çàêîííûì     |
+|  Ã‹Ã¾Ã¡Ã®Ã¥ Ã°Ã Ã±Ã¯Ã°Ã®Ã±Ã²Ã°Ã Ã­Ã¥Ã­Ã¨Ã¥                         |
+|  CMS Fapos Ã¨Ã«Ã¨ Ã¥Ã¥ Ã·Ã Ã±Ã²Ã¥Ã©,                      |
+|  Ã¡Ã¥Ã§ Ã±Ã®Ã£Ã«Ã Ã±Ã¨Ã¿ Ã Ã¢Ã²Ã®Ã°Ã , Ã¿Ã¢Ã«Ã¿Ã¥Ã²Ã±Ã¿ Ã­Ã¥ Ã§Ã ÃªÃ®Ã­Ã­Ã»Ã¬     |
 \-----------------------------------------------*/
 
 class Plugins {
@@ -183,7 +183,7 @@ class Plugins {
 				include_once $plugin . '/index.php';
 				
 				$pl_obj = new $pl_conf['className']($params);
-				$params = $pl_obj->common($params);
+				$params = $pl_obj->common($params, $key);
 			}
 		}
 		

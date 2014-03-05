@@ -1,4 +1,4 @@
-<p>Добрый день, {{ context.user.name }}!</p>
-<p>Вы получили новое личное сообщение на сайте <a href="{{ context.site_url }}">{{ context.site_name }}</a>.</p>
-<p>Отправитель сообщения <a href="{{ context.site_url }}/users/info/{{ context.from_user.id }}">{{ context.from_user.name }}</a>.</p>
-<p>Чтобы прочитать сообщение перейдите по ссылке <a href="{{ context.link }}">{{ context.link }}</a></p>
+<p>Добрый день, {{ user.name }}!</p>
+<p>Вы получили новое личное сообщение на сайте <a href="{{ site_url }}">{{ site_title }}</a>.</p>
+<p>Отправитель сообщения <a href="{{ site_url }}/users/info/{{ context.from_user.id }}">{{ from_user.name }}</a>.</p>
+<p>Чтобы прочитать сообщение перейдите по ссылке <a href="{{ link }}">{{ link }}</a></p>

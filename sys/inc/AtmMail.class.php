@@ -33,7 +33,7 @@ class AtmMail {
 
     private $from;
 
-    private $template;
+    private $body = '';
 
     private $lastError = false;
 
@@ -47,8 +47,11 @@ class AtmMail {
     public function prepare($template, $from = null, $additional_headers = null) {
         $this->from = ($from !== null) ? Config::read('admin_email') : $from;
 
-        if (!file_exists($this->templatePath . $template . '.html')) throw new Exception("Email template '$template' not found.");
-        $this->template = file_get_contents($this->templatePath . $template . '.html');
+        if (!empty($template)) {
+            if (!file_exists($this->templatePath . $template . '.html'))
+                throw new Exception("Email template '$template' not found.");
+            $this->body = file_get_contents($this->templatePath . $template . '.html');
+        }
 
         // headers
         $this->headers = "From: ".$_SERVER['SERVER_NAME']." <" . $this->from . ">\n";
@@ -58,16 +61,21 @@ class AtmMail {
     }
 
 
+    public function setBody($body) {
+        $this->body = $body;
+    }
+
+
 	public function sendMail($to, $subject, $context = array()) {
 		$context = array_merge($context, array(
             'to' => $to,
             'subject' => $subject,
-            'site_name' => Config::read('site_title'),
-            'site_url' => get_url('/'),
+            'site_title' => Config::read('site_title'),
+            'site_url' => 'http://' . $_SERVER['SERVER_NAME'] . get_url('/'),
         ));
 
         try {
-            $body = $this->Viewer->parseTemplate($this->template, $context);
+            $body = $this->Viewer->parseTemplate($this->body, $context);
             mail($to, $subject, $body, $this->headers);
         } catch (Exception $e) {
             $this->lastError = $e->getMessage();

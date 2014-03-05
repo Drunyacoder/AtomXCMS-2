@@ -401,8 +401,6 @@ Class UsersModule extends Module {
             $context = array(
                 'activation_link' => 'http://'.$_SERVER['SERVER_NAME'] . '/users/activate/'.$code,
                 'user' => $entity,
-                'site_name' => Config::read('site_title'),
-                'site_url' => get_url('/'),
             );
 			
 			$subject = 'Регистрация на форуме '.$_SERVER['SERVER_NAME'];
@@ -543,8 +541,6 @@ Class UsersModule extends Module {
                     'activation_link' => 'http://'.$_SERVER['SERVER_NAME'] . '/users/activate_password/'.$code,
                     'new_password' => $newPassword,
                     'user_name' => $name,
-                    'site_name' => Config::read('site_title'),
-                    'site_url' => get_url('/'),
                 );
 				
 				$subject = 'Активация пароля на форуме '.$_SERVER['SERVER_NAME'];

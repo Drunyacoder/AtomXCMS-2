@@ -8,8 +8,8 @@
 | @Project:      CMS                           |
 | @Package       CMS Fapos                     |
 | @Subpackege    News Module                   |
-| @Copyright     ©Andrey Brykin 2010-2013      |
-| @Last mod      2013/11/10                    |
+| @Copyright     ©Andrey Brykin                |
+| @Last mod      2014/03/05                    |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
@@ -195,7 +195,8 @@ Class NewsModule extends Module {
 		if (!$this->ACL->checkCategoryAccess($category->getNo_access())) 
 			return $this->showInfoMessage(__('Permission denied'), '/' . $this->module . '/');
 		
-		
+
+        Plugins::intercept('view_category', $category);
 		$this->page_title = h($category->getTitle()) . ' - ' . $this->page_title;
 		
 		
@@ -348,7 +349,8 @@ Class NewsModule extends Module {
 		if (!$this->ACL->turn(array('other', 'can_premoder'), false) && in_array($entity->getPremoder(), array('rejected', 'nochecked'))) {
 			return $this->showInfoMessage(__('Permission denied'), '/' . $this->module . '/');
 		}
-			
+
+        Plugins::intercept('view_category', $entity->getCategory());
 			
 		
 		// Some gemor with add fields

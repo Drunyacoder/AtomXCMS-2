@@ -3,12 +3,12 @@
 ##################################################
 ##												##
 ## Author:       Andrey Brykin (Drunya)         ##
-## Version:      1.1                            ##
+## Version:      1.2                            ##
 ## Project:      CMS                            ##
 ## package       CMS Fapos                      ##
 ## subpackege    Admin Panel module             ##
-## copyright     ©Andrey Brykin 2010-2011       ##
-## last mod.     2011/11/13                     ##
+## copyright     ©Andrey Brykin                 ##
+## last mod.     2014/03/04                     ##
 ##################################################
 
 
@@ -32,8 +32,6 @@ include_once ROOT . '/admin/inc/adm_boot.php';
 $pageTitle = 'Массовая рассылка писем';
 $pageNav = $pageTitle;
 $pageNavr = '';
-
-
 
 
 
@@ -64,6 +62,24 @@ foreach ($count_usr as $val) {
 }
 
 
+// templates for select & current template
+$email_templates_path = ROOT . '/sys/settings/email_templates/';
+$email_templates = glob($email_templates_path . '*.html');
+if (!empty($email_templates)) {
+    foreach($email_templates as $k => $template) {
+        $template = substr(strrchr($template, '/'), 1);
+        $template = str_replace('.html', '', $template);
+        $email_templates[$k] = $template;
+    }
+}
+
+if (!empty($_GET['tpl']) && file_exists($email_templates_path . $_GET['tpl'] . '.html')) {
+    $message_text = file_get_contents($email_templates_path . $_GET['tpl'] . '.html');
+} else {
+    $message_text = '';
+}
+
+
 	
 if (isset($_POST['send'])) {
 	if (!empty($_POST['message']) 
@@ -89,21 +105,20 @@ if (isset($_POST['send'])) {
 		
 		if (count($mail_list) > 0) {
 			$from = (!empty($_POST['from'])) ? trim($_POST['from']) : Config::read('admin_email');
-			$headers  = "Content-type: text/plain; charset=utf-8 \r\n";
-			$headers .= "From: " . $from . "\r\n";
-			
 			$subject = trim($_POST['subject']);
+
+            $mailer = new AtmMail($email_templates_path);
+            $mailer->prepare(false, $from);
+            $mailer->setBody($_POST['message']);
 
 			$n = 0;
 			foreach ($mail_list as $result) {
-				$patterns = array(
-					'{USERNAME}' => $result['name'],
-					'{USERMAIL}' => $result['email'],
-					'{SITEDOMAIN}' => $_SERVER['HTTP_HOST'],
+                // Send password in email is deny
+                unset($result['passw']);
+                $context = array(
+					'user' => $result,
 				);
-				$message = str_replace(array_keys($patterns), $patterns, $_POST['message']);
-				
-				if (mail($result['email'], $subject, $message, $headers)) {
+				if ($mailer->sendMail($result['email'], $subject, $context)) {
 					$n++;
 				}
 			}
@@ -148,10 +163,11 @@ include_once ROOT . '/admin/template/header.php';
 	<span class="greytxt">Максимальный размер письма:</span> 10000 символов<br /><br />
 
 
-	<span class="greytxt"><b>В теле письма доступны следующие метки</b></span><br />
-	{USERNAME}<span class="greytxt"> - Имя получателя</span><br />
-	{USERMAIL}<span class="greytxt"> - Почтовый адрес получателя</span><br />
-	{SITEDOMAIN}<span class="greytxt"> - Домен вашего сайта</span><br />
+	<span class="greytxt"><b>В теле письма доступны следующие метки:</b></span><br />
+	{{ user }}<span class="greytxt"> - Получатель(так же доступны все поля объекта пользователь)</span><br />
+	{{ site_title }}<span class="greytxt"> - Название сайта</span><br />
+	{{ site_url }}<span class="greytxt"> - Адрес вашего сайта</span><br />
+	{{ subject }}<span class="greytxt"> - Тема письма</span><br />
 </div>
 
 
@@ -183,6 +199,29 @@ include_once ROOT . '/admin/template/header.php';
 				</div>
 				<div class="clear"></div>
 			</div>
+            <div class="setting-item">
+                <div class="left">
+                    Шаблон письма
+                </div>
+                <div class="right">
+                    <select onChange="window.location.href = '<?php echo get_url('/admin/users_sendmail.php?tpl=') ?>'+$(this).val();" name="template">
+                        <?php
+                        if (!empty($email_templates)) {
+                            ?>
+                            <option value="">Без шаблона</option>
+                            <?php
+                            foreach ($email_templates as $template) {
+                                echo '<option '.((!empty($_GET['tpl']) && $_GET['tpl'] == $template) ? 'selected="selected"' : '')
+                                    .' value="'.$template.'">'.$template.'</option>';
+                            }
+                        } else {
+                            echo '<option selected="selected" value="">Нет шаблонов</option>';
+                        }
+                        ?>
+                    </select>
+                </div>
+                <div class="clear"></div>
+            </div>
 			<div class="setting-item">
 				<div class="left">
 					Тема
@@ -207,7 +246,7 @@ include_once ROOT . '/admin/template/header.php';
 					Текст письма
 				</div>
 				<div class="right">
-					<textarea name="message" style="height:200px;"></textarea>
+					<textarea name="message" style="height:200px;"><?php echo $message_text ?></textarea>
 				</div>
 				<div class="clear"></div>
 			</div>
@@ -215,7 +254,7 @@ include_once ROOT . '/admin/template/header.php';
 				<div class="left">
 				</div>
 				<div class="right">
-					<input class="save-button" type="submit" name="send" value="Сохранить" />
+					<input class="save-button" type="submit" name="send" value="Отправить" />
 				</div>
 				<div class="clear"></div>
 			</div>

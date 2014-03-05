@@ -523,7 +523,7 @@ class Module {
 		}
 		
 		
-		$this->categories = $output;
+		$this->categories = '<ul class="atm-categories">' . $output . '</ul>';
 		
 		if ($this->cached)
 			$this->Cache->write($this->categories, 'category_' . $this->cacheKey

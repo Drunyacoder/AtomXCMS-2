@@ -74,7 +74,7 @@ class AtmSnippets {
      * @return mixed|null|string
      */
     public function replace($tplSource = null) {
-        $source = (!empty($tplSource)) ? $tplSource : $this->source;
+        $source = ($tplSource !== null) ? $tplSource : $this->source;
         if (count($this->snippets) < 1) return $source;
 
         $Register = Register::getInstance();
