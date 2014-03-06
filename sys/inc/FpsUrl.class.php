@@ -135,5 +135,54 @@ class FpsUrl {
 		
 		return str_replace($cirilic, $latinic, $str);
 	}
+
+
+    public function check($url) {
+        if (empty($url) && $url === '/') return true;
+        $url_params = parse_url('http://' . $_SERVER['HTTP_HOST'] . $url);
+        if (!empty($url_params['path']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
+            return (false === (strpos($url_params['path'], '//')) &&
+                (preg_match('#\.[\w\-_]+$#iu', $url_params['path']) ||
+                preg_match('#/[\w\-_]+/$#iu', $url_params['path'])));
+        }
+        return true;
+    }
+
+
+    /**
+     * @param $url
+     * @return string
+     */
+    public static function checkAndRepair($url) {
+        $url_params = parse_url('http://' . $_SERVER['HTTP_HOST'] . $url);
+        if (!empty($url_params['path']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
+
+            // if path doesn't like file(has extension), add slash at the end
+            $url_params['path'] = rtrim($url_params['path'], '/');
+            if (!preg_match('#\.[\w\-_]+$#umi', $url_params['path']))
+                $url_params['path'] .= '/';
+
+            if (false !== (strpos($url_params['path'], '//'))) {
+                $url_params['path'] = preg_replace('#/+#', '/', $url_params['path']);
+            }
+        }
+        $url = $url_params['path']
+            . ((!empty($url_params['query'])) ? '?' . $url_params['query'] : '')
+            . ((!empty($url_params['fragment'])) ? '#' . $url_params['fragment'] : '');
+        return $url;
+    }
+
+
+    /**
+     * @param $url
+     * @param bool $notRoot
+     * @return mixed
+     */
+    public function __invoke($url, $notRoot = false) {
+        if ($notRoot || substr($url, 0, 7) === 'http://') return Pather::parseRoutes($url);
+        $url = '/' . WWW_ROOT . $url;
+        $url = self::checkAndRepair($url);
+        return Pather::parseRoutes($url);
+    }
 }
 

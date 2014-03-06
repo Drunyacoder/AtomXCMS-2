@@ -67,17 +67,11 @@ Class Pather {
      * @return array
      */
 	function parsePath($url) {
-		$pathParams = array();
-		
-		
-		$url_params = parse_url('http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
-		if (!empty($url_params['path']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
-			if (false !== (strpos($url_params['path'], '//')) || substr($url_params['path'], -1) !== '/') {
-				$url_params['path'] = preg_replace('#/+#', '/', $url_params['path'] . '/');
-				$redirect_url = $url_params['path'] . ((!empty($url_params['query'])) ? '?' . $url_params['query'] : '');
-				redirect($redirect_url);
-			}
-		}
+        $Register = Register::getInstance();
+        $pathParams = array();
+
+		if (!empty($url) && !$Register['URL']->check($_SERVER['REQUEST_URI']))
+            redirect($_SERVER['REQUEST_URI']);
 		
 
 		$url = rtrim($url, '/');
@@ -111,7 +105,6 @@ Class Pather {
 
 
 		// Redirect from not HLU to HLU
-		$Register = Register::getInstance();
 		if (count($pathParams) >= 3 &&  $pathParams[1] == 'view' && $this->Register['Config']->read('hlu') == 1) {
 			$hlufile = $Register['URL']->getTmpFilePath($pathParams[2], $pathParams[0]);
 

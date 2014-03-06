@@ -530,11 +530,8 @@ function get_img($url, $params = array(), $notRoot = false) {
  */
 function get_url($url, $notRoot = false) 
 {
-	if ($notRoot) return Pather::parseRoutes($url);
-	$url = '/' . WWW_ROOT . $url;
-	// May be collizions
-	$url = str_replace('//', '/', $url);
-	return Pather::parseRoutes($url);
+    $obj = new FpsUrl;
+    return $obj($url, $notRoot);
 }
 
 

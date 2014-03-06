@@ -56,6 +56,7 @@ class AtmMail {
         // headers
         $this->headers = "From: ".$_SERVER['SERVER_NAME']." <" . $this->from . ">\n";
         $this->headers .= "Content-type: text/html; charset=\"utf-8\"\n";
+        $this->headers .= "Content-Transfer-Encoding: 8bit\n";
         $this->headers .= "Return-path: <" . $this->from . ">\n";
         if (!empty($additional_headers)) $this->headers .= $additional_headers;
     }
