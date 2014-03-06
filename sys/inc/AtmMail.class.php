@@ -4,7 +4,7 @@
 | @Author:       Andrey Brykin (Drunya)        |
 | @Version:      1.0                           |
 | @Project:      CMS                           |
-| @package       CMS Fapos                     |
+| @Package       AtomX CMS                     |
 | @subpackege    AtmMail class                 |
 | @copyright     ©Andrey Brykin 2010-2014      |
 | @last mod.     2014/03/03                    |

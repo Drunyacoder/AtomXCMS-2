@@ -3,10 +3,10 @@
 |											   |
 | @Author:       Andrey Brykin (Drunya)        |
 | @Email:        drunyacoder@gmail.com         |
-| @Site:         http://fapos.net              |
+| @Site:         http://atomx.net              |
 | @Version:      1.8.3                         |
 | @Project:      CMS                           |
-| @Package       CMS Fapos                     |
+| @Package       AtomX CMS                     |
 | @Subpackege    Stat Module                   |
 | @Copyright     ©Andrey Brykin 2010-2013      |
 | @Last mod      2013/07/16                    |

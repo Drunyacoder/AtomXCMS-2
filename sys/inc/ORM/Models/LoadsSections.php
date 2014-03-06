@@ -4,7 +4,7 @@
 | @Author:       Andrey Brykin (Drunya)        |
 | @Version:      1.0                           |
 | @Project:      CMS                           |
-| @package       CMS Fapos                     |
+| @Package       AtomX CMS                     |
 | @subpackege    Loads Sections Model          |
 | @copyright     ©Andrey Brykin 2010-2012      |
 | @last mod      2012/04/29                    |

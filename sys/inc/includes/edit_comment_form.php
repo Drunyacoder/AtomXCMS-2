@@ -12,6 +12,7 @@ if (!$comment) return $this->showInfoMessage(__('Comment not found'), '/' . $thi
 
 
 // Categories tree
+$this->Model->bindModel('category');
 $entity = $this->Model->getById($comment->getEntity_id());
 if ($entity && $entity->getCategory_id()) {
 	$this->categories = $this->_getCatsTree($entity->getCategory_id());
@@ -19,6 +20,7 @@ if ($entity && $entity->getCategory_id()) {
 	$this->categories = $this->_getCatsTree();
 }
 
+Plugins::intercept('view_category', $entity->getCategory());
 
 $markers = array();
 $markers['disabled'] = ($comment->getUser_id()) ? ' disabled="disabled"' : '';

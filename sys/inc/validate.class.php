@@ -4,7 +4,7 @@
 | @Author:       Andrey Brykin (Drunya)        |
 | @Version:      1.0.12                        |
 | @Project:      CMS                           |
-| @package       CMS Fapos                     |
+| @Package       AtomX CMS                     |
 | @subpackege    Validate class                |
 | @copyright     ©Andrey Brykin 2010-2011      |
 | @last mod      2011/12/21                    |

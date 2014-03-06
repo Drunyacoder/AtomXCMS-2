@@ -4,7 +4,7 @@
 | @Author:       Andrey Brykin (Drunya)        |
 | @Version:      1.0                           |
 | @Project:      CMS                           |
-| @package       CMS Fapos                     |
+| @Package       AtomX CMS                     |
 | @subpackege    Polls Model                   |
 | @copyright     ©Andrey Brykin 2010-2013      |
 | @last mod      2013/01/24                    |

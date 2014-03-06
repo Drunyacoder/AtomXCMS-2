@@ -4,7 +4,7 @@
 | @Author:       Andrey Brykin (Drunya)        |
 | @Version:      1.4.0                         |
 | @Project:      CMS                           |
-| @package       CMS Fapos                     |
+| @Package       AtomX CMS                     |
 | @subpackege    Sitemap generator             |
 | @copyright     ©Andrey Brykin 2010-2011      |
 | @last mod      2011/11/06                    |

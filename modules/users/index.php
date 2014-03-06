@@ -4,7 +4,7 @@
 | @Author:       Andrey Brykin (Drunya)        |
 | @Version:      1.6.1                         |
 | @Project:      CMS                           |
-| @package       CMS Fapos                     |
+| @Package       AtomX CMS                     |
 | @subpackege    Users Module                  |
 | @copyright     ©Andrey Brykin 2010-2014      |
 | @last mod      2014/01/13                    |

@@ -4,7 +4,7 @@
 | @Author:       Andrey Brykin (Drunya)        |
 | @Version:      1.6.0                         |
 | @Project:      CMS                           |
-| @package       CMS Fapos                     |
+| @Package       AtomX CMS                     |
 | @subpackege    Chat Module                   |
 | @copyright     ©Andrey Brykin 2010-2013      |
 | @last mod      2013/11/01                    |

@@ -4,7 +4,7 @@
 | @Author:       Andrey Brykin (Drunya)        |
 | @Version:      1.1                           |
 | @Project:      CMS                           |
-| @package       CMS Fapos                     |
+| @Package       AtomX CMS                     |
 | @subpackege    ForumCat Entity               |
 | @copyright     ©Andrey Brykin 2010-2013      |
 | @last mod      2013/04/03                    |
