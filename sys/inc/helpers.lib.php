@@ -530,7 +530,7 @@ function get_img($url, $params = array(), $notRoot = false) {
  */
 function get_url($url, $notRoot = false) 
 {
-    $obj = new FpsUrl;
+    $obj = new AtmUrl;
     return $obj($url, $notRoot);
 }
 

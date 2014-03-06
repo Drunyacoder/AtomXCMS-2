@@ -26,7 +26,7 @@
  * @author        Andrey Brykin
  * @url           http://fapos.net
  */
-class FpsUrl {
+class AtmUrl {
 
 	public function getEntryUrl($material, $module){
 		$matId = $material->getId();
