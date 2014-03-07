@@ -44,6 +44,7 @@ $set = array (
   'whitelist_sites' => 'fapos.net,www.fapos.net',
   'url_delay' => '5',
   'use_pdo' => 1,
+  'new_pm_mail' => 1,
   'latest_on_home' => 
   array (
     0 => 'news',

@@ -26,6 +26,7 @@
 // Функция возвращает html меню для постраничной навигации
 function pagination( $total, $perPage, $url )
 {
+    if (($perPage = intval($perPage)) < 1) $perPage = 10;
     $cntPages = ceil( $total / $perPage );
     if ( isset($_GET['page']) ) {
         $page = (int)$_GET['page'];

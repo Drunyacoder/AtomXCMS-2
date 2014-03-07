@@ -77,7 +77,7 @@ Class NewsModule extends Module {
 		
 		if (!empty($tag)) {
 			$tag = $this->Register['DB']->escape($tag);
-			$query_params['cond'][] = "`tags` LIKE '%{$tag}%'";
+			$query_params['cond'][] = "CONCAT(',',`tags`,',') LIKE '%,{$tag},%'";
 		}
 		
 		

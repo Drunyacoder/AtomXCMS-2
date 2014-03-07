@@ -95,7 +95,7 @@ class StatEntity extends FpsEntity
 		$addContentModel = new $addContentClass;
 		
 		$attachesModel->deleteByParentId($this->id);
-		$commentsModel->deleteByParentId($this->id);
+		$commentsModel->deleteByParentId($this->id, array('module' => 'stat'));
 		$addContentModel->deleteByParentId($this->id);
 		
 

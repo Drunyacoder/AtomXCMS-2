@@ -70,7 +70,8 @@ Class Pather {
         $Register = Register::getInstance();
         $pathParams = array();
 
-		if (!empty($url) && !$Register['URL']->check($_SERVER['REQUEST_URI']))
+		if (!empty($url) && $_SERVER['REQUEST_METHOD'] == 'GET'
+        && !$Register['URL']->check($_SERVER['REQUEST_URI']))
             redirect($_SERVER['REQUEST_URI']);
 		
 

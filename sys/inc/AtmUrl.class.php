@@ -155,7 +155,7 @@ class AtmUrl {
      */
     public static function checkAndRepair($url) {
         $url_params = parse_url('http://' . $_SERVER['HTTP_HOST'] . $url);
-        if (!empty($url_params['path']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
+        if (!empty($url_params['path'])) {
 
             // if path doesn't like file(has extension), add slash at the end
             $url_params['path'] = rtrim($url_params['path'], '/');

@@ -160,7 +160,7 @@ class FpsPDO {
 			if ($type == 'DB_COUNT') { 		//if type is COUNT
 				$_result = $data->fetchColumn();
 			} else { 					//if type not COUNT
-				$_result = $data->fetchAll();
+				$_result = $data->fetchAll(PDO::FETCH_ASSOC);
 			}
 		}
 		

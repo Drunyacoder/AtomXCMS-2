@@ -108,7 +108,7 @@ class LoadsEntity extends FpsEntity
 		$addContentModel = new $addContentClass;
 		
 		$attachesModel->deleteByParentId($this->id);
-		$commentsModel->deleteByParentId($this->id);
+		$commentsModel->deleteByParentId($this->id, array('module' => 'loads'));
 		$addContentModel->deleteByParentId($this->id);
 
         if (file_exists(ROOT . '/sys/files/loads/' . $this->download)) {

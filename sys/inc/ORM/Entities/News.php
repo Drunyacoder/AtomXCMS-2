@@ -97,7 +97,7 @@ class NewsEntity extends FpsEntity
 		$addContentModel = new $addContentClass;
 		
 		$attachesModel->deleteByParentId($this->id);
-		$commentsModel->deleteByParentId($this->id);
+		$commentsModel->deleteByParentId($this->id, array('module' => 'news'));
 		$addContentModel->deleteByParentId($this->id);
 		
 

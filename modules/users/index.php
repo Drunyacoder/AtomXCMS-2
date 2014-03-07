@@ -646,7 +646,7 @@ Class UsersModule extends Module {
 
 
         // Check for preview or errors
-        $data = array('email' => null, 'timezone' => null, 'icq' => null, 'jabber' => null, 'pol' => null, 'city' => null, 'telephone' => null, 'byear' => null, 'bmonth' => null, 'bday' => null, 'url' => null, 'about' => null, 'signature' => null);
+        $data = array('email' => null, 'timezone' => null, 'icq' => null, 'jabber' => null, 'pol' => null, 'city' => null, 'telephone' => null, 'byear' => null, 'bmonth' => null, 'bday' => null, 'url' => null, 'about' => null, 'signature' => null, 'email_notification' => null);
         //$data = array_merge($data, $user);
         $data = Validate::getCurrentInputsValues($user, $data);
 
@@ -730,7 +730,7 @@ Class UsersModule extends Module {
         $markers = array();
 		
 		$fields = array('email', 'icq', 'jabber', 'pol', 'city', 'telephone', 'byear', 
-			'bmonth', 'bday', 'url', 'about', 'signature');
+			'bmonth', 'bday', 'url', 'about', 'signature', 'email_notification');
 		
 		$fields_settings = (array)$this->Register['Config']->read('fields', 'users');
 		$fields_settings = array_merge($fields_settings, array('email'));
@@ -768,6 +768,7 @@ Class UsersModule extends Module {
 		$url          = mb_substr($url, 0, 60);
 		$about        = mb_substr($about, 0, 1000);
 		$signature    = mb_substr($signature, 0, 500);
+		$email_notification = intval($email_notification);
 
 
 		// Additional fields
@@ -822,7 +823,10 @@ Class UsersModule extends Module {
 		
 		// if an Errors
 		if (!empty($errors)) {
-			$_SESSION['FpsForm'] = array_merge(array('login' => null, 'email'=> null, 'timezone' => null, 'icq' => null, 'url' => null, 'about' => null, 'signature' => null, 'pol' => $pol, 'telephone' => null, 'city' => null, 'jabber' => null, 'byear' => null, 'bmonth' => null, 'bday' => null), $_POST);
+			$_SESSION['FpsForm'] = array_merge(array('login' => null, 'email'=> null, 'timezone' => null, 
+			'icq' => null, 'url' => null, 'about' => null, 'signature' => null, 'pol' => $pol, 
+			'telephone' => null, 'city' => null, 'jabber' => null, 'byear' => null, 
+			'bmonth' => null, 'bday' => null, 'email_notification' => null), $_POST);
 			$_SESSION['FpsForm']['error']     = '<p class="errorMsg">' . __('Some error in form') . '</p>'.
 			"\n".'<ul class="errorMsg">'."\n".$errors.'</ul>'."\n";
 			redirect('/users/edit_form/');
@@ -868,6 +872,7 @@ Class UsersModule extends Module {
         $user->setBday($bday);
         $user->setAbout($about);
         $user->setSignature($signature);
+        $user->setEmail_notification($email_notification);
         $user->save();
 
 		// Additional fields saving
@@ -1512,7 +1517,7 @@ Class UsersModule extends Module {
 
 
         if ($last_id) {
-            if (Config::read('new_pm_mail', $this->module) == 1) {
+            if (Config::read('new_pm_mail', $this->module) == 1 && $toUser->getEmail_notification()) {
                 $context = array(
                     'from_user' => $_SESSION['user'],
                     'user' => $toUser,
@@ -1521,7 +1526,7 @@ Class UsersModule extends Module {
 				
 				$mailer = new AtmMail(ROOT . '/sys/settings/email_templates/');
 				$mailer->prepare('new_pm_message');
-				$mailer->sendMail($user->getEmail(), __('New PM on forum'), $context);
+				$mailer->sendMail($toUser->getEmail(), __('New PM on forum'), $context);
             }
         }
 
@@ -2750,6 +2755,10 @@ Class UsersModule extends Module {
 				'signature' => array(
 					'required' => 'editable',
 					'pattern' => V_TEXT,
+				),
+				'email_notification' => array(
+					'required' => false,
+					'pattern' => V_INT,
 				),
 				'files__avatar' => array(
 					'type' => 'image',
