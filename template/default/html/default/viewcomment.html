@@ -4,19 +4,19 @@
 	  <div class="mat-content">
           <ul class="userlist">
              {% for comment in commentsr %}
-                            <li>
+                            <li class="comment-block">
 							       <div class="userlistavatar">{{ comment.add_markers.avatar }}</div>
-							        <div class="listuser">
+							        <div >
 								          <ul class="listuserbuttons">
 										      {% if comment.add_markers.moder_panel %}<li style="padding: 6px;">{{ comment.add_markers.moder_panel }}</li>{% endif %}
                                               {% if comment.entry_url %}<li><a href="{{ comment.entry_url }}" class="button2">Перейти к материалу...</a></li>{% endif %}
 								              </ul>
 								          <h3 class="userlisttitle">{{ comment.add_markers.name_a }}</h3>
-										  <div class="text">
+										  <div class="text2">
 			                                {{ comment.add_markers.message }}
 		                                  </div>
-								          <div>
-								               {% if comment.add_markers.editdate %}<span><b>Комментарий был изменён:</b> {{ comment.add_markers.editdate }}</span>{% endif %}<span><b>Дата отправления:</b> {{ AtmGetDate(comment.date) }}</span>
+								          <div class="info">
+								               {% if comment.add_markers.editdate %}<span><b>Комментарий был изменён:</b> {{ comment.add_markers.editdate }}</span>{% endif %}<span> {{ AtmGetDate(comment.date) }}</span>
 								          </div>
 							        </div>
                             </li>

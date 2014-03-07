@@ -778,9 +778,14 @@ color: #333;}
 .userlist .send {background: #DDD;}
 .userlist .sendbutton {cursor: pointer;text-align: center;text-transform: uppercase;background: #ccc;border-color: #999 !important;}
 .userlist .sendbutton:hover {background: #BEBEBE;}
-.userlist li .text {display: block; position:relative; color:#3c3c3c; left:25%; top:-65px; margin-bottom:-65px; height:65px; width:60%; font-size: 12px; overflow:hidden;}
+.userlist li .text {display: block; position:relative; color:#3c3c3c; left:30%; top:-65px; margin-bottom:-65px; height:65px; width:60%; font-size: 12px; overflow:hidden;}
 .userlist li.send .text .shadow {position:absolute; color:#3c3c3c; left:0; top:65px; height:5px; width:100%; -webkit-box-shadow:0px -3px 3px #ddd; -moz-box-shadow:0px -3px 3px #ddd; box-shadow:0px -3px 3px #ddd;}
 .userlist li .text .shadow {position:absolute; color:#3c3c3c; left:0; top:65px; height:5px; width:100%; -webkit-box-shadow:0px -3px 3px #f6f6f6; -moz-box-shadow:0px -3px 3px #f6f6f6; box-shadow:0px -3px 3px #f6f6f6;}
+
+.comment-block .userlistavatar {margin: 0 10px 15px 0;}
+.comment-block .userlisttitle {font-size: 18px; margin: 0 0 15px 0;}
+.comment-block .text2 {width:70%; font-size:13px;}
+.comment-block .info {float: left; margin-top: 5px; font-size: 11px; color: #818181;}
 
 
 table.cat-tb {padding:5px;}

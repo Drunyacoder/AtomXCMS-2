@@ -52,35 +52,35 @@ function pagination( $total, $perPage, $url )
 	
 	if (false === strpos($url, '?')) $url .= '?';
 
-
 	$url = get_url($url);
+	$delim = (false !== strpos($url, '?')) ? '&' : '?';
 	$html = '';
 	// Проверяем нужна ли стрелка "В начало"
 	if ( $page > 3 )
-		$startpage = '<a class="pages" href="'.$url.'&page=1"><<</a> ... ';
+		$startpage = '<a class="pages" href="'.$url.$delim.'page=1"><<</a> ... ';
 	else
 		$startpage = '';
 	// Проверяем нужна ли стрелка "В конец"
 	if ( $page < ($cntPages - 2) )
-		$endpage = ' ... <a class="pages" href="'.$url.'&page='.$cntPages.'">>></a>';
+		$endpage = ' ... <a class="pages" href="'.$url.$delim.'page='.$cntPages.'">>></a>';
 	else
 		$endpage = '';
 
 	// Находим две ближайшие станицы с обоих краев, если они есть
 	if ( $page - 2 > 0 )
-		$page2left = ' <a class="pages" href="'.$url.'&page='.($page - 2).'">'.($page - 2).'</a>  ';
+		$page2left = ' <a class="pages" href="'.$url.$delim.'page='.($page - 2).'">'.($page - 2).'</a>  ';
 	else
 		$page2left = '';
 	if ( $page - 1 > 0 )
-		$page1left = ' <a class="pages" href="'.$url.'&page='.($page - 1).'">'.($page - 1).'</a>  ';
+		$page1left = ' <a class="pages" href="'.$url.$delim.'page='.($page - 1).'">'.($page - 1).'</a>  ';
 	else
 		$page1left = '';
 	if ( $page + 2 <= $cntPages )
-		$page2right = '  <a class="pages" href="'.$url.'&page='.($page + 2).'">'.($page + 2).'</a>';
+		$page2right = '  <a class="pages" href="'.$url.$delim.'page='.($page + 2).'">'.($page + 2).'</a>';
 	else
 		$page2right = '';
 	if ( $page + 1 <= $cntPages )
-		$page1right = '  <a class="pages" href="'.$url.'&page='.($page + 1).'">'.($page + 1).'</a>';
+		$page1right = '  <a class="pages" href="'.$url.$delim.'page='.($page + 1).'">'.($page + 1).'</a>';
 	else
 		$page1right = '';
 
