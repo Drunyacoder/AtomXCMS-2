@@ -6,8 +6,8 @@
 |  @Project:      CMS                            |
 |  @package       CMS Fapos                      |
 |  @subpackege    Forum Module                   |
-|  @copyright     ©Andrey Brykin 2010-2013       |
-|  @last mod.     2013/10/18                     |
+|  @copyright     ©Andrey Brykin 2010-2014       |
+|  @last mod.     2014/03/08                     |
 \-----------------------------------------------*/
 
 /*-----------------------------------------------\
@@ -3550,81 +3550,6 @@ Class ForumModule extends Module {
     }
 
 
-    public function unite_themes_form($id_theme = null) {
-        //turn access
-        $this->ACL->turn(array($this->module, 'edit_themes'));
-        $id_theme = intval($id_theme);
-        if ($id_theme < 1)
-            return $this->showInfoMessage(__('Topic not found'), '/' . $this->module . '/');
-
-
-
-        $themeModel = $this->Register['ModManager']->getModelInstance('Themes');
-        $themeModel->bindModel('forum');
-        $theme = $themeModel->getById($id_theme);
-        if (empty($theme) || !$theme->getForum())
-            return $this->showInfoMessage(__('Topic not found'), '/' . $this->module . '/');
-
-
-        //turn access
-        $this->ACL->turn(array($this->module, 'edit_themes', $theme->getId_forum()));
-
-
-        // Check access to this forum. May be locked by pass or posts count
-        $this->__checkForumAccess($theme->getForum());
-        $id_forum = $theme->getId_forum();
-
-        $this->__checkThemeAccess($theme);
-
-
-        $html = '';
-        // Если при заполнении формы были допущены ошибки
-        if (isset($_SESSION['editThemeForm'])) {
-            $name = h($_SESSION['editThemeForm']['theme']);
-            unset($_SESSION['editThemeForm']);
-        } else {
-            $name = '';
-        }
-
-
-        // Формируем список форумов, чтобы можно было переместить тему в другой форум
-        $forums = $this->Model->getCollection(array(), array('order' => 'pos'));
-        if (!$forums)
-            return $this->showInfoMessage(__('Some error occurred'), '/' . $this->module . '/');
-
-
-        // Заголовок страницы (содержимое тега title)
-        $this->page_title = __('Unite themes') . ' - ' . h($theme->getTitle()) . ' - ' . $this->page_title;
-
-
-        $markers = array();
-        $markers['navigation'] = get_link(__('Home'), '/') . __('Separator')
-            . get_link(__('Forums list'), '/' . $this->module . '/') . __('Separator')
-            . get_link($theme->getForum()->getTitle(), '/' . $this->module . '/view_forum/' . $id_forum) . __('Separator')
-            . get_link($theme->getTitle(), '/' . $this->module . '/view_theme/' . $id_theme) . __('Separator')
-            . __('Unite themes');
-
-
-        $markers['pagination'] = '';
-        $markers['meta'] = '';
-        $this->_globalize($markers);
-
-
-        $data = array(
-            'action' => get_url('/' . $this->module . '/unite_themes/' . $id_theme),
-            'theme' => $name,
-        );
-
-
-        $source = $this->render('unitethemesform.html', array(
-            'theme' => $theme,
-            'context' => $data,
-        ));
-
-        return $this->_view($html . $source);
-    }
-
-	
     public function unite_themes($id_theme = null) {
         $id_theme = intval($id_theme);
         if ($id_theme < 1) redirect('/' . $this->module . '/');
