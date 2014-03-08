@@ -1946,6 +1946,9 @@ Class ForumModule extends Module {
 		$theme = $themeModel->getById($id_theme);
 		if (!$theme) return $this->showInfoMessage(__('Theme does not exists'), '/forum/' );
 
+		if (!empty($_POST['unite_theme'])) {
+			$this->Register['Validate']->disableFieldCheck(array('theme', 'description', 'first_top'));
+		}
 		
 		$errors = $this->Register['Validate']->check($this->getValidateRules());
 		
@@ -1987,6 +1990,11 @@ Class ForumModule extends Module {
 		}
 		
 		
+		if (!empty($_POST['unite_theme'])) {
+			$this->unite_themes($id_theme);
+		}
+		
+		
 		// update theme
 		$theme->setTitle($name);
 		$theme->setDescription($description);
@@ -2018,6 +2026,7 @@ Class ForumModule extends Module {
 			
 			$this->Model->upLastPost($from_forum, $id_forum);
 		}
+		
 
 				
 		//clean cahce
@@ -3617,122 +3626,49 @@ Class ForumModule extends Module {
 
 	
     public function unite_themes($id_theme = null) {
-        // Если не переданы данные формы - функция вызвана по ошибке
-        if (!isset($id_theme) || !isset($_POST['theme']))
-            return $this->showInfoMessage(__('Some error occurred'), '/' . $this->module . '/');
         $id_theme = intval($id_theme);
-        if ($id_theme < 1)
-            return $this->showInfoMessage(__('Topic not found'), '/' . $this->module . '/');
-
+        if ($id_theme < 1) redirect('/' . $this->module . '/');
 
         $themeModel = $this->Register['ModManager']->getModelInstance('Themes');
+        $themeModel->bindModel('forum');
         $themeModel->bindModel('poll');
         $theme = $themeModel->getById($id_theme);
-        if (empty($theme))
+		
+        if (empty($theme) || !$theme->getForum())
             return $this->showInfoMessage(__('Topic not found'), '/' . $this->module . '/');
-        $id_forum = $theme->getId_forum();
 
 
-        // Обрезаем переменные до длины, указанной в параметре maxlength тега input
-        $id_from_forum = $theme->getId_forum();
-        $id_new_theme = trim($_POST['theme']);
-
-        // validate ...
-        $error = '';
-        if (empty($id_new_theme))
-            $error = $error . '<li>' . __('Empty field "theme"') . '</li>' . "\n";
-        elseif ($id_new_theme == $id_theme)
-            $error = $error . '<li>' . __('Moving into same topic') . '</li>' . "\n";
-        else {
-            $new_theme = $themeModel->getById($id_new_theme);
-            if (empty($new_theme))
-                $error = $error . '<li>' . __('Theme does not exists') . '</li>' . "\n";
-        }
-
-        // errors
-        if (!empty($error)) {
-            $_SESSION['editThemeForm'] = array();
-            $_SESSION['editThemeForm']['error'] = '<p class="errorMsg">' . __('Some error in form')
-                . '</p>' . "\n" . '<ul class="errorMsg">' . "\n" . $error . '</ul>' . "\n";
-            $_SESSION['editThemeForm']['theme'] = $id_new_theme;
-            $this->showInfoMessage($_SESSION['editThemeForm']['error'], '/' . $this->module . '/unite_themes_form/' . $id_theme);
-        }
+        // turn access (send forum ID for check special rules)
+        $this->ACL->turn(array($this->module, 'add_themes', $theme->getId_forum()));
+        $this->ACL->turn(array($this->module, 'edit_themes', $theme->getId_forum()));
 
 
-        //check access
-        if (!$this->ACL->turn(array($this->module, 'edit_themes', $theme->getId_forum()), false)) {
-            return $this->showInfoMessage(__('Permission denied'), '/' . $this->module . '/view_forum/' . $id_forum);
-        }
-
-        $postsModel = $this->Register['ModManager']->getModelInstance('Posts');
-        $posts = $postsModel->getCollection(array('id_theme' => $id_theme), array('fields' => array('id')));
-        $posts_select = array();
-        if ($posts && is_array($posts)) {
-            foreach ($posts as $post) {
-                $posts_select[] = intval($post->getId());
-            }
-        }
-
-        $postsModel->moveToTheme($id_new_theme, $posts_select);
-
-        $polls = $theme->getPoll();
-        if ($polls) {
-            if ($new_theme->getPoll()) {
-                if (is_array($polls)) {
-                    foreach ($polls as $poll) {
-                        $poll->delete();
-                    }
-                }
-            } else {
-                if (is_array($polls)) {
-                    $first = true;
-                    foreach ($polls as $poll) {
-                        if ($first) {
-                            $poll->setTheme_id($id_new_theme);
-                            $poll->save();
-                            $first = false;
-                        } else {
-                            $poll->delete();
-                        }
-                    }
-                }
-            }
-        }
-
-        $theme->delete();
-
-        $new_theme->setPosts($new_theme->getPosts() + count($posts_select));
-        $new_theme->save();
-
-        //update forums info
-        $from_forum = $this->Model->getById($id_from_forum);
-        if (!$from_forum)
-            return $this->showInfoMessage(__('No forum for moving'), '/' . $this->module . '/view_theme/' . $id_theme);
-
-        if ($id_from_forum != $id_forum) {
-            $from_forum->setPosts($from_forum->getPosts() > count($posts_select) ? $from_forum->getPosts() - count($posts_select) : 0);
-            $from_forum->setThemes($from_forum->getThemes() - 1);
-            $from_forum->save();
-
-            $new_forum = $this->Model->getById($id_forum);
-            if ($new_forum) {
-                $new_forum->setPosts($new_forum->getPosts() + count($posts_select));
-                $new_forum->save();
-            }
-        } else {
-            $from_forum->setThemes($from_forum->getThemes() - 1);
-            $from_forum->save();
-        }
-
-        $this->Model->upLastPost($id_from_forum, $id_forum);
+		$new_theme_title = preg_replace('#\s*\(\d+\)$#u', '', trim($_POST['unite_theme']));
+		$new_theme_title = $this->Register['DB']->escape($new_theme_title);
+		$new_theme = $themeModel->getCollection(array("`title` LIKE '$new_theme_title'"));
+		if (!empty($new_theme[0])) {
+			$new_theme = $new_theme[0];
+			$new_theme_id = $new_theme->getId();
+		}
+		
+		if (empty($new_theme) || !$new_theme->getForum())
+			return $this->showInfoMessage(__('Topic not found'), '/' . $this->module . '/');
+        
+		try {
+			$this->Model->movePostsToTheme($theme, $new_theme, array(), true);
+		} catch (Exception $e) {
+			return $this->showInfoMessage($e->getMessage(), '/' . $this->module . '/');
+		}
 
 
         //clean cahce
-        $this->Cache->clean(CACHE_MATCHING_ANY_TAG, array('theme_id_' . $id_theme));
+        $tags = array('theme_id_' . $id_theme, 'theme_id_' . $new_theme_id);
+        $this->Cache->clean(CACHE_MATCHING_ANY_TAG, $tags);
         $this->DB->cleanSqlCache();
+
         if ($this->Log)
-            $this->Log->write('move posts', 'theme id(' . $id_theme . ')');
-        return $this->showInfoMessage(__('Operation is successful'), '/' . $this->module . '/view_theme/' . $id_new_theme);
+            $this->Log->write('split theme', 'theme id(' . $id_theme . ')');
+        return $this->showInfoMessage(__('Operation is successful'), '/' . $this->module . '/view_theme/' . $new_theme_id);
     }
 	
 
@@ -3809,14 +3745,16 @@ Class ForumModule extends Module {
 			'update_theme' => array(
 				'theme' => array(
 					'required' => true,
-					'max_lenght' => 250,
-					'pattern' => V_TITLE,
+					'max_lenght' => 200,
 				),
 				'description' => array(
-					'max_lenght' => 200,
+					'max_lenght' => 250,
 				),
 				'first_top' => array(
 					'pattern' => V_INT,
+				),
+				'unite_theme' => array(
+					'max_lenght' => 200,
 				),
 			),
 			'add_post' => array(

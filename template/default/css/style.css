@@ -690,6 +690,7 @@ text-overflow: ellipsis;
 .content ul.spisok-all li .siu_data input[type="file"] {width: 270px;}
 .content ul.spisok-all li .siu_data textarea {height: 90px;width: 600px;}
 .content ul.spisok-all li:first-child {border:0;}
+.content ul.spisok-all li.notice {background:#e7e7f7;}
 /*-------------------------------USERS-LIST---------------------------------*/
 .userlistsortirovka {
     clear: both;
@@ -873,7 +874,7 @@ box-shadow: inset 0 0 5px #333;  -webkit-box-shadow: inset 0 0 5px #333;  -moz-b
   .forumblock .poststarterinfo ul.basic_info .postuserzamechanya {margin: 2px 0;}
     .forumblock .poststarterinfo ul.basic_info .userpostrepa a, .forumblock .poststarterinfo ul.basic_info .postuserzamechanya a {color: #484848;font-weight: bold;margin-left: 5px;}
 	.forumblock .poststarterinfo ul.basic_info .userpostrepa .ratingblock a, .forumblock .poststarterinfo ul.basic_info .postuserzamechanya .ratingblock a {margin-left: 0;font-size: 14px;font-weight: normal;text-decoration:none;}
-.forumblock .posttextuser {display: inline-block;width: 752px;min-height: 200px;padding: 10px;vertical-align: top;}
+.forumblock .posttextuser {display: inline-block;width: 80%;min-height: 200px;padding: 10px;vertical-align: top;}
 .forumblock .posttextuser .headpostinfo {clear: both;margin-bottom: 8px;font-size: 12px;}
   .forumblock .posttextuser .headpostinfo .postdate{color: #777;}
   .forumblock .posttextuser .headpostinfo .postidlink{float: right;}

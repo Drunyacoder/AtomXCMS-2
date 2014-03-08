@@ -188,27 +188,65 @@ class ForumModel extends FpsModel
 	}
 
 
-    public function movePostsToTheme($old_theme, $new_theme, $posts_ids) {
+    public function movePostsToTheme($old_theme, $new_theme, $posts_ids, $unit = false) {
         $Register = Register::getInstance();
         $postsModel = $Register['ModManager']->getModelInstance('Posts');
 
 
         $post = $this->getDbDriver()->select('posts', DB_FIRST, array('cond' => array('`id_theme`' => $new_theme->getId()), 'limit' => 1, 'order' => 'time ASC'));
-        $this->getDbDriver()->query("UPDATE `" . $this->getDbDriver()->getFullTableName('posts') . "`
-            SET `id_theme` = " . $new_theme->getId() . " WHERE `id` IN (" . implode(',', (array)$posts_ids) . ")");
+		
+		
+		if ($unit === true) {
+			if (is_array($post) && count($post) > 0) {
+				$time = $post[0]['time'];
+				$this->getDbDriver()->query("UPDATE `" . $this->getDbDriver()->getFullTableName('posts') . "`
+					SET `time` = '" . $time . "' + INTERVAL 1 SECOND
+					WHERE `id` IN 
+					(SELECT `id` FROM `" . $this->getDbDriver()->getFullTableName('posts') . "` 
+					WHERE `id_theme` = " . $old_theme->getId() . ") 
+					AND `time` < '" . $time . "'");
+			}
+			$this->getDbDriver()->query("UPDATE `" . $this->getDbDriver()->getFullTableName('forum_attaches') . "`
+				SET `theme_id` = " . $new_theme->getId() . " WHERE `post_id` IN 
+				(SELECT `id` FROM `" . $this->getDbDriver()->getFullTableName('posts') . "` 
+				WHERE `id_theme` = " . $old_theme->getId() . ")");
+			$this->getDbDriver()->query("UPDATE `" . $this->getDbDriver()->getFullTableName('posts') . "`
+				SET `id_theme` = " . $new_theme->getId() . " 
+				WHERE `id_theme` = " . $old_theme->getId() . "");
+				
+			if (!$new_theme->getPolls() && $old_theme->getPolls()) {
+				$old_polls = $old_theme->getPolls();
+				if (!empty($old_polls[0])) {
+					$new_theme->setPolls($old_polls[0]);
+					$new_theme->save();
+				}
+				
+			}
+		
+			$old_theme->delete();
+			$this->upThemesPostsCounters($old_theme, false);
+		} else {
+			$this->getDbDriver()->query("UPDATE `" . $this->getDbDriver()->getFullTableName('posts') . "`
+				SET `id_theme` = " . $new_theme->getId() . " 
+				WHERE `id` IN (" . implode(',', (array)$posts_ids) . ")");
 
-        if (is_array($post) && count($post) > 0) {
-            $time = $post[0]['time'];
-            $this->getDbDriver()->query("UPDATE `" . $this->getDbDriver()->getFullTableName('posts') . "`
-                SET `time` = '" . $time . "' + INTERVAL 1 SECOND
-                WHERE `id` IN (" . implode(',', (array)$posts_id) . ") AND `time` < '" . $time . "'");
-        }
-        $this->getDbDriver()->query("UPDATE `" . $this->getDbDriver()->getFullTableName('forum_attaches') . "`
-            SET `theme_id` = " . $new_theme->getId() . " WHERE `post_id` IN (" . implode(',', (array)$posts_ids) . ")");
+			if (is_array($post) && count($post) > 0) {
+				$time = $post[0]['time'];
+				$this->getDbDriver()->query("UPDATE `" . $this->getDbDriver()->getFullTableName('posts') . "`
+					SET `time` = '" . $time . "' + INTERVAL 1 SECOND
+					WHERE `id` IN (" . implode(',', (array)$posts_ids) . ") 
+					AND `time` < '" . $time . "'");
+			}
+			$this->getDbDriver()->query("UPDATE `" . $this->getDbDriver()->getFullTableName('forum_attaches') . "`
+				SET `theme_id` = " . $new_theme->getId() . " 
+				WHERE `post_id` IN (" . implode(',', (array)$posts_ids) . ")");
+				
+				
+			$this->upThemesPostsCounters($old_theme, true);
+			$this->upThemesPostsCounters($new_theme, true);
+		}
 
 
-        $this->upThemesPostsCounters($old_theme, true);
-        $this->upThemesPostsCounters($new_theme, true);
 		return true;
     }
 

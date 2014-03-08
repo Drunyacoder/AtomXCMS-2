@@ -1,8 +1,43 @@
+<script type="text/javascript">
+$(function() {
+    var AtomX = window.AtomX || {};
+    AtomX.autocompletePastValue = '';
+    $('[list=findthemes]').keyup(function() {
+        if ($('[list=findthemes]').val().length > 2) {
+            if ($('[list=findthemes]').val() != AtomX.autocompletePastValue) {
+                AtomX.autocompletePastValue = $('[list=findthemes]').val();
+                $.get('/forum/search_themes/?name='+$('[list=findthemes]').val(), {}, function(data){
+                    if (data.length) {
+                        //var data = $.parseJSON(data);
+                        $('#findthemes').html('');
+                        $(data).each(function(key, row){
+                            $('#findthemes').html($('#findthemes').html() + '<option value="' + row.title + ' ('+row.id+')">');
+                        });
+                    }
+                });
+            }
+        } else {
+            $('#findthemes').html('');
+        };
+    });
+    return;
+});
+</script>
 <form name='editThemeForm' id="editThemeForm" action="{{ context.action }}" method="POST">
 <div class="material">
 	  <div class="mat-title">Редактирование темы</div>
 	  <div class="mat-content">
           <ul class="spisok-all">
+          <li class="notice">
+            <span class="siu_title">
+				<strong>Склеить тему с:</strong>
+				<span class="help">*Предусмотрен автопоиск. При заполнении,<br> остальные поля не требуются.</span>
+			</span>
+            <span class="siu_data">
+				<input type="text" name="unite_theme" value="" list="findthemes" />
+                <datalist id="findthemes"></datalist>
+			</span>
+		  </li>
           <li>
             <span class="siu_title"><strong>Местонахождение темы:</strong></span>
             <span class="siu_data"><select name="id_forum">{{ context.options }}</select></span>
