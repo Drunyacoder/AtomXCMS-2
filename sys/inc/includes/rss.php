@@ -31,12 +31,33 @@ if ($this->Cache->check($cache_key)) {
 	$html .= '<generator>FPS RSS Generator (AtomX CMS)</generator>';
 
 	
+	// we need to know whether to show hidden
+	$group = (!empty($_SESSION['user']['status'])) ? $_SESSION['user']['status'] : 0;
+	$sectionModel = $this->Register['ModManager']->getModelInstance($this->module . 'Sections');
+	$deni_sections = $sectionModel->getCollection(array("CONCAT(',', `no_access`, ',') NOT LIKE '%,$group,%'"));
+	$ids = array();
+	if ($deni_sections) {
+		foreach ($deni_sections as $deni_section) {
+			$ids[] = $deni_section->getId();
+		}
+	}
+	$ids = (count($ids)) ? implode(', ', $ids) : 'NULL';
+	
+	$query_params = array(
+		"`category_id` IN ({$ids})",
+		'premoder' => 'confirmed',
+	);
+	if (!$this->ACL->turn(array('other', 'can_see_hidden'), false)) {
+		$query_params['available'] = 1;
+	}
+	
 	$this->Model->bindModel('category');
 	$this->Model->bindModel('author');
 	$records = $this->Model->getCollection(
-		array(), 
+		$query_params, 
 		array(
 			'limit' => $this->Register['Config']->read('rss_cnt', 'rss'),
+			'order' => getOrderParam(ucfirst($this->module) . 'Module'),
 		)
 	);
 	

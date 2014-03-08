@@ -69,9 +69,21 @@ Class FotoModule extends Module {
 		}
 		
 		
+		// we need to know whether to show hidden
+		$group = (!empty($_SESSION['user']['status'])) ? $_SESSION['user']['status'] : 0;
+		$sectionModel = $this->Register['ModManager']->getModelInstance($this->module . 'Sections');
+		$deni_sections = $sectionModel->getCollection(array("CONCAT(',', `no_access`, ',') NOT LIKE '%,$group,%'"));
+		$ids = array();
+		if ($deni_sections) {
+			foreach ($deni_sections as $deni_section) {
+				$ids[] = $deni_section->getId();
+			}
+		}
+		$ids = (count($ids)) ? implode(', ', $ids) : 'NULL';
+		$query_params = array('cond' => array("`category_id` IN ({$ids})"));
 		
 		//Узнаем кол-во материалов в БД
-		$total = $this->Model->getTotal(array());
+		$total = $this->Model->getTotal($query_params);
 		list ($pages, $page) = pagination( $total, $this->Register['Config']->read('per_page', 'foto'), '/foto/');
 		$this->Register['pages'] = $pages;
 		$this->Register['page'] = $page;
@@ -98,12 +110,10 @@ Class FotoModule extends Module {
 			'limit' => $this->Register['Config']->read('per_page', 'foto'),
 			'order' => getOrderParam(__CLASS__),
 		);
-		$where = array();
-
 
 		$this->Model->bindModel('author');
 		$this->Model->bindModel('category');
-		$records = $this->Model->getCollection($where, $params);
+		$records = $this->Model->getCollection($query_params['cond'], $params);
 		
 		
 		// create markers
@@ -178,11 +188,27 @@ Class FotoModule extends Module {
 	
 		// we need to know whether to show hidden
 		$childCats = $SectionsModel->getOneField('id', array('parent_id' => $id));
+		$childCats[] = $id;
 		$childCats = implode(', ', $childCats);
-		$query_params = array('cond' => array(
-			'`category_id` = ' . $id
+		
+		$group = (!empty($_SESSION['user']['status'])) ? $_SESSION['user']['status'] : 0;
+		$sectionModel = $this->Register['ModManager']->getModelInstance($this->module . 'Sections');
+		$deni_sections = $sectionModel->getCollection(array(
+			"CONCAT(',', `no_access`, ',') NOT LIKE '%,$group,%'",
+			"`id` IN ({$childCats})",
 		));
-		if ($childCats) $query_params['cond'] .= ' OR `category_id` IN (' . $childCats . ')';
+		$ids = array();
+		if ($deni_sections) {
+			foreach ($deni_sections as $deni_section) {
+				$ids[] = $deni_section->getId();
+			}
+		}
+		$ids = (count($ids)) ? implode(', ', $ids) : 'NULL';
+		
+		$query_params = array('cond' => array(
+			"`category_id` IN ({$childCats})",
+			"`category_id` IN ({$ids})",
+		));
 		
 
 		$total = $this->Model->getTotal($query_params);
@@ -214,12 +240,10 @@ Class FotoModule extends Module {
 			'limit' => $this->Register['Config']->read('per_page', 'foto'),
 			'order' => getOrderParam(__CLASS__),
 		);
-		$where = $query_params['cond'];
-
 
 		$this->Model->bindModel('author');
 		$this->Model->bindModel('category');
-		$records = $this->Model->getCollection($where, $params);
+		$records = $this->Model->getCollection($query_params['cond'], $params);
 
 
 		// create markers

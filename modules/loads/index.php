@@ -82,7 +82,18 @@ Class LoadsModule extends Module {
 
 
         // we need to know whether to show hidden
-        $query_params = array('cond' => array());
+		$group = (!empty($_SESSION['user']['status'])) ? $_SESSION['user']['status'] : 0;
+		$sectionModel = $this->Register['ModManager']->getModelInstance($this->module . 'Sections');
+		$deni_sections = $sectionModel->getCollection(array("CONCAT(',', `no_access`, ',') NOT LIKE '%,$group,%'"));
+		$ids = array();
+		if ($deni_sections) {
+			foreach ($deni_sections as $deni_section) {
+				$ids[] = $deni_section->getId();
+			}
+		}
+		$ids = (count($ids)) ? implode(', ', $ids) : 'NULL';
+		
+		$query_params = array('cond' => array("`category_id` IN ({$ids})"));
         if (!$this->ACL->turn(array('other', 'can_see_hidden'), false)) {
             $query_params['cond']['available'] = 1;
         }
@@ -214,10 +225,25 @@ Class LoadsModule extends Module {
         $childCats = $SectionsModel->getOneField('id', array('parent_id' => $id));
         $childCats[] = $id;
         $childCats = implode(', ', $childCats);
+		
+		$group = (!empty($_SESSION['user']['status'])) ? $_SESSION['user']['status'] : 0;
+		$sectionModel = $this->Register['ModManager']->getModelInstance($this->module . 'Sections');
+		$deni_sections = $sectionModel->getCollection(array(
+			"CONCAT(',', `no_access`, ',') NOT LIKE '%,$group,%'",
+			"`id` IN ({$childCats})",
+		));
+		$ids = array();
+		if ($deni_sections) {
+			foreach ($deni_sections as $deni_section) {
+				$ids[] = $deni_section->getId();
+			}
+		}
+		$ids = (count($ids)) ? implode(', ', $ids) : 'NULL';
+		
         $query_params = array('cond' => array(
-			'`category_id` IN (' . $childCats . ')'
+			"`category_id` IN ({$childCats})",
+			"`category_id` IN ({$ids})",
         ));
-
         if (!$this->ACL->turn(array('other', 'can_see_hidden'), false)) {
             $query_params['cond']['available'] = 1;
         }
