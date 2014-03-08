@@ -4,12 +4,12 @@
 | @Author:       Andrey Brykin (Drunya)        |
 | @Email:        drunyacoder@gmail.com         |
 | @Site:         http://atomx.net              |
-| @Version:      1.9.3                         |
+| @Version:      2.0.0                         |
 | @Project:      CMS                           |
 | @Package       AtomX CMS                     |
 | @subpackege    Loads Module                  |
-| @copyright     ©Andrey Brykin 2010-2013      |
-| @last mod.     2013/08/04                    |
+| @copyright     ©Andrey Brykin 		       |
+| @last mod.     2014/03/08                    |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
@@ -88,7 +88,7 @@ Class LoadsModule extends Module {
         }
 		if (!empty($tag)) {
 			$tag = $this->Register['DB']->escape($tag);
-			$query_params['cond'][] = "`tags` LIKE '%{$tag}%'";
+			$query_params['cond'][] = "CONCAT(',', `tags`, ',') LIKE '%,{$tag},%'";
 		}
 
 

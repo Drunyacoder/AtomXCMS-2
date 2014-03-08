@@ -70,9 +70,10 @@ Class Pather {
         $Register = Register::getInstance();
         $pathParams = array();
 
+		$fixed_url = $Register['URL']->checkAndRepair($_SERVER['REQUEST_URI']);
 		if (!empty($url) && $_SERVER['REQUEST_METHOD'] == 'GET'
-        && !$Register['URL']->check($_SERVER['REQUEST_URI']))
-            redirect($_SERVER['REQUEST_URI']);
+        && $fixed_url !== $_SERVER['REQUEST_URI'])
+            redirect($fixed_url, 301);
 		
 
 		$url = rtrim($url, '/');
