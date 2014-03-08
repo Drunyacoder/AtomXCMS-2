@@ -17,7 +17,7 @@ a {color:#96C703;}
 #wrapper {min-height:100%; position:relative; min-width:1150px; padding:106px 3% 30px 3%;}
 .headmenuwrap {height:106px; width: 94%; padding:0px 3%; background:url('../img/headmenu-bg.png') repeat-x; position:absolute; z-index:1; -webkit-box-shadow: 0 1px 3px #555; -moz-box-shadow: 0 1px 3px #555; box-shadow: 0 1px 3px #555; min-width:1300px;}
 .headmenu {width:100%; height:35px; padding:10px 0px; z-index:10000;}
-.headmenu .logo {width:110px; height:50px; margin:-9px 0px 0px 60px; float:left; background:url('../img/logo.png') no-repeat;}
+.headmenu .logo {width:120px; height:50px; margin:-9px 0px 0px 50px; float:left; background:url('../img/logo.png') no-repeat;}
 
 .headmenu .menu {float:left; z-index:99999; left: 17px; position: relative;}
 .headmenu .menu > ul {padding-top:4px; padding-left:50px; position:relative;}
