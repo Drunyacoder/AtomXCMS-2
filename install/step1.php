@@ -82,7 +82,7 @@ if (isset($_POST['send'])) {
 			</tr>
 			<tr>
 				<td>База Данных<td>
-				<td><div class="inp"><input id="sqlbaseInp" type="text" name="base" value="fapos" onChange="checkSQBase(this.value, $('#sqlhostInp').val(), $('#sqluserInp').val(), $('#sqlpassInp').val());" /><span id="SQLbase">*</span></div><td>
+				<td><div class="inp"><input id="sqlbaseInp" type="text" name="base" value="atomx" onChange="checkSQBase(this.value, $('#sqlhostInp').val(), $('#sqluserInp').val(), $('#sqlpassInp').val());" /><span id="SQLbase">*</span></div><td>
 			</tr>
 			<tr>
 				<td>Пользователь Базы<td>

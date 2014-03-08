@@ -203,7 +203,7 @@ $array[] = "CREATE TABLE `{$set['db']['prefix']}news` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
 $array[] = "INSERT INTO `{$set['db']['prefix']}news` 
 	(`title`, `main`, `date`, `category_id`, `author_id`, `tags`, `description`, `sourse`, `sourse_email`, `sourse_site`) VALUES 
-	('Моя первая новость', 'Теперь сайт установлен и вы можете приступать его настройке. По любым вопросам обращайтесь на официальный сайт Fapos.net', NOW(), 1, 1, '', '', '', '', '')";
+	('Моя первая новость', 'Теперь сайт установлен и вы можете приступать его настройке. По любым вопросам обращайтесь на официальный сайт AtomX.net', NOW(), 1, 1, '', '', '', '', '')";
 #####################################################################
 $array[] = "DROP TABLE IF EXISTS `{$set['db']['prefix']}news_sections`";
 $array[] = "CREATE TABLE `{$set['db']['prefix']}news_sections` (
