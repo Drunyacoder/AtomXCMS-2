@@ -69,7 +69,7 @@
                                 <span onclick="location.href='{{ www_root }}/users/pm_view/{{ messageUser.id }}'" style="cursor: pointer; color:{% if message.direction == 'in'  %}blue;">&rArr;{% else %}red;">&lArr;{% endif %}</span>
                             </h3>
                             <div>
-                                <span>{{ AtmGetSimpleDate(message.sendtime) }}</span>
+                                <span>{{ AtmGetDate(message.sendtime) }}</span>
                             </div>
                         </div>
                         <div class="text" style="cursor: pointer;" onclick="location.href='{{ www_root }}/users/pm_view/{{ messageUser.id }}'">

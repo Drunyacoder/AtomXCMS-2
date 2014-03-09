@@ -28,7 +28,10 @@
  */
 class AtmDateTime {
 
-	public static function getDate($date, $format = 'Y-m-d H:i:s') {
+	public static function getDate($date, $format = false) {
+		$format = ($format) ? $format : Config::read('date_format');
+		if ($format === 'atm-format') return self::getSimpleDate($date);
+	
 		$user_timezone = (!empty($_SESSION['user']) && !empty($_SESSION['user']['timezone']))
 			? $_SESSION['user']['timezone']
 			: '+00';

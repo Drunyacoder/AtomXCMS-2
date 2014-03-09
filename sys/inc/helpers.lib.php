@@ -72,7 +72,7 @@ function fetch($modelName, $id = array()){
  * @param string $format
  * @return string
  */
-function AtmGetDate($date, $format = 'Y-m-d H:i:s') {
+function AtmGetDate($date, $format = false) {
 	return AtmDateTime::getDate($date, $format);
 }
 
