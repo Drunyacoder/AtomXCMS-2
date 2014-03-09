@@ -1317,8 +1317,8 @@ Class ForumModule extends Module {
 			$description = h($_SESSION['editForumForm']['description']);			
 			unset($_SESSION['editForumForm']);
 		} else {
-			$title       = h($forum['title']);
-			$description = h($forum['description']);
+			$title       = h($forum->getTitle());
+			$description = h($forum->getDescription());
 		}
 		
 		
