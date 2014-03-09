@@ -1442,14 +1442,14 @@ Class UsersModule extends Module {
             );
 
 
-			if (empty($res))
+			if (empty($res[0]))
 				$errors .= '<li>' . sprintf(__('No user with this name'), $to) . '</li>'."\n";
-			if ((count($res) && is_array($res) ) && ($res[0]->getId() == $_SESSION['user']['id']) )
+			if ((count($res) && is_array($res)) && ($res[0]->getId() == $_SESSION['user']['id']) )
 				$errors .= '<li>' . __('You can not send message to yourself') . '</li>'."\n";
 
 
 			//chek max count messages
-			if ($res[0]->getId()) {
+			if ($res[0]) {
 				$id_to = (int)$res[0]->getId();
 				$id_from = (int)$_SESSION['user']['id'];
 
