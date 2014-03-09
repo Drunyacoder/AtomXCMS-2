@@ -85,6 +85,7 @@ input[type="checkbox"] {}
 textarea {margin: 0;padding: 2px 1px;}
 .text-area {width:99%; height:250px; margin:auto;}
 .comment-ta {width:100%; height:100px;}
+textarea[name="description"] {width:350px !important;}
 
 button, .blockstop , .mat-title, .button, input[type="submit"], input[type="button"] {
     background: #6c6c6c url('../img/button.png') repeat-x top;
