@@ -576,8 +576,8 @@ foreach ($array as $key => $query) {
 
 if (empty($errors['query'])) {
 
-	$DB->query("INSERT INTO `{$set['db']['prefix']}users` (`id`, `name`, `passw`, `status`, `puttime`) 
-	VALUES (1, '" . $_SESSION['adm_name'] . "', '" . md5($_SESSION['adm_pass']) . "', '4', NOW())");
+	$DB->query("INSERT INTO `{$set['db']['prefix']}users` (`id`, `name`, `passw`, `email`, `status`, `puttime`) 
+	VALUES (1, '" . $_SESSION['adm_name'] . "', '" . md5($_SESSION['adm_pass']) . "', '".$_SESSION['adm_email']."', '4', NOW())");
 	if ($DB->getErrorInfo()) 
 		$errors['query'] = 'При формировании базы данных произошел збой! <br /> Начните  пожалуйста заново.<br /><br />';
 }

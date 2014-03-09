@@ -12,6 +12,7 @@ if (isset($_POST['send'])) {
 	
 	if (empty($_POST['adm_login'])) $errors['adm_login'] = 'Не заполненно поле "Логин"';
 	if (empty($_POST['adm_pass'])) $errors['adm_pass'] = 'Не заполненно поле "Пароль"';
+	if (empty($_POST['adm_email'])) $errors['adm_email'] = 'Не заполненно поле "Email"';
 	
 	@$db = mysql_connect($_POST['host'], $_POST['user'], $_POST['pass']);
 	if (!$db) $errors['connect'] = 'Не удалось подключиться к базе. Проверте настройки!';
@@ -34,6 +35,7 @@ if (isset($_POST['send'])) {
 		
 		$_SESSION['adm_name'] = $_POST['adm_login'];
 		$_SESSION['adm_pass'] = $_POST['adm_pass'];
+		$_SESSION['adm_email'] = $_POST['adm_email'];
 		header ('Location: step2.php '); die();
 	}	
 }
@@ -111,6 +113,10 @@ if (isset($_POST['send'])) {
 			<tr>
 				<td>Пароль Администратора<td>
 				<td><div class="inp"><input type="text" name="adm_pass" value="" /><span>*</span></div><td>
+			</tr>
+			<tr>
+				<td>Email Администратора<td>
+				<td><div class="inp"><input type="email" name="adm_email" value="" /><span>*</span></div><td>
 			</tr>
 		
 		</table>
