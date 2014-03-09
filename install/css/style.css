@@ -36,7 +36,7 @@ a#begin {display:block; position:relative; top:360px; left:484px; color:#000000;
 .fin-a:hover {text-decoration:none;}
 .fin-h {color:#95BC00; margin-bottom:7px;}
 
-.help {color:#E90E0E; font-size:13px;}
+.help {color:#E90E0E; font-size:13px; padding-top:20px; display:block;}
 
 #footer1 {width:770px; margin:0px auto; margin-top:-100px; z-index:10; position:relative;}
 #footer1 a {text-transform:uppercase; margin-right:20px; color:#BBBC00; font-family: Arial;}

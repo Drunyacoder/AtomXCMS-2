@@ -23,7 +23,7 @@ include_once '../sys/boot.php';
 
 	<h3>Создание базы данных ...</h3>
 	<img src="img/ajax_loader.gif" style="display:none;" id="ajaxLoader" />
-	<div style="height:250px; overflow-y:scroll;" id="queries"></div>
+	<div id="queries"></div>
 
 
 	<br />

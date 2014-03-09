@@ -555,7 +555,9 @@ $array[] = "CREATE TABLE IF NOT EXISTS `{$set['db']['prefix']}polls` (
 
 
 
-
+?>
+<div style="height:250px; overflow-y:scroll;">
+<?php
 $n = 0;
 foreach ($array as $key => $query) {
 	$DB->query($query);
@@ -584,9 +586,10 @@ if (empty($errors['query'])) {
 
 if (empty($errors)) :
 ?>
+</div>
 <div style="">
 <h1 class="fin-h">Все готово</h1>
-<a class="fin-a" href="../">Перейти на мой сайт :)</a><br />
+<a class="fin-a" href="../">Перейти на сайт :)</a><a style="margin-left:40px;" class="fin-a" href="../admin/">В админку</a><br />
 <span class="help">Перед использованием сайта не забудте удалить или переименовать директорию INSTALL</span>
 </div>
 <?php 
