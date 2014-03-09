@@ -33,13 +33,14 @@
 				                           {% else %}
 										       <p class="listreputation" style="background-color: #999;"><span>{{ user.rating }}</span></p>
                                            {% endif %}
-								          <div>
-								               <span><b class="group">{{ user.group }}</b></span><br>
-											   <span>{{ user.posts }} сообщений</span><br>
-											   <span><b>Регистрация:</b>  {{ AtmGetDate(user.puttime) }}</span><br>
-											   <span><b>Последний визит:</b> {{ AtmGetDate(user.last_visit) }}</span>
-								          </div>
+
 							        </div>
+									  <div class="user-info">
+										   <span><b class="group">{{ user.group }}</b></span><br>
+										   <span>{{ user.posts }} сообщений</span><br>
+										   <span><b>Регистрация:</b>  {{ AtmGetDate(user.puttime) }}</span><br>
+										   <span><b>Последний визит:</b> {{ AtmGetDate(user.last_visit) }}</span>
+									  </div>
                             </li>
 			{% endfor %}
             {% endif %}

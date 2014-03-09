@@ -127,14 +127,7 @@ $(document).ready(function() {
 
 <div class="sider">
     <div class="sidertop">
-	  <ul>
-        <li class="active"><a href="{{ www_root }}/">HOME</a></li>
-		<li><a href="{{ www_root }}/forum">ФОРУМ</a></li>
-		<li><a href="{{ www_root }}/news">НОВОСТИ</a></li>
-		<li><a href="{{ www_root }}/stat">СТАТЬИ</a></li>
-		<li><a href="{{ www_root }}/foto">ФОТОКАТАЛОГ</a></li>
-		<li><a href="{{ www_root }}/loads/">ФАЙЛЫ</a></li>
-	  </ul>
+	  {{ mainmenu }}
 	  <div class="search">
 	   <form method="POST" action="{{ www_root }}/search/"> 
         <input type="hidden" name="subaction" value="search"> 

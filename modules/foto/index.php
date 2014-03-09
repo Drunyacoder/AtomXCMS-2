@@ -393,7 +393,7 @@ Class FotoModule extends Module {
 			return $this->showInfoMessage(__('Permission denied'), $this->getModuleURL());
 
 
-		$this->page_title = __('User materials') . ' "' . h($user->getName()) . '" - ' . $this->page_title;
+		$this->page_title = sprintf(__('User materials'), h($user->getName())) . ' - ' . $this->page_title;
 
 
 		//формируем блок со списком разделов
@@ -423,10 +423,10 @@ Class FotoModule extends Module {
 		$navi = array();
 		$navi['add_link'] = ($this->ACL->turn(array($this->module, 'add_materials'), false)) ? get_link(__('Add material'), $this->getModuleURL('add_form/')) : '';
 		$navi['navigation'] = get_link(__('Home'), '/') . __('Separator')
-		. get_link(h($this->module_title), $this->getModuleURL()) . __('Separator') . __('User materials') . ' "' . h($user->getName()) . '"';
+		. get_link(h($this->module_title), $this->getModuleURL()) . __('Separator') . sprintf(__('User materials'), h($user->getName())) . '"';
 		$navi['pagination'] = $pages;
 		$navi['meta'] = __('Count all material') . $total;
-		$navi['category_name'] = __('User materials') . ' "' . h($user->getName()) . '"';
+		$navi['category_name'] = sprintf(__('User materials'), h($user->getName()));
 		$this->_globalize($navi);
 
 

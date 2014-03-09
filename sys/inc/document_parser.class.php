@@ -325,10 +325,15 @@ class Document_Parser {
      */
 	public function buildMenuNode($node, $class = 'class="fpsMainMenu"')
     {
+		$Register = Register::getInstance();
 		$out = '<ul ' . $class . '>';
 		foreach ($node as $point) {
 			if (empty($point['title']) || empty($point['url'])) continue;
-			$out .= '<li>';
+			
+			$active = (!empty($Register['module']) && preg_match('#^/'.$Register['module'].'#i', $point['url']))
+				? ' class="active"'
+				: '';
+			$out .= "<li$active>";
 			
 			
 			$out .= $point['prefix'];
