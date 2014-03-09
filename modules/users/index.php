@@ -846,7 +846,7 @@ Class UsersModule extends Module {
 		}
 
 		// Все поля заполнены правильно - записываем изменения в БД
-		if (mb_substr($url, 0, mb_strlen('http://')) !== 'http://') $url = 'http://' . $url;
+		if (!empty($url) && mb_substr($url, 0, mb_strlen('http://')) !== 'http://') $url = 'http://' . $url;
 
 
         $user = $this->Model->getById($_SESSION['user']['id']);
