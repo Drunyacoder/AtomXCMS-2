@@ -31,7 +31,7 @@ $Register = Register::getInstance();
 
 
 $allowed_mods = array('news', 'stat', 'loads', 'foto');
-$allowed_actions = array('edit', 'delete', 'index');
+$allowed_actions = array('edit', 'delete', 'index', 'premoder');
 if (empty($_GET['m']) || !in_array($_GET['m'], $allowed_mods)) redirect('/admin/');
 $module = $_GET['m'];
 
@@ -56,13 +56,15 @@ class MaterialsList {
 		$output = '';
 		$Register = Register::getInstance();
 		$model = $Register['ModManager']->getModelInstance($_GET['m']);
+		
+		$where = (!empty($_GET['premoder'])) ? array('premoder' => 'nochecked') : array();
 
-
-		$total = $model->getTotal();
+		$total = $model->getTotal(array('cond' => $where));
 		list ($pages, $page) = pagination($total, 20, '/admin/materials_list.php?m=' . $module);
 		
+		
 		$model->bindModel('author');
-		$materials = $model->getCollection(array(), array(
+		$materials = $model->getCollection($where, array(
 			'page' => $page,
 			'limit' => 20,
 		));
@@ -84,13 +86,44 @@ class MaterialsList {
 				$output .= h(mb_substr($mat->getMain(), 0, 120));
 			}
 			
-			$output .= '</div><div class="unbordered-buttons">
-			<a href="' . get_url('/admin/materials_list.php?m=' . $module . '&ac=edit&id=' . $mat->getId()) . '" class="edit"></a>
-			<a href="' . get_url('/admin/materials_list.php?m=' . $module . '&ac=delete&id=' . $mat->getId()) . '" class="delete"></a>
-			</div><div class="clear"></div></div>';
+			if (!empty($_GET['premoder'])) {
+				$output .= '</div><div class="unbordered-buttons">
+				<a href="' . get_url('/admin/materials_list.php?m=' . $module . '&ac=premoder&status=confirmed&id=' . $mat->getId()) . '" class="on"></a>
+				<a href="' . get_url('/admin/materials_list.php?m=' . $module . '&ac=premoder&status=rejected&id=' . $mat->getId()) . '" class="off"></a>
+				</div><div class="clear"></div></div>';
+			} else {
+				$output .= '</div><div class="unbordered-buttons">
+				<a href="' . get_url('/admin/materials_list.php?m=' . $module . '&ac=edit&id=' . $mat->getId()) . '" class="edit"></a>
+				<a href="' . get_url('/admin/materials_list.php?m=' . $module . '&ac=delete&id=' . $mat->getId()) . '" class="delete"></a>
+				</div><div class="clear"></div></div>';
+			}
 		}
 		
 		return array($output, $pages);
+	}
+	
+	
+	function premoder($module){
+		$Register = Register::getInstance();
+		$Model = $Register['ModManager']->getModelInstance($module);
+		$entity = $Model->getById(intval($_GET['id']));
+		if (!empty($entity)) {
+			
+			$status = $_GET['status'];
+			if (!in_array($status, array('rejected', 'confirmed'))) $status = 'nochecked';
+			
+			$entity->setPremoder($status);
+			$entity->save();
+			$_SESSION['message'] = __('Saved');
+			
+			
+			//clean cache
+			$Cache = new Cache;
+			$Cache->clean(CACHE_MATCHING_ANY_TAG, array('module_' . $module));
+		} else {
+			$_SESSION['message'] = __('Some error occurred');
+		}
+		redirect('/admin/premoder.php?m=' . $module . '&premoder=1');
 	}
 	
 	
