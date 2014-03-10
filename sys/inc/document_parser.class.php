@@ -323,17 +323,24 @@ class Document_Parser {
      * @param string $class
      * @return string
      */
-	public function buildMenuNode($node, $class = 'class="fpsMainMenu"')
+	public function buildMenuNode($node, $class = 'class="atm-menu"')
     {
 		$Register = Register::getInstance();
 		$out = '<ul ' . $class . '>';
 		foreach ($node as $point) {
 			if (empty($point['title']) || empty($point['url'])) continue;
 			
+			if (!empty($point['sub']) && count($point['sub']) > 0) {
+				$sub .= $this->buildMenuNode($point['sub']);
+			}
+			
 			$active = (!empty($Register['module']) && preg_match('#^/'.$Register['module'].'#i', $point['url']))
-				? ' class="active"'
+				? ' active'
 				: '';
-			$out .= "<li$active>";
+			$subclass = (!empty($sub)) 
+				? ' atm-menu-sub'
+				: '';
+			$out .= "<li class=\"{$active}{$subclass}\">";
 			
 			
 			$out .= $point['prefix'];
@@ -341,9 +348,7 @@ class Document_Parser {
 			$out .= '<a href="' . get_url($point['url']) . '"' . $target . '>' . $point['title'] . '</a>';
 			$out .= $point['sufix'];
 			
-			if (!empty($point['sub']) && count($point['sub']) > 0) {
-				$out .= $this->buildMenuNode($point['sub']);
-			}
+			$out .= $sub;
 			
 			$out .= '</li>';
 		}
