@@ -84,6 +84,7 @@ class Fps_Viewer_Manager
 	private function getTemplateFile($fileName)
 	{
 		$path = $this->getTemplateFilePath($fileName);
+		AtmDebug::addRow('Templates', array(str_replace(ROOT, '', $path)));
 		return file_get_contents($path);
 	}
 	

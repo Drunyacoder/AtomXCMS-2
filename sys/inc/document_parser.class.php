@@ -330,6 +330,7 @@ class Document_Parser {
 		foreach ($node as $point) {
 			if (empty($point['title']) || empty($point['url'])) continue;
 			
+			$sub = '';
 			if (!empty($point['sub']) && count($point['sub']) > 0) {
 				$sub .= $this->buildMenuNode($point['sub']);
 			}

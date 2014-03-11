@@ -145,7 +145,8 @@ class FpsPDO {
 		// querys list 
 		$redirect = true;
 		if (Config::read('debug_mode') == 1) {
-			$_SESSION['db_querys'][] = $this->getQueryDump($query) . ' &nbsp; [ ' . $took . ' ]';
+			AtmDebug::addRow('DB Queries', array($this->getQueryDump($query), '[ ' . $took . ' ]'));
+			//$_SESSION['db_querys'][] = $this->getQueryDump($query) . ' &nbsp; [ ' . $took . ' ]';
 			$redirect = false;
 		}
 		if (!$data) {
