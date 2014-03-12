@@ -325,7 +325,7 @@ class Module {
 		$this->afterRender();
 		echo $output;
 
-		if (Config::read('debug_mode') == 1 && !empty($_SESSION['db_querys'])) {
+		if (Config::read('debug_mode') == 1) {
             echo AtmDebug::getBody();
 		}
 	}

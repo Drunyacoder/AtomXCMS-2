@@ -67,6 +67,7 @@ Class Pather {
      * @return array
      */
 	function parsePath($url) {
+		$url = (!empty($url)) ? $this->decodeUrl($url) : '';
         $Register = Register::getInstance();
         $pathParams = array();
 

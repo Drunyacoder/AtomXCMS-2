@@ -53,7 +53,7 @@ Class AtmDebug {
             if (is_array($data['meta']) && count($data['meta'])) {
                 $result .= '<tr>';
                 foreach ($data['meta'] as $cell) {
-                    $result .= '<th style="background:#dfd; padding:7px;">' . h($cell) . '</th>';
+                    $result .= '<th style="background:#bdb; padding:7px;">' . h($cell) . '</th>';
                 }
                 $result .= '</tr>';
             }
