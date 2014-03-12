@@ -87,7 +87,7 @@ class Document_Parser {
         $outputContent = '';
 		
 		if (!empty($_SESSION['viewMessage'])) {
-			$viewer = new Fps_Viewer_Manager;
+			$viewer = new Fps_Viewer_Manager(new Fps_Viewer_Loader());
 			$context = array(
 				'message' => $this->Register['PrintText']->print_page($message),
 			);

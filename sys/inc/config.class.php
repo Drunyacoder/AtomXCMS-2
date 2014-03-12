@@ -70,7 +70,7 @@ class Config {
 	* @param string $title - title of setting
 	* @param string $module - parent module of setting
 	*/
-	static public function read($title, $module = null) {
+	public static function read($title, $module = null) {
 		$set = self::$settings;
 		if ($title == 'all') return $set;
 
@@ -101,7 +101,7 @@ class Config {
 	 */
 	private function __find($conf, $params) {
 		$first_param = array_shift($params);
-		if (empty($conf[$first_param])) return null;
+		if (!isset($conf[$first_param])) return null;
 		
 		// last key - only return value
 		if (count($params) == 0) 

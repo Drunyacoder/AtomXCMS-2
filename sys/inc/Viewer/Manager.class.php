@@ -1,100 +1,124 @@
 <?php
+/*---------------------------------------------\
+|											   |
+| @Author:       Andrey Brykin (Drunya)        |
+| @Version:      1.2                           |
+| @Project:      AtomX CMS                     |
+| @Package       AtomX CMS                     |
+| @subpackege    VpsViewer class               |
+| @copyright     ©Andrey Brykin                |
+| @last mod.     2014/03/12                    |
+|----------------------------------------------|
+|											   |
+| any partial or not partial extension         |
+| CMS Fapos,without the consent of the         |
+| author, is illegal                           |
+|----------------------------------------------|
+| Любое распространение                        |
+| CMS Fapos или ее частей,                     |
+| без согласия автора, является не законным    |
+\---------------------------------------------*/
+
+
 
 class Fps_Viewer_Manager
 {
 
+	protected $loader;
 	
-	protected $moduleTitle;
-	protected $layout;
+	protected $layout = 'default';
+
 	protected $tokensParser;
+
 	protected $treesParser;
+
 	protected $compileParser;
+
 	protected $nodesTree;
+
     private $markersData = array();
 	
 	
 
-	public function __construct(Module $instance = null)
+	public function __construct(Fps_Viewer_Loader $loader)
 	{
-		if (null !== $instance) {
-			$this->moduleTitle = $instance->module;
-			$this->layout = $instance->template;
-		}
+        $this->loader = $loader;
+		if (!empty($this->loader->layout)) $this->layout = $this->loader->layout;
 
-		
-		$this->tokensParser = new Fps_Viewer_TokensParser();
-		$this->treesParser = new Fps_Viewer_TreesParser();
-		$this->compileParser = new Fps_Viewer_CompileParser();
+		$this->tokensParser = new Fps_Viewer_TokensParser($this->loader);
+		$this->treesParser = new Fps_Viewer_TreesParser($this->loader);
+		$this->compileParser = new Fps_Viewer_CompileParser($this->loader);
 	}
-	
-	
+
+
 	
 	public function setLayout($layout)
 	{
 		$this->layout = trim($layout);
 	}
 	
-	
-	public function setModuleTitle($title)
-	{
-		$this->moduleTitle = trim($title);
-	}
-	
-	
-	
-	
+
+
 	public function view($fileName, $context = array())
 	{
-		$fileSource = $this->getTemplateFile($fileName);
-
+		$filePath = null;
+		$fileSource = $this->getTemplateFile($fileName, $filePath);
+	
 		
-		// Maybe I need upgrade this code (TODO)
-		$fileSource = Plugins::intercept('before_view', $fileSource);
+		if (!empty($this->loader->pluginsController) 
+		&& is_callable(array($this->loader->pluginsController, 'intercept'))) {
+			$fileSource = call_user_func(
+				array($this->loader->pluginsController, 'intercept'), 
+				'before_view', 
+				$fileSource
+			);
+		}
 		
-		
+		$start = getMicroTime();
 		$data = $this->parseTemplate($fileSource, $context);
+        $took = getMicroTime($start);
+		
+		call_user_func(
+			array($this->loader->debug, 'addRow'),
+			array('Templates', 'Compile time'), 
+			array(str_replace(ROOT, '', $filePath), $took)
+		);
 		
 		return $data;
 	}
-	
-	
-	
-	
+
+
+
 	private function executeSource($source, $context)
 	{
 		$context = $this->prepareContext($context);
 		ob_start();
 		eval('?>' . $source);
 		$output = ob_get_clean();
-		
 		return $output;
 	}
-	
-	
-	
-	
+
+
+
 	public function prepareContext($context)
 	{
 		return array_merge($this->markersData, $context);
 	}
-	
-	
-	
-	
-	private function getTemplateFile($fileName)
+
+
+
+	private function getTemplateFile($fileName, &$returnPath = null)
 	{
-		$path = $this->getTemplateFilePath($fileName);
-		AtmDebug::addRow('Templates', array(str_replace(ROOT, '', $path)));
-		return file_get_contents($path);
+		$returnPath = $this->getTemplateFilePath($fileName);
+		return file_get_contents($returnPath);
 	}
 	
-	
-	
+
 	
 	public function getTemplateFilePath($fileName)
 	{
-		$Register = Register::getInstance();
-		$path = ROOT . '/template/' . $Register['Config']->read('template') . '/html/' . '%s' . '/' . $fileName;
+		$template = call_user_func(array($this->loader->config, 'read'), 'template');
+		$path = ROOT . '/template/' . $template . '/html/' . '%s' . '/' . $fileName;
 		if (file_exists(sprintf($path, $this->layout))) $path = sprintf($path, $this->layout);
 		else $path = sprintf($path, 'default');
 		
@@ -107,25 +131,20 @@ class Fps_Viewer_Manager
 	public function parseTemplate($code, $context)
 	{
         // preprocess snippets
-        $obj = new AtmSnippets($code);
-        $obj->preprocess();
+		$this->loader->snippetsParser->setSource($code);
+        $this->loader->snippetsParser->preprocess();
 
 
 		$tokens = $this->getTokens($code);
-		//pr(h($tokens)); die();
 		$nodes = $this->getTreeFromTokens($tokens);
-		//pr($nodes); die();
 		$this->compileParser->clean();
 		$this->compileParser->setTmpClassName($this->getTmpClassName($code));
 		$this->compile($nodes);
 		$sourceCode = $this->compileParser->getOutput();
-		//pr(h($sourceCode)); die();
-		
-
 		$output = $this->executeSource($sourceCode, $context);
+		
         // replace snippets markers
-        $output = $obj->replace($output);
-
+        $output = $this->loader->snippetsParser->replace($output);
 
 		return $output;
 	}

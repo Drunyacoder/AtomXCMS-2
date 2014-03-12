@@ -137,7 +137,7 @@ class FpsDataBase {
 		// querys list 
 		$redirect = true;
 		if (Config::read('debug_mode') == 1) {
-			$_SESSION['db_querys'][] = $query . ' &nbsp; [ ' . $took . ' ]';
+            AtmDebug::addRow('DB Queries', array($query, $took));
 			$redirect = false;
 		}
 		if (!$data) {
@@ -218,13 +218,15 @@ class FpsDataBase {
 			$query['values'] = implode(', ', $valueInsert);
 			$query = $this->__renderQuery('insert', $query);
 			
-			if ($Register['Config']->read('debug_mode') == 1) $_SESSION['db_querys'][] = $query;
+			if ($Register['Config']->read('debug_mode') == 1)
+                AtmDebug::addRow('DB Queries', array($query, '[  ]'));
 			
 			mysql_query($query);
 			
 			return mysql_insert_id();
 		}
-		if ($Register['Config']->read('debug_mode') == 1) $_SESSION['db_querys'][] = $query;
+		if ($Register['Config']->read('debug_mode') == 1)
+            AtmDebug::addRow('DB Queries', array($query, '[  ]'));
 		
 		return mysql_query($query);
 	}
@@ -246,7 +248,8 @@ class FpsDataBase {
 		$start = getMicroTime();
 		$sql = mysql_query($data);
 		$took = getMicroTime() - $start;
-		if (Config::read('debug_mode') == 1) $_SESSION['db_querys'][] = $data . ' &nbsp; [ ' . $took . ' ]';
+		if (Config::read('debug_mode') == 1)
+            AtmDebug::addRow('DB Queries', array($data, $took));
 		
 		if ($sql !== true) {
 			if (!empty($sql)) {
@@ -285,7 +288,8 @@ class FpsDataBase {
 		$start = getMicroTime();
 		mysql_query($query);
 		$took = getMicroTime() - $start;
-		if (Config::read('debug_mode') == 1) $_SESSION['db_querys'][] = $query . ' &nbsp; [ ' . $took . ' ]';
+		if (Config::read('debug_mode') == 1)
+            AtmDebug::addRow('DB Queries', array($query, $took));
 	}
 	
 	

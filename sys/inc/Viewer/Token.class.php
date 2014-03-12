@@ -61,14 +61,6 @@ class Fps_Viewer_Token
      */
     public function test($type, $values = null)
     {
-		// echo '**************$values';
-		// pr($values);
-		// echo '**************$this->values';
-		// pr($this->value);
-		// echo '**************$type';
-		// pr($type);
-		// echo '**************$this->type';
-		// pr($this->type);
         if (null === $values && !is_int($type)) {
             $values = $type;
             $type = self::NAME_TYPE;

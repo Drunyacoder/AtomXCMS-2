@@ -20,7 +20,7 @@ class Fps_Viewer_Node_Include
 
     public function compile(Fps_Viewer_CompileParser $compiler)
     {
-		$Config = $compiler->Register['Config'];
+		$Config = $compiler->loader->config;
 		$path = strtr(ROOT .  '/template/' . $Config::read('template') . '/html/' . $this->path, array('//' => '/', '\\\\' => '\\'));
 		
 		$compiler->write("\n");

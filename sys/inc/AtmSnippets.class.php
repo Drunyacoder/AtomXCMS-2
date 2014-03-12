@@ -53,6 +53,12 @@ class AtmSnippets {
         $this->Cache->cacheDir = ROOT . '/sys/cache/snippets/';
         $this->Cache->lifeTime = 3600;
     }
+	
+	
+	public function setSource(&$tplSource) {
+		$this->source = $tplSource;
+		return $this;
+	}
 
 
     /**
@@ -137,14 +143,15 @@ class AtmSnippets {
      * @return mixed
      */
     public function preprocess() {
-        return $this->findBlocks()->__markBlocks();
+        $this->__findBlocks()->__markBlocks();
+		return $this;
     }
 
 
     /**
      * @return $this
      */
-    public function findBlocks() {
+    private function __findBlocks() {
         preg_match_all('#\{\[([!]*)([\d\w]+?)(\??.*)\]\}#U', $this->source, $mas);
 
         for ($i= 0; $i < count($mas[2]); $i++) {

@@ -8,13 +8,13 @@ class Fps_Viewer_CompileParser
     private $output;
     private $indent = 3;
     private $tmpClassName = 3;
-	public $Register;
+	public $loader;
 
 	
 	
-	public function __construct()
+	public function __construct(Fps_Viewer_Loader $loader)
 	{
-		$this->Register = Register::getInstance();
+		$this->loader = $loader;
 	}
 	
 	

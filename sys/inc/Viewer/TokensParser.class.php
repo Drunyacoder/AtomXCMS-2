@@ -51,7 +51,7 @@ class Fps_Viewer_TokensParser
 			'lex_url' => '#\s+' . preg_quote($this->delimiters['tag_url'][1], '/') . '#uA',
 			'lex_block' => '#\s+(?:' . preg_quote($this->delimiters['tag_block'][1]) . '|' . preg_quote($this->delimiters['tag_block'][1]) . ')#uA',
 			'lex_start' => '#(' . preg_quote($this->delimiters['tag_var'][0]) . '|' . preg_quote($this->delimiters['tag_block'][0]) . '|' . preg_quote($this->delimiters['tag_url'][0]) . ')\s#us',
-			'operators' => '#not in(?=[\s()])|and(?=[\s()])|not(?=[\s()])|in(?=[\s()])|\<\=|\>\=|\=\=|or(?=[\s()])|\!\=|%|\>|\+|-|\<|\=|\*#uA',
+			'operators' => '#not in(?=[\s()])|and(?=[\s()])|not(?=[\s()])|in(?=[\s()])|\<\=|\>\=|\=\=|or(?=[\s()])|\!\=|%|\>|\+|-|\<|/|\=|\*#uA',
 		);
 	}
 	

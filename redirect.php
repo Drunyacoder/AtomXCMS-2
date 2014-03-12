@@ -55,7 +55,7 @@ if ($in_white) {
 		die();
 	}
 	
-	$View = new Fps_Viewer_Manager();
+	$View = new Fps_Viewer_Manager(new Fps_Viewer_Loader());
 	echo $View->view('redirect.html', array('url' => $url, 'black' => $in_black, 'template_path' => get_url('/template/' . $Register['Config']::read('template'))));
 }
 

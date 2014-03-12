@@ -9,7 +9,7 @@ class Fps_Viewer_Operator_BinarySubtrac
 	public function __construct($left, $right)
 	{
 		$this->left = $left;
-		$this->left = $right;
+		$this->right = $right;
 	}
 
 

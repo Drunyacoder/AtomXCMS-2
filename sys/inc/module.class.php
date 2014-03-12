@@ -172,27 +172,20 @@ class Module {
 		
 		
 		$this->Register['Validate']->setPathParams($this->Register['module'], $this->Register['action']);
-		
-		
+        $this->setModel();
+
+        //init needed objects. Core...
 		// Use for templater (layout)
 		$this->template = $this->module;
-		
-		
-		$this->setModel();
-		
-		
-		//get settings and launch before render
-		$this->set = Config::read('all');
-		
-		//init needed objects. Core...
-		$this->View = new Fps_Viewer_Manager($this);
+        $viewerLoader = new Fps_Viewer_Loader(array('layout' => $this->template));
+		$this->View = new Fps_Viewer_Manager($viewerLoader);
 		$this->Parser = new Document_Parser;
 		$this->Parser->templateDir = $this->template;
 		
-		$this->DB = FpsDataBase::get();
+		$this->DB = $this->Register['DB'];
 		$this->Textarier = new PrintText;
-		if ($this->set['secure']['system_log']) $this->Log = new Logination;
-		
+		if (Config::read('secure.system_log')) $this->Log = new Logination;
+
 		// init aditional fields
 		if ($this->Register['Config']->read('use_additional_fields')) {
 			$this->AddFields = new FpsAdditionalFields;
@@ -225,14 +218,14 @@ class Module {
 		}
 		
 		//meta tags
-		$this->page_meta_keywords = h($this->Register['Config']->read('keywords', $this->module));
-		$this->page_meta_description = h($this->Register['Config']->read('description', $this->module));
+		$this->page_meta_keywords = h(Config::read('keywords', $this->module));
+		$this->page_meta_description = h(Config::read('description', $this->module));
 		
 		if (empty($this->page_meta_keywords)) {
-			$this->page_meta_keywords = h($this->Register['Config']->read('meta_keywords'));
+			$this->page_meta_keywords = h(Config::read('meta_keywords'));
 		}
 		if (empty($this->page_meta_description)) {
-			$this->page_meta_description = h($this->Register['Config']->read('meta_description'));
+			$this->page_meta_description = h(Config::read('meta_description'));
 		}
 	}
 	
@@ -308,10 +301,6 @@ class Module {
 			$markers = $this->getGlobalMarkers(file_get_contents($this->View->getTemplateFilePath('main.html')));
             $markers['content'] = $content;
 			
-
-			//$html = $this->Parser->headMenu($html, $this->module);
-			//$html = $this->Parser->ParseTemplate($html);
-			
 			
 			// Cache global markers
 			if ($this->cached) {
@@ -332,25 +321,12 @@ class Module {
 		} else {
             $output = $content;
 		}
-        
-		
+
 		$this->afterRender();
-		
 		echo $output;
-		echo AtmDebug::getBody();
-		return;
-		
-		
+
 		if (Config::read('debug_mode') == 1 && !empty($_SESSION['db_querys'])) {
-			$n = 1;
-			$debug = '<div id="sql_querys" style="clear:both;position:relative; margin-top:40px;">
-			<table align="center" style="position:relative;">';
-			foreach ($_SESSION['db_querys'] as $query) {
-				$debug .= '<tr><td width="5">' . $n . '</td><td>' . $query . '</td></tr>';
-				$n++;
-			}
-			$debug .= '</table></div>';
-			echo $debug;
+            echo AtmDebug::getBody();
 		}
 	}
 	

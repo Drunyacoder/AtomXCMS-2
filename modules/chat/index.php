@@ -242,8 +242,7 @@ class ChatModule extends Module {
 		$markers['captcha'] = $kcaptcha;
 		
 		
-		$View = new Fps_Viewer_Manager();
-		$View->setModuleTitle('chat');
+		$View = new Fps_Viewer_Manager(new Fps_Viewer_Loader());
 		$View->setLayout('chat');
 		$source = $View->view('addform.html', array('data' => $markers));
 

@@ -40,7 +40,7 @@ class AtmMail {
 
     public function __construct($templatePath) {
         $this->templatePath = rtrim($templatePath, DS) . DS;
-        $this->Viewer = new Fps_Viewer_Manager();
+        $this->Viewer = new Fps_Viewer_Manager(new Fps_Viewer_Loader());
     }
 
 

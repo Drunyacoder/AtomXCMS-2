@@ -139,14 +139,13 @@ class FpsPDO {
 		
 		$start = getMicroTime();
 		$data = $this->runQuery($query);
-		$took = getMicroTime() - $start;
+		$took = getMicroTime($start);
 		
 		
 		// querys list 
 		$redirect = true;
 		if (Config::read('debug_mode') == 1) {
-			AtmDebug::addRow('DB Queries', array($this->getQueryDump($query), '[ ' . $took . ' ]'));
-			//$_SESSION['db_querys'][] = $this->getQueryDump($query) . ' &nbsp; [ ' . $took . ' ]';
+			AtmDebug::addRow('DB Queries', array($this->getQueryDump($query), $took));
 			$redirect = false;
 		}
 		if (!$data) {
@@ -211,7 +210,11 @@ class FpsPDO {
 			}
 			$query['fields'] = implode(', ', $valueInsert);
 			$query = $this->__renderQuery('update', $query);
-			
+
+
+            $start = getMicroTime();
+            $result = $this->runQuery($query);
+            $took = getMicroTime($start);
 		
 		// if not $id or $params
 		} else {
@@ -230,21 +233,18 @@ class FpsPDO {
 			$query['values'] = implode(', ', $valueInsert);
 
 			$query = $this->__renderQuery('insert', $query);
-			
-			
-			if ($Register['Config']->read('debug_mode') == 1) 
-				$_SESSION['db_querys'][] = $this->getQueryDump($query);
-			
 
+
+            $start = getMicroTime();
 			$this->runQuery($query);
-			return $this->dbh->lastInsertId(); 
+            $took = getMicroTime($start);
+			$result = $this->dbh->lastInsertId();
 		}
-		
-		if ($Register['Config']->read('debug_mode') == 1) 
-			$_SESSION['db_querys'][] = $this->getQueryDump($query);
-		
-		
-		return $this->runQuery($query);
+
+		if ($Register['Config']->read('debug_mode') == 1)
+            AtmDebug::addRow('DB Queries', array($this->getQueryDump($query), $took));
+
+		return $result;
 	}
 	
 	
@@ -263,11 +263,11 @@ class FpsPDO {
 		$result = '';
 		$start = getMicroTime();
 		$sql = $this->runQuery($data);
-		$took = getMicroTime() - $start;
+		$took = getMicroTime($start);
 		
 		
-		if (Config::read('debug_mode') == 1) 
-			$_SESSION['db_querys'][] = $this->getQueryDump($data) . ' &nbsp; [ ' . $took . ' ]';
+		if (Config::read('debug_mode') == 1)
+            AtmDebug::addRow('DB Queries', array($this->getQueryDump($data), $took));
 		
 		if ($sql !== true) {
 			if (!empty($sql)) {
@@ -310,9 +310,9 @@ class FpsPDO {
 
 		$start = getMicroTime();
 		$this->runQuery($query);
-		$took = getMicroTime() - $start;
-		if (Config::read('debug_mode') == 1) 
-			$_SESSION['db_querys'][] = $this->getQueryDump($query) . ' &nbsp; [ ' . $took . ' ]';
+		$took = getMicroTime($start);
+		if (Config::read('debug_mode') == 1)
+            AtmDebug::addRow('DB Queries', array($this->getQueryDump($query), $took));
 	}
 	
 	

@@ -55,26 +55,21 @@ class Fps_Viewer_ExpresionParser
 	public function parseOperatorExpression($left, $type)
 	{
         $this->inIfDefinition++;
-		if (!array_key_exists($type, $this->binaryOperators)) {
-			//TODO
+		if (!empty($type) && !array_key_exists($type, $this->binaryOperators)) {
+			throw new Exception("Operator type '$type' is not exists.");
 		}
 		
 		$stream = $this->parser->getStream();
 
 		// if use IF with only one parametr ( if($var) )
 		if ($stream->getCurrent()->getType() == Fps_Viewer_Token::BLOCK_END_TYPE) {
-			$right = $this->parsePrimaryExpression();
+			//$right = $this->parsePrimaryExpression();
             $this->inIfDefinition--;
-			return new $this->binaryOperators['==']($left, $right);
+			return new $this->binaryOperators['==']($left, null, true);
 		}
 		
 		$stream->next();
 		$token = $stream->getCurrent();
-		
-
-		if (!$token->test(array(Fps_Viewer_Token::VAR_START_TYPE, Fps_Viewer_Token::NUMBER_TYPE, Fps_Viewer_Token::STRING_TYPE))) {
-			// TODO
-		}
 		
 		
 		// This is tmp var seting when foreach array
@@ -145,7 +140,7 @@ class Fps_Viewer_ExpresionParser
                 if ($token->test(Fps_Viewer_Token::PUNCTUATION_TYPE, '[')) {
                     $node = $this->parseArrayExpression();
                 } else {
-                    // TODO
+                    throw new Exception("Unexpected token type.");
                 }
         }
 

@@ -24,7 +24,7 @@ class Fps_Viewer_Parser_Set
         $this->parser->getStream()->expect(Fps_Viewer_Token::OPERATOR_TYPE);
 
         $this->parser->setEnv('set_right');
-        $right = $this->parser->getExpression()->parsePrimaryExpression();
+        $right = $this->parser->getExpression()->parseExpression();
 
         $this->parser->setEnv(false);
 		$this->parser->setStack($left->getValue());

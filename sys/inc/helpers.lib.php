@@ -706,9 +706,13 @@ function h($param) {
 /**
 * @return timestamp on microseconds
 */
-function getMicroTime() { 
-    list($usec, $sec) = explode(" ", microtime()); 
-    return ((float)$usec + (float)$sec); 
+function getMicroTime($base_time = false) {
+    list($usec, $sec) = explode(" ", microtime());
+    $microtime = ((float)$usec + (float)$sec);
+    if (!empty($base_time)) {
+        return round($microtime - $base_time, 7);
+    }
+    return $microtime;
 } 
 
 
