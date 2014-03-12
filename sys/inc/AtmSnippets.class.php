@@ -56,7 +56,7 @@ class AtmSnippets {
 	
 	
 	public function setSource(&$tplSource) {
-		$this->source = $tplSource;
+		$this->source = &$tplSource;
 		return $this;
 	}
 
