@@ -33,6 +33,7 @@ $language = array(
 	'hide_material' 				=> 'Скрывать материалы', 						
 	'record_comments_management' 	=> 'Разрешать/запрещать комментирование', 						
 	'materials_require_premoder' 	=> 'Тебуется премодерация', 						
+	'comments_require_premoder' 	=> 'Тебуется премодерация комментариев', 						
 	'can_premoder' 					=> 'Может совершать премодерацию', 	
 	'use_rating'					=> 'Выставлять рейтинг материалам',
 

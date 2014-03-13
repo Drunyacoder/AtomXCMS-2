@@ -18,6 +18,7 @@
 
 2. Выполнить запрос 
 	ALTER TABLE `users` ADD `email_notification` enum('0','1') NOT NULL DEFAULT '1';
+	ALTER TABLE `comments` ADD `premoder` enum('nochecked','rejected','confirmed') NOT NULL DEFAULT 'nochecked';
 	
 3. Добавить в конфиг опцию 'new_pm_mail' => 1
 	

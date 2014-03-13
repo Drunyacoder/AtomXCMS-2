@@ -99,7 +99,8 @@ class ACL {
 				
 			case 2:
 				if (!empty($rules[$access_string])) {
-					$access = (bool)in_array($user_id, $rules[$access_string]['users']);
+					$access = (bool)(array_key_exists('users', $rules[$access_string]) && 
+						in_array($user_id, $rules[$access_string]['users']));
 					if ($access) break;
 				}
 			
@@ -114,12 +115,14 @@ class ACL {
 			// then by group, then check permissions to other forums by ID & by group
 			case 3:
 				if (!empty($rules[$access_string_with_id])) {
-					$access = (bool)in_array($user_id, $rules[$access_string_with_id]['users']);
+					$access = (bool)(array_key_exists('users', $rules[$access_string_with_id]) && 
+						in_array($user_id, $rules[$access_string_with_id]['users']));
 					if ($access) break;
 				}  
  
 				if (!empty($rules[$access_string])) {
-					$access = (bool)in_array($user_id, $rules[$access_string]['users']);
+					$access = (bool)(array_key_exists('users', $rules[$access_string]) && 
+						in_array($user_id, $rules[$access_string]['users']));
 					if ($access) break;
 				}  
 				
@@ -289,11 +292,15 @@ class ACL {
 	
 	
 	private function cleanRules($rules) {
-		foreach ($rules as $rule_key => $rules_data) {
-			if (!preg_match('#^forum\.[\d]\.#', $rule_key)) continue;
+		foreach ($rules as $rule_key => &$rules_data) {
+			if (preg_match('#^forum\.[\d]\.#', $rule_key)) {
+				if (!array_key_exists('users', $rules_data) || empty($rules_data['users'])) {
+					unset($rules[$rule_key]);
+				}
+			}
 			
-			if (!array_key_exists('users', $rules_data) || empty($rules_data['users'])) {
-				unset($rules[$rule_key]);
+			if (!is_array($rules_data['users']) || !count($rules_data['users'])) {
+				unset($rules_data['users']);
 			}
 		}
 		

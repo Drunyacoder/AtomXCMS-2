@@ -88,7 +88,12 @@ $data = array(
 	'date'     => new Expr('NOW()'),
 	'mail'     => $mail,
 	'module'   => $this->module,
+	'premoder' 	   => 'confirmed',
 );
+
+if ($this->ACL->turn(array($this->module, 'comments_require_premoder'), false)) {
+	$data['premoder'] = 'nochecked';
+}
 
 
 $className = $this->Register['ModManager']->getEntityName('Comments');

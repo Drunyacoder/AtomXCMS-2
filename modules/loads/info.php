@@ -11,6 +11,7 @@ $menuInfo = array(
         'additional_fields.php?m=loads' => 'Дополнительные поля',
 		'materials_list.php?m=loads&premoder=1' => 'Премодерация',
         'materials_list.php?m=loads' => 'Список материалов',
+		'comments_list.php?m=loads&premoder=1' => 'Премодерация комментариев',
         'comments_list.php?m=loads' => 'Список комментариев',
 	),
 );

@@ -163,7 +163,6 @@ if (!empty($specialRules)) {
 
 
 
-
 // save special rules
 if (isset($_POST['send']) && !empty($_GET['ac']) && $_GET['ac'] == 'special') {
 	if (!empty($acl_rules)) {
@@ -236,7 +235,8 @@ if (isset($_POST['send']) && !empty($_GET['ac']) && $_GET['ac'] == 'special') {
 						$acl_rules_[$mod][$rule]['groups'][] = $id;
 					}
 				} else {
-					if (($offkey = array_search($id, $acl_rules_[$mod][$rule]['groups'])) !== false) {
+					if (array_key_exists('groups', $acl_rules_[$mod][$rule]) && 
+					($offkey = array_search($id, $acl_rules_[$mod][$rule]['groups'])) !== false) {
 						unset($acl_rules_[$mod][$rule]['groups'][$offkey]);
 					}
 				}
