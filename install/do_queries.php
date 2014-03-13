@@ -149,6 +149,7 @@ $array[] = "CREATE TABLE `{$set['db']['prefix']}comments` (
   `mail` varchar(150) NOT NULL,
   `date` DATETIME NOT NULL,
   `module` varchar(10) default 'news' NOT NULL,
+  `premoder` enum('nochecked','rejected','confirmed') NOT NULL DEFAULT 'nochecked',
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
 #####################################################################
