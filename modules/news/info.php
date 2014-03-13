@@ -10,6 +10,7 @@ $menuInfo = array(
         'additional_fields.php?m=news' => 'Дополнительные поля',
         'materials_list.php?m=news&premoder=1' => 'Премодерация',
         'materials_list.php?m=news' => 'Список материалов',
+        'comments_list.php?m=news' => 'Список комментариев',
 	),
 );
 

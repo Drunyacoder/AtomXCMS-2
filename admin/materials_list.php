@@ -78,13 +78,14 @@ class MaterialsList {
 			$output .= '<div class="setting-item"><div class="left">';
 			$output .= '<a style="font-weight:bold; margin-bottom:5px;" href="' . get_url('/admin/materials_list.php?m=' . $module . '&ac=edit&id=' . $mat->getId()) . '">' . h($mat->getTitle()) . '</a>';
 			$output .= '<br />(' . $mat->getAuthor()->getName() . ')';
-			$output .= '</div><div class="right">';
+			$output .= '</div><div style="width:60%;" class="right">';
 			
 			if ($module == 'foto') {
 				$output .= '<img src="' . WWW_ROOT . '/sys/files/foto/preview/' . $mat->getFilename() . '" />';
 			} else {
 				$output .= h(mb_substr($mat->getMain(), 0, 120));
 			}
+			$output .= '<br /><span class="comment">' . AtmDateTime::getSimpleDate($mat->getDate()) . '</span>';
 			
 			if (!empty($_GET['premoder'])) {
 				$output .= '</div><div class="unbordered-buttons">
@@ -123,7 +124,7 @@ class MaterialsList {
 		} else {
 			$_SESSION['message'] = __('Some error occurred');
 		}
-		redirect('/admin/premoder.php?m=' . $module . '&premoder=1');
+		redirect('/admin/materials_list.php?m=' . $module . '&premoder=1');
 	}
 	
 	
@@ -136,7 +137,7 @@ class MaterialsList {
 		
 		if (!empty($entity)) {
 			$entity->delete();
-			$_SESSION['message'] = 'Материал удален';
+			$_SESSION['message'] = __('Material has been delete');
 		}
 		
 		redirect('/admin/materials_list.php?m=' . $module);

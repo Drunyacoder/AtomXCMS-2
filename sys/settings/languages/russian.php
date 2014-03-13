@@ -491,6 +491,8 @@ $language = array(
 	'Find users'      				=> 'Поиск пользователей',
 	'Begin to write that see similar users' => 'Начните писать чтобы увидеть похожих пользователей',
 	'Some error when adding forum'	=> 'Не удалось добавить форум в базу данных',
+	'Comments list'					=> 'Список комментариев',
+	'Comment editing'				=> 'Редактирование комментария',
 	
 	// Templates name
 	'Add form'  					=> 'Форма добавления',

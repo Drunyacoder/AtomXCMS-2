@@ -36,6 +36,7 @@ class CommentsEntity extends FpsEntity
 	protected $mail;
 	protected $date;
 	protected $module;
+	protected $premoder;
 
 
 	public function save()
@@ -49,6 +50,7 @@ class CommentsEntity extends FpsEntity
 			'mail' => $this->mail,
 			'date' => $this->date,
 			'module' => $this->module,
+			'premoder' => (!empty($this->premoder) && in_array($this->premoder, array('nochecked', 'rejected', 'confirmed'))) ? $this->premoder : 'nochecked',
 		);
 		
 		if($this->id) $data['id'] = $this->id;

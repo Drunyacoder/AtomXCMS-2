@@ -11,6 +11,7 @@ $menuInfo = array(
         'additional_fields.php?m=stat' => 'Дополнительные поля',
 		'materials_list.php?m=stat&premoder=1' => 'Премодерация',
         'materials_list.php?m=stat' => 'Список материалов',
+        'comments_list.php?m=stat' => 'Список комментариев',
 	),
 );
 
