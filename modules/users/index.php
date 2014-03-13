@@ -1535,7 +1535,10 @@ Class UsersModule extends Module {
 		$this->Register['DB']->cleanSqlCache();
 		if ($this->Log) $this->Log->write('adding pm message', 'message id(' . $last_id . ')');
         if (isset($_REQUEST['ajax'])) {
-			$message = $this->Model->getUserMessage(array("`id` < '" . $last_id . "'"));
+			$message = $this->Model->getUserMessage(array(
+                "`id` < '" . $last_id . "'",
+                "`to_user` = '" . $to . "'",
+            ));
 			$id = ($message) ? $message->getId() : $last_id;
 			$this->pm_view_update($id);
 		}
@@ -1603,6 +1606,7 @@ Class UsersModule extends Module {
         if (empty($pm_id)) $this->showAjaxResponse($result);
         if (empty($_SESSION['user'])) $this->showAjaxResponse($result);
 
+        // don't use getById, because current user might not be message owner
         $message = $this->Model->getUserMessage(array('id' => $pm_id));
         if (!$message) {
             $result['errors'] = __('Message not found');
@@ -1723,7 +1727,7 @@ Class UsersModule extends Module {
 		}
 		if (count($ids) < 1) redirect('/');
 
-		
+		$collocutor_id = null;
 		foreach ($ids as $idMsg) {
 			$messages = $messagesModel->getCollection(array(
 				'id' => $idMsg,
@@ -1737,7 +1741,11 @@ Class UsersModule extends Module {
 			$message = $messages[0];
 			$toUser = $message->getTo_user();
 			$id_rmv = $message->getId_rmv();
-			$redirect = get_url('/' . $this->module . '/pm/');
+            if ($collocutor_id === null) {
+                $collocutor_id = ($message->getTo_user() == $_SESSION['user']['id'])
+                    ? $message->getFrom_user()
+                    : $message->getTo_user();
+            }
 
 			// id_rmv - это поле указывает на то, что это сообщение уже удалил
 			// один из пользователей. Т.е. сначала id_rmv=0, после того, как
@@ -1751,11 +1759,20 @@ Class UsersModule extends Module {
 				$message->delete();
 			}
 		}
+
+
+        $redirect = '/' . $this->module . '/pm';
+        if (!empty($collocutor_id)) {
+            $messages = $this->Model->getDialog($_SESSION['user']['id'], $collocutor_id);
+            if (is_array($messages) && count($messages))
+                $redirect = '/' . $this->module . '/pm_view/' . $collocutor_id;
+        }
+
 		
 		/* clean DB cache */
 		$this->Register['DB']->cleanSqlCache();
 		if ($this->Log) $this->Log->write('delete pm message(s)', 'message(s) id(' . implode(', ', $ids) . ')');
-		return $this->showInfoMessage(__('Operation is successful'), $redirect );
+		return $this->showInfoMessage(__('Operation is successful'), $redirect);
 	}
 
 	

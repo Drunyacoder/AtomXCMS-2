@@ -2,16 +2,13 @@
 /*-----------------------------------------------\
 | 												 |
 |  @Author:       Andrey Brykin (Drunya)         |
-|  @Version:      1.7.0                          |
+|  @Version:      1.7.1                          |
 |  @Project:      CMS                            |
 |  @package       CMS Fapos                      |
 |  @subpackege    Forum Module                   |
-|  @copyright     ©Andrey Brykin 2010-2014       |
-|  @last mod.     2014/03/08                     |
-\-----------------------------------------------*/
-
-/*-----------------------------------------------\
-| 												 |
+|  @copyright     ©Andrey Brykin                 |
+|  @last mod.     2014/03/13                     |
+|------------------------------------------------|
 |  any partial or not partial extension          |
 |  CMS Fapos,without the consent of the          |
 |  author, is illegal                            |
@@ -1783,8 +1780,8 @@ Class ForumModule extends Module {
 						'is_image'      => $is_image,
 					);
 					
-					$theme = new ThemesEntity($attach_file_data);
-					if ($theme->save()) {
+					$attach = new ForumAttachesEntity($attach_file_data);
+					if ($attach->save()) {
 						$attaches_exists = 1;
 					}
 				}
@@ -1826,7 +1823,7 @@ Class ForumModule extends Module {
 		if ($this->Log) $this->Log->write('adding theme', 'theme id(' . $id_theme . '), post id(' . $post_id . ')');
 		
 		
-		return $this->showInfoMessage(__('Operation is successful'), '/forum/view_forum/' . $id_forum );
+		return $this->showInfoMessage(__('Operation is successful'), '/forum/view_theme/' . $id_theme );
 	}
 
 
@@ -2446,7 +2443,7 @@ Class ForumModule extends Module {
 
 					// Перемещаем файл из временной директории сервера в директорию files
 					if (move_uploaded_file($_FILES[$attach_name]['tmp_name'], ROOT . '/sys/files/forum/' . $file)) {
-						chmod(ROOT . '/sys/files/forum/' . $file, 0644);
+						@chmod(ROOT . '/sys/files/forum/' . $file, 0644);
 						$attach_file_data = array(
 							'post_id'       => $post_id,
 							'theme_id'      => $id_theme,

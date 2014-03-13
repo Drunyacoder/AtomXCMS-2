@@ -363,18 +363,18 @@ class PagesModel extends FpsModel
 		$sql = '';
 
 		if (in_array('news', $latest_on_home)) 
-		$sql .= "(SELECT `title`, `main`, `date`, `on_home_top`, `id`, `views`, `author_id`, (SELECT \"news\") AS skey  FROM `" 
+		$sql .= "(SELECT `title`, `main`, `date`, `on_home_top`, `id`, `views`, `author_id`, `category_id`, `comments`, (SELECT \"news\") AS skey  FROM `"
 			 . $Register['DB']->getFullTableName('news') . "` "
 			 . "WHERE `view_on_home` = '1' AND `available` = '1' AND `premoder` = 'confirmed') ";
 		if (in_array('loads', $latest_on_home)) {
 			if (!empty($sql)) $sql .= 'UNION ';
-			$sql .= "(SELECT `title`, `main`, `date`, `on_home_top`, `id`, `views`, `author_id`, (SELECT \"loads\") AS skey   FROM `" 
+			$sql .= "(SELECT `title`, `main`, `date`, `on_home_top`, `id`, `views`, `author_id`, `category_id`, `comments`, (SELECT \"loads\") AS skey   FROM `"
 				 . $Register['DB']->getFullTableName('loads') . "` "
 				 . "WHERE `view_on_home` = '1' AND `available` = '1' AND `premoder` = 'confirmed') ";
 		}
 		if (in_array('stat', $latest_on_home)) {
 			if (!empty($sql)) $sql .= 'UNION ';
-			$sql .= "(SELECT `title`, `main`, `date`, `on_home_top`, `id`, `views`, `author_id`, (SELECT \"stat\") AS skey  FROM `" 
+			$sql .= "(SELECT `title`, `main`, `date`, `on_home_top`, `id`, `views`, `author_id`, `category_id`, `comments`, (SELECT \"stat\") AS skey  FROM `"
 				 . $Register['DB']->getFullTableName('stat') . "` "
 				 . "WHERE `view_on_home` = '1' AND `available` = '1' AND `premoder` = 'confirmed') ";
 		}

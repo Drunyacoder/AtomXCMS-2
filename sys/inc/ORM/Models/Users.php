@@ -82,7 +82,7 @@ class UsersModel extends FpsModel
     }
 
 
-    public function getUserMessage($params)
+    public function getUserMessage(array $params)
     {
         if (empty($_SESSION['user'])) return false;
         $Register = Register::getInstance();
@@ -92,13 +92,16 @@ class UsersModel extends FpsModel
         $messagesModel->bindModel('touser');
         $messagesModel->bindModel('fromuser');
 
-        $condition = "(to_user = '" . $user_id . "' OR from_user = '" . $user_id . "')";
+        $condition = "from_user = '" . $user_id . "'";
         $condition2 = "id_rmv <> '" . $user_id . "'";
-        $message = $messagesModel->getCollection(array(
-            $condition,
-            $condition2,
+        $params = array_merge($params, array($condition, $condition2));
+        $message = $messagesModel->getCollection(
             $params,
-        ));
+            array(
+                'limit' => 1,
+                'order' => 'sendtime DESC',
+            )
+        );
 
         return (!empty($message[0])) ? $message[0] : false;
     }
