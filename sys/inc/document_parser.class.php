@@ -102,7 +102,7 @@ class Document_Parser {
      */
     public function getErrors()
     {
-		$viewer = new Fps_Viewer_Manager;
+		$viewer = new Fps_Viewer_Manager(new Fps_Viewer_Loader());
         $outputContent = '';
         if (!empty($_SESSION['FpsForm']['error'])) {
             $outputContent = $viewer->view('infomessage.html', array('info_message' => $_SESSION['FpsForm']['error']));
