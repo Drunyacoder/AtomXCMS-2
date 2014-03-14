@@ -68,8 +68,15 @@ a:hover {color: #fff;}
     -moz-animation: anim-rotate 1s linear infinite;
     -ms-animation: anim-rotate 1s linear infinite;
 	animation: anim-rotate 1s linear infinite;
+	-webkit-transform-origin: 50% 47% 0;
+	-moz-transform-origin: 50% 47% 0;
+	transform-origin: 50% 47% 0;
 }
-.css3loading {transform-origin:52% 64%;}
+.css3loading {
+	-webkit-transform-origin:52% 64%;
+	-moz-transform-origin:52% 64%;
+	transform-origin:52% 64%;
+}
 
 @keyframes atm-sub-menu {
     0%   {opacity: 0; transform:rotate3d(1, 0, 0, 90deg);}

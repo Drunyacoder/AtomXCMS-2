@@ -45,7 +45,7 @@ class AtmMail {
 
 
     public function prepare($template, $from = null, $additional_headers = null) {
-        $this->from = ($from !== null) ? Config::read('admin_email') : $from;
+        $this->from = ($from === null) ? Config::read('admin_email') : $from;
 
         if (!empty($template)) {
             if (!file_exists($this->templatePath . $template . '.html'))
