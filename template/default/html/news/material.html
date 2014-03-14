@@ -1,9 +1,9 @@
 <div class="material">
-      <div class="mat-title"><a href="{{ entity.add_markers.entry_url }}">{{ entity.title }}</a><div class="mod-panel">{{ entity.add_markers.moder_panel }}</div></div>
+      <div class="mat-title"><a href="{{ entity.add_markers.entry_url }}">{{ entity.title|escape }}</a><div class="mod-panel">{{ entity.add_markers.moder_panel }}</div></div>
 	  <div class="mat-content">
 		    <div class="main_text margin">{{ entity.add_markers.main_text }}</div>
             <div class="infomats">
-		        <div class="namesmats"><b class="title">{{ entity.title }}</b>
+		        <div class="namesmats"><b class="title">{{ entity.title|escape }}</b>
 				<br />
 				{% if entity.tags %}
 				<br /><b>Теги: </b>{% for tag in entity.tags %}<a href="{{ www_root }}/news/index/{{ tag }}">{{ tag }}</a>; {% endfor %}

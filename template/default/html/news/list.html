@@ -1,6 +1,6 @@
 {% for entity in entities %}
 <div class="material">
-		  <div class="mat-title"><a href="{{ entity.add_markers.entry_url }}">{{ entity.title }}</a><div class="mod-panel">{{ entity.add_markers.moder_panel }}</div></div>
+		  <div class="mat-title"><a href="{{ entity.add_markers.entry_url }}">{{ entity.title|escape }}</a><div class="mod-panel">{{ entity.add_markers.moder_panel }}</div></div>
 		  <div class="mat-content">
 		    <div class="topinfo">
 		        <span class="left">Раздел: <a href="{{ entity.add_markers.category_url }}">{{ entity.category.title }}</a></span>
