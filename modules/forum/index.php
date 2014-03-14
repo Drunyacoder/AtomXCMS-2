@@ -2007,18 +2007,18 @@ Class ForumModule extends Module {
 			if (!$new_forum) return $this->showInfoMessage(__('No forum for moving'), '/forum/');
 			
 			
-			$postModel = $this->Register['ModManager']->getModelInstance();
+			$postModel = $this->Register['ModManager']->getModelInstance('posts');
 			$posts_cnt = $postModel->getTotal(array('cond' => array('id_theme' => $id_theme)));
-			$from_forum = $this->Model->getById($from_forum);
-			$from_forum->setPosts($from_forum->getPosts() - $posts_cnt);
-			$from_forum->setThemes($from_forum->getThemes() - 1);
-			$from_forum->save();
+			$from_forum_obj = $this->Model->getById($from_forum);
+			$from_forum_obj->setPosts($from_forum_obj->getPosts() - $posts_cnt);
+			$from_forum_obj->setThemes($from_forum_obj->getThemes() - 1);
+			$from_forum_obj->save();
 			
 			
-			$from_forum = $this->Model->getById($id_forum);
-			$from_forum->setPosts($from_forum->getPosts() + $posts_cnt);
-			$from_forum->setThemes($from_forum->getThemes() + 1);
-			$from_forum->save();
+			$from_forum_obj = $this->Model->getById($id_forum);
+			$from_forum_obj->setPosts($from_forum_obj->getPosts() + $posts_cnt);
+			$from_forum_obj->setThemes($from_forum_obj->getThemes() + 1);
+			$from_forum_obj->save();
 
 			
 			$this->Model->upLastPost($from_forum, $id_forum);
