@@ -35,7 +35,7 @@
 			<div class="mozilacostil">
 				<div class="forinfoteme">
 					{{ theme.importantly }}<a class="namefor" href="{{ theme.theme_url }}">{{ theme.title }}</a>{{ theme.near_pages }}
-					<div class="fordescriptionteme">{{ theme.description }}</div>
+					<div class="fordescriptionteme">{{ theme.description|escape }}</div>
 				</div>
 				<!--
 				{% if theme.moved_from %}

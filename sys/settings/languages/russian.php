@@ -158,6 +158,7 @@ $language = array(
 	'Wrong chars in "forum name"' 	=> 'поле "Название форума" содержит недопустимые символы',
 	'Forum update is successful' 	=> 'Обновление форума прошло успешно',
 	'Forum is above all' 			=> 'Форум и так выше всех',
+	'Forum is below all' 			=> 'Форум и так ниже всех',
 	'Operation is successful' 		=> 'Операция прошла успешно',
 	'Some error occurred' 			=> 'Ошибка при выполнении операции',
 	'Can not delete forum with themes' => 'Нельзя удалить форум, который содержит темы',

@@ -32,6 +32,9 @@ class ACL {
 	private $forumsModerators;
 	private $groups;
 	private $whatModeratorCanDo = array(
+		'view_forums_list', 
+		'view_forums', 
+		'view_themes', 
 		'edit_themes', 
 		'delete_themes',
 		'delete_mine_themes',

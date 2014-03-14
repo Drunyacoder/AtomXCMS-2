@@ -49,7 +49,6 @@ Class ForumModule extends Module {
 	
 	
 	
-	
 	/**
 	 * @return main forum page content
 	 */
@@ -163,7 +162,6 @@ Class ForumModule extends Module {
 	}
 
 	
-	
 
 	/**
 	 * @param array $forum
@@ -259,7 +257,6 @@ Class ForumModule extends Module {
 	}
 	
 
-	
 	
 	/**
 	 * View threads list (forum)
@@ -428,7 +425,6 @@ Class ForumModule extends Module {
 
 	
 	
-	
 	/**
 	 * Check access to this forum. 
 	 * May be locked by pass or posts count
@@ -470,7 +466,6 @@ Class ForumModule extends Module {
 			$this->showInfoMessage(sprintf(__('locked forum by posts'), $forum->getLock_posts()), '/forum/');
 		}
 	}
-	
 	
 	
 	
@@ -582,13 +577,11 @@ Class ForumModule extends Module {
 		$theme->setFps_css_class(($theme->getImportant()) ? 'fps-theme-important' : '');
 		$theme->setNear_pages($near_pages);
 		$theme->setImportantly(($theme->getImportant() == 1) ? __('Important2') : '');
-		
 
 		return $theme;
 	}
 	
 
-	
 	
 	/**
 	 * Return theme icon
@@ -646,7 +639,6 @@ Class ForumModule extends Module {
 	}
 	
 
-	
 	
 	/**
 	 * Return posts list
@@ -1014,7 +1006,6 @@ Class ForumModule extends Module {
 	
 	
 	
-	
 	private function __savePoll($theme) 
 	{
 		if (!empty($_POST['poll']) && !empty($_POST['poll_ansvers'])) {
@@ -1050,7 +1041,6 @@ Class ForumModule extends Module {
 		return false;
 	}
 
-	
 	
 	
 	protected function _renderPoll($poll) 
@@ -1105,7 +1095,6 @@ Class ForumModule extends Module {
 		
 		return $this->render('polls.html', array('poll' => $poll));
 	}
-	
 	
 	
 	
@@ -1188,7 +1177,6 @@ Class ForumModule extends Module {
 	
 	
 	
-	
 	private function __checkThemeAccess($theme)
 	{
 		$fid = $theme->getForum()->getId();
@@ -1202,7 +1190,6 @@ Class ForumModule extends Module {
 		}
 	}
 
-	
 	
 	
 	/**
@@ -1283,7 +1270,6 @@ Class ForumModule extends Module {
 	
 
 	
-	
 	/**
 	 * Create HTML form for edit forum and paste current values into inputs
 	 */
@@ -1343,7 +1329,6 @@ Class ForumModule extends Module {
 
 
 	
-	
 	/**
 	 * Get request and work for it. Validate data and update record
 	 */
@@ -1399,7 +1384,6 @@ Class ForumModule extends Module {
 	}
 
 
-	
 	
 	/**
 	* raise forum
@@ -1461,7 +1445,6 @@ Class ForumModule extends Module {
 
 
 	
-	
 	/**
 	* down forum
 	*
@@ -1491,8 +1474,7 @@ Class ForumModule extends Module {
 		), array(
 			'order' => 'pos',
 		));
-		if (!$dforum) return true;
-		
+		if (!$dforum) return $this->showInfoMessage(__('Forum is below all'), '/forum/' );
 		
 	
 		// Порядок следования и ID форума, который находится ниже и будет "поднят" вверх
@@ -1520,7 +1502,6 @@ Class ForumModule extends Module {
 	}
 
 
-	
 	
 	/**
 	* delete forum
@@ -1556,7 +1537,6 @@ Class ForumModule extends Module {
 	}
 
 
-	
 	
 	/**
 	* form per add theme into forum
@@ -1643,7 +1623,6 @@ Class ForumModule extends Module {
 	}
 
 
-	
 	
 	/**
 	* add theme into forum
@@ -1828,7 +1807,6 @@ Class ForumModule extends Module {
 
 
 	
-	
 	/**
 	* form per edit theme
 	*
@@ -1920,7 +1898,6 @@ Class ForumModule extends Module {
 	}
 
 
-	
 	
 	/**
 	* update theme
@@ -2034,7 +2011,6 @@ Class ForumModule extends Module {
 		
 	}
 
-
 	
 	
 	/**
@@ -2141,7 +2117,6 @@ Class ForumModule extends Module {
 
 
 	
-	
 	/**
 	 * Close Theme
 	 */
@@ -2182,7 +2157,6 @@ Class ForumModule extends Module {
 
 
 	
-	
 	/**
 	 * Unlocking Theme
 	 */
@@ -2222,7 +2196,6 @@ Class ForumModule extends Module {
 	}
 
 
-	
 	
 	/**
 	 * Create reply form
@@ -2287,7 +2260,6 @@ Class ForumModule extends Module {
 		
 		return $html;
 	}
-
 
 	
 	
@@ -2514,8 +2486,7 @@ Class ForumModule extends Module {
 		}
 	}
 
-	
-	
+		
 
 	/**
 	 * Create Edit post form
@@ -2616,7 +2587,6 @@ Class ForumModule extends Module {
 		
 		return $this->_view($source);
 	}
-
 	
 	
 
@@ -2763,6 +2733,7 @@ Class ForumModule extends Module {
 	}
 
 	
+	
 	public function delete_posts_pack() {
 		if (empty($_POST['ids']) || !is_array($_POST['ids'])) 
 			return $this->showInfoMessage(__('Empty parameters'), '/' . $this->module . '/');
@@ -2777,6 +2748,7 @@ Class ForumModule extends Module {
 	}
 	
 
+	
 	/**
 	* deleting post from forum
 	* @id     post ID
@@ -2933,8 +2905,7 @@ Class ForumModule extends Module {
 		}
 	}
 
-	
-	
+		
 
 	/**
 	 * View post for users
@@ -3023,7 +2994,6 @@ Class ForumModule extends Module {
 	
 
 	
-	
 	/**
 	* @return forum statistic block
 	*/
@@ -3046,7 +3016,6 @@ Class ForumModule extends Module {
 	}
 
 
-	
 	
 	public function download_file($file = null, $mimetype = 'application/octet-stream') {
 		if (empty($file)) redirect('/');
@@ -3108,7 +3077,6 @@ Class ForumModule extends Module {
 
 	
 	
-	
 	public function important($id = null) {
 		//turn access
 		$this->ACL->turn(array('forum', 'important_themes'));
@@ -3131,7 +3099,6 @@ Class ForumModule extends Module {
 	
 	
 	
-	
 	public function unimportant($id = null) {
 		//turn access
 		$this->ACL->turn(array('forum', 'important_themes'));
@@ -3151,7 +3118,6 @@ Class ForumModule extends Module {
 		if ($this->Log) $this->Log->write('unimportant post', 'post id(' . $id . '), theme id(' . $theme->getId_forum() . ')');
 		return $this->showInfoMessage(__('Operation is successful'), '/forum/view_forum/' . $theme->getId_forum());
 	}
-	
 	
 	
 	
@@ -3220,7 +3186,6 @@ Class ForumModule extends Module {
 	}
 
 
-	
 	
 	//delete theme
 	private function __delete_theme($id_theme) {
@@ -3328,6 +3293,7 @@ Class ForumModule extends Module {
 	}
 
 
+	
     public function move_posts($id_theme = null) {
         $id_theme = intval($id_theme);
         if ($id_theme < 1) redirect('/' . $this->module . '/');
@@ -3452,6 +3418,7 @@ Class ForumModule extends Module {
     }
 
 
+	
     public function move_posts_form($id_theme = null) {
         $id_theme = intval($id_theme);
         if ($id_theme < 1 || empty($_POST['ids'])) redirect('/' . $this->module . '/');
@@ -3547,6 +3514,7 @@ Class ForumModule extends Module {
     }
 
 
+	
     public function unite_themes($id_theme = null) {
         $id_theme = intval($id_theme);
         if ($id_theme < 1) redirect('/' . $this->module . '/');
@@ -3594,6 +3562,7 @@ Class ForumModule extends Module {
     }
 	
 
+	
     public function search_themes() {
 		$this->counter = false;
         $result = array();
@@ -3615,6 +3584,7 @@ Class ForumModule extends Module {
             }, $entitys);
         return $this->showAjaxResponse($result);
     }
+	
 	
 	
 	public function getValidateRules() 
