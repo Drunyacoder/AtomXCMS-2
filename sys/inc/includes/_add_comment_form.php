@@ -17,11 +17,11 @@ if ($id < 1) {
 	
 
 	/* if an error */
-	if (isset($_SESSION['addCommentForm'])) {
-		$info = $this->render('infomessage.html', array('info_message' => $_SESSION['addCommentForm']['error']));
-		$name = h($_SESSION['addCommentForm']['name']);
-		$message = h($_SESSION['addCommentForm']['message']);
-		unset($_SESSION['addCommentForm']);
+	if (isset($_SESSION['FpsForm'])) {
+        $markers['errors'] = $this->render('infomessage.html', array('info_message' => $_SESSION['FpsForm']['error']));
+		$name = h($_SESSION['FpsForm']['name']);
+		$message = h($_SESSION['FpsForm']['message']);
+		unset($_SESSION['FpsForm']);
 	}
 
 
@@ -38,7 +38,6 @@ if ($id < 1) {
 	$markers['add_comment_name'] = $name;
 	$markers['add_comment_message'] = $message;
 	$html = $this->render('addcommentform.html', array('data' => $markers));
-	$html = $info . $html . "\n";
 }
 
 

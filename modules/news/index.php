@@ -398,8 +398,7 @@ Class NewsModule extends Module {
 		}
 		$this->Register['current_vars'] = $entity;
 		
-		
-		//производим замену соответствующих участков в html шаблоне нужной информацией
+
 		$this->page_title = h($entity->getTitle()) . ' - ' . $this->page_title;
 		$tags = $entity->getTags();
 		$description = $entity->getDescription();

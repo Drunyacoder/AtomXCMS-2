@@ -1,23 +1,23 @@
 {{ editor_body }}
-<form name="sendForm" id="sendForm" action="{{ context.action }}" method="POST" 
-enctype="multipart/form-data" onsubmit="return checkForm(this)">
+{{ context.errors }}
+<form name="sendForm" id="sendForm" action="{{ context.action }}" method="POST" enctype="multipart/form-data" onsubmit="return checkForm(this)">
 <div class="material">
 	  <div class="mat-title">Редактирование сообщения</div>
 	  <div class="mat-content">
 		<ul class="spisok-all">
 			  <li><textarea {{ editor_text }} class="text-area" id="editor" name="mainText">{{ context.main_text }}</textarea></li>
-					<li>
+			  <li>
 					{% if checkAccess([module,'edit_posts']) %}
 						Добавить строку "Отредактировано": <input type="checkbox" name="add_editor"{% if context.add_editor %}checked="checked"{% endif %}/>
 					{% endif %}
 					<div id="attachments">Прикрепленные файлы:<br/>
-									<input class="attachField" type="file" id="attach1" name="attach1"  onChange="getFile(1)" />{{ context.unlinkfiles.att1 }}<span id="attachMeta1"></span><br />
-									<input class="attachField" type="file" id="attach2" name="attach2"  onChange="getFile(2)" />{{ context.unlinkfiles.att2 }}<span id="attachMeta2"></span><br />
-									<input class="attachField" type="file" id="attach3" name="attach3"  onChange="getFile(3)" />{{ context.unlinkfiles.att3 }}<span id="attachMeta3"></span><br />
-									<input class="attachField" type="file" id="attach4" name="attach4"  onChange="getFile(4)" />{{ context.unlinkfiles.att4 }}<span id="attachMeta4"></span><br />
-									<input class="attachField" type="file" id="attach5" name="attach5"  onChange="getFile(5)" />{{ context.unlinkfiles.att5 }}<span id="attachMeta5"></span><br />
+                        <input class="attachField" type="file" id="attach1" name="attach1"  onChange="getFile(1)" />{{ context.unlinkfiles.att1 }}<span id="attachMeta1"></span><br />
+                        <input class="attachField" type="file" id="attach2" name="attach2"  onChange="getFile(2)" />{{ context.unlinkfiles.att2 }}<span id="attachMeta2"></span><br />
+                        <input class="attachField" type="file" id="attach3" name="attach3"  onChange="getFile(3)" />{{ context.unlinkfiles.att3 }}<span id="attachMeta3"></span><br />
+                        <input class="attachField" type="file" id="attach4" name="attach4"  onChange="getFile(4)" />{{ context.unlinkfiles.att4 }}<span id="attachMeta4"></span><br />
+                        <input class="attachField" type="file" id="attach5" name="attach5"  onChange="getFile(5)" />{{ context.unlinkfiles.att5 }}<span id="attachMeta5"></span><br />
 					</div>
-					</li>
+			  </li>
 			  <li class="sumbitbuttons"><input type="submit" name="submitForm" value="Сохранить изменения" /></li>
 		</ul>
 	</div>

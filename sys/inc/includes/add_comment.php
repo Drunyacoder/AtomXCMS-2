@@ -38,9 +38,9 @@ if (!$this->ACL->turn(array('other', 'no_captcha'), false)) {
 		$errors = $errors . '<li>' . __('Empty field "code"') . '</li>' . "\n";
 
 	
-	// Проверяем поле "код"
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ "пїЅпїЅпїЅ"
 	if (!empty($keystring)) {
-		// Проверяем поле "код" на недопустимые символы									
+		// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ "пїЅпїЅпїЅ" пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ									
 		if (!isset($_SESSION['captcha_keystring'])) {
 			if (file_exists(ROOT . '/sys/logs/captcha_keystring_' . session_id() . '-' . date("Y-m-d") . '.dat')) {
 				$_SESSION['captcha_keystring'] = file_get_contents(ROOT . '/sys/logs/captcha_keystring_' . session_id() . '-' . date("Y-m-d") . '.dat');
@@ -56,11 +56,11 @@ if (!$this->ACL->turn(array('other', 'no_captcha'), false)) {
 
 /* if an errors */
 if (!empty($errors)) {
-	$_SESSION['addCommentForm'] = array();
-	$_SESSION['addCommentForm']['error'] = '<p class="errorMsg">' . __('Some error in form') . '</p>' .
+	$_SESSION['FpsForm'] = array();
+	$_SESSION['FpsForm']['error'] = '<p class="errorMsg">' . __('Some error in form') . '</p>' .
 		"\n" . '<ul class="errorMsg">' . "\n" . $errors . '</ul>' . "\n";
-	$_SESSION['addCommentForm']['name'] = $name;
-	$_SESSION['addCommentForm']['message'] = $message;
+	$_SESSION['FpsForm']['name'] = $name;
+	$_SESSION['FpsForm']['message'] = $message;
 	redirect('/' . $this->module . '/view/' . $id);
 }
 

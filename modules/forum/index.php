@@ -1303,16 +1303,16 @@ Class ForumModule extends Module {
 
 		
 		// Если при заполнении формы были допущены ошибки
-		if (isset($_SESSION['editForumForm'])) {
+		if (isset($_SESSION['FpsForm'])) {
 			$info        = $this->render('infomessage.html', array(
 				'context' => array(
-					'info_message' => $_SESSION['editForumForm']['error'],
+					'info_message' => $_SESSION['FpsForm']['error'],
 				),
 			));
 			$html        = $html . $info . "\n";
-			$title       = h($_SESSION['editForumForm']['title']);
-			$description = h($_SESSION['editForumForm']['description']);			
-			unset($_SESSION['editForumForm']);
+			$title       = h($_SESSION['FpsForm']['title']);
+			$description = h($_SESSION['FpsForm']['description']);
+			unset($_SESSION['FpsForm']);
 		} else {
 			$title       = h($forum->getTitle());
 			$description = h($forum->getDescription());
@@ -1377,11 +1377,11 @@ Class ForumModule extends Module {
 
 		// if an errors
 		if (!empty($error)) {
-			$_SESSION['editForumForm'] = array();
-			$_SESSION['editForumForm']['error'] = '<p class="errorMsg">' . __('Some error in form') . '</p>'.
+			$_SESSION['FpsForm'] = array();
+			$_SESSION['FpsForm']['error'] = '<p class="errorMsg">' . __('Some error in form') . '</p>'.
 					"\n" . '<ul class="errorMsg">' . "\n" . $error . '</ul>' . "\n";
-			$_SESSION['editForumForm']['title'] = $title;
-			$_SESSION['editForumForm']['description'] = $description;
+			$_SESSION['FpsForm']['title'] = $title;
+			$_SESSION['FpsForm']['description'] = $description;
 			
 			redirect('/forum/edit_forum_form/' . $id_forum);
 		}
@@ -1601,19 +1601,19 @@ Class ForumModule extends Module {
 		}
 
 		// errors
-		if (isset($_SESSION['addThemeForm'])) {
+		if (isset($_SESSION['FpsForm'])) {
 			
 			$info = $this->render('infomessage.html', array(
-				'info_message' => $_SESSION['addThemeForm']['error'],
+				'info_message' => $_SESSION['FpsForm']['error'],
 			));
 			
 			$html    = $html . $info . "\n";
-			$theme   = h($_SESSION['addThemeForm']['theme']);
-			$description = h($_SESSION['addThemeForm']['description']); 
-			$message = $_SESSION['addThemeForm']['message'];			
-			$gr_access = $_SESSION['addThemeForm']['gr_access'];
-			$first_top = $_SESSION['addThemeForm']['first_top'];
-			unset($_SESSION['addThemeForm']);
+			$theme   = h($_SESSION['FpsForm']['theme']);
+			$description = h($_SESSION['FpsForm']['description']);
+			$message = $_SESSION['FpsForm']['message'];
+			$gr_access = $_SESSION['FpsForm']['gr_access'];
+			$first_top = $_SESSION['FpsForm']['first_top'];
+			unset($_SESSION['FpsForm']);
 		}
 		
 		
@@ -1698,14 +1698,14 @@ Class ForumModule extends Module {
 	
 		// errors
 		if (!empty($errors)) {
-			$_SESSION['addThemeForm'] = array();
-			$_SESSION['addThemeForm']['error'] = '<p class="errorMsg">' . __('Some error in form') . '</p>'.
+			$_SESSION['FpsForm'] = array();
+			$_SESSION['FpsForm']['error'] = '<p class="errorMsg">' . __('Some error in form') . '</p>'.
 				"\n" . '<ul class="errorMsg">' . "\n" . $errors . '</ul>' . "\n";
-			$_SESSION['addThemeForm']['theme'] = $theme;
-			$_SESSION['addThemeForm']['description'] = $description; 
-			$_SESSION['addThemeForm']['message'] = $message;
-			$_SESSION['addThemeForm']['gr_access'] = $gr_access;
-			$_SESSION['addThemeForm']['first_top'] = $first_top;
+			$_SESSION['FpsForm']['theme'] = $theme;
+			$_SESSION['FpsForm']['description'] = $description;
+			$_SESSION['FpsForm']['message'] = $message;
+			$_SESSION['FpsForm']['gr_access'] = $gr_access;
+			$_SESSION['FpsForm']['first_top'] = $first_top;
 			redirect('/forum/add_theme_form/' . $id_forum );
 		}
 		
@@ -1861,16 +1861,16 @@ Class ForumModule extends Module {
 
 		
 		// Если при заполнении формы были допущены ошибки
-		if (isset($_SESSION['editThemeForm'])) {
+		if (isset($_SESSION['FpsForm'])) {
 			$info = $this->render('infomessage.html', array(
-				'info_message' => $_SESSION['editThemeForm']['error'],
+				'info_message' => $_SESSION['FpsForm']['error'],
 			));
 			$html    = $info . $html . "\n";
-			$name = h($_SESSION['editThemeForm']['theme']);
-			$description = h($_SESSION['editThemeForm']['description']); 
-			$gr_access = $_SESSION['editThemeForm']['gr_access'];
-			$first_top = $_SESSION['editThemeForm']['first_top'];
-			unset($_SESSION['editThemeForm']);
+			$name = h($_SESSION['FpsForm']['theme']);
+			$description = h($_SESSION['FpsForm']['description']);
+			$gr_access = $_SESSION['FpsForm']['gr_access'];
+			$first_top = $_SESSION['FpsForm']['first_top'];
+			unset($_SESSION['FpsForm']);
 		} else {
 			$name = h($theme->getTitle());
 			$description = h($theme->getDescription()); 
@@ -1967,13 +1967,13 @@ Class ForumModule extends Module {
 		
 		// errors
 		if (!empty($errors)) {
-			$_SESSION['editThemeForm'] = array();
-			$_SESSION['editThemeForm']['error'] = '<p class="errorMsg">' . __('Some error in form') 
+			$_SESSION['FpsForm'] = array();
+			$_SESSION['FpsForm']['error'] = '<p class="errorMsg">' . __('Some error in form')
 			. '</p>' . "\n" . '<ul class="errorMsg">'."\n".$errors.'</ul>'."\n";
-			$_SESSION['editThemeForm']['theme'] = $name;
-			$_SESSION['editThemeForm']['description'] = $description;
-			$_SESSION['editThemeForm']['gr_access'] = $gr_access;	
-			$_SESSION['editThemeForm']['first_top'] = $first_top;
+			$_SESSION['FpsForm']['theme'] = $name;
+			$_SESSION['FpsForm']['description'] = $description;
+			$_SESSION['FpsForm']['gr_access'] = $gr_access;
+			$_SESSION['FpsForm']['first_top'] = $first_top;
 			redirect('/forum/edit_theme_form/' . $id_theme);
 		}
 		
@@ -2258,13 +2258,13 @@ Class ForumModule extends Module {
 
 				
 				// Если при заполнении формы были допущены ошибки
-				if (isset($_SESSION['addPostForm'])) {
+				if (isset($_SESSION['FpsForm'])) {
 					$info = $this->render('infomessage.html', array(
-						'info_message' => $_SESSION['addPostForm']['error'],
+						'info_message' => $_SESSION['FpsForm']['error'],
 					));
 					$html    = $html . $info . "\n";
-					$message = h($_SESSION['addPostForm']['message']);
-					unset($_SESSION['addPostForm']);
+					$message = h($_SESSION['FpsForm']['message']);
+					unset($_SESSION['FpsForm']);
 				}
 
 				
@@ -2341,10 +2341,10 @@ Class ForumModule extends Module {
 		
 		// errors
 		if (!empty($errors)) {
-			$_SESSION['addPostForm'] = array();
-			$_SESSION['addPostForm']['error'] = '<p class="errorMsg">' . __('Some error in form') . '</p>'."\n".
+			$_SESSION['FpsForm'] = array();
+			$_SESSION['FpsForm']['error'] = '<p class="errorMsg">' . __('Some error in form') . '</p>'."\n".
 			'<ul class="errorMsg">'."\n".$errors.'</ul>'."\n";
-			$_SESSION['addPostForm']['message'] = $message;
+			$_SESSION['FpsForm']['message'] = $message;
 			redirect('/forum/view_theme/' . $id_theme . '#bottom');
 		}		
 
@@ -2569,13 +2569,13 @@ Class ForumModule extends Module {
 		}
 
 		// errors
-		if (isset($_SESSION['editPostForm'])) {
+		if (isset($_SESSION['FpsForm'])) {
 			$info = $tis->render('infomessage.html', array(
-				'info_message' => $_SESSION['editPostForm']['error'],
+				'info_message' => $_SESSION['FpsForm']['error'],
 			));
 			$html    = $info . $html . "\n";
-			$message = $_SESSION['editPostForm']['message'];
-			unset($_SESSION['editPostForm']);
+			$message = $_SESSION['FpsForm']['message'];
+			unset($_SESSION['FpsForm']);
 		}
 
 		
@@ -2668,16 +2668,16 @@ Class ForumModule extends Module {
 		
 		/* if an error */
 		if (!empty($errors)) {
-			$_SESSION['editPostForm'] = array();
-			$_SESSION['editPostForm']['error'] = '<p class="errorMsg">' . __('Some error in form')
+			$_SESSION['FpsForm'] = array();
+			$_SESSION['FpsForm']['error'] = '<p class="errorMsg">' . __('Some error in form')
 			. '</p>' . "\n" . '<ul class="errorMsg">'."\n".$errors.'</ul>'."\n";
-			$_SESSION['editPostForm']['message'] = $message;
+			$_SESSION['FpsForm']['message'] = $message;
 			redirect('/forum/edit_post_form/' . $id);
 		}
 		
 		
 		$user_id = (!empty($_SESSION['user'])) ? $_SESSION['user']['id'] : 0;
-		
+
 		
 		
 		/*****   ATTACH   *****/

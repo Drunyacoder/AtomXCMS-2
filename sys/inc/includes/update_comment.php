@@ -39,11 +39,11 @@ $errors .= $this->Register['Validate']->check($this->getValidateRules());
 	
 /* if an error */
 if (!empty( $errors )) {
-	$_SESSION['editCommentForm'] = array();
-	$_SESSION['editCommentForm']['error'] = '<p class="errorMsg">' . __('Some error in form') . '</p>'
+	$_SESSION['FpsForm'] = array();
+	$_SESSION['FpsForm']['error'] = '<p class="errorMsg">' . __('Some error in form') . '</p>'
 		."\n".'<ul class="errorMsg">'."\n".$errors.'</ul>'."\n";
-	$_SESSION['editCommentForm']['message'] = $message;
-	$_SESSION['editCommentForm']['name'] = $name;
+	$_SESSION['FpsForm']['message'] = $message;
+	$_SESSION['FpsForm']['name'] = $name;
 	redirect('/' . $this->module . '/edit_comment_form/' . $id );
 }
 

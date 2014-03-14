@@ -460,12 +460,12 @@ Class UsersModule extends Module {
     public function new_password_form()
     {
         $markers = array();
-        if ( isset( $_SESSION['newPasswordForm']['error'] ) ) {
+        if ( isset( $_SESSION['FpsForm']['error'] ) ) {
             $context = array(
-                'info_message' =>  $_SESSION['newPasswordForm']['error'],
+                'info_message' =>  $_SESSION['FpsForm']['error'],
             );
-            $markers['error'] = $this->render('infomessage.html', $context);
-            unset( $_SESSION['newPasswordForm']['error'] );
+            $markers['errors'] = $this->render('infomessage.html', $context);
+            unset($_SESSION['FpsForm']);
         }
 
 
@@ -488,25 +488,32 @@ Class UsersModule extends Module {
 	// Функция высылает на e-mail пользователя новый пароль
 	public function send_new_password()
     {
-		if (empty($_POST['username']) || empty($_POST['email'])) redirect('/' . $this->module . '/');
 		// Обрезаем переменные до длины, указанной в параметре maxlength тега input
-		$name  = mb_substr( $_POST['username'], 0, 30 );
-		$email = mb_substr( $_POST['email'], 0, 60 );
+		$name  = (!empty($_POST['username'])) ? mb_substr( $_POST['username'], 0, 30 ) : '';
+		$email = (!empty($_POST['email'])) ? mb_substr( $_POST['email'], 0, 60 ) : '';
 		$name  = trim( $name );
 		$email = trim( $email );
 
+        if (!empty($name)) {
+            $this->Register['Validate']->disableFieldCheck('email');
+        } else if (!empty($email)) {
+            $this->Register['Validate']->disableFieldCheck('username');
+        }
 		// Проверяем, заполнены ли обязательные поля
 		$errors = $this->Register['Validate']->check($this->getValidateRules());
 		
-		
-		// Проверять существование такого пользователя есть смысл только в том
-		// случае, если поля не пустые и не содержат недопустимых символов
+
 		if ( empty( $errors ) ) {
 			touchDir(ROOT . '/sys/tmp/activate/');
-		
-			$res = $this->Model->getCollection(array('name' => $name, 'email' => $email));
+
+            if (!empty($name)) {
+                $res = $this->Model->getCollection(array('name' => $name));
+            } else if (!empty($email)) {
+                $res = $this->Model->getCollection(array('email' => $email));
+            }
+
 			// Если пользователь с таким логином и e-mail существует
-			if (count($res) > 0 && empty($error)) {
+			if (is_array($res) && count($res) > 0) {
 				// Небольшой код, который читает содержимое директории activate
 				// и удаляет старые файлы для активации пароля (были созданы более суток назад)
 				if ($dir = opendir( ROOT . '/sys/tmp/activate')) {
@@ -546,7 +553,7 @@ Class UsersModule extends Module {
 				$subject = 'Активация пароля на форуме '.$_SERVER['SERVER_NAME'];
 				$mailer = new AtmMail(ROOT . '/sys/settings/email_templates/');
 				$mailer->prepare('new_password');
-				$mailer->sendMail($email, $subject, $context);
+				$mailer->sendMail($user->getEmail(), $subject, $context);
 
 
 				$msg = __('We send mail to your e-mail');
@@ -562,15 +569,15 @@ Class UsersModule extends Module {
 		
 		// Если были допущены ошибки при заполнении формы - перенаправляем посетителя
 		if (!empty($errors)) {
-			$_SESSION['newPasswordForm'] = array();
-			$_SESSION['newPasswordForm']['error'] = '<p class="errorMsg">' . __('Some error in form') . '</p>'."\n"
+			$_SESSION['FpsForm'] = array();
+			$_SESSION['FpsForm']['error'] = '<p class="errorMsg">' . __('Some error in form') . '</p>'."\n"
                 . '<ul class="errorMsg">' . "\n" . $errors . '</ul>' . "\n";
 			redirect('/users/new_password_form/');
 		}
 		
 		/* clean DB cache */
 		$this->Register['DB']->cleanSqlCache();
-		if ($this->Log) $this->Log->write('wrong send new passw', 'name(' . $name . '), mail(' . $email . ')');
+		if ($this->Log) $this->Log->write('wrong send new passw', 'name(' . $name . '), mail(' . $user->getEmail() . ')');
 	}
 
 
