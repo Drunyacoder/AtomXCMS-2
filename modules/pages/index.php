@@ -127,7 +127,7 @@ Class PagesModule extends Module {
 				
 				//create SQL query
                 $entities = $this->Model->getEntitiesByHomePage($latest_on_home);
-				
+			
 					
                 //if we have records
                 if (count($entities) > 0) {

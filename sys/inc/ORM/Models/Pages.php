@@ -363,46 +363,70 @@ class PagesModel extends FpsModel
 		$sql = '';
 
 		if (in_array('news', $latest_on_home)) 
-		$sql .= "(SELECT `title`, `main`, `date`, `on_home_top`, `id`, `views`, `author_id`, `category_id`, `comments`, (SELECT \"news\") AS skey  FROM `"
-			 . $Register['DB']->getFullTableName('news') . "` "
-			 . "WHERE `view_on_home` = '1' AND `available` = '1' AND `premoder` = 'confirmed') ";
+		$sql .= "(SELECT `title`, `main`, `date`, `on_home_top`, `id`, `views`, `author_id`, `category_id`, `comments`, 
+			(SELECT title FROM `" . $Register['DB']->getFullTableName('news_sections') . "` 
+			WHERE `id` = `news`.`category_id`) as category_title, 
+			(SELECT \"news\") AS skey  
+			FROM `" . $Register['DB']->getFullTableName('news') . "` 
+			WHERE `view_on_home` = '1' AND `available` = '1' AND `premoder` = 'confirmed') ";
 		if (in_array('loads', $latest_on_home)) {
 			if (!empty($sql)) $sql .= 'UNION ';
-			$sql .= "(SELECT `title`, `main`, `date`, `on_home_top`, `id`, `views`, `author_id`, `category_id`, `comments`, (SELECT \"loads\") AS skey   FROM `"
-				 . $Register['DB']->getFullTableName('loads') . "` "
-				 . "WHERE `view_on_home` = '1' AND `available` = '1' AND `premoder` = 'confirmed') ";
+			$sql .= "(SELECT `title`, `main`, `date`, `on_home_top`, `id`, `views`, `author_id`, `category_id`, `comments`, (SELECT title FROM `" . $Register['DB']->getFullTableName('loads_sections') . "` 
+			WHERE `id` = `loads`.`category_id`) as category_title, 
+			(SELECT \"loads\") AS skey   
+			FROM `" . $Register['DB']->getFullTableName('loads') . "` 
+			WHERE `view_on_home` = '1' AND `available` = '1' AND `premoder` = 'confirmed') ";
 		}
 		if (in_array('stat', $latest_on_home)) {
 			if (!empty($sql)) $sql .= 'UNION ';
-			$sql .= "(SELECT `title`, `main`, `date`, `on_home_top`, `id`, `views`, `author_id`, `category_id`, `comments`, (SELECT \"stat\") AS skey  FROM `"
-				 . $Register['DB']->getFullTableName('stat') . "` "
-				 . "WHERE `view_on_home` = '1' AND `available` = '1' AND `premoder` = 'confirmed') ";
+			$sql .= "(SELECT `title`, `main`, `date`, `on_home_top`, `id`, `views`, `author_id`, `category_id`, `comments`, 
+				(SELECT title FROM `" . $Register['DB']->getFullTableName('stat_sections') . "` 
+				WHERE `id` = `stat`.`category_id`) as category_title, 
+				(SELECT \"stat\") AS skey  
+				FROM `" . $Register['DB']->getFullTableName('stat') . "` 
+				WHERE `view_on_home` = '1' AND `available` = '1' AND `premoder` = 'confirmed') ";
 		}
 
 
 		if (!empty($sql)) {
 			$sql .= 'ORDER BY `on_home_top` DESC, `date` DESC LIMIT ' . $Register['Config']->read('cnt_latest_on_home');
 			$materials = $Register['DB']->query($sql);
+			$materials_ = array('news' => [], 'loads' => [], 'stat' => []);
             if ($materials) {
                 foreach ($materials as $key => $mat) {
 
-
                     switch ($mat['skey']) {
                         case 'news':
-                            $materials[$key] = new NewsEntity($mat);
+                            $materials_['news'][$key] = $mat;
                             break;
                         case 'stat':
-                            $materials[$key] = new StatEntity($mat);
+                            $materials_['stat'][$key] = $mat;
                             break;
                         case 'loads':
-                            $materials[$key] = new LoadsEntity($mat);
+                            $materials_['loads'][$key] = $mat;
                             break;
                     }
                 }
             }
 
         }
+		$materials = $materials_;
 
+		foreach ($materials as $module => &$module_materials) {
+			$module_model = $Register['ModManager']->getModelInstance($module);
+			$module_model->bindModel('category');
+			$module_materials = $module_model->getAllAssigned($module_materials);
+			if (is_array($module_materials) && count($module_materials)) {
+				$entity = $Register['ModManager']->getEntityName($module);
+				foreach ($module_materials as &$mat) {
+					$mat = new $entity($mat);
+				}
+			} else {
+				$module_materials = array();
+			}
+		}
+		$materials = array_merge($materials['news'], $materials['loads'], $materials['stat']);
+		
         return $materials;
 	}
 

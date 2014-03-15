@@ -210,7 +210,7 @@ class UsersModel extends FpsModel
      * @param $collocutor_id
      * @return mixed
      */
-    public function getDialog($owner_id, $collocutor_id, $from_time = false)
+    public function getDialog($owner_id, $collocutor_id, $where)
     {
         $Register = Register::getInstance();
         $messagesModel = $Register['ModManager']->getModelName('Messages');
@@ -222,12 +222,8 @@ class UsersModel extends FpsModel
         $condition = "((to_user = '" . $owner_id . "' AND from_user = '" . $collocutor_id . "') "
             . "OR (from_user = '" . $owner_id . "' AND to_user = '" . $collocutor_id . "'))";
         $condition2 = "id_rmv <> '" . $owner_id . "'";
-        $condition3 = (!empty($from_time)) ? "`sendtime` > '" . $from_time . "'" : '';
-        $messages = $messagesModel->getCollection(array(
-            $condition,
-            $condition2,
-            $condition3
-        ), array(
+		$where = array_merge($where, array($condition, $condition2));
+        $messages = $messagesModel->getCollection($where, array(
             'order' => 'sendtime DESC',
         ));
 

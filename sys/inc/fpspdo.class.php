@@ -271,7 +271,7 @@ class FpsPDO {
 		
 		if ($sql !== true) {
 			if (!empty($sql)) {
-				$result = $sql->fetchAll();
+				$result = $sql->fetchAll(PDO::FETCH_ASSOC);
 				
 			}
 		}

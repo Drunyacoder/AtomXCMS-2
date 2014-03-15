@@ -1542,10 +1542,7 @@ Class UsersModule extends Module {
 		$this->Register['DB']->cleanSqlCache();
 		if ($this->Log) $this->Log->write('adding pm message', 'message id(' . $last_id . ')');
         if (isset($_REQUEST['ajax'])) {
-			$message = $this->Model->getUserMessage(array(
-                "`id` < '" . $last_id . "'",
-                "`to_user` = '" . $to . "'",
-            ));
+			$message = $this->Model->getDialog($from, $to, array("`id` < '" . $last_id . "'"));
 			$id = ($message) ? $message->getId() : $last_id;
 			$this->pm_view_update($id);
 		}
@@ -1614,17 +1611,22 @@ Class UsersModule extends Module {
         if (empty($_SESSION['user'])) $this->showAjaxResponse($result);
 
         // don't use getById, because current user might not be message owner
-        $message = $this->Model->getUserMessage(array('id' => $pm_id));
-        if (!$message) {
+		$messageModel = $this->Register['ModManager']->getModelInstance('messages');
+        $message = $messageModel->getCollection(array(
+			'id' => $pm_id,
+			"(`to_user` = '" . $_SESSION['user']['id'] . "' OR `from_user` = '" . $_SESSION['user']['id'] . "')",
+		));
+        if (!$message[0]) {
             $result['errors'] = __('Message not found');
             $this->showAjaxResponse($result);
         }
 
+		$message = $message[0];
         $last_date = $message->getSendtime();
         $owner = $_SESSION['user']['id'];
         $collocutor = ($owner == $message->getTo_user()) ? $message->getFrom_user() : $message->getTo_user();
 
-        $newMessages = $this->Model->getDialog($owner, $collocutor, $last_date);
+        $newMessages = $this->Model->getDialog($owner, $collocutor, array("`sendtime` > '" . $last_date . "'"));
         if (is_array($newMessages) && count($newMessages)) {
             foreach ($newMessages as &$mes) {
                 $message_text = $this->Textarier->print_page($mes->getMessage(), $mes->getFromuser()->getStatus());
