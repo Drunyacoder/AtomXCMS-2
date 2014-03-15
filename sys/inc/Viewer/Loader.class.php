@@ -71,6 +71,9 @@ class Fps_Viewer_Loader
 	 * @var  string(Class name)
 	 */
 	public $debug;
+	
+	
+	public $rootDir = 'default';
 
 
 	public function __construct(array $params = array())
@@ -83,6 +86,7 @@ class Fps_Viewer_Loader
             $this->pluginsController = (!empty($params['plugins_class'])) ? $params['plugins_class'] : 'Plugins';
             $this->config = (!empty($params['config_class'])) ? $params['config_class'] : 'Config';
             $this->debug = (!empty($params['debug_class'])) ? $params['debug_class'] : 'AtmDebug';
+            $this->rootDir = (isset($params['root_dir'])) ? $params['root_dir'] : 'default';
         }
 	}
 }

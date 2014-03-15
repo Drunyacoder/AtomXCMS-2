@@ -22,9 +22,8 @@ abstract class Fps_Viewer_Template
 	
 	
 	public function includeFile($path, array $subcontext) {
-		if (!file_exists($path)) throw new Exception("(Include $path) File is not exists.");
         $context = array_merge($this->context, $subcontext);
-		$Viewer = new Fps_Viewer_Manager(new Fps_Viewer_Loader());
+		$Viewer = new Fps_Viewer_Manager(new Fps_Viewer_Loader(array('root_dir' => '')));
 		echo $Viewer->view($path, $context);
 	}
 	

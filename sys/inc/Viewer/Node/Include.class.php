@@ -21,7 +21,7 @@ class Fps_Viewer_Node_Include
     public function compile(Fps_Viewer_CompileParser $compiler)
     {
 		$Config = $compiler->loader->config;
-		$path = strtr(ROOT .  '/template/' . $Config::read('template') . '/html/' . $this->path, array('//' => '/', '\\\\' => '\\'));
+		$path = strtr($this->path, array('//' => '/', '\\\\' => '\\'));
 		
 		$compiler->write("\n");
 		$compiler->write("\$this->includeFile('$path', ");

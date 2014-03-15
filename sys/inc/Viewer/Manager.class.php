@@ -120,7 +120,7 @@ class Fps_Viewer_Manager
 		$template = call_user_func(array($this->loader->config, 'read'), 'template');
 		$path = ROOT . '/template/' . $template . '/html/' . '%s' . '/' . $fileName;
 		if (file_exists(sprintf($path, $this->layout))) $path = sprintf($path, $this->layout);
-		else $path = sprintf($path, 'default');
+		else $path = sprintf($path, $this->loader->rootDir);
 		
 		return $path;
 	}
