@@ -210,7 +210,7 @@ class UsersModel extends FpsModel
      * @param $collocutor_id
      * @return mixed
      */
-    public function getDialog($owner_id, $collocutor_id, $where)
+    public function getDialog($owner_id, $collocutor_id, $where = array())
     {
         $Register = Register::getInstance();
         $messagesModel = $Register['ModManager']->getModelName('Messages');
