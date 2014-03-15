@@ -64,7 +64,7 @@ table.side-separator, table.side-separator tr td {vertical-align:top; min-height
 .side-menu li div.sub .shadow {width:235px; padding:0px 20px; margin-left:-20px; -moz-box-shadow:inset 0px 0px 20px #000; -webkit-box-shadow:inset 0px 0px 20px #000; box-shadow:inset 0px 0px 20px #000;}
 .side-menu li div.sub ul, .side-menu li div.sub li {border:none; background:none;}
 .side-menu li div.sub ul li {width:auto; min-height:25px; padding:0px 10px 0px 60px;}
-.side-menu li div.sub ul li a {display:block; color:#96c703; padding-top:5px; font-size:13px; text-transform:none; -moz-text-shadow:0px -1px 1px #000; -webkit-text-shadow:0px -1px 1px #000; text-shadow:0px -1px 1px #000; text-decoration:underline;}
+.side-menu li div.sub ul li a {display:block; color:#96c703; padding-top:5px; font-size:13px; text-transform:none; -moz-text-shadow:0px -1px 1px #000; -webkit-text-shadow:0px -1px 1px #000; text-shadow:0px -1px 1px #000; text-decoration:underline; max-width: 170px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;}
 .side-menu li div.sub ul li:hover a {text-shadow:0px 0px 2px #96c703;}
 
 /* Side menu icons */
