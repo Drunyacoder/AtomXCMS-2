@@ -4,12 +4,12 @@
 |  @Author:       Andrey Brykin (Drunya)         |
 |  @Email:        drunyacoder@gmail.com          |
 |  @Site:         http://fapos.net			     |
-|  @Version:      1.5.9                          |
+|  @Version:      1.6.2                          |
 |  @Project:      CMS                            |
 |  @Package       CMS Fapos                      |
 |  @Subpackege    Module Class                   |
-|  @Copyright     ©Andrey Brykin 2010-2013       |
-|  @Last mod.     2013/04/24                     |
+|  @Copyright     ©Andrey Brykin 		         |
+|  @Last mod.     2014/03/14                     |
 \-----------------------------------------------*/
 
 /*-----------------------------------------------\
@@ -76,7 +76,7 @@ class Module {
 	/**
 	* @var    database object
 	*/
-	protected $Database;
+	protected $DB;
 	/**
 	* uses for work with actions log
 	*
@@ -89,12 +89,6 @@ class Module {
 	* @var    parser object
 	*/
 	protected $Parser;
-	/**
-	* contains system settings
-	*
-	* @var (array)   system settings
-	*/
-	public $set;
 	
 	/**
 	* Access control list

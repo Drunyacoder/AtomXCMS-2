@@ -2,12 +2,12 @@
 /*---------------------------------------------\
 |											   |
 | @Author:       Andrey Brykin (Drunya)        |
-| @Version:      1.0.12                        |
+| @Version:      1.1.0                         |
 | @Project:      CMS                           |
 | @Package       AtomX CMS                     |
 | @subpackege    Validate class                |
-| @copyright     ©Andrey Brykin 2010-2011      |
-| @last mod      2011/12/21                    |
+| @copyright     ©Andrey Brykin                |
+| @last mod      2014/03/14                    |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
@@ -26,8 +26,6 @@
  */
 //define ('V_TITLE', '#^[A-ZА-Яа-яa-z0-9\s-\(\),\._\?\!\w\d\{\} ]+$#ui');
 define ('V_TITLE', '#^[A-ZА-Яа-яa-z0-9ё\s\-(),._\?!\w\d\{\}\<\>:=\+&%\$\[\]\\\/"\']+$#ui');
-
-
 define ('V_INT', '#^\d+$#i');
 define ('V_TEXT', '#^[\wA-ZА-Яа-яa-z0-9\s\-\(\):;\[\]\+!\.,&\?/\{\}="\']*$#uim');
 define ('V_MAIL', '#^[0-9a-z_\-\.]+@[0-9a-z\-\.]+\.[a-z]{2,6}$#i');
@@ -35,40 +33,133 @@ define ('V_URL', '#^((https?|ftp):\/\/)?(www.)?([0-9a-z]+(-?[0-9a-z]+)*\.)+[a-z]
 define ('V_CAPTCHA', '#^[\dabcdefghijklmnopqrstuvwxyz]+$#i');
 define ('V_LOGIN', '#^[- _0-9a-zА-Яа-я@]+$#ui');
 
+
 class Validate {
 	
+	/**
+	 * @var array
+	 */
 	private $rules;
 	
+	/**
+	 * @var array
+	 */
 	private $pathParams;
 	
+	/**
+	 * @var array
+	 */
 	private $disabledFields = array();
 	
+	/**
+	 * @var function(callable)
+	 */
+	private $layoutWrapper;
 	
-	public function setPathParams($module, $action) {
+	const V_TITLE = '#^[A-ZА-Яа-яa-z0-9ё\s\-(),._\?!\w\d\{\}\<\>:=\+&%\$\[\]\\\/"\']+$#ui';
+	const V_INT = '#^\d+$#i';
+	const V_TEXT = '#^[\wA-ZА-Яа-яa-z0-9\s\-\(\):;\[\]\+!\.,&\?/\{\}="\']*$#uim';
+	const V_MAIL = '#^[0-9a-z_\-\.]+@[0-9a-z\-\.]+\.[a-z]{2,6}$#i';
+	const V_URL = '#^((https?|ftp):\/\/)?(www.)?([0-9a-z]+(-?[0-9a-z]+)*\.)+[a-z]{2,6}\/?([-0-9a-z_]*\/?)*([-0-9A-Za-zА-Яа-я_]+\.?[-0-9a-z_]+\/?)*$#i';
+	const V_CAPTCHA = '#^[\dabcdefghijklmnopqrstuvwxyz]+$#i';
+	const V_LOGIN = '#^[- _0-9a-zА-Яа-я@]+$#ui';
+
+	
+	public function __construct($layoutWrapper)
+	{
+		if (is_callable($layoutWrapper)) $this->layoutWrapper = $layoutWrapper;
+	}
+	
+	
+	/**
+	 * @param $data string
+	 * @param $filter string
+	 */
+	public function cha_val ($data, $filter = '#^\w*$#Uim') {
+		if (!preg_match($filter, $data)) return false;
+		else return true;
+	}
+	
+	
+	/**
+	 * @param $data string
+	 * @param $min integer
+	 * @param $max integer
+	 */
+	public function len_val ($data, $min = 1, $max = 100) {
+	
+		if (mb_strlen($data) > $max) return 'Текст слишком велик';
+		elseif (mb_strlen($data) < $min) return 'Текст слишком короткий';
+		
+		return true;
+	}
+	
+	
+	
+	//find similar records from  $sourse (< array(table, field) >)
+	// TODO || Delete
+	public function uniq_val($data, $sourse, $type = 'low') 
+	{
+		global $FpsDB;
+		if ($type == 'hight') {
+			//array with russian letters
+			$rus = array( "А","а","В","Е","е","К","М","Н","О","о","Р","р","С","с","Т","Х","х" );
+			// array with latinic letters
+			$eng = array( "A","a","B","E","e","K","M","H","O","o","P","p","C","c","T","X","x" );
+			// change russian to latinic
+			$eng_new_data = str_replace($rus, $eng, $data);
+			// change latinic to russian
+			$rus_new_data = str_replace($eng, $rus, $data);
+			
+			// create SQL query
+			$sql = "SELECT * FROM `{$sourse['table']}`
+					WHERE `{$sourse['field']}` LIKE '".$Register['DB']->escape( $data )."' OR
+					`{$sourse['field']}` LIKE '".$Register['DB']->escape( $eng_new_data )."' OR
+					`{$sourse['field']}` LIKE '".$Register['DB']->escape( $rus_new_data )."'";
+		  
+		} else { //security level not hight...
+		
+			$sql = "SELECT COUNT(*) 
+					FROM `{$sourse['table']}`  
+					WHERE `{$sourse['field']}` LIKE '" . $Register['DB']->escape($data) . "'";
+					
+		}
+		$query = $FpsDB->query($sql);
+
+		return (count($query) > 0) ? false : true;
+	}
+	
+	
+	
+	public function setPathParams($module, $action) 
+	{
 		$this->pathParams = array($module, $action);
 	}
 	
 	
-	public function setRules($rules) {
+	
+	public function setRules($rules) 
+	{
 		$this->rules = $rules;
 	}
 	
 	
-	public function disableFieldCheck($key) {
+	
+	public function disableFieldCheck($key) 
+	{
         if (is_array($key)) $this->disabledFields = array_merge($this->disabledFields, $key);
 		else $this->disabledFields[] = $key;
 	}
 	
+	
 
-	public function check($rules = null) {
-		if ($rules == null) $rules = $this->rules;
+	public function check($rules = null, $wrap = false) 
+	{
+		$rules = $this->prepareRules($rules);
 
 		$Register = Register::getInstance();
 		$request = $_POST;
 		$errors = '';
-
-		$rules = @$rules[$this->pathParams[0]][$this->pathParams[1]];
-		if (empty($rules) || count($rules) < 1) throw new Exception("Rules for ".$this->pathParams[0]." - ".$this->pathParams[1]." not found.");
 		
 		
 		foreach ($rules as $title_ => $params) {
@@ -196,10 +287,24 @@ class Validate {
 				}
 			}
 		}
+		
+		if ($wrap === true && is_callable($this->layoutWrapper)) {
+			$errors = $this->wrapErrors($errors);
+		}
+		
 		return $errors;
 	}
+	
+	
+	
+	public function wrapErrors($errors) {
+		return (is_callable($this->layoutWrapper))
+			? call_user_func($this->layoutWrapper, $errors)
+			: $errors;
+	}
 
-
+	
+	
     /**
      * Merge entity with form session(viewMessage|FpsForm).
      * Geting [object|array] entity and array pattern. Fill entity from session by pattern.
@@ -215,7 +320,9 @@ class Validate {
 			$session = $_SESSION['viewMessage'];
         } else if (!empty($_SESSION['FpsForm'])) {
             $session = $_SESSION['FpsForm'];
-        }
+        } else if (!empty($_POST)) {
+			$session = $_POST;
+		}
 		
 		
 		if (empty($pattern) && is_array($entity)) $pattern = $entity;
@@ -239,6 +346,57 @@ class Validate {
 		}
 		return $entity;
     }
+	
+	
+	
+	/**
+	 * @param $rules array
+	 */
+	public function getFormFields($rules)
+	{
+		$rules = $this->prepareRules($rules);
+		$Register = Register::getInstance();
+		$request = $_POST;
+		return array_fill_keys(array_keys($rules), null);
+	}
+	
+	
+	
+	public function getErrors()
+	{
+        $outputContent = '';
+        if (!empty($_SESSION['FpsForm']['error'])) {
+            $outputContent = $this->wrapErrors($_SESSION['FpsForm']['error']);
+        }
+        return $outputContent;
+	}
+	
+	
+	
+	/**
+	 * @param $rules array
+	 * @param $additional_fields array
+	 */
+	public function getAndMergeFormPost($rules = null, $additional_fields = array(), $correct = false)
+	{
+		$rules = $this->prepareRules($rules);
+		
+		$Register = Register::getInstance();
+		$request = $_POST;
+			
+		
+		$pattern = array_fill_keys(array_keys($rules), null);
+		$pattern = array_merge($pattern, $additional_fields);
+		$fields = $this->getCurrentInputsValues($pattern);
+		
+		if ($correct === true) 
+			$fields = array_map(function($n){
+				return trim($n);
+			}, $fields);
+		
+		return $fields;
+	}
+	
 	
 	
 	private function getErrorMessage($type, $params, $title) {
@@ -281,56 +439,23 @@ class Validate {
 	}
 	
 	
+	
 	private function completeErrorMessage($message) {
 		return "<li>$message</li>\n";
 	}
 
 
-	public function cha_val ($data, $filter = '#^\w*$#Uim') {
-		if (!preg_match($filter, $data)) return false;
-		else return true;
-	}
 	
-	
-	public function len_val ($data, $min = 1, $max = 100) {
-	
-		if (mb_strlen($data) > $max) return 'Текст слишком велик';
-		elseif (mb_strlen($data) < $min) return 'Текст слишком короткий';
+	private function prepareRules($rules)
+	{
+		if ($rules == null) $rules = $this->rules;
+		$rules = (array_key_exists($this->pathParams[1], $rules[$this->pathParams[0]])) 
+			? $rules[$this->pathParams[0]][$this->pathParams[1]]
+			: @$rules[$this->pathParams[0]][substr($this->pathParams[1], 0, -5)];
 		
-		return true;
-	}
-	
-	
-	//find similar records from  $sourse (< array(table, field) >)
-	// TODO || Delete
-	public function uniq_val($data, $sourse, $type = 'low') {
-		global $FpsDB;
-		if ($type == 'hight') {
-			//array with russian letters
-			$rus = array( "А","а","В","Е","е","К","М","Н","О","о","Р","р","С","с","Т","Х","х" );
-			// array with latinic letters
-			$eng = array( "A","a","B","E","e","K","M","H","O","o","P","p","C","c","T","X","x" );
-			// change russian to latinic
-			$eng_new_data = str_replace($rus, $eng, $data);
-			// change latinic to russian
-			$rus_new_data = str_replace($eng, $rus, $data);
-			
-			// create SQL query
-			$sql = "SELECT * FROM `{$sourse['table']}`
-					WHERE `{$sourse['field']}` LIKE '".$Register['DB']->escape( $data )."' OR
-					`{$sourse['field']}` LIKE '".$Register['DB']->escape( $eng_new_data )."' OR
-					`{$sourse['field']}` LIKE '".$Register['DB']->escape( $rus_new_data )."'";
-		  
-		} else { //security level not hight...
+		if (empty($rules) || count($rules) < 1) 
+			throw new Exception("Rules for ".$this->pathParams[0]." - ".$this->pathParams[1]."(_form) not found.");
 		
-			$sql = "SELECT COUNT(*) 
-					FROM `{$sourse['table']}`  
-					WHERE `{$sourse['field']}` LIKE '" . $Register['DB']->escape($data) . "'";
-					
-		}
-		$query = $FpsDB->query($sql);
-
-		return (count($query) > 0) ? false : true;
+		return $rules;
 	}
-
 }

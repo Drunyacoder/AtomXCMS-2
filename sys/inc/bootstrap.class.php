@@ -54,7 +54,10 @@ class Bootstrap
         $this->Register['ACL'] = new ACL(ROOT . '/sys/settings/');
         $this->Register['Cache'] = new Cache;
         $this->Register['PrintText'] = new PrintText;
-        $this->Register['Validate'] = new Validate();
+        $this->Register['Validate'] = new Validate(function($errors){
+			$viewer = new Fps_Viewer_Manager(new Fps_Viewer_Loader());
+			return $viewer->view('infomessage.html', array('info_message' => $errors));
+		});
         $this->Register['ModManager'] = new ModulesManager(ROOT . '/sys/settings/modules_access.php');
         $this->Register['PluginController'] = new Plugins;
         $this->Register['URL'] = new AtmUrl;

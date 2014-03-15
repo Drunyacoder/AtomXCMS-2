@@ -592,22 +592,16 @@ Class NewsModule extends Module {
 		}
 		
 		
-        // Check for preview or errors
-        $data = array('title' => null, 'main_text' => null, 'in_cat' => null, 'description' => null, 'tags' => null, 
-			'sourse' => null, 'sourse_email' => null, 'sourse_site' => null, 'commented' => null, 'available' => null);
-		$data = array_merge($data, $markers);
-        $data = Validate::getCurrentInputsValues($data);
-		
-		
+		$data = $this->Register['Validate']->getAndMergeFormPost($this->getValidateRules(), $markers);
         $data['preview'] = $this->Parser->getPreview($data['main_text']);
-        $data['errors'] = $this->Parser->getErrors();
+        $data['errors'] = $this->Register['Validate']->getErrors();
         if (isset($_SESSION['viewMessage'])) unset($_SESSION['viewMessage']);
         if (isset($_SESSION['FpsForm'])) unset($_SESSION['FpsForm']);
 		
 		
 		$SectionsModel = $this->Register['ModManager']->getModelInstance($this->module . 'Sections');
 		$sql = $SectionsModel->getCollection();
-		$data['cats_selector'] = $this->_buildSelector($sql, ((!empty($data['in_cat'])) ? $data['in_cat'] : false));
+		$data['cats_selector'] = $this->_buildSelector($sql, ((!empty($data['cats_selector'])) ? $data['cats_selector'] : false));
 		
 		
 		//comments and hide
@@ -657,56 +651,29 @@ Class NewsModule extends Module {
 		}
 		
 		
-		$errors .= $this->Register['Validate']->check($this->getValidateRules());
-		
-		
-		$fields = array('description', 'tags', 'sourse', 'sourse_email', 'sourse_site');
-		$fields_settings = $this->Register['Config']->read('fields', $this->module);
-		foreach ($fields as $field) {
-			if (empty($_POST[$field]) && in_array($field, $fields_settings)) {
-				$$field = null;
-			} else {
-				$$field = trim($_POST[$field]);
-			}
-		}
-		
-		// Обрезаем переменные до длины, указанной в параметре maxlength тега input
-		$title  = trim(mb_substr($_POST['title'], 0, 128));
-		$add 	= trim($_POST['main_text']);
-		$in_cat = intval($_POST['cats_selector']);
-		$commented = (!empty($_POST['commented'])) ? 1 : 0;
-		$available = (!empty($_POST['available'])) ? 1 : 0;
+		$errors .= $this->Register['Validate']->check($this->getValidateRules());		
+		$form_fields = $this->Register['Validate']->getFormFields($this->getValidateRules());
 
 		// Если пользователь хочет посмотреть на сообщение перед отправкой
 		if ( isset( $_POST['viewMessage'] ) ) {
-			$_SESSION['viewMessage'] = array_merge(array('title' => null, 'main_text' => null, 'in_cat' => $in_cat,
-				'description' => null, 'tags' => null, 'sourse' => null, 'sourse_email' => null, 
-				'sourse_site' => null, 'commented' => null, 'available' => null), $_POST);
+			$_SESSION['viewMessage'] = array_merge($form_fields, $_POST);
 			redirect('/' . $this->module . '/add_form/');
 		}
-			
-			
-		if (!empty($in_cat)) {
+		
+		if (!empty($_POST['cats_selector'])) {
 			$categoryModel = $this->Register['ModManager']->getModelInstance($this->module . 'Sections');
-			$cat = $categoryModel->getById($in_cat);
+			$cat = $categoryModel->getById($_POST['cats_selector']);
 			if (empty($cat)) $errors .= '<li>' . __('Can not find category') . '</li>'."\n";
 		}
 			
 			
 		// Errors
 		if (!empty($errors)) {
-			$_SESSION['FpsForm'] = array_merge(array('title' => null, 'main_text' => null, 'in_cat' => $in_cat,
-				'description' => null, 'tags' => null, 'sourse' => null, 'sourse_email' => null, 
-				'sourse_site' => null, 'commented' => null, 'available' => null), $_POST);
-			$_SESSION['FpsForm']['error']   = '<p class="errorMsg">' . __('Some error in form') . '</p>'.
-				"\n".'<ul class="errorMsg">' . "\n" . $errors . '</ul>' . "\n";
+			$_SESSION['FpsForm'] = array_merge($form_fields, $_POST);
+			$_SESSION['FpsForm']['error'] = $this->Register['Validate']->wrapErrors($errors);
 			redirect('/' . $this->module . '/add_form/');
 		}
-
-		
-		if (!$this->ACL->turn(array($this->module, 'record_comments_management'), false)) $commented = '1';
-		if (!$this->ACL->turn(array($this->module, 'hide_material'), false)) $available = '1';
-
+			
 		// Защита от того, чтобы один пользователь не добавил
 		// 100 материалов за одну минуту
 		if ( isset( $_SESSION['unix_last_post'] ) and ( time()-$_SESSION['unix_last_post'] < 10 ) ) {
@@ -717,7 +684,7 @@ Class NewsModule extends Module {
 		// Auto tags generation
 		if (empty($tags)) {
 			$TagGen = new MetaTags;
-			$tags = $TagGen->getTags($add);
+			$tags = $TagGen->getTags($_POST['main_text']);
 			$tags = (!empty($tags) && is_array($tags)) ? implode(',', array_keys($tags)) : '';
 		}
 		
@@ -726,15 +693,25 @@ Class NewsModule extends Module {
 		$this->Register['Cache']->clean(CACHE_MATCHING_ANY_TAG, array('module_' . $this->module));
 		$this->DB->cleanSqlCache();
 		
-		// Формируем SQL-запрос на добавление темы	
+		// SQL query to add row
+		$post = $this->Register['Validate']->getAndMergeFormPost($this->getValidateRules(), array(), true);
+		extract($post);
+		
+		// Обрезаем переменные до длины, указанной в параметре maxlength тега input
+		$commented = (!empty($_POST['commented'])) ? 1 : 0;
+		$available = (!empty($_POST['available'])) ? 1 : 0;
+		if (!$this->ACL->turn(array($this->module, 'record_comments_management'), false)) $commented = '1';
+		if (!$this->ACL->turn(array($this->module, 'hide_material'), false)) $available = '1';
+		
+		
 		$max_lenght = $this->Register['Config']->read('max_lenght', $this->module);
-		$add = mb_substr($add, 0, $max_lenght);
+		$add = mb_substr($main_text, 0, $max_lenght);
 		$res = array(
 			'title'        => $title,
 			'main'         => $add,
 			'date'         => new Expr('NOW()'),
 			'author_id'    => $_SESSION['user']['id'],
-			'category_id'  => $in_cat,
+			'category_id'  => $cats_selector,
 			'description'  => $description,
 			'tags'         => $tags,
 			'sourse'  	   => $sourse,
@@ -745,7 +722,6 @@ Class NewsModule extends Module {
 			'view_on_home' => $cat->getView_on_home(),
 			'premoder' 	   => 'confirmed',
 		);
-		
 		if ($this->ACL->turn(array($this->module, 'materials_require_premoder'), false)) {
 			$res['premoder'] = 'nochecked';
 		}
