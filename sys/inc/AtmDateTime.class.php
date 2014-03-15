@@ -124,10 +124,11 @@ class AtmDateTime {
 			'Jul' => __('Jul'),
 			'Aug' => __('Aug'),
 			'Sept' => __('Sept'),
+			'Sep' => __('Sept'),
 			'Oct' => __('Oct'),
 			'Nov' => __('Nov'),
 			'Dec' => __('Dec'),
-			'at' => __('at'),
+			'at'  => __('at'),
 		);
 		$result = str_replace(array_keys($translate), $translate, $result);
 
