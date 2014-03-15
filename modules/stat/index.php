@@ -206,6 +206,7 @@ Class StatModule extends Module {
 			return $this->showInfoMessage(__('Permission denied'), '/' . $this->module . '/');
 		
 		
+		Plugins::intercept('view_category', $category);
 		$this->page_title = h($category->getTitle()) . ' - ' . $this->page_title;
 		
 		
@@ -372,6 +373,9 @@ Class StatModule extends Module {
 		if (!$this->ACL->turn(array('other', 'can_premoder'), false) && in_array($entity->getPremoder(), array('rejected', 'nochecked'))) {
 			return $this->showInfoMessage(__('Permission denied'), '/' . $this->module . '/');
 		}
+		
+		
+		Plugins::intercept('view_category', $entity->getCategory());
 		
 		
 		// Some gemor with add fields
