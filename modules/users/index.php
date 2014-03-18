@@ -1543,7 +1543,7 @@ Class UsersModule extends Module {
 		if ($this->Log) $this->Log->write('adding pm message', 'message id(' . $last_id . ')');
         if (isset($_REQUEST['ajax'])) {
 			$message = $this->Model->getDialog($from, $to, array("`id` < '" . $last_id . "'"));
-			$id = ($message) ? $message->getId() : $last_id;
+			$id = (!empty($message[0])) ? $message[0]->getId() : $last_id;
 			$this->pm_view_update($id);
 		}
 		return $this->showInfoMessage(__('Message successfully send'), '/' . $this->module . '/pm_view/' . $to);

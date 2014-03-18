@@ -88,8 +88,9 @@ class AtmSnippets {
 
         foreach ($this->snippets as $snippet) {
             $regex = '#\{\[([!]*)('.$snippet['hash'].$snippet['name'].')(\??.*)\]\}#U';
+			
             preg_match_all($regex, $source, $mas);
-
+			
 
             for ($i= 0; $i < count($mas[2]); $i++) {
                 // snippet params
@@ -111,7 +112,7 @@ class AtmSnippets {
 
                     if ($this->Cache->check($cache_key)) {
                         $res = $this->Cache->read($cache_key);
-                        $source = preg_replace($mas[0][$i], $res, $source);
+                        $source = preg_replace('#' . preg_quote($mas[0][$i]) . '#', $res, $source);
                         continue;
                     }
                 }
@@ -126,8 +127,7 @@ class AtmSnippets {
                     eval($db_snippet->getBody());
                     $res = ob_get_contents();
                     ob_end_clean();
-
-                    $source = str_replace($mas[0][$i], $res, $source);
+                    $source = str_replace('#' . preg_quote($mas[0][$i]) . '#', $res, $source);
 
                     if ($snippet['cached'])
                         $this->Cache->write($res, $cache_key, array());
