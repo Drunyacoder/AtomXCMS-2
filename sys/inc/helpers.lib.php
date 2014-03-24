@@ -460,31 +460,25 @@ function getCaptcha($name = false) {
  * Open language file and return needed
  * string.
  *
- * @param int $key
- * @param string $module
+ * @param string $key
+ * @param string $context
  * @return string
  */
-function __($key, $module = false) {
-	
-	if (is_numeric($key)) {
-		if ($module === false) $module = 'common';
-		
-		$lan_dir = ROOT . '/sys/settings/languages/' . $module . '.dat';
-		$data = file_get_contents($lan_dir);
-		if (empty($data)) trigger_error('Language file not found!', E_USER_ERROR);
-		$data = explode("=|=", $data);
-		return (!empty($data[$key])) ? trim($data[$key]) : '';
-		
-	} else {
-		$language = Config::read('language');
-		if (empty($language) || !is_string($language)) $language = 'russian';
-		$lang_file = ROOT . '/sys/settings/languages/' . $language . '.php';
-		if (!file_exists($lang_file)) trigger_error('Language file not found', E_USER_ERROR);
-		
-		include $lang_file;
-		if (array_key_exists($key, $language)) return $language[$key];
-		return $key;
-	}
+function __($key, $context = false) {
+    $language = Config::read('language');
+    if (empty($language) || !is_string($language)) $language = 'russian';
+
+    $lang_file = ROOT . '/sys/settings/languages/' . $language . '.php';
+    $tpl_lang_file = ROOT . '/template/' . Config::read('template') .'/languages/' . $language . '.php';
+    if (!file_exists($lang_file)) throw new Exception('Main language file not found');
+
+    $lang = include $lang_file;
+    if (file_exists($tpl_lang_file)) {
+        $tpl_lang = include $tpl_lang_file;
+        $lang = array_merge($lang, $tpl_lang);
+    }
+    if (array_key_exists($key, $lang)) return $lang[$key];
+    return $key;
 }
 
 
@@ -492,10 +486,10 @@ function __($key, $module = false) {
 
 /**
  * Uses for valid create HTML tag IMG
- * and fill into him correctli url.
+ * and fill into him correctly url.
  * When you use this function you
  * mustn't wory obout Fapos install
- * into subdri or SUBDIRS.
+ * into subdir or SUBDIRS.
  * ALso if we wont change class of IMG or etc,
  * we change this only here and this changes apply
  * for evrywhere.
