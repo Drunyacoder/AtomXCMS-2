@@ -1,5 +1,5 @@
 <?php
-$language = array(
+return array(
 	// mdules
 	'users' 						=> 'Пользователи',
 	'loads' 						=> 'Файлы',	
