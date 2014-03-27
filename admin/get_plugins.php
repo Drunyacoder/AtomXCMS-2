@@ -211,7 +211,7 @@ endif;
 					NO IMAGE
 				<?php endif; ?>
 				</div>
-				<div class="right">
+				<div style="max-width:55%;" class="right">
 					<h3><?php echo $row['title'] ?></h3>
 					<?php echo $row['description'] ?><br /><br />
 					<div class="r-but-container">

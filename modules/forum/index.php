@@ -2163,16 +2163,15 @@ Class ForumModule extends Module {
 	public function unlock_theme($id_theme = null) {
 		$id_theme = (int)$id_theme;
 		if ($id_theme < 1) redirect('/forum/');
-		
-		
-		$this->ACL->turn(array('forum', 'close_themes', $theme->getId_forum()));
-		
 
+		
 		$postsModel = $this->Register['ModManager']->getModelInstance('Posts');
 		$themesModel = $this->Register['ModManager']->getModelInstance('Themes');
 		$theme = $themesModel->getById($id_theme);
 		if (!$theme) return $this->showInfoMessage(__('Topic not found'), '/forum/' );
 		
+		
+		$this->ACL->turn(array('forum', 'close_themes', $theme->getId_forum()));
 		
 		// Сначала заблокируем сообщения (посты) темы
 		$posts = $postsModel->getCollection(array('id_theme' => $id_theme));

@@ -1,0 +1,1 @@
+{"title":"Wysibb","description":"Добавляет визуальный редактор с поддержкой бб кодов AtomX. (В head надо использовать метку {{ editor_body }} для подключения библиотеки и затем, метку {{ editor_text }} в теле тега textarea. У textarea должен быть атрибут  id="editor".)","fps_version":2.4}

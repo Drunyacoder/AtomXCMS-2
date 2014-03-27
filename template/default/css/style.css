@@ -663,7 +663,7 @@ box-shadow: inset 0px 0px 1px #999;-webkit-box-shadow: inset 0px 0px 1px #999;-m
 .content .inftitle {margin: 0 10px;padding: 6px 0;font-size: 17px;border-bottom: 1px solid #aaa;}
 .content .infcont {padding: 10px;}
 .content .spisokico {list-style:none;}
-.wysibb-text {width: 100%;min-height: 200px;}
+.wysibb-text {min-height: 200px;}
 .wysibb-text-editor {min-height: 200px !important;}
 .margin {margin:10px;}
 /*--------------------------------------------------------------USERS----------------------------------------------------------------------------*/
@@ -992,6 +992,14 @@ text-decoration:none !important;
 #attachments span input[type=text] {width: 65px;}
 #attachments input {height:auto;}
 #attachments input[type="button"] {width: 195px;}
+
+.codePHP, .codeHTML, .codeSQL, .codeCSS, .codeJS, .bbCodeBlock .codeMessage {background: #ecf2ff;border: 1px solid #D3D3D3 !important;margin: 5px 0;overflow: auto;max-height: 400px;}
+
+.codePHP .numstring {background: #EEE;}
+.codeSQL {padding:5px;}
+.codeCSS {}
+.codeJS {}
+
 /*--------------------------POLLS----------------------------*/
 .poll_question {margin: 10px;display: block !important;height: auto !important;}
 .poll_question h4 {font-weight: normal;background-color: #E0F3CE;margin: 0 -7px;-moz-border-radius: 6px;-webkit-border-radius: 6px;border-radius: 6px;}

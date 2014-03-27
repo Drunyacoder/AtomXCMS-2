@@ -1,6 +1,6 @@
 WBBPRESET = {
-	buttons: 'bold,italic,underline,strike,|,justifyleft,justifycenter,justifyright,|,smilebox,|,code,quote,spoiler,hide,bullist,numlist,|,link,img,video,|,fontcolor,fontsize,removeFormat',
-	traceTextarea: true,
+	buttons: 'bold,italic,underline,strike,|,justifyleft,justifycenter,justifyright,|,smilebox,|,code,quote,spoiler,hide,bullist,numlist,|,link,img,video,|,fontcolor,fontsize,fontheader,removeFormat',
+	traceTextarea: false,
 	imgupload: false,
 	allButtons: {
 		spoiler : {
@@ -24,16 +24,18 @@ WBBPRESET = {
 				'<div style="" class="bbQuoteBlock"><div class="bbQuoteName"><b>{AUTHOR} пишет:</b></div><div class="quoteMessage">{SELTEXT}</div></div>':'[quote={AUTHOR}]{SELTEXT}[/quote]'
 			}
 		},
+		code: {title:"CODE", transform: {'<div class="bbCodeBlock"><div class="bbCodeName"><b>Code:</b></div><div class="codeMessage" style="border: 1px inset ; overflow: auto;">{SELTEXT}</div></div>':'[code]{SELTEXT}[/code]'}},
+		code_php: {title:"PHP", transform: {'<div class="codePHP">{SELTEXT}</div>':'[php]{SELTEXT}[/php]'}},
+		code_sql: {title:"SQL", transform: {'<div class="codeSQL">{SELTEXT}</div>':'[sql]{SELTEXT}[/sql]'}},
+		code_js: {title:"JS", transform: {'<div class="codeJS">{SELTEXT}</div>':'[js]{SELTEXT}[/js]'}},
+		code_css: {title:"CSS", transform: {'<div class="codeCSS">{SELTEXT}</div>':'[css]{SELTEXT}[/css]'}},
+		code_html: {title:"HTML", transform: {'<div class="codeHTML">{SELTEXT}</div>':'[html]{SELTEXT}[/html]'}},
+		code_xml: {title:"HTML", transform: {'<div class="codeHTML codeXML">{SELTEXT}</div>':'[xml]{SELTEXT}[/xml]'}},
 		code: {
-			transform: {
-				'<div class="bbCodeBlock"><div class="bbCodeName"><b>Code:</b></div><div class="codeMessage" style="border: 1px inset ; overflow: auto;">{SELTEXT}</div></div>':'[code]{SELTEXT}[/code]',
-				'<div class="codePHP">{SELTEXT}</div>':'[php]{SELTEXT}[/php]',
-				'<div class="codeSQL">{SELTEXT}</div>':'[sql]{SELTEXT}[/sql]',
-				'<div class="codeJS">{SELTEXT}</div>':'[js]{SELTEXT}[/js]',
-				'<div class="codeCSS">{SELTEXT}</div>':'[css]{SELTEXT}[/css]',
-				'<div class="codeHTML">{SELTEXT}</div>':'[html]{SELTEXT}[/html]',
-				'<div class="codeHTML codeXML">{SELTEXT}</div>':'[xml]{SELTEXT}[/xml]'
-			}
+			type: "select",
+			title: "CODE",
+			buttonText: 'CODE',
+			options: "code,code_php,code_sql,code_js,code_css,code_html,code_xml",
 		},
 		bullist: {
 			transform: {
@@ -58,6 +60,18 @@ WBBPRESET = {
 			transform: {
 				'<iframe src="http://www.youtube.com/embed/{SRC}" width="640" height="480" frameborder="0"></iframe>':'[video]http://www.youtube.com/watch?v={SRC}[/video]'
 			}
+		},
+		h1: {title:"Header1", transform: {'<h1>{SELTEXT}</h1>':'[h1]{SELTEXT}[/h1]'}},
+		h2: {title:"Header2", transform: {'<h2>{SELTEXT}</h2>':'[h2]{SELTEXT}[/h2]'}},
+		h3: {title:"Header3", transform: {'<h3>{SELTEXT}</h3>':'[h3]{SELTEXT}[/h3]'}},
+		h4: {title:"Header4", transform: {'<h4>{SELTEXT}</h4>':'[h4]{SELTEXT}[/h4]'}},
+		h5: {title:"Header5", transform: {'<h5>{SELTEXT}</h5>':'[h5]{SELTEXT}[/h5]'}},
+		h6: {title:"Header6", transform: {'<h6>{SELTEXT}</h6>':'[h6]{SELTEXT}[/h6]'}},
+		fontsize: {
+			type: 'select',
+			title: 'Formatting',
+			buttonText: 'formatting',
+			options: "fs_verysmall,fs_small,fs_normal,fs_big,fs_verybig,h1,h2,h3,h4,h5,h6"
 		}
 	}
 }

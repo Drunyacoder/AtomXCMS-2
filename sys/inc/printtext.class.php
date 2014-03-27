@@ -308,6 +308,7 @@ class PrintText {
 		
 		
 		$message = preg_replace("#\[size=(\d+)\]([^\[]*)\[/size\]#uisU", '<span style="font-size:\\1%;">\\2</span>', $message);
+		$message = preg_replace("#\[h([123456]{1})\]([^\[]*)\[/h[123456]{1}\]#uisU", '<h\\1>\\2</h\\1>', $message);
 		$message = preg_replace("#\[center\]([^\[]*)\[/center\]#uisU", '<span style="display:block;width:100%;text-align:center;">\\1</span>', $message);
 		$message = preg_replace("#\[right\]([^\[]*)\[/right\]#uisU", '<span style="display:block;width:100%;text-align:right;">\\1</span>', $message);
 		$message = preg_replace("#\[left\]([^\[]*)\[/left\]#uisU", '<span style="display:block;width:100%;text-align:left;">\\1</span>', $message);

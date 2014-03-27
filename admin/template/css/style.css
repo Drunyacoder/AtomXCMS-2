@@ -136,7 +136,7 @@ table.side-separator, table.side-separator tr td {vertical-align:top; min-height
 
 .list .level1:last-child {border-radius:0 0 4px 4px;}
 
-.r-but-container {position:absolute; margin:auto; right:100px; top:0px; bottom:0px; height:30px;}
+.r-but-container {position:absolute; margin:auto; right:50px; top:0px; bottom:0px; height:30px;}
 .pl-preview {width:180px; margin:0px auto; -moz-box-shadow: 3px 3px 10px #000000; -webkit-box-shadow: 3px 3px 10px #000000; box-shadow: 3px 3px 10px #000000;}
 
 
