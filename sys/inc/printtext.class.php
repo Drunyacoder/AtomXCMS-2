@@ -231,7 +231,7 @@ class PrintText {
 		preg_match_all( "#\[js\](.+)\[\/js\]#isU", $message, $matches );
 		$cnt = count( $matches[0] );
 		for ( $i = 0; $i < $cnt; $i++ ) {
-			$jsBlocks[] = '<div class="codeJS">'.geshi_highlight($matches[1][$i], 'javascript', '', true).'</div>';
+			$jsBlocks[] = '<div class="codeJS">'.geshi_highlight(trim($matches[1][$i]), 'javascript', '', true).'</div>';
 			// Вот над этим надо будет подумать - усовершенствовать рег. выражение
 			$jsBlocks[$i] = str_replace( '<div class="codeJS"><code><br />', '<div class="codeJS"><code>', $jsBlocks[$i] );
 			$uniqidJS = '[js_'.uniqid('').']';
@@ -242,7 +242,7 @@ class PrintText {
 		preg_match_all( "#\[css\](.+)\[\/css\]#isU", $message, $matches );
 		$cnt = count( $matches[0] );
 		for ( $i = 0; $i < $cnt; $i++ ) {
-			$cssBlocks[] = '<div class="codeCSS">'.geshi_highlight($matches[1][$i], 'css', '', true).'</div>';
+			$cssBlocks[] = '<div class="codeCSS">'.geshi_highlight(trim($matches[1][$i]), 'css', '', true).'</div>';
 			// Вот над этим надо будет подумать - усовершенствовать рег. выражение
 			$cssBlocks[$i] = str_replace( '<div class="codeCSS"><code><br />', '<div class="codeCSS"><code>', $cssBlocks[$i] );
 			$uniqidCSS = '[css_'.uniqid('').']';
@@ -253,7 +253,7 @@ class PrintText {
 		preg_match_all( "#\[html\](.+)\[\/html\]#isU", $message, $matches );
 		$cnt = count( $matches[0] );
 		for ( $i = 0; $i < $cnt; $i++ ) {
-			$htmlBlocks[] = '<div class="codeHTML">'.geshi_highlight($matches[1][$i], 'html4strict', '', true).'</div>';
+			$htmlBlocks[] = '<div class="codeHTML">'.geshi_highlight(trim($matches[1][$i]), 'html4strict', '', true).'</div>';
 			// Вот над этим надо будет подумать - усовершенствовать рег. выражение
 			$htmlBlocks[$i] = str_replace( '<div class="codeHTML"><br />', '<div class="codeHTML">', $htmlBlocks[$i] );
 			$uniqidHTML = '[html_'.uniqid('').']';
@@ -264,7 +264,7 @@ class PrintText {
 		preg_match_all( "#\[xml\](.+)\[\/xml\]#isU", $message, $matches );
 		$cnt = count( $matches[0] );
 		for ( $i = 0; $i < $cnt; $i++ ) {
-			$xmlBlocks[] = '<div class="codeHTML">'.geshi_highlight($matches[1][$i], 'xml', '', true).'</div>';
+			$xmlBlocks[] = '<div class="codeHTML">'.geshi_highlight(trim($matches[1][$i]), 'xml', '', true).'</div>';
 			// Вот над этим надо будет подумать - усовершенствовать рег. выражение
 			$xmlBlocks[$i] = str_replace( '<div class="codeHTML"><br />', '<div class="codeHTML">', $xmlBlocks[$i] );
 			$uniqidXML = '[xml_'.uniqid('').']';
