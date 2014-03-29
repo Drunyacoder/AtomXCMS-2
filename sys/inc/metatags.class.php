@@ -38,6 +38,12 @@ class MetaTags
 	private $maxTags = 5;
 	
 	
+	public function __construct() 
+	{
+		$this->exceptions = explode(',', Config::read('autotags_exception'));
+		$this->priority = explode(',', Config::read('autotags_priority'));
+	
+	}
 	
 	/**
 	 * Return sorted tags for material
