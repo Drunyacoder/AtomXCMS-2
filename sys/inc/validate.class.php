@@ -100,7 +100,8 @@ class Validate {
 	// TODO || Delete
 	public function uniq_val($data, $sourse, $type = 'low') 
 	{
-		global $FpsDB;
+		$Register = Register::getInstance();
+		
 		if ($type == 'hight') {
 			//array with russian letters
 			$rus = array( "А","а","В","Е","е","К","М","Н","О","о","Р","р","С","с","Т","Х","х" );
@@ -124,7 +125,7 @@ class Validate {
 					WHERE `{$sourse['field']}` LIKE '" . $Register['DB']->escape($data) . "'";
 					
 		}
-		$query = $FpsDB->query($sql);
+		$query = $Register['DB']->query($sql);
 
 		return (count($query) > 0) ? false : true;
 	}
