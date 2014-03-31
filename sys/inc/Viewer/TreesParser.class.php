@@ -102,6 +102,11 @@ class Fps_Viewer_TreesParser
 	
 	
 	
+	public function cleanStack()
+	{
+		$this->stack = array();
+	}
+	
 	
 	private function getTokenParser($value)
 	{
