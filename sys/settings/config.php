@@ -139,6 +139,8 @@ $set = array (
     'max_log_size' => '99999744',
     'autorization_protected_key' => 0,
     'session_time' => '116013',
+	'captcha_type' => 'question-image',
+	'captcha_text_questions' => array('35' => '37 + 8 = ', '28' => '23 + 5 = ', '30' => '29 + 1 = ', '35' => '31 + 4 = ', '35' => '33 + 2 = ', '20' => '17 + 3 = '),
   ),
   'users' => 
   array (

@@ -249,9 +249,10 @@ margin: 10px;
 #chat_meta p.errorMsg {margin: 0;font-size: 12px;color: red;}
 #chat_meta ul.errorMsg {padding: 0;font-size: 15px;margin: 0;list-style: none;}
 #chat_meta ul.errorMsg li {border-top: 1px solid red;}
-.chat-addfrom .chat_captcha {height: 62px;margin: 5px 32px;padding: 1px;}
+.chat-addfrom .chat_captcha {max-height: 100px;margin: 5px 32px;padding: 1px;}
+.chat-addfrom .chat_captcha div {line-height:0px;}
 .chat-addfrom .chat_captcha img {border: 1px solid red;}
-.chat-addfrom .chat_captcha input {vertical-align: top;margin-top: 16px;}
+.chat-addfrom .chat_captcha input {vertical-align: top;margin-top: 5px;}
 /*----------------------------------------/CHAT------------------------------------------*/
 /*-------------------------ACTIVWINDOW-----------------------------*/
 .headpanel div .activewindow {height: 31px;}

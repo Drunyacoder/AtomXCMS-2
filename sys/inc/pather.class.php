@@ -1,4 +1,28 @@
 <?php
+/*-----------------------------------------------\
+| 												 |
+|  @Author:       Andrey Brykin (Drunya)         |
+|  @Email:        drunyacoder@gmail.com          |
+|  @Site:         http://atomx.net			     |
+|  @Version:      2.1.0                          |
+|  @Project:      CMS AtomX                      |
+|  @Package       CMS AtomX                      |
+|  @Subpackege    Pather Class                   |
+|  @Copyright     ©Andrey Brykin                 |
+|  @Last mod.     2014/03/31                     |
+|------------------------------------------------|
+| 												 |
+|  any partial or not partial extension          |
+|  CMS Fapos,without the consent of the          |
+|  author, is illegal                            |
+|------------------------------------------------|
+|  Любое распространение                         |
+|  CMS Fapos или ее частей,                      |
+|  без согласия автора, является не законным     |
+\-----------------------------------------------*/
+
+
+
 /**
  * @author      Brykin Andrey
  * @url         http://fapos.net

@@ -13,7 +13,7 @@
 		  {% endif %}
 		  {% if data.add_comment_captcha %}
 		  <li>
-		    <span class="siu_title"><strong><font color="red">*</font>Код подтверждения:</strong>Введите код с картинки, для проверки, что вы не робот.</span>
+		    <span class="siu_title"><strong><font color="red">*</font>Код подтверждения:</strong>{{ data.add_comment_captcha_text }}</span>
             <span class="siu_data" style="max-width: 40%;">{{ data.add_comment_captcha }}</span>
 		  </li> 
 		  {% endif %}

@@ -104,6 +104,8 @@ return array(
 	'Wrong chars in field "bday"'	=> '"День рождения" содержит недопустимые символы',
 	'Empty parameters'				=> 'Не переданы параметры',
 	'Not enough posts'				=> 'Нет постов для перемещения',
+	'Give the right ansver'			=> 'Дайте ответ на вопрос',
+	'Enter the characters from the image' => 'Введите символы с картинки',
 	
 	'Wrong chars in field "code"' 	=> 'поле "Код" содержит недопустимые символы',
 	'Wrong protection code' 		=> 'не совпадает код с картинки',

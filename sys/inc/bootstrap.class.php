@@ -61,6 +61,7 @@ class Bootstrap
         $this->Register['ModManager'] = new ModulesManager(ROOT . '/sys/settings/modules_access.php');
         $this->Register['PluginController'] = new Plugins;
         $this->Register['URL'] = new AtmUrl;
+        $this->Register['Protector'] = new Protect;
 
 		
 		if (isInstall()) {

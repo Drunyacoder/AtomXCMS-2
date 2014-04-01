@@ -440,21 +440,6 @@ function entryUrl($material, $module) {
 
 
 
-
-/**
- * Create captcha input field and image with 
- * security code.
- *
- */
-function getCaptcha($name = false) {
-	$kcaptcha = '/sys/inc/kcaptcha/kc.php?' . rand(rand(0, 1000), 999999);
-	if (!empty($name)) $kcaptcha .= '&name=' . $name;
-	$tpl = file_get_contents(ROOT . '/template/' . Config::read('template') . '/html/default/captcha.html');
-	return str_replace('{CAPTCHA}', $kcaptcha, $tpl);
-}
-
-
-
 /**
  * Work for language pack.
  * Open language file and return needed

@@ -117,7 +117,7 @@ class ChatModule extends Module {
 		$name    = trim( $name );
 		$message = trim( $message );
 		$ip      = (!empty($_SERVER['REMOTE_ADDR'])) ? $_SERVER['REMOTE_ADDR'] : '';
-		$keystring = (isset($_POST['captcha_keystring'])) ? trim($_POST['captcha_keystring']) : '';
+		$keystring = (isset($_POST['keystring'])) ? trim($_POST['keystring']) : '';
 		
 		
 		// Check fields
@@ -136,16 +136,10 @@ class ChatModule extends Module {
 				
 			// Проверяем поле "код"
 			if (!empty($keystring)) {				
-				if (!isset($_SESSION['chat_captcha_keystring'])) {
-					if (file_exists(ROOT . '/sys/logs/captcha_keystring_' . session_id() . '-' . date("Y-m-d") . '.dat')) {
-						$_SESSION['chat_captcha_keystring'] = file_get_contents(ROOT . '/sys/logs/captcha_keystring_' . session_id() . '-' . date("Y-m-d") . '.dat');
-						@_unlink(ROOT . '/sys/logs/captcha_keystring_' . session_id() . '-' . date("Y-m-d") . '.dat');
-					}
-				}
-				if (!isset($_SESSION['chat_captcha_keystring']) || $_SESSION['chat_captcha_keystring'] != $keystring)
+				if (!$this->Register['Protector']->checkCaptcha('chatsend', $keystring))
 					$errors .= '<li>' . __('Wrong protection code') . '</li>' . "\n";
 			}
-			unset($_SESSION['chat_captcha_keystring']);
+			$this->Register['Protector']->cleanCaptcha('chatsend');
 			
 			
 		} else {
@@ -232,14 +226,16 @@ class ChatModule extends Module {
 		}
 		
 
-		$kcaptcha = '';
 		if (!$ACL->turn(array('other', 'no_captcha'), false)) {
-			$kcaptcha = getCaptcha('chat_captcha_keystring');
+			$Register = Register::getInstance();
+			list ($captcha, $captcha_text) = $Register['Protector']->getCaptcha('chatsend');
+			$markers['captcha'] = $captcha;
+			$markers['captcha_text'] = $captcha_text;
 		}
 		$markers['action'] = get_url('/chat/add/');
 		$markers['login'] = h($name);
 		$markers['message'] = h($message);
-		$markers['captcha'] = $kcaptcha;
+
 		
 		
 		$View = new Fps_Viewer_Manager(new Fps_Viewer_Loader());

@@ -174,7 +174,7 @@ Class UsersModule extends Module {
 		}
 		
 		
-		if ( isset( $_SESSION['captcha_keystring'] ) ) unset( $_SESSION['captcha_keystring'] );
+		$this->Register['Protector']->cleanCaptcha('reguser');
 
 
         // Check for preview or errors
@@ -203,7 +203,9 @@ Class UsersModule extends Module {
 		else $markers['errors'] = '';
 		
 
-        $markers['captcha'] = get_url('/sys/inc/kcaptcha/kc.php?'.rand(0, 999999));
+		list ($captcha, $captcha_text) = $this->Register['Protector']->getCaptcha('reguser');
+        $markers['captcha'] = $captcha;
+        $markers['captcha_text'] = $captcha_text;
         $markers['name']    = $data['name'];
         $markers['fpol']  	= (!empty($data['pol']) && $data['pol'] === 'f') ? ' checked="checked"' : '';
         $markers['mpol']  	= (!empty($data['pol']) && $data['pol'] === 'm') ? ' checked="checked"' : '';
@@ -292,18 +294,12 @@ Class UsersModule extends Module {
 		}
 
 	
-	// Проверяем поле "код"
+		// Проверяем поле "код"
 		if (!empty($keystring)) {									
-			if (!isset($_SESSION['captcha_keystring'])) {
-				if (file_exists(ROOT . '/sys/logs/captcha_keystring_' . session_id() . '-' . date("Y-m-d") . '.dat')) {
-					$_SESSION['captcha_keystring'] = file_get_contents(ROOT . '/sys/logs/captcha_keystring_'
-					. session_id() . '-' . date("Y-m-d") . '.dat');
-				}
-			}
-			if (!isset($_SESSION['captcha_keystring']) || $_SESSION['captcha_keystring'] != $keystring)
+			if (!$this->Register['Protector']->checkCaptcha('reguser', $keystring))
 				$errors .= '<li>' . __('Wrong protection code') . '</li>'."\n";
 		}
-		unset($_SESSION['captcha_keystring']);
+		$this->Register['Protector']->cleanCaptcha('reguser');
 
 
 

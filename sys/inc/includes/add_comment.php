@@ -24,7 +24,7 @@ $mail = '';
 $message = mb_substr($_POST['message'], 0, $this->Register['Config']->read('comment_lenght', $this->module));
 $message = trim( $message );
 $ip      = (!empty($_SERVER['REMOTE_ADDR'])) ? $_SERVER['REMOTE_ADDR'] : '';
-$keystring = (isset($_POST['captcha_keystring'])) ? trim($_POST['captcha_keystring']) : '';
+$keystring = (isset($_POST['keystring'])) ? trim($_POST['keystring']) : '';
 
 
 // Check fields
@@ -35,22 +35,15 @@ $errors = $this->Register['Validate']->check($this->getValidateRules());
 // Check captcha if need exists	 
 if (!$this->ACL->turn(array('other', 'no_captcha'), false)) {
 	if (empty($keystring))                      
-		$errors = $errors . '<li>' . __('Empty field "code"') . '</li>' . "\n";
+		$errors .= '<li>' . __('Empty field "code"') . '</li>' . "\n";
 
 	
-	// ��������� ���� "���"
+	// check captcha
 	if (!empty($keystring)) {
-		// ��������� ���� "���" �� ������������ �������									
-		if (!isset($_SESSION['captcha_keystring'])) {
-			if (file_exists(ROOT . '/sys/logs/captcha_keystring_' . session_id() . '-' . date("Y-m-d") . '.dat')) {
-				$_SESSION['captcha_keystring'] = file_get_contents(ROOT . '/sys/logs/captcha_keystring_' . session_id() . '-' . date("Y-m-d") . '.dat');
-				@_unlink(ROOT . '/sys/logs/captcha_keystring_' . session_id() . '-' . date("Y-m-d") . '.dat');
-			}
-		}
-		if (!isset($_SESSION['captcha_keystring']) || $_SESSION['captcha_keystring'] != $keystring)
-			$error = $error.'<li>' . __('Wrong protection code') . '</li>'."\n";
+		if (!$this->Register['Protector']->checkCaptcha('addcomment', $keystring))
+			$errors .= '<li>' . __('Wrong protection code') . '</li>'."\n";
 	}
-	unset($_SESSION['captcha_keystring']);
+	$this->Register['Protector']->cleanCaptcha('addcomment');
 }
 
 

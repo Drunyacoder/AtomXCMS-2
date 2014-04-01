@@ -83,10 +83,10 @@
             <span class="siu_data"><input type="text" name="jabber" maxlength="100" value="{{ context.jabber }}" /></span>
           </li>
 		  <li>
-		  <span class="siu_title"><strong><font color="red">*</font>Код подтверждения:</strong>Введите код с картинки, для проверки. что вы не робот.</span>
-            <span class="siu_data">
-			<span id="captcha"><img onclick="this.src='/sys/inc/kcaptcha/kc.php/?'+Math.round(Math.random(0)*1000)" src="{{ context.captcha }}" alt="" /></span>
-			<br /><input type="text" name="keystring" maxlength="6" value="{{ context.keystring }}" /></span>
+		  <span class="siu_title"><strong><font color="red">*</font>Код подтверждения:</strong>{{ context.captcha_text }}</span>
+          <span class="siu_data">
+			{{ context.captcha }}
+		  </span>
 		  </li> 
 		  <li>
 		  <input type="submit" name="submitForm" value="Зарегистрироваться" />

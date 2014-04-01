@@ -3,10 +3,10 @@
 function sebmitChat(e) {
 	var message = $("textarea#chatModule").val();
 	var message = encodeURIComponent(message);
-	var keystring = $("input[name='captcha_keystring']").val();
+	var keystring = $(".chat-addfrom input[name='keystring']").val();
 
 	var params = 'message='+message;
-	if (typeof keystring != 'undefined') params = params + '&captcha_keystring='+keystring;
+	if (typeof keystring != 'undefined') params = params + '&keystring='+keystring;
 	
 	$("#testAjax").show();
 	
@@ -26,14 +26,14 @@ function responseData(resp, data) {
 		$("#chat_meta").hide();
 		$("#chat_meta").html('');
 		$("textarea#chatModule").val('');
-		$("input[name='captcha_keystring']").val('');
+		$("input[name='keystring']").val('');
 	}
 	
 	refreshCaptcha();
 }
 function refreshCaptcha() {
 	if ($('img#fps_captcha').length) {
-		$('img#fps_captcha').src($('img#fps_captcha').src() + '&rand=' . Math.round(Math.random(0)*1000));
+		$('img#fps_captcha').attr('src', $('img#fps_captcha').attr('src') + '&rand=' + Math.round(Math.random(0)*1000));
 	}
 }
 

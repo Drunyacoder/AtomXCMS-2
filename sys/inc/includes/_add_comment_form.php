@@ -26,15 +26,13 @@ if ($id < 1) {
 
 
 	$markers['action'] = get_url('/' . $this->module . '/add_comment/' . $id);
-	
-	//$kcaptcha = get_img('/sys/inc/kcaptcha/kc.php?'.session_name().'='.session_id());
-	$kcaptcha = '';
 	if (!$this->ACL->turn(array('other', 'no_captcha'), false)) {
-		$kcaptcha = getCaptcha();
+		list ($captcha, $captcha_text) = $this->Register['Protector']->getCaptcha('addcomment');
+		$markers['add_comment_captcha'] = $captcha;
+		$markers['add_comment_captcha_text'] = $captcha_text;
 	}
 	
 	$markers['disabled'] = (!empty($_SESSION['user'])) ? ' disabled="disabled"' : '';
-	$markers['add_comment_captcha'] = $kcaptcha;
 	$markers['add_comment_name'] = $name;
 	$markers['add_comment_message'] = $message;
 	$html = $this->render('addcommentform.html', array('data' => $markers));

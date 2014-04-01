@@ -1,8 +1,91 @@
 <?php
-
+/*-----------------------------------------------\
+| 												 |
+|  @Author:       Andrey Brykin (Drunya)         |
+|  @Email:        drunyacoder@gmail.com          |
+|  @Site:         http://atomx.net			     |
+|  @Version:      1.1.0                          |
+|  @Project:      CMS AtomX                      |
+|  @Package       CMS AtomX                      |
+|  @Subpackege    Protect Class                  |
+|  @Copyright     ©Andrey Brykin                 |
+|  @Last mod.     2014/03/31                     |
+|------------------------------------------------|
+| 												 |
+|  any partial or not partial extension          |
+|  CMS Fapos,without the consent of the          |
+|  author, is illegal                            |
+|------------------------------------------------|
+|  Любое распространение                         |
+|  CMS Fapos или ее частей,                      |
+|  без согласия автора, является не законным     |
+\-----------------------------------------------*/
 
 class Protect
 {
+	
+	public function getCaptcha($key = null)
+	{
+		$key = !empty($key) ? trim($key) : 'captcha_keystring';
+	
+		$Register = Register::getInstance();
+		$permitted_types = array('question', 'question-image', 'image');
+		$permitted_types = $Register['PluginController']->intercept('get_captcha_types', $permitted_types);
+		
+		$captcha_type = Config::read('secure.captcha_type');
+		if (empty($captcha_type) || !in_array($captcha_type, $permitted_types)) 
+			$captcha_type = 'question-image';
+		
+		
+		$output = '';
+		$help_text = '';
+		switch ($captcha_type) {
+			case 'question-image':
+				$output = '<img src="' . WWW_ROOT . '/sys/inc/kcaptcha/textCaptcha/kc.php?' 
+					. rand(rand(0, 1000), 999999) . '&name=' . $key . '" onClick="this.src=\'' 
+					. WWW_ROOT . '/sys/inc/kcaptcha/textCaptcha/kc.php?name=' . $key . '&' 
+					. rand(rand(0, 1000), 999999) . '\'+Math.round(Math.random(0)*1000)" id="fps_captcha" />';
+				$help_text = __('Give the right ansver');
+				break;
+			case 'question':
+				include_once ROOT . '/sys/inc/kcaptcha/textCaptcha/AtmCaptcha.class.php';
+				$obj = new AtmCaptcha;
+				$output = $obj->getTextContent($key);
+				$help_text = __('Give the right ansver');
+				break;
+			case 'image':
+				$output = '<img src="' . WWW_ROOT . '/sys/inc/kcaptcha/kc.php?' 
+					. rand(rand(0, 1000), 999999) . '&name=' . $key . '" onclick="this.src=\'' 
+					. WWW_ROOT . '/sys/inc/kcaptcha/kc.php?name=' . $key . '&' 
+					. rand(rand(0, 1000), 999999) . '\'+Math.round(Math.random(0)*1000)" id="fps_captcha" />';
+				$help_text = __('Enter the characters from the image');
+				break;
+			default:
+				list ($output, $help_text) = $Register['PluginController']->intercept('get_captcha', $key);
+				break;
+		}
+		
+		//return array($output, $help_text);
+		$tpl = file_get_contents(ROOT . '/template/' . Config::read('template') . '/html/default/captcha.html');
+		$captcha = str_replace(array('{{ captcha }}', '{{ captcha_text }}'), array($output, $help_text), $tpl);
+		return array($captcha, $help_text);
+	}
+	
+	
+	public function checkCaptcha($key, $ansver = null)
+	{
+		if ($ansver === null) $key = 'captcha_keystring';
+		if (is_numeric($ansver)) $ansver = intval($ansver);
+		return (!empty($_SESSION[$key]) && $_SESSION[$key] === $ansver);
+	}
+	
+	
+	public function cleanCaptcha($key)
+	{
+		if (isset($_SESSION[$key])) unset($_SESSION[$key]);
+	}
+
+
     public function checkIpBan()
     {
         if (file_exists(ROOT . '/sys/logs/ip_ban/baned.dat')) {
