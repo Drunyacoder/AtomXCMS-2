@@ -254,7 +254,6 @@ class ChatModule extends Module {
 			'add' => array(
 				'message' => array(
 					'required' => true,
-					'pattern' => V_LOGIN,
 				),
 				'keystring' => array(
 					'required' => true,
