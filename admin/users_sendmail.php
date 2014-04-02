@@ -112,6 +112,7 @@ if (isset($_POST['send'])) {
             $mailer->setBody($_POST['message']);
 
 			$n = 0;
+			$start_time = microtime();
 			foreach ($mail_list as $result) {
                 // Send password in email is deny
                 unset($result['passw']);
@@ -123,7 +124,9 @@ if (isset($_POST['send'])) {
 				}
 			}
 			
-			if (empty($error)) $_SESSION['info_message'] =  'Писем отправленно: ' . $n;
+			if (empty($error)) 
+				$_SESSION['info_message'] = 'Писем отправленно: ' . $n 
+				. '<br>Времени потрачено: ' . round(microtime() - $start_time, 4) . ' сек.';
 		} else {
 			$_SESSION['info_message'] = '<span style="color:red;">Не найдено пользователей с заданными параметрами</span>';
 		}

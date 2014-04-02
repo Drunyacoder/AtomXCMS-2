@@ -74,6 +74,16 @@ Class AtmDebug {
 
         return '<div style="clear:both;"></div>' . $result;
     }
+	
+	
+	public static function log($data, $sufix = '')
+	{
+		$sufix = (string)$sufix;
+		$path = ROOT . '/sys/logs/debug_log_' . $sufix . '.dat';
+		$f = fopen($path, 'a+');
+		fwrite($f, $data);
+		fclose($f);
+	}
 }
 
 
