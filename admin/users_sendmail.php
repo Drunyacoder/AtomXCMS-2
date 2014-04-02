@@ -106,13 +106,14 @@ if (isset($_POST['send'])) {
 		if (count($mail_list) > 0) {
 			$from = (!empty($_POST['from'])) ? trim($_POST['from']) : Config::read('admin_email');
 			$subject = trim($_POST['subject']);
+			$headers = "Precedence: bulk\n";
 
             $mailer = new AtmMail($email_templates_path);
-            $mailer->prepare(false, $from);
+            $mailer->prepare(false, $from, $headers);
             $mailer->setBody($_POST['message']);
 
 			$n = 0;
-			$start_time = microtime();
+			$start_time = microtime(true);
 			foreach ($mail_list as $result) {
                 // Send password in email is deny
                 unset($result['passw']);
@@ -126,7 +127,7 @@ if (isset($_POST['send'])) {
 			
 			if (empty($error)) 
 				$_SESSION['info_message'] = 'Писем отправленно: ' . $n 
-				. '<br>Времени потрачено: ' . round(microtime() - $start_time, 4) . ' сек.';
+				. '<br>Времени потрачено: ' . round(microtime(true) - $start_time, 4) . ' сек.';
 		} else {
 			$_SESSION['info_message'] = '<span style="color:red;">Не найдено пользователей с заданными параметрами</span>';
 		}
