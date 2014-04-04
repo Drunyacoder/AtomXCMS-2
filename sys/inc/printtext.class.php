@@ -184,7 +184,7 @@ class PrintText {
 			
 			$matches[1][$i] = preg_replace('#^\s*<\?php(.*)\?>\s*$#uis', '$1', $matches[1][$i]);
 			$matches[1][$i] = preg_replace('#^\s*<\?(.*)\?>\s*$#uis', '$1', $matches[1][$i]);
-			$phpBlocks[] = '<div class="codePHP">' . $this->highlight_php_string('<?php ' . $matches[1][$i] . '?>', true ) . '</div>';
+			$phpBlocks[] = '<div class="codePHP">' . $this->highlight_php_string('<?php ' . trim($matches[1][$i]) . '?>', true ) . '</div>';
 			
 			/*
 			$phpBlocks[] = '<div class="codePHP">' . geshi_highlight($matches[1][$i], 'php', '', true) . '</div>';
@@ -205,7 +205,7 @@ class PrintText {
 		preg_match_all( "#\[code\](.+)\[\/code\]#uisU", $message, $matches );
 		$cnt = count( $matches[0] );
 		for ( $i = 0; $i < $cnt; $i++ ) {
-			$codeBlocks[] = '<div class="bbCodeBlock"><div class="bbCodeName" style="padding-left: 5px; font-weight: bold; font-size: 7pt;"><b>Code:</b></div><div class="codeMessage" style="border: 1px inset ; overflow: auto; max-height: 200px;">'.nl2br(str_replace($spaces, $entities, htmlspecialchars($matches[1][$i]))).'</div></div>';
+			$codeBlocks[] = '<div class="bbCodeBlock"><div class="bbCodeName" style="padding-left: 5px; font-weight: bold; font-size: 7pt;"><b>Code:</b></div><div class="codeMessage" style="border: 1px inset ; overflow: auto; max-height: 200px;">'.nl2br(str_replace($spaces, $entities, htmlspecialchars(trim($matches[1][$i])))).'</div></div>';
 			// Вот над этим надо будет подумать - усовершенствовать рег. выражение
 			$codeBlocks[$i] = str_replace( '<div class="code"><br />', '<div class="code">', $codeBlocks[$i] );
 			$uniqidCode = '[code_'.uniqid('').']';
@@ -218,7 +218,7 @@ class PrintText {
 		preg_match_all( "#\[sql\](.+)\[\/sql\]#isU", $message, $matches );
 		$cnt = count( $matches[0] );
 		for ( $i = 0; $i < $cnt; $i++ ) {
-			$sqlBlocks[] = '<div class="codeSQL">' . $this->highlight_sql($matches[1][$i]) . '</div>';
+			$sqlBlocks[] = '<div class="codeSQL">' . $this->highlight_sql(trim($matches[1][$i])) . '</div>';
 			// Вот над этим надо будет подумать - усовершенствовать рег. выражение
 			$sqlBlocks[$i] = str_replace( '<div class="codeSQL"><br />', '<div class="codeSQL">', $sqlBlocks[$i] );
 			$uniqidSQL = '[sql_'.uniqid('').']';
