@@ -165,10 +165,8 @@ $settingsInfo = array(
         'title' => 'Максимальный размер',
     ),
     'comment_per_page' => array(
-        'type' => 'checkbox',
-        'title' => 'Новые сверху',
-        'value' => '1',
-        'checked' => '1',
+        'type' => 'text',
+        'title' => 'Комментариев на страницу',
     ),
     'comments_order' => array(
         'type' => 'checkbox',

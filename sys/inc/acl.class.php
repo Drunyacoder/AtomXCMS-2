@@ -302,7 +302,7 @@ class ACL {
 				}
 			}
 			
-			if (!is_array($rules_data['users']) || !count($rules_data['users'])) {
+			if (isset($rules_data['users']) && (!is_array($rules_data['users']) || !count($rules_data['users']))) {
 				unset($rules_data['users']);
 			}
 		}
