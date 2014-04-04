@@ -989,7 +989,7 @@ Class NewsModule extends Module {
 			'sourse_email' => $sourse_email,
 			'sourse_site'  => $sourse_site,
 			'commented'    => $commented,
-			'available'    => $category->getView_on_home(),
+			'available'    => $available,
 		);
 		$target->__construct($data);
 		$target->save();
