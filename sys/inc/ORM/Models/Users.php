@@ -360,6 +360,7 @@ class UsersModel extends FpsModel
 		
 		
 		$commentsModel = $Register['ModManager']->getModelInstance('comments');
+		$commentsModel->bindModel('author');
 		$comments = $commentsModel->getCollection(array('user_id' => $user_id), array('page' => $page, 'limit' => $per_page));
 		
 		return ($comments) ? $comments : false;

@@ -6,7 +6,7 @@ $commentsModel = $this->Register['ModManager']->getModelInstance('Comments');
 
 
 if (empty($html) && $commentsModel) {
-	$commentsModel->bindModel('Users');
+	$commentsModel->bindModel('author');
 	
 	
 	/* pages nav */
@@ -20,7 +20,7 @@ if (empty($html) && $commentsModel) {
 		'entity_id' => $id,
 		'module' => $this->module,
 	), $params);
-	
+	pr($comments); die();
 	
 	if ($comments) {
 		foreach ($comments as $comment) {
