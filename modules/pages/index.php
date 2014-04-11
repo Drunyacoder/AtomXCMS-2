@@ -279,23 +279,29 @@ Class PagesModule extends Module {
 	protected function _getAdminBar($id, $module) {
 		$moder_panel = '';
 		if ($this->ACL->turn(array($module, 'edit_materials'), false)) {
-			$moder_panel .= get_link('', '/' . $module . '/edit_form/' . $id, array('class' => 'fps-edit')) . '&nbsp;';
+			$moder_panel .= get_link('', '/' . $module . '/edit_form/' . $id, array(
+				'class' => 'fps-edit',
+				'title' => __('Edit'),
+			)) . '&nbsp;';
 		}
 		if ($this->ACL->turn(array($module, 'up_materials'), false)) {
 			$moder_panel .= get_link('', '/' . $module . '/upper/' . $id, array(
 				'class' => 'fps-up',
+				'title' => 'Up',
 				'onClick' => "return confirm('" . __('Are you sure') . "')",
 			)) . '&nbsp;';
 		}
 		if ($this->ACL->turn(array($module, 'on_home'), false)) {
 			$moder_panel .= get_link('', '/' . $module . '/off_home/' . $id, array(
 				'class' => 'fps-on',
+				'title' => 'View on home',
 				'onClick' => "return confirm('" . __('Are you sure') . "')",
 			)) . '&nbsp;';
 		}
 		if ($this->ACL->turn(array($module, 'delete_materials'), false)) {
 			$moder_panel .= get_link('', '/' . $module . '/delete/' . $id, array(
 				'class' => 'fps-delete',
+				'title' => 'Delete',
 				'onClick' => "return confirm('" . __('Are you sure') . "')",
 			)) . '&nbsp;';
 		}
