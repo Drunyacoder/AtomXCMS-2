@@ -137,13 +137,13 @@ function checkAccess($params = null) {
 
 
 function getAvatar($id_user = null, $email_user = null) {
-	$def = get_url('/template/' . getTemplateName() . '/img/noavatar.png');
+	$def = get_url('/template/' . getTemplateName() . '/img/noavatar.png', false, false);
 	
 	if (isset($id_user) && $id_user > 0) {
 		if (is_file(ROOT . '/sys/avatars/' . $id_user . '.jpg')) {
-			return get_url('/sys/avatars/' . $id_user . '.jpg');
+			return get_url('/sys/avatars/' . $id_user . '.jpg', false, false);
 		} else {
-			if (Config::read('use_gravatar', 'users')) {
+			if (Config::read('use_gravatar', 'users') && function_exists('getGravatar')) {
 				if (!isset($email_user)) {
 					$Register = Register::getInstance();
 					$usersModel = $Register['ModManager']->getModelInstance('Users');
@@ -467,10 +467,39 @@ function __($key, $context = false) {
 }
 
 
+/**
+ * Get the current user language
+ */
 function getLang() {
 	return (!empty($_SESSION['lang'])) 
 		? $_SESSION['lang']
 		: Config::read('language');
+}
+
+
+/**
+ * Get the permitted languages
+ */
+function getPermittedLangs() {
+	$langs = Config::read('permitted_languages');
+	if (!empty($langs)) {
+		$langs = array_filter(explode(',', $langs));
+		$langs = array_map(function($n){
+			return trim($n);
+		}, $langs);
+		return $langs;
+	} else {
+		$lang_files = glob(ROOT . '/sys/settings/languages/*.php');
+		$langs = array();
+		if (!empty($lang_files)) {
+			foreach($lang_files as $lang_file) {
+				$lang = substr(substr(strrchr($lang_file, '/'), 1), 0, -4);
+				$langs[] = $lang;
+			}
+		}
+	}
+	
+	return $langs;
 }
 
 
@@ -496,7 +525,7 @@ function get_img($url, $params = array(), $notRoot = false) {
 			$additional .= h($key) . '="' . h($value) . '" ';
 		}
 	}
-	return '<img  ' . $additional . 'src="' . get_url($url, $notRoot) . '" />';
+	return '<img  ' . $additional . 'src="' . get_url($url, $notRoot, false) . '" />';
 }
 
 

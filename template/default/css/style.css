@@ -294,9 +294,10 @@ span form .loginad, span form .passad {width: 160px;height: 28px;margin: 5px 0;}
 span form .buttonadm {width: 120px;height: 30px;margin: 9px 5px 0 0;}
 /*-------------------------MINIPROFILE-----------------------------*/
 .headpanel div .activewindow:hover .miniprofileadm{ height: 120px;}
-.activewindow div .avatarminpro {position:relative; float: left;width: 95px;height: 95px;padding: 0 !important;border-radius: 5px;background-color: #CCC;
+.activewindow div .avatarminpro {position:relative; float: left;width:95px; height:95px; overflow:hidden; padding: 0 !important;border-radius: 5px;background-color: #CCC;
 -moz-border-radius: 5px;-webkit-border-radius: 5px;-khtml-border-radius: 5px;
 box-shadow: inset 0 0 3px #000;-webkit-box-shadow: inset 0 0 3px #000;-moz-box-shadow: inset 0 0 3px #000;}
+.activewindow div .avatarminpro > img.avatar {width:95px; height:auto;}
 .activewindow div .uslinkminpro {
 float: right;width: 195px;
 padding: 0 !important;

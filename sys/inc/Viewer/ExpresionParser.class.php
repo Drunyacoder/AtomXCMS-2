@@ -139,6 +139,8 @@ class Fps_Viewer_ExpresionParser
             default:
                 if ($token->test(Fps_Viewer_Token::PUNCTUATION_TYPE, '[')) {
                     $node = $this->parseArrayExpression();
+					
+				// Groups
                 } else if ($token->test(Fps_Viewer_Token::PUNCTUATION_TYPE, '(')) {
 					$this->parser->getStream()->next();
                     $expr = $this->parseExpression();
@@ -184,7 +186,7 @@ class Fps_Viewer_ExpresionParser
 					$this->parser->getStream()->next();
 					$this->inFunc = true;
 					$expr = $this->parsePrimaryExpression();
-					$node = new Fps_Viewer_Node_Concat($node);
+					$node = new Fps_Viewer_Node_Concat($this->parser->setNode($node, $this->inFunc));
 					$node->addElement($expr);
 					$this->inFunc = false;
                 } else {

@@ -192,7 +192,7 @@ class Fps_Viewer_TreesParser
 		) {
 			return $node;
 		}
-		
+
 		switch ($this->getEnv()) {
 			case 'set_left':
 				break;

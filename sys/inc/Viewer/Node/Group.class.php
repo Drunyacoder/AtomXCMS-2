@@ -21,7 +21,10 @@ class Fps_Viewer_Node_Group
 		$compiler->raw('(');
 		if (is_array($this->filters) && count($this->filters)) {
 			foreach ($this->filters as $filter) {
-				$filter->compile($this->body, $compiler);
+				$objContext = $this;
+				$filter->compile(function($compiler) use ($objContext) {
+					$objContext->body->compile($compiler);
+				}, $compiler);
 			}
 		} else {
 			$this->body->compile($compiler);

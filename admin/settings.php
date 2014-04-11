@@ -342,7 +342,7 @@ if (count($settingsInfo)) {
 		$output .= '<div class="setting-item">
 			<div class="left">
 				' . h($params['title']) . '
-				<span class="comment">' . h($params['description']) . '</span>
+				<span class="comment">' . $params['description'] . '</span>
 			</div>
 			<div class="right">'
 			. $output_;

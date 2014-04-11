@@ -110,7 +110,8 @@ class PagesModel extends FpsModel
 		}
 		
 		
-		$url = (!empty($url)) ? trim($url, '/') . '/' . $targ_page->getUrl() : $page_id;
+		$url = trim($url, '/');
+		$url .= ($targ_page->getUrl()) ? '/' . $targ_page->getUrl() : '/' . $page_id;
 		
 		return trim($url, '/');
 	}
@@ -164,7 +165,6 @@ class PagesModel extends FpsModel
 
 		if (!empty($pages)) {
 			foreach ($pages as $page) {
-			
 				if ($url[0] == $page->getUrl() || $url[0] == $page->getId()) {
 				
 					if (is_array($url) && count($url) > 1) {

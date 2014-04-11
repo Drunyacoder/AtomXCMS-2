@@ -46,31 +46,43 @@ $(document).ready(function() {
 <body>
 <div class="headpanel">
  <div class="linksap">
-<!--<div class="activewindow"><a href="#">Язык</a><div class="lang" style="width: 70px;"><span>RUS<br>ENG</span></div></div>-->
+<div class="activewindow">
+	<a href="#">Язык</a>
+	<div class="lang" style="width: 70px;">
+		<a href="{{ www_root }}/rus">RUS</a>
+		<a href="{{ www_root }}/eng">ENG</a>
+	</div>
+	<script>
+		$(function(){
+			$('.lang a:eq(0)').attr('href', $('.lang a:eq(0)').attr('href') + window.location.pathname + window.location.search);
+			$('.lang a:eq(1)').attr('href', $('.lang a:eq(1)').attr('href') + window.location.pathname + window.location.search);
+		});
+	</script>
+</div>
 <div><a href="http://fapos.net/users/info/1/">Контакты</a></div>
 <div><a href="https://github.com/Drunyacoder/AtomXCMS-2">GitHub</a></div>
 <div><a href="http://fapos.net/forum/">Поддержка</a></div></div>
  <div class="userlinksap">
 {% if fps_user_id %}
-<div><a href="{{ www_root }}/users/pm/">Сообщения</a></div>
+<div><a href="{{ get_url('/users/pm/') }}">Сообщения</a></div>
 <div class="activewindow"><a href="{{ personal_page_link }}">{{ fps_user_name }}</a><div class="miniprofileadm" style="width: 300px;padding: 10px;{% if fps_admin_access == 1 %}height:150px;{% endif %}">
     <span class="avatarminpro"><img class="avatar" src="{{ getAvatar(fps_user.id) }}"></span>
     <span class="uslinkminpro">
         <a href="{{ personal_page_link }}">Мой профиль</a>
-        <a href="{{ www_root }}/users/pm_send_form/">Отправить сообщение</a>
-		<a href="{{ www_root }}/users/pm/">Отправленные</a>
-		<a href="{{ www_root }}/users/edit_form/{{ fps_user_id }}">Настройки</a>
+        <a href="{{ get_url('/users/pm_send_form/') }}">Отправить сообщение</a>
+		<a href="{{ get_url('/users/pm/') }}">Отправленные</a>
+		<a href="{{ get_url('/users/edit_form/' ~ fps_user_id) }}">Настройки</a>
         {% if fps_admin_access == 1 %}
-		<a href="{{ www_root }}/admin/" target="_blank">Админка</a>
+		<a href="{{ get_url('/admin/', false, false) }}" target="_blank">Админка</a>
 		{% endif %}
     </span>
 </div></div>
-<div><a href="{{ www_root }}/users/logout">Выход</a></div>
+<div><a href="{{ get_url('/users/logout/') }}">Выход</a></div>
 {% else %}
-<div><a href="{{ www_root }}/users/add_form">Регистрация</a></div>
-<div class="activewindow"><a href="{{ www_root }}/users/login_form/">Войти</a>
+<div><a href="{{ get_url('/users/add_form/') }}">Регистрация</a></div>
+<div class="activewindow"><a href="{{ get_url('/users/login_form/') }}">Войти</a>
 <div style="width: 258px;"><span>
-<form id="mloginForm"  action="/users/login/?ajax" method="post">
+<form id="mloginForm"  action="{{ get_url('/users/login/?ajax') }}" method="post">
 	Логин: <input type="text" class="loginad" name="username">
 	Пароль: <input type="password" class="passad" name="password">
 	Автовход: <input type="checkbox" name="autologin" value="1">
@@ -79,13 +91,13 @@ $(document).ready(function() {
 </form>
 </span></div></div>
 {% endif %}
-<div><a href="{{ www_root }}/users/">Пользователи</a></div>
+<div><a href="{{ get_url('/users/') }}">Пользователи</a></div>
  </div>
 </div>
 <div class="global">
 <div class="header">
    <div class="logohead">
-	<a href="{{ www_root }}/"><img src="{{ template_path }}/img/logo.png" /></a>
+	<a href="{{ get_url('/') }}"><img src="{{ template_path }}/img/logo.png" /></a>
    </div>
    <div class="infohead">
      <div class="infoblock">
@@ -173,12 +185,12 @@ $(document).ready(function() {
 <!--------------------------------------------------------FOOTER-BUTTONS------------------------------------------------------------------>
 <div class="footer">
 <div class="people"><span>Сообщество</span>
-<a href="{{ www_root }}/">Главная</a>
-<br><a href="{{ www_root }}/forum/">Форум</a>
-<br><a href="{{ www_root }}/news/">Новости</a>
-<br><a href="{{ www_root }}/stat/">Статьи</a>
-<br><a href="{{ www_root }}/loads/">Файлы</a>
-<br><a href="{{ www_root }}/foto/">Фотокаталог</a>
+<a href="{{ get_url('/') }}">Главная</a>
+<br><a href="{{ get_url('/forum/') }}">Форум</a>
+<br><a href="{{ get_url('/news/') }}">Новости</a>
+<br><a href="{{ get_url('/stat/') }}">Статьи</a>
+<br><a href="{{ get_url('/loads/') }}">Файлы</a>
+<br><a href="{{ get_url('/foto/') }}">Фотокаталог</a>
 </div>
 <div class="support"><span>Поддержка</span>
 <a href="http://home.develdo.com/downloads.php">Пользовательское соглашение</a>

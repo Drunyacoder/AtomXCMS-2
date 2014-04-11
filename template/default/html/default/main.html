@@ -71,18 +71,18 @@ $(document).ready(function() {
         <a href="{{ personal_page_link }}">Мой профиль</a>
         <a href="{{ get_url('/users/pm_send_form/') }}">Отправить сообщение</a>
 		<a href="{{ get_url('/users/pm/') }}">Отправленные</a>
-		<a href="{{ www_root }}/users/edit_form/{{ fps_user_id }}">Настройки</a>
+		<a href="{{ get_url('/users/edit_form/' ~ fps_user_id) }}">Настройки</a>
         {% if fps_admin_access == 1 %}
-		<a href="{{ www_root }}/admin/" target="_blank">Админка</a>
+		<a href="{{ get_url('/admin/', false, false) }}" target="_blank">Админка</a>
 		{% endif %}
     </span>
 </div></div>
-<div><a href="{{ www_root }}/users/logout">Выход</a></div>
+<div><a href="{{ get_url('/users/logout/') }}">Выход</a></div>
 {% else %}
-<div><a href="{{ www_root }}/users/add_form">Регистрация</a></div>
-<div class="activewindow"><a href="{{ www_root }}/users/login_form/">Войти</a>
+<div><a href="{{ get_url('/users/add_form/') }}">Регистрация</a></div>
+<div class="activewindow"><a href="{{ get_url('/users/login_form/') }}">Войти</a>
 <div style="width: 258px;"><span>
-<form id="mloginForm"  action="/users/login/?ajax" method="post">
+<form id="mloginForm"  action="{{ get_url('/users/login/?ajax') }}" method="post">
 	Логин: <input type="text" class="loginad" name="username">
 	Пароль: <input type="password" class="passad" name="password">
 	Автовход: <input type="checkbox" name="autologin" value="1">
@@ -91,13 +91,13 @@ $(document).ready(function() {
 </form>
 </span></div></div>
 {% endif %}
-<div><a href="{{ www_root }}/users/">Пользователи</a></div>
+<div><a href="{{ get_url('/users/') }}">Пользователи</a></div>
  </div>
 </div>
 <div class="global">
 <div class="header">
    <div class="logohead">
-	<a href="{{ www_root }}/"><img src="{{ template_path }}/img/logo.png" /></a>
+	<a href="{{ get_url('/') }}"><img src="{{ template_path }}/img/logo.png" /></a>
    </div>
    <div class="infohead">
      <div class="infoblock">
@@ -141,7 +141,7 @@ $(document).ready(function() {
     <div class="sidertop">
 	  {{ mainmenu }}
 	  <div class="search">
-	   <form method="POST" action="{{ www_root }}/search/"> 
+	   <form method="POST" action="{{ get_url('/search/') }}"> 
         <input type="hidden" name="subaction" value="search"> 
         <input name="search" placeholder="Найти что-нибудь..." type="text"> 
         <input value="GO!" type="submit" name="send"> 
@@ -155,8 +155,14 @@ $(document).ready(function() {
 			<div>{{ navigation }}</div>
 		</div>
 	</div>
-
-	{% if add_link %}<a href="{{ www_root }}/{% if module == 'pages' %}news{% else %}{{ module }}{% endif %}/add_form/" class="lastpostsbutton button">Добавить новость</a>{% endif %}
+	
+	{% if module == 'pages' %}
+		{% set custom_add_link = get_url('/news/add_form/') %}
+	{% else %}
+		{% set custom_add_link = get_url('/' ~ module ~ '/add_form/') %}
+	{% endif %}
+	
+	{% if add_link %}<a href="{{ custom_add_link }}" class="lastpostsbutton button">Добавить</a>{% endif %}
 	<div style="clear:both;"></div>
 
 	<div class="twoblocks">
@@ -207,7 +213,7 @@ $(document).ready(function() {
     <div class="messegesokno" id="ochat" style="display:none;">
       <span class="headfutbutton">Общий чат<span class="closebuttonfut" onclick="$('#ochat').hide();"></span></span>
 	  {{ fps_chat }}
-	  <a class="greenlink" href="{{ www_root }}/chat/">Расширенная форма</a>
+	  <a class="greenlink" href="{{ get_url('/chat/') }}">Расширенная форма</a>
     </div>
   </div>
 </div>
@@ -215,12 +221,12 @@ $(document).ready(function() {
 <!--------------------------------------------------------FOOTER-BUTTONS------------------------------------------------------------------>
 <div class="footer">
 <div class="people"><span>Сообщество</span>
-<a href="{{ www_root }}/">Главная</a>
-<br><a href="{{ www_root }}/forum/">Форум</a>
-<br><a href="{{ www_root }}/news/">Новости</a>
-<br><a href="{{ www_root }}/stat/">Статьи</a>
-<br><a href="{{ www_root }}/loads/">Файлы</a>
-<br><a href="{{ www_root }}/foto/">Фотокаталог</a>
+<a href="{{ get_url('/') }}">Главная</a>
+<br><a href="{{ get_url('/forum/') }}">Форум</a>
+<br><a href="{{ get_url('/news/') }}">Новости</a>
+<br><a href="{{ get_url('/stat/') }}">Статьи</a>
+<br><a href="{{ get_url('/loads/') }}">Файлы</a>
+<br><a href="{{ get_url('/foto/') }}">Фотокаталог</a>
 </div>
 <div class="support"><span>Поддержка</span>
 <a href="http://home.develdo.com/downloads.php">Пользовательское соглашение</a>

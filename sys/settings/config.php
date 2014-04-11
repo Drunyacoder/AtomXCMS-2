@@ -2,6 +2,7 @@
 $set = array (
   'cache' => 0,
   'language' => 'rus',
+  'permitted_languages' => 'rus,eng',
   'cache_querys' => 0,
   'cookie_time' => '30',
   'start_mod' => '',

@@ -184,9 +184,15 @@ class AtmUrl {
     public function __invoke($url, $notRoot = false, $useLang = true) {
         if ($notRoot || substr($url, 0, 7) === 'http://') return Pather::parseRoutes($url);
         $lang = getLang();
-		$root = ($useLang) 
+		$def_lang = Config::read('language');
+		$root = (
+			$useLang && 
+			!preg_match('#^(/sys/img/|/template/|/admin)#', $url) &&
+			$lang !== $def_lang
+		) 
 			? '/' . WWW_ROOT . $lang . '/'
 			: '/' . WWW_ROOT;
+			
 		$url = $root . $url;
         $url = self::checkAndRepair($url);
         return Pather::parseRoutes($url);

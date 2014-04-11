@@ -69,6 +69,23 @@ $settingsInfo = array(
 			'title' => 'Описание сайта',
 			'description' => 'можно использовать в шаблонах как {{ meta_description }}',
 		),
+		'language' => array(
+			'type' => 'select',
+			'title' => 'Основной язык',
+			'description' => 'Используется когда язык не указан и в админке',
+			'options' => call_user_func(function(){
+				$langs = getPermittedLangs();
+				$langs_ = array();
+				foreach ($langs as $lang) $langs_[$lang] = $lang;
+				return $langs_;
+			}),
+		),
+		'permitted_languages' => array(
+			'type' => 'text',
+			'title' => 'Разрешенные языки',
+			'description' => 'Например: "rus,eng,ger". Используйте только реально доступные на сайте языки.<br>
+				В данный момент доступны: ' . implode(',', getPermittedLangs()),
+		),
 		'cookie_time' => array(
 			'type' => 'text',
 			'title' => 'Время "жизни" cookies в днях',

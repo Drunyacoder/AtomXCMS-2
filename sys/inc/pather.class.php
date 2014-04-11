@@ -161,11 +161,9 @@ Class Pather {
 	
 	public function getLang(&$pathParams)
 	{
-		$lang_files = glob(ROOT . '/sys/settings/languages/*.php');
-		if (!empty($lang_files)) {
-			foreach($lang_files as $lang_file) {
-				// get lang from filepath
-				$lang = substr(substr(strrchr($lang_file, '/'), 1), 0, -4); 
+		$permitted_langs = getPermittedLangs();
+		if (!empty($permitted_langs)) {
+			foreach($permitted_langs as $lang) {
 				if (!empty($pathParams[0]) && $pathParams[0] === $lang) {
 					$_SESSION['lang'] = $lang;
 					unset($pathParams[0]);

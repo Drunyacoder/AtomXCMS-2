@@ -7,6 +7,7 @@ class Fps_Viewer_Node_Text
 
 	protected $data;
 	
+	private $filters = array();
 	
 	public function __construct($data)
 	{
@@ -17,9 +18,24 @@ class Fps_Viewer_Node_Text
 
     public function compile(Fps_Viewer_CompileParser $compiler)
     {
-        $compiler->string($this->data);
+		if (is_array($this->filters) && count($this->filters)) {
+			foreach ($this->filters as $filter) {
+				$objContext = $this;
+				$value = $filter->compile(function($compiler) use ($objContext) {
+					$compiler->string($objContext->data);
+				}, $compiler);
+			}
+		} else {
+			$compiler->string($this->data);
+		}
     }
 	
+	
+	
+	public function addFilter($filter)
+	{
+		$this->filters[] = $filter;
+	}
 	
 	
 	
