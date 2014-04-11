@@ -126,7 +126,7 @@ return array(
 	'Can not find forum' 			=> 'Форум с таким ID не найден',
 	'New topic' 					=> 'Начать новую тему',
 	'No topics' 					=> '<h4>Тут пока нет тем :(</h4>',
-	'Edit' 							=> 'Править',
+	'Edit' 							=> 'Edit',
 	'Lock' 							=> 'Закрыть',
 	'Unlock' 						=> 'Открыть',
 	'Important' 					=> 'Важно',

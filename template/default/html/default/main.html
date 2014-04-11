@@ -46,19 +46,31 @@ $(document).ready(function() {
 <body>
 <div class="headpanel">
  <div class="linksap">
-<!--<div class="activewindow"><a href="#">Язык</a><div class="lang" style="width: 70px;"><span>RUS<br>ENG</span></div></div>-->
+<div class="activewindow">
+	<a href="#">Язык</a>
+	<div class="lang" style="width: 70px;">
+		<a href="{{ www_root }}/rus">RUS</a>
+		<a href="{{ www_root }}/eng">ENG</a>
+	</div>
+	<script>
+		$(function(){
+			$('.lang a:eq(0)').attr('href', $('.lang a:eq(0)').attr('href') + window.location.pathname + window.location.search);
+			$('.lang a:eq(1)').attr('href', $('.lang a:eq(1)').attr('href') + window.location.pathname + window.location.search);
+		});
+	</script>
+</div>
 <div><a href="http://fapos.net/users/info/1/">Контакты</a></div>
 <div><a href="https://github.com/Drunyacoder/AtomXCMS-2">GitHub</a></div>
 <div><a href="http://fapos.net/forum/">Поддержка</a></div></div>
  <div class="userlinksap">
 {% if fps_user_id %}
-<div><a href="{{ www_root }}/users/pm/">Сообщения</a></div>
+<div><a href="{{ get_url('/users/pm/') }}">Сообщения</a></div>
 <div class="activewindow"><a href="{{ personal_page_link }}">{{ fps_user_name }}</a><div class="miniprofileadm" style="width: 300px;padding: 10px;{% if fps_admin_access == 1 %}height:150px;{% endif %}">
     <span class="avatarminpro"><img class="avatar" src="{{ getAvatar(fps_user.id) }}"></span>
     <span class="uslinkminpro">
         <a href="{{ personal_page_link }}">Мой профиль</a>
-        <a href="{{ www_root }}/users/pm_send_form/">Отправить сообщение</a>
-		<a href="{{ www_root }}/users/pm/">Отправленные</a>
+        <a href="{{ get_url('/users/pm_send_form/') }}">Отправить сообщение</a>
+		<a href="{{ get_url('/users/pm/') }}">Отправленные</a>
 		<a href="{{ www_root }}/users/edit_form/{{ fps_user_id }}">Настройки</a>
         {% if fps_admin_access == 1 %}
 		<a href="{{ www_root }}/admin/" target="_blank">Админка</a>

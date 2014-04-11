@@ -137,11 +137,14 @@ class Fps_Viewer_Manager
 
 		$this->treesParser->cleanStack();
 		$tokens = $this->getTokens($code);
+		//pr(h($tokens)); die();
 		$nodes = $this->getTreeFromTokens($tokens);
+		//pr($nodes); die();
 		$this->compileParser->clean();
 		$this->compileParser->setTmpClassName($this->getTmpClassName($code));
 		$this->compile($nodes);
 		$sourceCode = $this->compileParser->getOutput();
+		//pr(h($sourceCode)); die();
 		$output = $this->executeSource($sourceCode, $context);
 
         // replace snippets markers

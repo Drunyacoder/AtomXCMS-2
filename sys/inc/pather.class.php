@@ -115,7 +115,7 @@ Class Pather {
 			
 			$pathParams = explode('/', $url);
 		}
-		
+		$this->getLang($pathParams);
 		
 		
 		if (empty($pathParams)) {
@@ -156,6 +156,32 @@ Class Pather {
 
 
 		return $pathParams;
+	}
+	
+	
+	public function getLang(&$pathParams)
+	{
+		$lang_files = glob(ROOT . '/sys/settings/languages/*.php');
+		if (!empty($lang_files)) {
+			foreach($lang_files as $lang_file) {
+				// get lang from filepath
+				$lang = substr(substr(strrchr($lang_file, '/'), 1), 0, -4); 
+				if (!empty($pathParams[0]) && $pathParams[0] === $lang) {
+					$_SESSION['lang'] = $lang;
+					unset($pathParams[0]);
+					
+					if (count($pathParams) > 0) {
+						$tmpArr = array();
+						foreach ($pathParams as $param) $tmpArr[] = $param;
+						$pathParams = $tmpArr;
+					}
+					
+					return;
+				}
+			}
+		}
+		
+		$_SESSION['lang'] = Config::read('language');
 	}
 
     

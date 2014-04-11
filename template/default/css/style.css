@@ -276,13 +276,16 @@ transition: .3s ease-in-out; -moz-transition: .3s ease-in-out; -webkit-transitio
 transform: scaleY(1);-moz-transform: scaleY(1);-ms-transform: scaleY(1);-o-transform: scaleY(1);-webkit-transform: scaleY(1);
 -moz-transform-origin: 0 0;-ms-transform-origin: 0 0;-o-transform-origin: 0 0;-webkit-transform-origin: 0 0;transform-origin: 0 0;
 }
-.headpanel div .activewindow a:after {content: " ▾ ";}
-.headpanel div .activewindow:hover a {background: none;color: #5f5f5f;text-shadow: none;}
+.headpanel div .activewindow > a:after {content: " ▾ ";}
+.headpanel div .activewindow:hover > a {background: none;color: #5f5f5f;text-shadow: none;}
+.headpanel div .activewindow {transition: 1s ease-in; -webkit-transition: 1s ease-in-out;}
 .headpanel div .activewindow:hover {
 background-color: #f1f1f1;
 border-radius: 10px 10px 0 0;-moz-border-radius: 10px 10px 0 0;-webkit-border-radius: 10px 10px 0 0;-khtml-border-radius: 10px 10px 0 0;
+transition: 0s ease-in-out; -webkit-transition: 0s ease-in-out;
 }
 .headpanel div .activewindow div span {padding: 10px;display: block;color: #3d3d3d;text-shadow: none;}
+.headpanel div .activewindow .lang a {color:#769B16; line-height:25px; height:auto;}
 /*-------------------------LANG-----------------------------*/
 .headpanel div .activewindow:hover .lang{ height: 55px;}
 /*-------------------------BXOD-----------------------------*/

@@ -32,7 +32,7 @@ class Fps_Viewer_TokensParser
     const REGEX_STRING          = '/"([^#"\\\\]*(?:\\\\.[^#"\\\\]*)*)"|\'([^\'\\\\]*(?:\\\\.[^\'\\\\]*)*)\'/uAs';
     const REGEX_DQ_STRING_DELIM = '/"/uA';
     const REGEX_DQ_STRING_PART  = '/[^#"\\\\]*(?:(?:\\\\.|#(?!\{))[^#"\\\\]*)*/uAs';
-    const PUNCTUATION           = '()[]{}?:.,|';
+    const PUNCTUATION           = '()[]{}?:.,~|';
 	
 	
 	public function __construct($code = '')

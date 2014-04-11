@@ -167,9 +167,7 @@ class Fps_Viewer_CompileParser
             }
         }
 		
-		
 		$this->finishSourseCode();
-		
         
 		return $this;
 	}

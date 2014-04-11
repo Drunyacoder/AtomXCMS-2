@@ -450,8 +450,8 @@ function entryUrl($material, $module) {
  * @return string
  */
 function __($key, $context = false) {
-    $language = Config::read('language');
-    if (empty($language) || !is_string($language)) $language = 'russian';
+    $language = getLang();
+    if (empty($language) || !is_string($language)) $language = 'rus';
 
     $lang_file = ROOT . '/sys/settings/languages/' . $language . '.php';
     $tpl_lang_file = ROOT . '/template/' . Config::read('template') .'/languages/' . $language . '.php';
@@ -467,6 +467,11 @@ function __($key, $context = false) {
 }
 
 
+function getLang() {
+	return (!empty($_SESSION['lang'])) 
+		? $_SESSION['lang']
+		: Config::read('language');
+}
 
 
 /**
@@ -507,10 +512,10 @@ function get_img($url, $params = array(), $notRoot = false) {
  * @param boolean $notRoot
  * @return string url
  */
-function get_url($url, $notRoot = false) 
+function get_url($url, $notRoot = false, $useLang = true) 
 {
     $obj = new AtmUrl;
-    return $obj($url, $notRoot);
+    return $obj($url, $notRoot, $useLang);
 }
 
 

@@ -1,7 +1,7 @@
 <?php 
 $set = array (
   'cache' => 0,
-  'language' => 'russian',
+  'language' => 'rus',
   'cache_querys' => 0,
   'cookie_time' => '30',
   'start_mod' => '',

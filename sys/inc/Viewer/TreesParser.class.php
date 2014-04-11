@@ -188,10 +188,10 @@ class Fps_Viewer_TreesParser
 			&& !$node instanceof Fps_Viewer_Node_Text
 			&& !$node instanceof Fps_Viewer_Node_Function
 			&& !$node instanceof Fps_Viewer_Node_Url
+			&& !$node instanceof Fps_Viewer_Node_Group
 		) {
 			return $node;
 		}
-
 		
 		switch ($this->getEnv()) {
 			case 'set_left':

@@ -7,7 +7,7 @@ class Fps_Viewer_Node_Var
 
 	private $value;
 
-	private $filters;
+	private $filters = array();
 
 	private $attr;
 
@@ -40,7 +40,7 @@ class Fps_Viewer_Node_Var
 		$value = $this->compileValue($compiler);
 		if (is_array($this->filters) && count($this->filters)) {
 			foreach ($this->filters as $filter) {
-				$value = $filter->compile($value);
+				$value = $filter->compile($value, $compiler);
 			}
 		}
         $compiler->raw($value);
@@ -109,8 +109,8 @@ class Fps_Viewer_Node_Var
 	{
 		$out = "\n";
 		$out .= '[value]:' . $this->value . "\n";
-		$out .= '[filter]:' . $this->filter . "\n";
-		$out .= '[attr]:' . $this->attr . "\n";
+		$out .= '[filter]:' . implode(', ', $this->filters) . "\n";
+		$out .= '[attr]:' . implode(', ', (array)$this->attr) . "\n";
 		return $out;
 	}
 }

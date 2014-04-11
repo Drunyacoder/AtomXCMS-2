@@ -31,4 +31,13 @@ class Fps_Viewer_Node_Function
         }
 		$compiler->raw(")");
 	}
+	
+	
+
+	public function __toString()
+	{
+		$out = '[function_name]:' . $this->func . "\n";
+		$out .= '[params]:' . implode("<br>\n", $this->params) . "\n";
+		return $out;
+	}
 }

@@ -44,7 +44,7 @@ class Fps_Viewer_Node_For
 	public function __toString()
 	{
 		$out = '[expr]:' . $this->expr . "\n";
-		$out .= '[body]:' . $this->body . "\n";
+		$out .= '[body]:' . implode("<br>\n", $this->body) . "\n";
 		return $out;
 	}
 }

@@ -181,9 +181,13 @@ class AtmUrl {
      * @param bool $notRoot
      * @return mixed
      */
-    public function __invoke($url, $notRoot = false) {
+    public function __invoke($url, $notRoot = false, $useLang = true) {
         if ($notRoot || substr($url, 0, 7) === 'http://') return Pather::parseRoutes($url);
-        $url = '/' . WWW_ROOT . $url;
+        $lang = getLang();
+		$root = ($useLang) 
+			? '/' . WWW_ROOT . $lang . '/'
+			: '/' . WWW_ROOT;
+		$url = $root . $url;
         $url = self::checkAndRepair($url);
         return Pather::parseRoutes($url);
     }

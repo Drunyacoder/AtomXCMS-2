@@ -139,10 +139,16 @@ class Fps_Viewer_ExpresionParser
             default:
                 if ($token->test(Fps_Viewer_Token::PUNCTUATION_TYPE, '[')) {
                     $node = $this->parseArrayExpression();
+                } else if ($token->test(Fps_Viewer_Token::PUNCTUATION_TYPE, '(')) {
+					$this->parser->getStream()->next();
+                    $expr = $this->parseExpression();
+					$node = new Fps_Viewer_Node_Group($expr);
+					$this->parser->getStream()->next();
                 } else {
                     throw new Exception("Unexpected token type.");
                 }
         }
+
 
         $node = $this->postfixExpression($node);
 
@@ -158,7 +164,7 @@ class Fps_Viewer_ExpresionParser
             );
         }
 
-
+		
 		return $this->parser->setNode($node, $this->inFunc);
     }
 	
@@ -172,6 +178,15 @@ class Fps_Viewer_ExpresionParser
                     $node = $this->parseSubscriptExpression($node);
                 } elseif ('|' == $token->getValue()) {
                     $node = $this->parseFilterExpression($node);
+                
+				//concat
+				} elseif ('~' == $token->getValue()) { 
+					$this->parser->getStream()->next();
+					$this->inFunc = true;
+					$expr = $this->parsePrimaryExpression();
+					$node = new Fps_Viewer_Node_Concat($node);
+					$node->addElement($expr);
+					$this->inFunc = false;
                 } else {
                     break;
                 }

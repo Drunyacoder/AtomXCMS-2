@@ -24,8 +24,21 @@
 class Fps_Viewer_Filter_Escape {
 
 
-	public function compile($value)
+	public function compile($value, Fps_Viewer_CompileParser $compiler)
 	{
+		if (is_object($value)) {
+			$compiler->raw('htmlspecialchars(');
+			$value->compile($compiler);
+			$compiler->raw(')');
+			return true;
+		}
 		return "htmlspecialchars($value)";
+	}
+	
+	
+	public function __toString()
+	{
+		$out = '[filter]:escape' . "\n";
+		return $out;
 	}
 }
