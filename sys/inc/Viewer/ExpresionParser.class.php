@@ -222,12 +222,25 @@ class Fps_Viewer_ExpresionParser
 	public function parseSubscriptExpression($node)
 	{
 		$stream = $this->parser->getStream();
-		$stream->next();
-		$token = $stream->getCurrent();
-		$stream->expect(Fps_Viewer_Token::NAME_TYPE);
-		$node->addAttr($token->getValue());
-		//$stream->next();
-
+		$stream->getCurrent()->test(Fps_Viewer_Token::PUNCTUATION_TYPE, array('[', '.'));
+		$punctuation_value = $stream->getCurrent()->getValue();
+		
+		switch ($punctuation_value) {
+			case '[':
+				$stream->next();
+				$token = $stream->getCurrent();
+				$node->addAttr($token->getValue());
+				$stream->expect(Fps_Viewer_Token::NUMBER_TYPE);
+				$stream->next();
+				break;
+			case '.':
+				$stream->next();
+				$token = $stream->getCurrent();
+				$stream->expect(Fps_Viewer_Token::NAME_TYPE);
+				$node->addAttr($token->getValue());
+				break;
+		}
+		
 		return $this->postfixExpression($node);
 	}
 	
