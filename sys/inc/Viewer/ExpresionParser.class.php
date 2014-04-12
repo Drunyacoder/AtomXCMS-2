@@ -78,6 +78,10 @@ class Fps_Viewer_ExpresionParser
 		}
 		$right = $this->parsePrimaryExpression();
         $this->inIfDefinition--;
+		
+		if ('for_definition' === $this->parser->getEnv() && $type === 'in') {
+			return new $this->binaryOperators[$type]($left, $right, $this->parser->getEnv());
+		}
 		return new $this->binaryOperators[$type]($left, $right);
 	}
 	

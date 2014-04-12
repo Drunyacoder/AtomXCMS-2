@@ -8,20 +8,20 @@ $settingsInfo = array(
 	'hlu' => array(
 		'hlu' => array(
 			'type' => 'checkbox',
-			'title' => 'Включить ЧПУ',
+			'title' => __('Enable Human like URL'),
 			'description' => '',
 			'checked' => '1',
 			'value' => '1',
 		),
 		'hlu_extention' => array(
 			'type' => 'text',
-			'title' => 'Окончание URL',
-			'description' => 'Например .html',
+			'title' => __('URL sufix'),
+			'description' => __('For example .html'),
 		),
 		'hlu_understanding' => array(
 			'type' => 'checkbox',
-			'title' => 'Разбор ЧПУ',
-			'description' => 'Новые ссылки будут обычными, но обращение через ЧПУ будет поддерживаться для работоспособности старых ссылок',
+			'title' => __('Human like URL understanding'),
+			'description' => __('URL will be generated as normal URL, but Human like URL will be work for compatibility with old links'),
 			'checked' => '1',
 		),
 	),
@@ -30,7 +30,7 @@ $settingsInfo = array(
 	'sitemap' => array(
 		'auto_sitemap' => array(
 			'type' => 'checkbox',
-			'title' => 'Автогенерация sitemap',
+			'title' => __('Sitemap autogeneration'),
 			'description' => '',
 			'checked' => '1',
 			'value' => '1',
@@ -41,7 +41,7 @@ $settingsInfo = array(
 	'sys' => array(
 		'template' => array(
 			'type' => 'select',
-			'title' => 'Шаблон',
+			'title' => __('Template'),
 			'description' => '',
 			'options' => $templateSelect,
 			'options_attr' => array(
@@ -51,28 +51,28 @@ $settingsInfo = array(
 		),
 		'site_title' => array(
 			'type' => 'text',
-			'title' => 'Название сайта',
-			'description' => 'можно использовать в шаблонах как {{ site_title }}',
+			'title' => __('Site name'),
+			'description' => sprintf(__('Used in the template as %s'), '{{ site_title }}'),
 		),
 		'title' => array(
 			'type' => 'text',
-			'title' => 'Заголовок сайта',
-			'description' => 'можно использовать в шаблонах как {{ title }}',
+			'title' => __('Site title'),
+			'description' => sprintf(__('Used in the template as %s'), '{{ meta_title }} | {{ title }}'),
 		),
 		'meta_keywords' => array(
 			'type' => 'text',
-			'title' => 'Ключевые слова сайта',
-			'description' => 'можно использовать в шаблонах как {{ meta_keywords }}',
+			'title' => __('Site keywords'),
+			'description' => sprintf(__('Used in the template as %s'), '{{ meta_keywords }}'),
 		),
 		'meta_description' => array(
 			'type' => 'text',
-			'title' => 'Описание сайта',
-			'description' => 'можно использовать в шаблонах как {{ meta_description }}',
+			'title' => __('Site description'),
+			'description' => sprintf(__('Used in the template as %s'), '{{ meta_description }}'),
 		),
 		'language' => array(
 			'type' => 'select',
-			'title' => 'Основной язык',
-			'description' => 'Используется когда язык не указан и в админке',
+			'title' => __('Main language'),
+			'description' => __('Used when language is not specified and in the admin panel'),
 			'options' => call_user_func(function(){
 				$langs = getPermittedLangs();
 				$langs_ = array();
@@ -82,98 +82,88 @@ $settingsInfo = array(
 		),
 		'permitted_languages' => array(
 			'type' => 'text',
-			'title' => 'Разрешенные языки',
-			'description' => 'Например: "rus,eng,ger". Используйте только реально доступные на сайте языки.<br>
-				В данный момент доступны: ' . implode(',', getPermittedLangs()),
+			'title' => __('Permitted languages'),
+			'description' => sprintf(__('Example: "rus,eng,ger". Use a languages which are available on the site.<br>Now are available: %s'), implode(',', getPermittedLangs())),
 		),
 		'cookie_time' => array(
 			'type' => 'text',
-			'title' => 'Время "жизни" cookies в днях',
-			'description' => 'в cookies сохраняются логин и пароль пользователя,
- если была выбрана опция "Автоматически входить при каждом посещении"',
+			'title' => __('Cookies life time(days)'),
+			'description' => __('Cookies used for "remember me" option when user login'),
 		),
 		'redirect' => array(
 			'type' => 'text',
-			'title' => 'Автоматическая переадресация',
-			'description' => 'используйте эту опцию что бы перевести пользователя с главной страницы, например, на форум или каталог файлов, или на другой сайт',
+			'title' => __('Auto redirect'),
+			'description' => __('Use this option for redirect user from home page to, for example, forum or loads, or other site'),
 		),
 		'start_mod' => array(
 			'type' => 'text',
-			'title' => 'Точка входа',
-			'description' => 'Это что-то похожее на переадресацию, но самой переадресации
-не происходит. Другими словами сдесь Вы вводите адрес точки входа
-и страница по этому адресу будет являться главной страницей сайта.
-Вводите сюда только рабочие ссылки и только в пределах сайта. Пример "<b>news/view/1</b>"',
+			'title' => __('Entry point'),
+			'description' => __('It is something like redirect but it isn\'t. You can type any URL from this site here and that page will be available as home page. For example "<b>news/view/1</b>"'),
 		),
 		'max_file_size' => array(
 			'type' => 'text',
-			'title' => 'Максимальный размер файла вложения',
-			'help' => 'Байт',
-			'description' => 'которые пользователи смогут выгружать на сайте
-Используется во всех модулях где нет собственой подобной настройки',
+			'title' => __('Max an attach file size'),
+			'help' => __('Byte'),
+			'description' => __('which users can upload to the site. Used in those modules which havn\'t same setting'),
 		),
 		
 		'img_preview_size' => array(
 			'type' => 'text',
-			'title' => 'Размер превью',
+			'title' => __('Preview size'),
 			'help' => 'Px',
-			'description' => 'Автоматически уменьшеных изображений',
+			'description' => __('Auto scaled images'),
 		),
 		
 		'min_password_lenght' => array(
 			'type' => 'text',
-			'title' => 'Минимальная длина пароля пользователя',
+			'title' => __('Minimum user password length'),
 			'description' => '',
 		),
 		'admin_email' => array(
 			'type' => 'text',
-			'title' => 'Адрес электронной почты администратора',
-			'description' => 'этот e-mail будет указан в поле FROM писем, которое один пользователь напишет
-другому; этот же e-mail будет указан в письмах с просьбой активировать учетную
- запись или пароль (в случае его утери)',
+			'title' => __('Administrator email address'),
+			'description' => __('Used in site mailing'),
 		),
 		'redirect_delay' => array(
 			'type' => 'text',
-			'title' => 'Задержка перед редиректом',
-			'description' => 'когда пользователь выполняет какое-то действие (например, добавляет сообщение)
- ему выдается сообщение, что "Ваше сообщение было успешно добавлено" и делается
-редирект на нужную страницу',
+			'title' => __('Delay before redirect'),
+			'description' => __('When user does some action(for example add message), info message will be appeared and user will be redirected'),
 		),
 		'time_on_line' => array(
 			'type' => 'text',
-			'title' => 'Время , в течение которого считается, что пользователь "on-line"',
+			'title' => __('Time during which the user is considered online'),
 			'description' => '',
 		),
 		'open_reg' => array(
 			'type' => 'select',
-			'title' => 'Режим регистрации',
-			'description' => 'Определяет разрешена ли регистрация у Вас на сайте',
+			'title' => __('Registration mode'),
+			'description' => __('Allowed registration on the site'),
 			'options' => array(
-				'1' => 'Разрешена',
-				'0' => 'Запрещена',
+				'1' => __('Allowed'),
+				'0' => __('Denied'),
 			),
 		),
 		'email_activate' => array(
 			'type' => 'checkbox',
 			'checked' => '1',
 			'value' => '1',
-			'title' => 'Требуется ли активация аккаунта по E-mail',
+			'title' => __('Email accaunt activation'),
 			'description' => '',
 		),
 		'debug_mode' => array(
 			'type' => 'checkbox',
 			'checked' => '1',
 			'value' => '1',
-			'title' => 'Вывод ошибок',
+			'title' => __('Enable debug'),
 			'description' => '',
 		),
 
 
 
-		'Какие из последних материалов выводить на главной' => 'Какие из последних материалов выводить на главной',
+		__('Which from the last materials will be displayed on home page'),
 		'sub_news' => array(
 			'type' => 'checkbox',
-			'title' => 'Новости',
+			'title' => __('News'),
 			'description' => '',
 			'checked' => '1',
 			'value' => 'news',
@@ -181,7 +171,7 @@ $settingsInfo = array(
 		),
 		'sub_stat' => array(
 			'type' => 'checkbox',
-			'title' => 'Статьи',
+			'title' => __('Stat'),
 			'description' => '',
 			'checked' => '1',
 			'value' => 'stat',
@@ -189,7 +179,7 @@ $settingsInfo = array(
 		),
 		'sub_loads' => array(
 			'type' => 'checkbox',
-			'title' => 'Загрузки',
+			'title' => __('Loads'),
 			'description' => '',
 			'checked' => '1',
 			'value' => 'loads',
@@ -197,22 +187,21 @@ $settingsInfo = array(
 		),
 		'cnt_latest_on_home' => array(
 			'type' => 'text',
-			'title' => 'Кол-во материалов на главной',
+			'title' => __('How many materials will be displayed on home'),
 			'description' => '',
 		),
 		'announce_lenght' => array(
 			'type' => 'text',
-			'title' => 'Размер анонса на главной',
+			'title' => __('Announce length'),
 			'description' => '',
 		),
 
 
-		'Прочее' => 'Прочее',
+		__('Common'),
 		'cache' => array(
 			'type' => 'checkbox',
-			'title' => 'Кэш',
-			'description' => '(Кешировать ли содержимое сайта? Если кэш включен сайт будет работать быстрее
-при большой нагрузке, но при маленькой его лучше выключить.)',
+			'title' => __('Cache'),
+			'description' => __('If cache is enabled, the site will be load faster'),
 			'checked' => '1',
 			'value' => '1',
 		),
@@ -226,22 +215,22 @@ $settingsInfo = array(
 		),
 		'use_additional_fields' => array(
 			'type' => 'checkbox',
-			'title' => 'Использовать ли дополнительные поля на сайте',
-			'description' => 'Замедлит работу сайта. Используйте только если знаете что это и как этим пользоваться.',
+			'title' => __('Enable additional fields'),
+			'description' => __('Enable only you know how to use it'),
 			'checked' => '1',
 			'value' => '1',
 		),
 		'allow_html' => array(
 			'type' => 'checkbox',
-			'title' => 'Разрешить использование HTML в сообщениях',
-			'description' => 'Таит угрозу. Включая эту возможность, настройте ее в правах групп.',
+			'title' => __('Enable HTML in messages'),
+			'description' => __('May be not secure. If you enable, setup it in users rules'),
 			'checked' => '1',
 			'value' => '1',
 		),
 		'allow_smiles' => array(
 			'type' => 'checkbox',
-			'title' => 'Разрешить использование Смайлов в сообщениях',
-			'description' => 'Использовать ли на сайте замену специальных меток на изображения(smiles).',
+			'title' => __('Enable smiles in messages'),
+			'description' => __('Replaces special markers to images'),
 			'checked' => '1',
 			'value' => '1',
 		),

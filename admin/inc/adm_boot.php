@@ -31,7 +31,7 @@ if (!isInstall()) redirect('/install');
 
 $FpsDB = $Register['DB']; //TODO
 $ACL = $Register['ACL'];
-
+$_SESSION['lang'] = Config::read('language');
 
 /*
 pr(time());

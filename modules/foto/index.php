@@ -382,15 +382,13 @@ Class FotoModule extends Module {
 		$this->ACL->turn(array($this->module, 'view_list'));
 		$id = intval($id);
 		if ($id < 1)
-		return $this->showInfoMessage(__('Can not find user'), $this->getModuleURL());
+		return $this->showInfoMessage(__('Can not find user'), '/' . $this->module . '/');
 
 
 		$usersModel = $this->Register['ModManager']->getModelInstance('Users');
 		$user = $usersModel->getById($id);
 		if (!$user)
-			return $this->showInfoMessage(__('Can not find user'), $this->getModuleURL());
-		if (!$this->ACL->checkCategoryAccess($user->getNo_access()))
-			return $this->showInfoMessage(__('Permission denied'), $this->getModuleURL());
+			return $this->showInfoMessage(__('Can not find user'), '/' . $this->module . '/');
 
 
 		$this->page_title = sprintf(__('User materials'), h($user->getName())) . ' - ' . $this->page_title;
@@ -407,13 +405,11 @@ Class FotoModule extends Module {
 
 		// we need to know whether to show hidden
 		$where = array('author_id' => $id);
-		if (!$this->ACL->turn(array('other', 'can_see_hidden'), false)) {
-			$where['available'] = 1;
-		}
+		$where[] = $this->getDeniSectionsCond();
 
 
 		$total = $this->Model->getTotal(array('cond' => $where));
-		list ($pages, $page) = pagination($total, $this->Register['Config']->read('per_page', $this->module), $this->getModuleURL('user/' . $id));
+		list ($pages, $page) = pagination($total, $this->Register['Config']->read('per_page', $this->module), '/' . $this->module . '/user/' . $id);
 		$this->Register['pages'] = $pages;
 		$this->Register['page'] = $page;
 		$this->page_title .= ' (' . $page . ')';
@@ -421,9 +417,9 @@ Class FotoModule extends Module {
 
 
 		$navi = array();
-		$navi['add_link'] = ($this->ACL->turn(array($this->module, 'add_materials'), false)) ? get_link(__('Add material'), $this->getModuleURL('add_form/')) : '';
+		$navi['add_link'] = ($this->ACL->turn(array($this->module, 'add_materials'), false)) ? get_link(__('Add material'), '/' . $this->module . '/add_form/') : '';
 		$navi['navigation'] = get_link(__('Home'), '/') . __('Separator')
-		. get_link(h($this->module_title), $this->getModuleURL()) . __('Separator') . sprintf(__('User materials'), h($user->getName())) . '"';
+		. get_link(h($this->module_title), '/' . $this->module . '/') . __('Separator') . sprintf(__('User materials'), h($user->getName())) . '"';
 		$navi['pagination'] = $pages;
 		$navi['meta'] = __('Count all material') . $total;
 		$navi['category_name'] = sprintf(__('User materials'), h($user->getName()));
@@ -458,11 +454,11 @@ Class FotoModule extends Module {
 			$entry_url = get_url(entryUrl($entity, $this->module));
 			$markers['entry_url'] = $entry_url;
 
-			$markers['preview_foto'] = get_url(ROOT . '/sys/files/foto/preview/' . $entity->getFilename());
+			$markers['preview_foto'] = get_url('/sys/files/foto/preview/' . $entity->getFilename());
 			$markers['foto_alt'] = h(preg_replace('#[^\w\d ]+#ui', ' ', $entity->getTitle()));
 
 
-			$markers['category_url'] = get_url($this->getModuleURL('category/' . $entity->getCategory_id()));
+			$markers['category_url'] = get_url('/' . $this->module . '/category/' . $entity->getCategory_id());
 			$markers['profile_url'] = getProfileUrl($entity->getAuthor_id());
 
 

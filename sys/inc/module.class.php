@@ -350,6 +350,7 @@ class Module {
         $markers2 = array(
             'module' => $this->module,
             'title' => $this->page_title,
+            'meta_title' => $this->page_title,
             'meta_description' => $this->page_meta_description,
             'meta_keywords' => $this->page_meta_keywords,
             'module_title' => $this->module_title,
@@ -686,5 +687,22 @@ class Module {
 	{
         header('Content-type: application/json');
 		echo json_encode($array); die();
+	}
+	
+	
+	
+	public function getDeniSectionsCond($group = null)
+	{
+		$group = (!empty($_SESSION['user']['status'])) ? $_SESSION['user']['status'] : 0;
+		$sectionModel = $this->Register['ModManager']->getModelInstance($this->module . 'Sections');
+		$deni_sections = $sectionModel->getCollection(array("CONCAT(',', `no_access`, ',') NOT LIKE '%,$group,%'"));
+		$ids = array();
+		if ($deni_sections) {
+			foreach ($deni_sections as $deni_section) {
+				$ids[] = $deni_section->getId();
+			}
+		}
+		$ids = (count($ids)) ? implode(', ', $ids) : 'NULL';
+		return "`category_id` IN ({$ids})";
 	}
 }
