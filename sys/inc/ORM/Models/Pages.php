@@ -391,7 +391,7 @@ class PagesModel extends FpsModel
 		if (!empty($sql)) {
 			$sql .= 'ORDER BY `on_home_top` DESC, `date` DESC LIMIT ' . $Register['Config']->read('cnt_latest_on_home');
 			$materials = $Register['DB']->query($sql);
-			$materials_ = array('news' => [], 'loads' => [], 'stat' => []);
+			$materials_ = array('news' => array(), 'loads' => array(), 'stat' => array());
             if ($materials) {
                 foreach ($materials as $key => $mat) {
 
