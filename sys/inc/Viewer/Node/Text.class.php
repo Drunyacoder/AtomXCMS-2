@@ -20,9 +20,9 @@ class Fps_Viewer_Node_Text
     {
 		if (is_array($this->filters) && count($this->filters)) {
 			foreach ($this->filters as $filter) {
-				$objContext = $this;
-				$value = $filter->compile(function($compiler) use ($objContext) {
-					$compiler->string($objContext->data);
+				$objData = $this->data;
+				$value = $filter->compile(function($compiler) use ($objData) {
+					$compiler->string($objData);
 				}, $compiler);
 			}
 		} else {
