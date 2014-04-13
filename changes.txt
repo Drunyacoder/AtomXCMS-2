@@ -67,6 +67,8 @@ v2.5 RC2                 *
 
 33. Добавлены фильтры bbcode, urlencode, urldecode, lang.
 
+34. Добавлены глобальные метки action(текущий экшен) и params(параметры - module, action, ID и т.д.).
+
 
 **************************
 v2.5 RC1                 *

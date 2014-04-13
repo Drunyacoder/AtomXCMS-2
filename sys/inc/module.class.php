@@ -349,6 +349,8 @@ class Module {
 		$markers1 = $this->Parser->getGlobalMarkers($html);
         $markers2 = array(
             'module' => $this->module,
+            'action' => $Register['action'],
+            'params' => $Register['params'],
             'title' => $this->page_title,
             'meta_title' => $this->page_title,
             'meta_description' => $this->page_meta_description,
