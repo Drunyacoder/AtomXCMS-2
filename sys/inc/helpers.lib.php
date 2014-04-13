@@ -165,6 +165,20 @@ function getAvatar($id_user = null, $email_user = null) {
 }
 
 
+/**
+ * Get either a Gravatar URL or complete image tag for a specified email address.
+ *
+ * @param string $email The email address
+ * @param string $s Size in pixels, defaults to 80px [ 1 - 2048 ]
+ * @param string $d Default imageset to use [ 404 | mm | identicon | monsterid | wavatar ]
+ * @param string $r Maximum rating (inclusive) [ g | pg | r | x ]
+ * @return String containing either just a URL or a complete image tag
+ */
+function getGravatar($email, $s = 120, $d = 'mm', $r = 'g') {
+	$url = 'http://www.gravatar.com/avatar/' . md5(strtolower(trim($email))) . ".png?s=$s&d=$d&r=$r";
+	return $url;
+}
+
 
 /**
 * Get correct name of template for current user
@@ -454,7 +468,7 @@ function __($key, $context = false) {
     if (empty($language) || !is_string($language)) $language = 'rus';
 
     $lang_file = ROOT . '/sys/settings/languages/' . $language . '.php';
-    $tpl_lang_file = ROOT . '/template/' . Config::read('template') .'/languages/' . $language . '.php';
+    $tpl_lang_file = ROOT . '/template/' . getTemplateName() .'/languages/' . $language . '.php';
     if (!file_exists($lang_file)) throw new Exception('Main language file not found');
 
     $lang = include $lang_file;

@@ -1680,7 +1680,7 @@ Class UsersModule extends Module {
         foreach ($messages as $message) {
             // Если сообщение еще не прочитано
             $icon = ($message->getViewed() == 0) ? 'folder_new' : 'folder';
-            $message->setIcon(get_img('/template/'.Config::read('template').'/img/' . $icon . '.gif'));
+            $message->setIcon(get_img('/template/'.getTemplateName().'/img/' . $icon . '.gif'));
             $message->setEntryLink(get_link(h($message->getSubject()), '/users/pm_view/' . $message->getId()));
             $message->setEntryUrl(get_url('/users/pm_view/' . $message->getId()));
             $message->setDeleteLink(get_link(__('Delete'), '/users/pm_delete/' . $message->getId(), array('onClick' => "return confirm('" . __('Are you sure') . "');")));

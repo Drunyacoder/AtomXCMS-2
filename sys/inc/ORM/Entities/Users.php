@@ -101,7 +101,7 @@ class UsersEntity extends FpsEntity
 	
 
 	public function getAvatar() {
-        $template = Config::read('template');
+        $template = getTemplateName();
 		if (file_exists(ROOT . '/sys/avatars/' . $this->getId() . '.jpg')) {
 			$avatar = get_url('/sys/avatars/' . $this->getId() . '.jpg');
 		} else {

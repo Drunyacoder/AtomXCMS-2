@@ -66,7 +66,7 @@ class Protect
 		}
 		
 		//return array($output, $help_text);
-		$tpl = file_get_contents(ROOT . '/template/' . Config::read('template') . '/html/default/captcha.html');
+		$tpl = file_get_contents(ROOT . '/template/' . getTemplateName() . '/html/default/captcha.html');
 		$captcha = str_replace(array('{{ captcha }}', '{{ captcha_text }}'), array($output, $help_text), $tpl);
 		return array($captcha, $help_text);
 	}

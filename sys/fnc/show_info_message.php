@@ -29,7 +29,7 @@ function showInfoMessage( $message, $queryString = null )
 {
 	$Register = Register::getInstance();
 	header( 'Refresh: ' . $Register['Config']->read('redirect_delay') . '; url=http://' . $_SERVER['SERVER_NAME'] . get_url($queryString));
-	$html = file_get_contents( ROOT . '/template/' . Config::read('template') . '/html/default/infomessagegrand.html' );
+	$html = file_get_contents( ROOT . '/template/' . getTemplateName() . '/html/default/infomessagegrand.html' );
 	$html = str_replace( '{INFO_MESSAGE}', $message, $html );
 	echo $html;
 	die();

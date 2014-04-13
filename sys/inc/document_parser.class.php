@@ -175,7 +175,7 @@ class Document_Parser {
 				'id' => 0,
 				'name' => $markers['fps_user_name'],
 				'group' => $markers['fps_user_group'],
-				'avatar' => get_url('/template/' . Config::read('template') . '/img/noavatar.png', false, false),
+				'avatar' => get_url('/template/' . getTemplateName() . '/img/noavatar.png', false, false),
 			);
 		}
 		
@@ -209,7 +209,7 @@ class Document_Parser {
 		
 		
 		$markers['counter'] = get_url('/sys/img/counter.png?rand=' . rand(0,999999), false, false);
-		$markers['template_path'] = get_url('/template/' . Config::read('template'), false, false);
+		$markers['template_path'] = get_url('/template/' . getTemplateName(), false, false);
 		$markers['www_root'] = WWW_ROOT;
 		$markers['lang'] = getLang();
 		
