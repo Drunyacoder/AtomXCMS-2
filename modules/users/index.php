@@ -2720,12 +2720,10 @@ Class UsersModule extends Module {
 				'password' => array(
 					'min_lenght' => Config::read('min_password_lenght'),
 					'required' => true,
-					'pattern' => V_LOGIN,
 				),
 				'confirm' => array(
 					'compare' => 'password',
 					'required' => true,
-					'pattern' => V_LOGIN,
 				),
 				'email' => array(
 					'required' => true,
@@ -2791,7 +2789,6 @@ Class UsersModule extends Module {
 				'password' => array(
 					'min_lenght' => Config::read('min_password_lenght'),
 					'required' => true,
-					'pattern' => V_LOGIN,
                     'function' => function($errors) use ($Register){
                         if ( md5($_POST['password']) != $_SESSION['user']['passw'] )
                             return '<li>' . __('Wrong current pass') . '</li>'."\n";
@@ -2800,12 +2797,10 @@ Class UsersModule extends Module {
 				'confirm' => array(
 					'compare' => 'newpassword',
 					'required' => false,
-					'pattern' => V_LOGIN,
 				),
 				'newpassword' => array(
 					'required' => false,
 					'min_lenght' => Config::read('min_password_lenght'),
-					'pattern' => V_LOGIN,
 				),
 				'email' => array(
 					'required' => true,
@@ -2869,12 +2864,10 @@ Class UsersModule extends Module {
 				'confirm' => array(
 					'compare' => 'newpassword',
 					'required' => false,
-					'pattern' => V_LOGIN,
 				),
 				'newpassword' => array(
 					'required' => false,
 					'min_lenght' => Config::read('min_password_lenght'),
-					'pattern' => V_LOGIN,
 				),
 				'email' => array(
 					'required' => true,
