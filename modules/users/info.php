@@ -74,6 +74,12 @@ $settingsInfo = array(
         'title' => 'Продолжительность бана, из-за предупреждений',
         'help' => 'Секунд',
     ),
+    'use_gravatar' => array(
+        'type' => 'checkbox',
+        'title' => 'Использовать Gravatar на сайте',
+        'checked' => '1',
+        'value' => '1',
+    ),
 
 
     'Обязательные поля' => 'Обязательные поля',
