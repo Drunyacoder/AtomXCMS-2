@@ -229,8 +229,16 @@ class Fps_Viewer_ExpresionParser
 			case '[':
 				$stream->next();
 				$token = $stream->getCurrent();
-				$node->addAttr($token->getValue());
-				$stream->expect(Fps_Viewer_Token::NUMBER_TYPE);
+				if (
+					$token->test(Fps_Viewer_Token::NUMBER_TYPE) || 
+					$token->test(Fps_Viewer_Token::STRING_TYPE)
+				) {
+					$node->addAttr($token->getValue());
+				} else if ($token->test(Fps_Viewer_Token::NAME_TYPE)) {
+					$node->addAttr(new Fps_Viewer_Node_Var($token->getValue()));
+				}
+				//$stream->expect(Fps_Viewer_Token::NUMBER_TYPE);
+				$stream->next();
 				$stream->next();
 				break;
 			case '.':

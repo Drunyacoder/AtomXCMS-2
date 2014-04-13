@@ -61,7 +61,11 @@ class Fps_Viewer_Node_Var
 
 			if (is_array($this->attr)) {
 				while (count($this->attr)) {
-					$value = "\$this->getValue(" . $value . ", '" . array_shift($this->attr) . "')";
+					$key = array_shift($this->attr);
+					$key = $key instanceof Fps_Viewer_Node_Var 
+						? $key->compileValue($compiler) 
+						: "'$key'";
+					$value = "\$this->getValue(" . $value . ", $key)";
 				}
 			}
 			
