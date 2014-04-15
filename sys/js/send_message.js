@@ -810,6 +810,22 @@ AtomX = new function(){
 		size = Math.round(size, 2) + ' ' + ext[i];
 		return size;
 	};
+	
+	this.WStore = new function() {
+		this.set = function(key, value) {
+			if (this.check()) localStorage.setItem(key, value);
+		};
+		this.get = function(key) {
+			if (this.check()) return localStorage.getItem(key);
+		};
+		this.check = function() {
+			try {
+				return 'localStorage' in window && window['localStorage'] !== null;
+			} catch (e) {
+				return false;
+			}
+		};
+	};
 }
 
 

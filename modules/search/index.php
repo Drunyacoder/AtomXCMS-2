@@ -274,56 +274,60 @@ class SearchModule extends Module {
 		foreach ($this->tables as $table) {
 			$className = $this->Register['ModManager']->getModelNameFromModule($table);
 			$Model = new $className;
-			$records = $Model->getCollection();
+			
+			for ($i = 0; $i < 10000; $i++) {
+				$records = $Model->getCollection(array(), array('limit' => 100, 'page' => $i));
+				if (empty($records)) break;
 
 
-			if (count($records) && is_array($records)) {
-				foreach ($records as $rec) {
+				if (count($records) && is_array($records)) {
+					foreach ($records as $rec) {
 
-					switch ($table) {
-						case 'news':
-						case 'stat':
-						case 'loads':
-							$text = $rec->getTitle() . ' ' . $rec->getMain() . ' ' . $rec->getTags();
-							if (mb_strlen($text) < $this->minInputStr || !is_string($text))
-								continue;
-							$entity_view = '/view/';
-							$module = $table;
-							$entity_id = $rec->getId();
-							break;
+						switch ($table) {
+							case 'news':
+							case 'stat':
+							case 'loads':
+								$text = $rec->getTitle() . ' ' . $rec->getMain() . ' ' . $rec->getTags();
+								if (mb_strlen($text) < $this->minInputStr || !is_string($text))
+									continue;
+								$entity_view = '/view/';
+								$module = $table;
+								$entity_id = $rec->getId();
+								break;
 
-						case 'posts':
-							$text = $rec->getMessage();
-							$entity_view = '/view_theme/';
-							$module = 'forum';
-							$entity_id = $rec->getId_theme();
-							break;
+							case 'posts':
+								$text = $rec->getMessage();
+								$entity_view = '/view_theme/';
+								$module = 'forum';
+								$entity_id = $rec->getId_theme();
+								break;
 
-						case 'themes':
-							break;
+							case 'themes':
+								break;
 
-						default:
-							$text = $rec->gettitle() . ' ' . $rec->getMain() . ' ' . $rec->getTags();
-							if (mb_strlen($text) < $this->minInputStr || !is_string($text))
-								continue;
-							$entity_view = '/view/';
-							$module = $table;
-							break;
+							default:
+								$text = $rec->gettitle() . ' ' . $rec->getMain() . ' ' . $rec->getTags();
+								if (mb_strlen($text) < $this->minInputStr || !is_string($text))
+									continue;
+								$entity_view = '/view/';
+								$module = $table;
+								break;
+						}
+
+
+						//we must update record if an exists
+						$data = array(
+							'index' => $text,
+							'entity_id' => $entity_id,
+							'entity_title' => $rec->getTitle(),
+							'entity_table' => $table,
+							'entity_view' => $entity_view,
+							'module' => $module,
+							'date' => new Expr('NOW()'),
+						);
+						$entity = new SearchEntity($data);
+						$entity->save();
 					}
-
-
-					//we must update record if an exists
-					$data = array(
-						'index' => $text,
-						'entity_id' => $entity_id,
-						'entity_title' => $rec->getTitle(),
-						'entity_table' => $table,
-						'entity_view' => $entity_view,
-						'module' => $module,
-						'date' => new Expr('NOW()'),
-					);
-					$entity = new SearchEntity($data);
-					$entity->save();
 				}
 			}
 		}
