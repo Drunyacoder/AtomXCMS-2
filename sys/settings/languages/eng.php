@@ -43,6 +43,7 @@ return array(
 	'materials_require_premoder' 	=> 'Required pre-moderation', 						
 	'can_premoder' 					=> 'Can make moderated', 	
 	'use_rating'					=> 'Rate the materials',
+	'use_attaches'					=> 'Can upload files',
 
 	'view_forums_list' 				=> 'To view the list of topics', 						
 	'view_forums' 					=> 'Watch forums', 						
@@ -109,6 +110,13 @@ return array(
 	'Wrong chars in field "bmonth"'	=> '"Month of birth" contains invalid characters',
 	'Empty field "bday"' 			=> 'Fill birthday',
 	'Wrong chars in field "bday"'	=> '"Birthday" contains invalid characters',
+	'Empty parameters'				=> 'Empty parameters',
+	'Not enough posts'				=> 'Not enough posts',
+	'Give the right ansver'			=> 'Give the right ansver',
+	'Enter the characters from the image' => 'Enter the characters from the image',
+	'You can upload only %s file(s)' => 'You can upload only %s file(s)',
+	'Max overal files size is %s Mb' => 'Max overal files size is %s Mb',
+	'File is deleted or damaged' 	=> 'File is deleted or damaged',
 	
 	'Wrong chars in field "code"' 	=> 'the "Code" field contains invalid characters',
 	'Wrong protection code' 		=> 'does not match the code from the picture',
@@ -494,6 +502,8 @@ return array(
 	'It is something like redirect but it isn\'t. You can type any URL from this site here and that page will be available as home page. For example "<b>news/view/1</b>"' => 'It is something like redirect but it isn\'t. You can type any URL from this site here and that page will be available as home page. For example "<b>news/view/1</b>"',
 	'Max an attach file size' 		=> 'Max an attach file size',
 	'Byte' 							=> 'Byte',
+	'MB' 							=> 'MB',
+	'KB' 							=> 'KB',
 	'which users can upload to the site. Used in those modules which havn\'t same setting' => 'which users can upload to the site. Used in those modules which havn\'t same setting',
 	'Preview size' 					=> 'Preview size',
 	'Auto scaled images' 			=> 'Auto scaled images',
@@ -522,6 +532,9 @@ return array(
 	'May be not secure. If you enable, setup it in users rules' => 'May be not secure. If you enable, setup it in users rules',
 	'Enable smiles in messages' 	=> 'Enable smiles in messages',
 	'Replaces special markers to images' => 'Replaces special markers to images',
+	'Max size of all user files' 	=> 'Max size of all user files',
+	'Max total size of files which guests can upload' => 'Max total size of files which guests can upload',
+	'Used total size of all files which were uploaded by guests' => 'Used total size of all files which were uploaded by guests',
 	
 	// Templates name
 	'Add form'  					=> 'Add form',

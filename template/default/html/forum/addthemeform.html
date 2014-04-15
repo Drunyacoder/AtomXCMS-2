@@ -11,6 +11,15 @@ function pollForm(element) {
 	}
 }
 </script>
+
+<!-- Multi attaches upload -->
+<script type="text/javascript" src="{{ template_path }}/js/atm-multiupload.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	initAtomMultiload('{{ module }}', '{{ 'Error'|lang }}');
+});
+</script>
+
 <form name="sendForm" id="sendForm" action="{{ context.action }}" method="POST" 
 enctype="multipart/form-data" onsubmit="return checkForm(this)">
 <div class="material">
@@ -38,11 +47,17 @@ enctype="multipart/form-data" onsubmit="return checkForm(this)">
 			</span>
           </li>
 		  {% endif %}
-		  <li>
+		  <li id="attachments">
             <span class="siu_title"><strong>Прикрепить файлы</strong></span>
             <span class="siu_data" id="attachments">
-			  <input class="attachField" type="file" id="attach1" name="attach1"  onChange="getFile(1)" /><span id="attachMeta1"></span>
-			  <input type="button" name="addInput" value="Прикрепить еще файл" onClick="addFileField('attachments');" />
+                <input class="attachField" type="file" id="attach" multiple="multiple" name="attach[]">
+				<div id="preloader">
+					<span id="loader"><img src="/sys/img/ajaxload.gif" alt="loading"></span>
+				</div>
+				<div><progress style="display:none;"></progress></div>
+				<br><a id="attaches-show-all" href="javascript:void(0);" onClick="AtomX.loadAllAttaches('{{ module }}'); $('#attaches-hide').show();">Показать все</a>
+				<a id="attaches-hide" href="javascript:void(0);" onClick="$('.attaches-info, #attaches-hide').hide();">Закрыть</a>
+				<div class="attaches-info" id="attaches-info"></div>
 			</span>
           </li>
 		  <li>

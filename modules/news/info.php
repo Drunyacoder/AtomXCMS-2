@@ -67,7 +67,7 @@ $settingsInfo = array(
 		'type' => 'text',
 		'title' => 'Максимальный "вес"',
 		'description' => '',
-		'help' => 'Кбайт',
+		'help' => __('KB'),
 		'onview' => array(
 			'division' => 1000,
 		),
@@ -77,9 +77,33 @@ $settingsInfo = array(
 	),
 	'max_attaches' => array(
 		'type' => 'text',
-		'title' => 'Максимальное кол-во',
+		'title' => 'Максимальное кол-во файлов загружаемых за раз',
 		'description' => '',
 		'help' => 'Единиц',
+	),
+	'max_all_attaches_size' => array(
+		'type' => 'text',
+		'title' => __('Max size of all user files'),
+		'description' => '',
+		'help' => __('MB'),
+		'onview' => array(
+			'division' => 1000000,
+		),
+		'onsave' => array(
+			'multiply' => 1000000,
+		),
+	),
+	'max_guest_attaches_size' => array(
+		'type' => 'text',
+		'title' => __('Max total size of files which guests can upload'),
+		'description' => __('Used total size of all files which were uploaded by guests'),
+		'help' => __('MB'),
+		'onview' => array(
+			'division' => 1000000,
+		),
+		'onsave' => array(
+			'multiply' => 1000000,
+		),
 	),
 
 	

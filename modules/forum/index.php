@@ -993,11 +993,11 @@ Class ForumModule extends Module {
 			}
 		} 
 		
-		if (empty($_SESSION['VIEW_PAGE']) || $_SESSION['VIEW_PAGE'] != 'theme' . $id_theme) {
-			$theme->setViews($theme->getViews() + 1);
-			$theme->save();	
-			$_SESSION['VIEW_PAGE'] = 'theme' . $id_theme;
-		}
+		
+		$theme->setViews($theme->getViews() + 1);
+		$theme->save();	
+		$_SESSION['VIEW_PAGE'] = 'theme' . $id_theme;
+		
 		
 		//clean cache
 		$this->Cache->clean(CACHE_MATCHING_TAG, array('action_viev_forum', 'theme_id_' . $id_theme));
@@ -3674,6 +3674,15 @@ Class ForumModule extends Module {
 					),
 					'type' => 'file',
 					'max_size' => Config::read('max_file_size'),
+				),
+			),
+			'upload_attaches' => array(
+				'files__attach' => array(
+					'for' => array(
+						'from' => 1,
+						'to' => $max_attach,
+					),
+					'max_size' => Config::read('max_attaches_size', $this->module),
 				),
 			),
 		);

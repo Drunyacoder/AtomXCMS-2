@@ -700,6 +700,116 @@ AtomX = new function(){
         });
         return false;
     }
+	
+	this.initMultiFileUploadHandler = function(module, callback){
+		if (typeof callback == 'function') this.parseRespnse = callback;
+	
+		function progressHandlingFunction(e){
+			if(e.lengthComputable){
+				$('progress').attr({value:e.loaded, max:e.total});
+			}
+		}
+			 
+		$('#preloader').hide();
+		$('#attach').bind('change', function(){
+			var data = new FormData();
+			jQuery.each($('#attach')[0].files, function(i, file) {
+				var ii = i + 1;
+				data.append('attach'+ii, file);
+		 
+			});
+
+			$.ajax({
+				url: '/' + module + '/upload_attaches/',
+				type: 'POST',
+				xhr: function() { 
+					var myXhr = $.ajaxSettings.xhr();
+					if(myXhr.upload){ // проверка что осуществляется upload
+						myXhr.upload.addEventListener('progress',progressHandlingFunction, false); //передача в функцию значений
+					}
+					return myXhr;
+				},
+				data: data,
+				cache: false,
+				contentType: false,
+				dataType: 'json',
+				processData: false,
+				beforeSend: function() {
+					$('progress').show().attr({value:'0', max:'10000'}); 
+					if (!$('#attaches-info').is(':visible')) $('#attaches-info').show();
+				},
+				success: function(data){
+					AtomX.parseRespnse(module, data);
+					$('progress').hide();
+				   
+				},
+				error: errorHandler = function() {
+					$('#attaches-info').html('Some error during the files upload!');
+				}
+			});
+		});
+	};
+	
+	this.insetAtomImage = function(id){
+		$("#editor").wysibb().insertAtCursor('{ATTACH' + id + '}');
+	};
+	
+	this.loadAllAttaches = function(module){
+		$.ajax({
+			url: '/' + module + '/get_attaches/',
+			type: 'GET',
+			dataType: 'json',
+			beforeSend: function() {
+				$('#preloader').show();
+				$('#attaches-info').html('');
+				if (!$('#attaches-info').is(':visible')) $('#attaches-info').show();			  
+			},
+			success: function(data){
+				AtomX.parseRespnse(module, data);
+				$('#preloader').hide();
+			   
+			},
+			error: errorHandler = function() {
+				$('#attaches-info').html('Some error during the files upload!');
+			}
+		});
+	};
+	
+	this.deleteAttach = function(module, id){
+		if (confirm('Are you sure?')) {
+			$.ajax({
+				url: '/' + module + '/delete_attach/' + id + '/',
+				type: 'GET',
+				dataType: 'json',
+				beforeSend: function() {
+				  $('#preloader').show();  
+				},
+				success: function(data){
+					if (typeof data.result != 'undefined' && data.result == 1) {
+						$('#attach-' + id).hide();
+						$('#attach-' + id + ' + div.attach-delete').hide();
+					};
+					$('#preloader').hide();
+				   
+				},
+				error: errorHandler = function() {
+					$('#attaches-info').html('Some error during the file deleting!');
+				}
+			});
+		}
+	};
+	
+	this.getSimpleFileSize = function(size) {
+		if (size < 1) return '0 B';
+		var ext = ['B', 'KB', 'MB', 'GB'];
+		var i = 0;
+		while ((size / 1024) > 1) {
+			size = size / 1024;
+			i++;
+		}
+		size = Math.round(size, 2) + ' ' + ext[i];
+		return size;
+	};
 }
 
 
@@ -812,3 +922,30 @@ fpsWnd.content = function (name, content) {
     $('#'+name+' .fps-cont').html(content);
 };
 
+jQuery.fn.extend({
+    insertAtCaret: function(myValue){
+        return this.each(function(i) {
+            if (document.selection) {
+                // Для браузеров типа Internet Explorer
+                this.focus();
+                var sel = document.selection.createRange();
+                sel.text = myValue;
+                this.focus();
+            }
+            else if (this.selectionStart || this.selectionStart == '0') {
+                // Для браузеров типа Firefox и других Webkit-ов
+                var startPos = this.selectionStart;
+                var endPos = this.selectionEnd;
+                var scrollTop = this.scrollTop;
+                this.value = this.value.substring(0, startPos)+myValue+this.value.substring(endPos,this.value.length);
+                this.focus();
+                this.selectionStart = startPos + myValue.length;
+                this.selectionEnd = startPos + myValue.length;
+                this.scrollTop = scrollTop;
+            } else {
+                this.value += myValue;
+                this.focus();
+            }
+        })
+    }
+});

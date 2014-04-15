@@ -22,13 +22,14 @@
     font-style: normal;
 }
 
-/*----------------------------------------------------------/FONT--------------------------------------------------------------------------------*/
+/*----------------------------------------------------------/FONT-----------------------------------------*/
 body {text-align:center;margin: 0;background: url('../img/bg.jpg') repeat fixed;height:100%;min-width: 1000px;}
-/*----------------------------------------------------------LINKS--------------------------------------------------------------------------------*/
+/*----------------------------------------------------------LINKS-----------------------------------------*/
 a {color: #d6d6d6;text-decoration: none;text-shadow: 0 1px 0 #000;font-family: ArialNarrow,sans-serif;cursor: pointer;}
 a:hover {color: #fff;}
 .clear {clear:both;}
-/*----------------------------------------------------------ACTIVE_BUTTONS--------------------------------------------------------------------------------*/
+a.gallery > img {border:1px solid #777777; margin:3px; padding:3px;}
+/*----------------------------------------------------------ACTIVE_BUTTONS--------------------------------*/
 /*------------------------------CSSLOADER---------------------------------*/
 .for-redirect {
     font: 1em sans-serif; 
@@ -167,6 +168,10 @@ a.downloadbutton div div.infoload {height: 15px;font-size: 11px;color: #777;}
 a.downloadbutton:hover {background-position:  left -61px, right -61px;}
 a.downloadbutton:hover > div {background-position: bottom;}
 .autoheight {height:auto !important;}
+progress {width:300px; height:15px; border-radius:8px; border:none; background:#777; padding:4px; box-shadow:1px 1px 1px #555 inset;}
+progress::-webkit-progress-bar {width:300px; height:15px; border-radius:8px; border:none; background:#777; padding:4px; -webkit-box-shadow:1px 1px 1px #555 inset; box-shadow:1px 1px 1px #555 inset;}
+progress::-webkit-progress-value {border-radius:6px; background:linear-gradient(to left, #b7b840, #c6f543, #b7b840); background:-webkit-linear-gradient(left, #b7b840, #c6f543, #b7b840);}
+progress::-moz-progress-bar {border-radius:6px; background:linear-gradient(to left, #b7b840, #c6f543, #b7b840); background:-webkit-linear-gradient(left, #b7b840, #c6f543, #b7b840);}
 /*------------------------------------------------------------RAZMETKA------------------------------------------------------------------------------*/
 .global {max-width:1500px;margin: 0 auto;padding-bottom: 1px;}
 .header {width: 100%;height: 300px;}
@@ -952,6 +957,15 @@ box-shadow: inset 0 0 5px #333;  -webkit-box-shadow: inset 0 0 5px #333;  -moz-b
 .forumblock .posttextuser .edited {float: right;color: #888;font-size: 12px;margin: 5px;}
 .forumblock .footerpostinfo {clear: both;margin: 10px;height: 24px;text-align: right;}
 .forumblock .footerpostinfo .editpostlink {font-size: 12px;margin-right: 10px;display: inline-block;}
+.attaches-info {width:100%; max-width:620px; overflow-y:auto; height:auto; max-height:245px; padding:5px;}
+.attaches-info > img {max-width:150px; max-height:100px; margin:0px; padding:2px; border:1px solid #999999;}
+.attaches-info > .attach-delete {width:14px; height:14px; position:relative; top:-86px; left:-20px; border:1px solid #999999; background: url('../img/fps-icons-sprite.png') no-repeat rgba(250, 250, 250, 0.7); border-radius:3px; display:inline-block; opacity:0; transition:all .3s ease; cursor:pointer;}
+.attaches-info > img:hover + .attach-delete, .attach-delete:hover {opacity:1;}
+#attaches-show-all, #attaches-hide {text-decoration:none;}
+#attaches-hide {margin-left:5px; display:none;}
+#attaches-hide:before {content:"   |   "; color:#3C3C3C; margin-right:3px;}
+#attachments #preloader span {font-size:30px;}
+#attachments #preloader img {max-width:30px; height:auto;}
 .button2, .forumblock .footerpostinfo .footerpostbuttons,.forumblock .footerpostinfo span, .userpostrepa .ratingblock, .postuserzamechanya .ratingblock, .spoiler-open input {
 display: inline-block;
 height: 22px;

@@ -12,6 +12,15 @@ function metaTags(element) {
 	}
 }
 </script>
+
+<!-- Multi attaches upload -->
+<script type="text/javascript" src="{{ template_path }}/js/atm-multiupload.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	initAtomMultiload('{{ module }}', '{{ 'Error'|lang }}');
+});
+</script>
+
 {{ context.errors }}
 {{ context.preview }}
 <form name="sendForm" id="sendForm" action="{{ context.action }}" method="POST" enctype="multipart/form-data" onsubmit="return checkForm(this)">
@@ -31,15 +40,17 @@ function metaTags(element) {
             <textarea {{ editor_text }} id="editor" class="text-area" name="main_text">{{ context.main_text }}</textarea>
           </li>
 		  <li>
-            <span class="siu_title"><strong>Удаление загруженных изображений:</strong></span>
-            <span class="siu_data">{{ context.attaches_delete }}</span>
-          </li>
-		  <li>
             <span class="siu_title"><strong>Загрузить изображения:</strong></span>
             <span class="siu_data">
 			  <div id="attachments">
-                <input class="attachField" type="file" id="attach1" name="attach1" onchange="getFile(1)"><span id="attachMeta1"></span>
-                <input type="button" name="addInput" value="Прикрепить еще файл" onclick="addFileField('attachments');">
+                <input class="attachField" type="file" id="attach" multiple="multiple" name="attach[]">
+				<div id="preloader">
+					<span id="loader"><img src="/sys/img/ajaxload.gif" alt="loading"></span>
+				</div>
+				<div><progress style="display:none;"></progress></div>
+				<br><a id="attaches-show-all" href="javascript:void(0);" onClick="AtomX.loadAllAttaches('{{ module }}'); $('#attaches-hide').show();">Показать все</a>
+				<a id="attaches-hide" href="javascript:void(0);" onClick="$('.attaches-info, #attaches-hide').hide();">Закрыть</a>
+				<div class="attaches-info" id="attaches-info"></div>
              </div>
 		   </span>
           </li>

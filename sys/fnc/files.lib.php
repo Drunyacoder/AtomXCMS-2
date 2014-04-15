@@ -118,6 +118,68 @@ function downloadAttaches($module, $entity_id) {
 
 
 /**
+ * Download attached files
+ *
+ * @param string $module
+ * @param int $entity_id
+ */
+function downloadAtomAttaches($module, $entity_id = '') {
+	$Register = Register::getInstance();
+	$user = (!empty($_SESSION['user'])) ? $_SESSION['user'] : array('id' => 0, 'name' => __('Guest'));
+
+	$attaches = array();
+	$files_dir = ROOT . '/sys/files/' . $module . '/';
+	//$files_dir = ROOT . '/tmp/';
+
+
+	$max_attach = Config::read('max_attaches', $module);
+	if (empty($max_attach) || !is_numeric($max_attach)) $max_attach = 5;
+	for ($i = 1; $i <= $max_attach; $i++) {
+		$attach_name = 'attach' . $i;
+		if (!empty($_FILES[$attach_name]['name'])) {
+		
+		
+			// Извлекаем из имени файла расширение
+			$filename = getSecureFilename($_FILES[$attach_name]['name'], $files_dir);
+			$ext = strrchr($_FILES[$attach_name]['name'], ".");
+
+			$is_image = isImageFile($_FILES[$attach_name]['type'], $ext) ? 1 : 0;
+
+			// Перемещаем файл из временной директории сервера в директорию files
+			if (move_uploaded_file($_FILES[$attach_name]['tmp_name'], $files_dir . $filename)) {
+				if ($is_image == '1') {
+					$watermark_path = ROOT . '/sys/img/' . (Config::read('watermark_type') == '1' ? 'watermark_text.png' : Config::read('watermark_img'));
+					if (Config::read('use_watermarks') && !empty($watermark_path) && file_exists($watermark_path)) {
+						$waterObj = new FpsImg;
+						$save_path = $files_dir . $filename;
+						$waterObj->createWaterMark($save_path, $watermark_path);
+					}
+				}
+				chmod($files_dir . $filename, 0644);
+				$attach_file_data = array(
+					'entity_id'     => $entity_id,
+					'user_id'       => $user['id'],
+					'attach_number' => $i,
+					'filename'      => $filename,
+					'size'          => $_FILES[$attach_name]['size'],
+					'date'          => new Expr('NOW()'),
+					'is_image'      => $is_image,
+				);
+				
+				$className = ucfirst($module) . 'AttachesEntity';
+				$entity = new $className($attach_file_data);
+				$id = $entity->save();
+				$entity->setId($id);
+				$attaches[] = array_merge($entity->asArray(), array('user' => $user));
+			}
+		}
+	}
+	
+	return $attaches;
+}
+
+
+/**
  * Create secure and allowed filename.
  * Check to dublicate;
  *
@@ -170,3 +232,4 @@ function isPermittedFile($ext) {
 	
 	return !(empty($ext) || in_array(strtolower($ext), $deny_extentions));
 }
+

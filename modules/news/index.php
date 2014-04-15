@@ -4,12 +4,12 @@
 | @Author:       Andrey Brykin (Drunya)        |
 | @Email:        drunyacoder@gmail.com         |
 | @Site:         http://atomx.net              |
-| @Version:      1.8.4                         |
+| @Version:      2.0.0                         |
 | @Project:      CMS                           |
 | @Package       AtomX CMS                     |
 | @Subpackege    News Module                   |
 | @Copyright     ©Andrey Brykin                |
-| @Last mod      2014/03/05                    |
+| @Last mod      2014/04/14                    |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
@@ -1333,7 +1333,7 @@ Class NewsModule extends Module {
 		include_once ROOT . '/sys/inc/includes/rss.php';
     }
 	
-
+	
 	
 	public function getValidateRules() 
 	{
@@ -1460,6 +1460,16 @@ Class NewsModule extends Module {
 				'captcha_keystring' => array(
 					'pattern' => V_CAPTCHA,
 					'title' => 'Kaptcha',
+				),
+			),
+			'upload_attaches' => array(
+				'files__attach' => array(
+					'for' => array(
+						'from' => 1,
+						'to' => $max_attach,
+					),
+					'type' => 'image',
+					'max_size' => Config::read('max_attaches_size', $this->module),
 				),
 			),
 		);

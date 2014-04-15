@@ -4,12 +4,12 @@
 | @Author:       Andrey Brykin (Drunya)        |
 | @Email:        drunyacoder@gmail.com         |
 | @Site:         http://atomx.net              |
-| @Version:      2.0.0                         |
+| @Version:      2.1.0                         |
 | @Project:      CMS                           |
 | @Package       AtomX CMS                     |
 | @subpackege    Loads Module                  |
 | @copyright     ©Andrey Brykin 		       |
-| @last mod.     2014/03/08                    |
+| @last mod.     2014/04/14                    |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
@@ -416,10 +416,12 @@ Class LoadsModule extends Module {
 		$markers['moder_panel'] = $this->_getAdminBar($entity);
 		
 
-		if($entity->getDownload() && is_file(ROOT . '/sys/files/' . $this->module . '/' . $entity->getDownload())) {
-		  $attach_serv = '<a target="_blank" href="' . get_url('/' . $this->module . '/download_file/' 
-		  . $entity->getId()) . '">' . __('Download from server') . ' ('.
-		  ( getFileSize( ROOT . '/sys/files/' . $this->module . '/' . $entity->getDownload())) . ' Кб)</a>';
+		if ($entity->getDownload() && is_file(ROOT . '/sys/files/' . $this->module . '/' . $entity->getDownload())) {
+			$attach_serv = '<a target="_blank" href="' . get_url('/' . $this->module . '/download_file/' 
+				. $entity->getId()) . '">' . __('Download from server') . ' ('.
+				( getFileSize( ROOT . '/sys/files/' . $this->module . '/' . $entity->getDownload())) . ' Кб)</a>';
+		} else if ($entity->getDownload() && !is_file(ROOT . '/sys/files/' . $this->module . '/' . $entity->getDownload())) {
+			$attach_serv = '<span style="color:red;" class="atm-lost-file">' . __('File is deleted or damaged') . '</span>';
 		} else {
 			$attach_serv  = '';
 		}
@@ -464,7 +466,6 @@ Class LoadsModule extends Module {
         $entity->setViews($entity->getViews() + 1);
         $entity->save();
         $this->DB->cleanSqlCache();
-
         return $this->_view($source);
 	}
 
@@ -1646,6 +1647,16 @@ Class LoadsModule extends Module {
 				'captcha_keystring' => array(
 					'pattern' => V_CAPTCHA,
 					'title' => 'Kaptcha',
+				),
+			),
+			'upload_attaches' => array(
+				'files__attach' => array(
+					'for' => array(
+						'from' => 1,
+						'to' => $max_attach,
+					),
+					'type' => 'image',
+					'max_size' => Config::read('max_attaches_size', $this->module),
 				),
 			),
 		);

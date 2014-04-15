@@ -29,6 +29,13 @@ class NewsAttachesModel extends FpsModel
 	
     public $Table = 'news_attaches';
 
+    protected $RelatedEntities = array(
+        'user' => array(
+            'model' => 'Users',
+            'type' => 'has_one',
+            'foreignKey' => 'user_id',
+        ),
+    );
 	
 	
 	public function getByEntity($entity)
@@ -39,4 +46,18 @@ class NewsAttachesModel extends FpsModel
 	}
 	
 
+	public function getUserOveralFilesSize($user_id)
+	{
+		$ovaral_size = $this->getDbDriver()->select($this->Table, DB_ALL, array(
+			'cond' => array(
+				'user_id' => $user_id, 
+			),
+			'fields' => array(
+				"SUM(size) as size",
+			),
+		));
+		return (!empty($ovaral_size[0]) && !empty($ovaral_size[0]['size'])) 
+			? $ovaral_size[0]['size']
+			: 0;
+	}
 }

@@ -1,3 +1,11 @@
+<!-- Multi attaches upload -->
+<script type="text/javascript" src="{{ template_path }}/js/atm-multiupload.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	initAtomMultiload('{{ module }}', '{{ 'Error'|lang }}');
+});
+</script>
+
 {{ editor_body }}
 {{ context.errors }}
 <form name="sendForm" id="sendForm" action="{{ context.action }}" method="POST" enctype="multipart/form-data" onsubmit="return checkForm(this)">
@@ -5,20 +13,29 @@
 	  <div class="mat-title">Редактирование сообщения</div>
 	  <div class="mat-content">
 		<ul class="spisok-all">
-			  <li><textarea {{ editor_text }} class="text-area" id="editor" name="mainText">{{ context.main_text }}</textarea></li>
-			  <li>
-					{% if checkAccess([module,'edit_posts']) %}
-						Добавить строку "Отредактировано": <input type="checkbox" name="add_editor"{% if context.add_editor %}checked="checked"{% endif %}/>
-					{% endif %}
-					<div id="attachments">Прикрепленные файлы:<br/>
-                        <input class="attachField" type="file" id="attach1" name="attach1"  onChange="getFile(1)" />{{ context.unlinkfiles.att1 }}<span id="attachMeta1"></span><br />
-                        <input class="attachField" type="file" id="attach2" name="attach2"  onChange="getFile(2)" />{{ context.unlinkfiles.att2 }}<span id="attachMeta2"></span><br />
-                        <input class="attachField" type="file" id="attach3" name="attach3"  onChange="getFile(3)" />{{ context.unlinkfiles.att3 }}<span id="attachMeta3"></span><br />
-                        <input class="attachField" type="file" id="attach4" name="attach4"  onChange="getFile(4)" />{{ context.unlinkfiles.att4 }}<span id="attachMeta4"></span><br />
-                        <input class="attachField" type="file" id="attach5" name="attach5"  onChange="getFile(5)" />{{ context.unlinkfiles.att5 }}<span id="attachMeta5"></span><br />
+		  <li><textarea {{ editor_text }} class="text-area" id="editor" name="mainText">{{ context.main_text }}</textarea></li>
+		  
+			{% if checkAccess([module,'edit_posts']) %}
+			<li>
+				<span class="siu_title"><strong>Добавить строку "Отредактировано":</strong></span> 
+				<span class="siu_data"><input type="checkbox" name="add_editor"{% if context.add_editor %}checked="checked"{% endif %}/></span>
+			</li>
+			{% endif %}
+				
+			<li id="attachments">
+				<span class="siu_title"><strong>Прикрепить файлы:</strong></span>
+				<span class="siu_data">
+					<input class="attachField" type="file" id="attach" multiple="multiple" name="attach[]">
+					<div id="preloader">
+						<span id="loader"><img src="/sys/img/ajaxload.gif" alt="loading"></span>
 					</div>
-			  </li>
-			  <li class="sumbitbuttons"><input type="submit" name="submitForm" value="Сохранить изменения" /></li>
+					<div><progress style="display:none;"></progress></div>
+					<br><a id="attaches-show-all" href="javascript:void(0);" onClick="AtomX.loadAllAttaches('{{ module }}'); $('#attaches-hide').show();">Показать все</a>
+					<a id="attaches-hide" href="javascript:void(0);" onClick="$('.attaches-info, #attaches-hide').hide();">Закрыть</a>
+					<div class="attaches-info" id="attaches-info"></div>
+				</span>
+			</li>
+			<li class="sumbitbuttons"><input type="submit" name="submitForm" value="Сохранить изменения" /></li>
 		</ul>
 	</div>
 </div>

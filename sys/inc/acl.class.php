@@ -158,7 +158,11 @@ class ACL {
 		$rules = $this->cleanRules($rules);
 		
 		if ($fopen = fopen(ROOT . '/sys/settings/acl_rules.php', 'w')) {
-			fputs($fopen, '<?php ' . "\n" . '$acl_rules = ' . var_export($rules, true) . "\n" . '?>');
+			$data = var_export($rules, true);
+			$data = preg_replace('#=>[\s]+array \(#is', '=> array(', $data);
+			$data = preg_replace('#[\s]*\d+ => (\d+,)[\s]*#is', '\\1', $data);
+			$data = preg_replace('#array\([\s]+\)#is', 'array()', $data);
+			fputs($fopen, '<?php ' . "\n" . '$acl_rules = ' . $data . "\n" . '?>');
 			fclose($fopen);
 			return true;
 		} else {

@@ -53,6 +53,63 @@ $settingsInfo = array(
 		'description' => '',
 		'help' => '',
 	),
+
+	
+	'Изображения' => 'Изображения',
+	'img_size_x' => array(
+		'type' => 'text',
+		'title' => 'Размер по оси Х',
+		'description' => '',
+		'help' => 'Пикселей(Число)',
+	),
+	'img_size_y' => array(
+		'type' => 'text',
+		'title' => 'Размер по оси Y',
+		'description' => '',
+		'help' => 'Пикселей(Число)',
+	),
+	'max_attaches_size' => array(
+		'type' => 'text',
+		'title' => 'Максимальный "вес"',
+		'description' => '',
+		'help' => __('KB'),
+		'onview' => array(
+			'division' => 1000,
+		),
+		'onsave' => array(
+			'multiply' => 1000,
+		),
+	),
+	'max_attaches' => array(
+		'type' => 'text',
+		'title' => 'Максимальное кол-во файлов загружаемых за раз',
+		'description' => '',
+		'help' => 'Единиц',
+	),
+	'max_all_attaches_size' => array(
+		'type' => 'text',
+		'title' => __('Max size of all user files'),
+		'description' => '',
+		'help' => __('MB'),
+		'onview' => array(
+			'division' => 1000000,
+		),
+		'onsave' => array(
+			'multiply' => 1000000,
+		),
+	),
+	'max_guest_attaches_size' => array(
+		'type' => 'text',
+		'title' => __('Max total size of files which guests can upload'),
+		'description' => __('Used total size of all files which were uploaded by guests'),
+		'help' => __('MB'),
+		'onview' => array(
+			'division' => 1000000,
+		),
+		'onsave' => array(
+			'multiply' => 1000000,
+		),
+	),
 	
 	
 	'Прочее' => 'Прочее',

@@ -42,6 +42,7 @@ return array(
 	'comments_require_premoder' 	=> 'Тебуется премодерация комментариев', 						
 	'can_premoder' 					=> 'Может совершать премодерацию', 	
 	'use_rating'					=> 'Выставлять рейтинг материалам',
+	'use_attaches'					=> 'Могут загружать файлы',
 
 	'view_forums_list' 				=> 'Просматривать список форумов', 						
 	'view_forums' 					=> 'Просматривать форумы', 						
@@ -112,6 +113,9 @@ return array(
 	'Not enough posts'				=> 'Нет постов для перемещения',
 	'Give the right ansver'			=> 'Дайте ответ на вопрос',
 	'Enter the characters from the image' => 'Введите символы с картинки',
+	'You can upload only %s file(s)' => 'Вы можете загрузить максимум %s файла(ов)',
+	'Max overal files size is %s Mb' 	=> 'Максимальный размер всех загруенных вами файлов не должен превышать %s Mb',
+	'File is deleted or damaged' 	=> 'Файл удален или поврежден',
 	
 	'Wrong chars in field "code"' 	=> 'поле "Код" содержит недопустимые символы',
 	'Wrong protection code' 		=> 'не совпадает код с картинки',
@@ -527,6 +531,8 @@ return array(
 	'It is something like redirect but it isn\'t. You can type any URL from this site here and that page will be available as home page. For example "<b>news/view/1</b>"' => 'Это что-то похожее на переадресацию, но самой переадресации не происходит. Другими словами сдесь Вы вводите адрес точки входа и страница по этому адресу будет являться главной страницей сайта. Вводите сюда только рабочие ссылки и только в пределах сайта. Пример "<b>news/view/1</b>"',
 	'Max an attach file size' 		=> 'Максимальный размер файла вложения',
 	'Byte' 							=> 'Байт',
+	'MB' 							=> 'МБ',
+	'KB' 							=> 'КБ',
 	'which users can upload to the site. Used in those modules which havn\'t same setting' => 'которые пользователи смогут выгружать на сайте. Используется во всех модулях где нет собственой подобной настройки',
 	'Preview size' 					=> 'Размер превью',
 	'Auto scaled images' 			=> 'Автоматически уменьшеных изображений',
@@ -555,6 +561,9 @@ return array(
 	'May be not secure. If you enable, setup it in users rules' => 'Таит угрозу. Включая эту возможность, настройте ее в правах групп.',
 	'Enable smiles in messages' 	=> 'Разрешить использование Смайлов в сообщениях',
 	'Replaces special markers to images' => 'Использовать ли на сайте замену специальных меток на изображения(smiles)',
+	'Max size of all user files' 	=> 'Максимальный размер всех файлов пользователя',
+	'Max total size of files which guests can upload' => 'Максимальный размер всех файлов гостей',
+	'Used total size of all files which were uploaded by guests' => 'При подсчете учитываются все файлы, загруженные гостями',
 	
 	// Templates name
 	'Add form'  					=> 'Форма добавления',

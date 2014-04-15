@@ -622,6 +622,108 @@ class Module {
 	}
 
 	
+	public function upload_attaches()
+	{
+		$this->counter = false;
+		$key = ($this->module === 'forum') ? 'add_posts' : 'add_materials';
+		$this->ACL->turn(array($this->module, $key));
+		$this->ACL->turn(array($this->module, 'use_attaches'));
+		
+		$attachModel = $this->Register['ModManager']->getModelInstance($this->module . 'Attaches');
+		$errors = '';
+		
+		if (!empty($_FILES) && is_array($_FILES)) {
+			$cnt = 0;
+			$new_file_size = 0;
+			foreach ($_FILES as $name => $file) {
+				if (preg_match('#^attach\d+$#', $name)) {
+					$cnt++;
+					$new_file_size += $file['size'];
+				}
+			}
+		}
+		if ($cnt > Config::read('max_attaches', $this->module))
+			$errors .= '<li>' . sprintf(__('You can upload only %s file(s)'), Config::read('max_attaches', $this->module)) . '</li>';
+		
+		if (!empty($_SESSION['user']['id'])) {
+			$old_files_size = $attachModel->getUserOveralFilesSize($_SESSION['user']['id']);
+			$overal_files_size = intval($new_file_size) + $old_files_size;
+			$max_overal_size = Config::read('max_all_attaches_size', $this->module) * 1024 * 1024;
+		} else {
+			$overal_files_size = intval($new_file_size);
+			$max_overal_size = Config::read('max_guest_attaches_size', $this->module) * 1024 * 1024;
+		}
+		
+		if ($overal_files_size > $max_overal_size)
+			$errors .= '<li>' . sprintf(__('Max overal files size is %s Mb'), $max_overal_size / 1024 / 1024) . '</li>';
+		
+		
+		$errors .= $this->Register['Validate']->check($this->getValidateRules());
+		if (!empty($errors)) $this->showAjaxResponse(array(
+			'errors' => $this->Register['Validate']->wrapErrors($errors), 
+			'result' => '0'
+		));
+		
+		$attaches = downloadAtomAttaches($this->module);
+		$this->showAjaxResponse($attaches);
+	}
+	
+	
+	public function get_attaches()
+	{
+		$this->counter = false;
+		if (empty($_SESSION['user']['id'])) $this->showAjaxResponse(array());
+		$user_id = $_SESSION['user']['id'];
+		
+		$attachModel = $this->Register['ModManager']->getModelInstance($this->module . 'Attaches');
+		$attachModel->bindModel('user');
+		$attaches = $attachModel->getCollection(array('user_id' => $user_id));
+		if ($attaches) {
+			foreach ($attaches as $k => &$attach) {
+				// delete collizions
+				if (!file_exists(ROOT . '/sys/files/' . $this->module . '/' . $attach->getFilename())) {
+					$attach->delete();
+					unset($attaches[$k]);
+				} else {
+					$attach = $attach->asArray();
+				}
+			}
+		}
+		$this->showAjaxResponse($attaches);
+	}
+	
+	
+	public function delete_attach($id)
+	{
+		$this->counter = false;
+		$this->ACL->turn(array($this->module, 'use_attaches'));
+		if (empty($_SESSION['user']['id'])) $this->showAjaxResponse(array());
+		$user_id = $_SESSION['user']['id'];
+		
+		$attachModel = $this->Register['ModManager']->getModelInstance($this->module . 'Attaches');
+		$attach = $attachModel->getById($id);
+		
+		$errors = '';
+		if ($user_id !== $attach->getUser_id())
+			$errors .= '<li>' . __('Permission denied') . '</li>';
+			
+		if (!empty($errors)) {
+			$this->showAjaxResponse(array(
+				'result' => '0', 
+				'errors' => $this->Register['Validate']->wrapErrors($errors),
+			));
+		}
+			
+		if ($attach) {
+			$filename = $attach->getFilename();
+			if (!empty($filename) && file_exists(ROOT . '/sys/files/' . $this->module . '/' . $filename)) {
+				_unlink(ROOT . '/sys/files/' . $this->module . '/' . $filename);
+			}
+			$attach->delete();
+		}
+		$this->showAjaxResponse(array('result' => '1'));
+	}
+	
 	
 	/**
 	 * Replace image marker
@@ -631,6 +733,12 @@ class Module {
 		$attachment = null;
 		$module = (!empty($module)) ? $module : $this->module;
        
+		$sizex = $this->Register['Config']->read('img_size_x', $module);
+		$sizey = $this->Register['Config']->read('img_size_y', $module);
+		$sizex = intval($sizex);
+		$sizey = intval($sizey);
+		$style = ' style="max-width:' . $sizex . 'px; max-height:' . $sizey . 'px;"';
+	   
         $attaches = ($module == 'forum') ? $entity->getAttacheslist() : $entity->getAttaches();
 		
 
@@ -644,7 +752,7 @@ class Module {
 					if ($attach->getIs_image() == 1) {
 						$announce = str_replace('{IMAGE' . $attach->getAttach_number() . '}'
 							, '<a class="gallery" href="' . get_url('/sys/files/' . $module . '/' . $attach->getFilename()) 
-							. '"><img alt="' . h($entity->getTitle()) . '" title="' . h($entity->getTitle()) 
+							. '"><img' . $style . ' alt="' . h($entity->getTitle()) . '" title="' . h($entity->getTitle()) 
 							. '" title="" src="' . get_url('/image/' . $module . '/' . $attach->getFilename()) . '" /></a>'
 							, $announce);
 							
@@ -660,6 +768,41 @@ class Module {
         }
 		
 		if (!empty($attachment)) $entity->setAttachment($attachment);
+		
+		if (preg_match_all('#\{ATTACH(\d+)(\|(\d+))?\}#', $announce, $matches)) {
+			$ids = array();
+			$sizes = array();
+			foreach ($matches[1] as $key => $id) {
+				$ids[] = $id;
+				$sizes[$id] = (!empty($matches[3][$key])) ? intval($matches[3][$key]) : false;
+			}
+			$ids = implode(', ', $ids);
+			
+			$attachesModel = $this->Register['ModManager']->getModelInstance($module . 'Attaches');
+			$attaches = $attachesModel->getCollection(array("`id` IN ($ids)"));
+			if ($attaches) {
+				foreach ($attaches as $attach) {
+					if ($attach->getIs_image() == 1) {
+						$style_ = (array_key_exists($attach->getId(), $sizes) && !empty($sizes[$attach->getId()])) 
+							? ' style="width:' . $sizes[$attach->getId()] . 'px;"'
+							: $style;
+						
+						$announce = preg_replace('#\{ATTACH' . $attach->getId() . '[^\}]*\}#', 
+							'<a class="gallery" href="' . get_url('/sys/files/' . $module . '/' . $attach->getFilename()) 
+							. '"><img' . $style_ . ' alt="' . h($entity->getTitle()) . '" title="' . h($entity->getTitle()) 
+							. '" title="" src="' . get_url('/image/' . $module . '/' . $attach->getFilename()) . '" /></a>',
+							$announce);
+					} else {
+						$announce = preg_replace('#\{ATTACH' . $attach->getId() . '\}#', 
+							__('Attachment') . $attach->getAttach_number() 
+							. ': ' . get_img('/sys/img/file.gif', array('alt' => __('Open file'), 'title' => __('Open file'))) 
+							. '&nbsp;' . get_link(($attach->getSize() / 1000) .' Kb', '/forum/download_file/' 
+							. $attach->getFilename(), array('target' => '_blank')) . '<br />',
+							$announce);
+					}
+				}
+			}
+		}
 	
 		return $announce;
 	}
