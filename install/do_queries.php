@@ -78,10 +78,10 @@ $array[] = "INSERT INTO `{$set['db']['prefix']}forums` (`title`, `description`, 
 $array[] = "DROP TABLE IF EXISTS `{$set['db']['prefix']}forum_attaches`";
 $array[] = "CREATE TABLE `{$set['db']['prefix']}forum_attaches` (
 	`id` INT NOT NULL AUTO_INCREMENT ,
-	`post_id` INT NOT NULL,
-	`theme_id` INT NOT NULL ,
+	`post_id` INT NOT NULL default '0',
+	`theme_id` INT NOT NULL default '0',
 	`user_id` INT NOT NULL ,
-	`attach_number` INT NOT NULL ,
+	`attach_number` INT NOT NULL default '0',
 	`filename` VARCHAR( 100 ) NOT NULL ,
 	`size` BIGINT NOT NULL ,
 	`date` DATETIME NOT NULL ,
@@ -519,9 +519,9 @@ $array[] = "CREATE TABLE `{$set['db']['prefix']}users_warnings` (
 $array[] = "DROP TABLE IF EXISTS `{$set['db']['prefix']}loads_attaches`";
 $array[] = "CREATE TABLE `{$set['db']['prefix']}loads_attaches` (
 	`id` INT NOT NULL AUTO_INCREMENT ,
-	`entity_id` INT NOT NULL,
+	`entity_id` INT NOT NULL default '0',
 	`user_id` INT NOT NULL ,
-	`attach_number` INT NOT NULL ,
+	`attach_number` INT NOT NULL default '0',
 	`filename` VARCHAR( 100 ) NOT NULL ,
 	`size` BIGINT NOT NULL ,
 	`date` DATETIME NOT NULL ,
@@ -532,9 +532,9 @@ $array[] = "CREATE TABLE `{$set['db']['prefix']}loads_attaches` (
 $array[] = "DROP TABLE IF EXISTS `{$set['db']['prefix']}stat_attaches`";
 $array[] = "CREATE TABLE `{$set['db']['prefix']}stat_attaches` (
 	`id` INT NOT NULL AUTO_INCREMENT ,
-	`entity_id` INT NOT NULL,
+	`entity_id` INT NOT NULL default '0',
 	`user_id` INT NOT NULL ,
-	`attach_number` INT NOT NULL ,
+	`attach_number` INT NOT NULL default '0',
 	`filename` VARCHAR( 100 ) NOT NULL ,
 	`size` BIGINT NOT NULL ,
 	`date` DATETIME NOT NULL ,
@@ -545,9 +545,9 @@ $array[] = "CREATE TABLE `{$set['db']['prefix']}stat_attaches` (
 $array[] = "DROP TABLE IF EXISTS `{$set['db']['prefix']}news_attaches`";
 $array[] = "CREATE TABLE `{$set['db']['prefix']}news_attaches` (
 	`id` INT NOT NULL AUTO_INCREMENT ,
-	`entity_id` INT NOT NULL,
+	`entity_id` INT NOT NULL default '0',
 	`user_id` INT NOT NULL ,
-	`attach_number` INT NOT NULL ,
+	`attach_number` INT NOT NULL default '0',
 	`filename` VARCHAR( 100 ) NOT NULL ,
 	`size` BIGINT NOT NULL ,
 	`date` DATETIME NOT NULL ,
