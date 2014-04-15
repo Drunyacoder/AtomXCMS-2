@@ -20,7 +20,6 @@ if (empty($html) && $commentsModel) {
 		'entity_id' => $id,
 		'module' => $this->module,
 	), $params);
-	pr($comments); die();
 	
 	if ($comments) {
 		foreach ($comments as $comment) {
