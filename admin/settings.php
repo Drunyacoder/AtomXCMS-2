@@ -313,18 +313,25 @@ if (count($settingsInfo)) {
 				$options = '';
 				if (count($params['options'])) {
 					foreach ($params['options'] as $value => $visName) {
+                        $options_attr = array();
+                        if (!empty($visName['attr'])) {
+                            $options_attr = $visName['attr'];
+                            $visName = $visName['value'];
+                        }
+                        if (!empty($params['options_attr']) && is_array($params['options_attr']))
+                            array_merge($params['options_attr'], $visName['attr']);
 						$options_ = '';
 						$state = ($_config[$fname] == $value) ? ' selected="selected"' : '';
 						
 						$attr = '';
-						if (!empty($params['options_attr'])) {
-							foreach ($params['options_attr'] as $k => $v) {
+						if (!empty($options_attr)) {
+							foreach ($options_attr as $k => $v) {
 								$attr .= ' ' . $k . '="' . $v . '"';
 							}
 						}
 						
-						$options_ .= '<option ' . $state . $attr . ' value="' 
-						. h($value) . '">' . h($visName) . '</option>';
+						$options_ .= '<option data-test="'.$value.'" ' . $state . $attr . ' value="'
+						. h($value) . '">' . $visName . '</option>';
 						$options .= sprintf($options_, getImgPath($value));
 					}
 				}

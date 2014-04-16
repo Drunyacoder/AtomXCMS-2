@@ -3,12 +3,12 @@
 
 $menuInfo = array(
     'url' => 'settings.php?m=forum',
-    'ankor' => 'Форум',
+    'ankor' => __('Forum'),
 	'sub' => array(
-        'settings.php?m=forum' => 'Настройки',
-        'design.php?m=forum' => 'Дизайн',
-        'forum_cat.php' => 'Управление форумами',
-        'forum_repair.php' => 'Пересчет сообщений',
+        'settings.php?m=forum' => __('Settings'),
+        'design.php?m=forum' => __('Design'),
+        'forum_cat.php' => __('Forums management'),
+        'forum_repair.php' => __('Posts recounting'),
 	),
 );
 
@@ -18,59 +18,58 @@ $menuInfo = array(
 $settingsInfo = array(
 	'title' => array(
 		'type' => 'text',
-		'title' => 'Заголовок',
-		'description' => 'Заголовок, который подставится в блок <title></title>',
+		'title' => __('Title'),
+		'description' => sprintf(__('Used in the template as %s'), '{{ meta_title }} | {{ title }}'),
 	),
 	'description' => array(
 		'type' => 'text',
-		'title' => 'Описание',
-		'description' => 'То, что подставится в мета тег description',
+		'title' => __('Description'),
+		'description' => sprintf(__('Used in the template as %s'), '{{ meta_description }}'),
 	),
 	'not_reg_user' => array(
 		'type' => 'text',
-		'title' => 'Псевдоним гостя',
-		'description' => '(Под этим именем будет показано сообщение (пост) <br>
- не зарегистрированного пользователя)',
+		'title' => __('Alias for guests'),
+		'description' => __('this name will be shown as non authorized user nickname'),
 	),
-	
-	
-	'Ограничения' => 'Ограничения',
+
+
+    __('Restrictions'),
 	'max_post_lenght' => array(
 		'type' => 'text',
-		'title' => 'Максимальная длина сообщения',
+		'title' => __('Max message length'),
 		'description' => '',
-		'help' => 'Символов',
+		'help' => __('Symbols'),
 	),
 	'posts_per_page' => array(
 		'type' => 'text',
-		'title' => 'Постов на странице',
+		'title' => __('Posts per page'),
 		'description' => '',
 		'help' => '',
 	),
 	'themes_per_page' => array(
 		'type' => 'text',
-		'title' => 'Тем на странице',
+		'title' => __('Topics per page'),
 		'description' => '',
 		'help' => '',
 	),
 
 	
-	'Изображения' => 'Изображения',
+	__('Images'),
 	'img_size_x' => array(
 		'type' => 'text',
-		'title' => 'Размер по оси Х',
+		'title' => __('Size of X axis'),
 		'description' => '',
-		'help' => 'Пикселей(Число)',
+		'help' => 'Px',
 	),
 	'img_size_y' => array(
 		'type' => 'text',
-		'title' => 'Размер по оси Y',
+		'title' => __('Size of Y axis'),
 		'description' => '',
-		'help' => 'Пикселей(Число)',
+		'help' => 'Px',
 	),
 	'max_attaches_size' => array(
 		'type' => 'text',
-		'title' => 'Максимальный "вес"',
+		'title' => __('Max an attach file size'),
 		'description' => '',
 		'help' => __('KB'),
 		'onview' => array(
@@ -82,9 +81,9 @@ $settingsInfo = array(
 	),
 	'max_attaches' => array(
 		'type' => 'text',
-		'title' => 'Максимальное кол-во файлов загружаемых за раз',
+		'title' => __('Max quantity of an uploaded files per time'),
 		'description' => '',
-		'help' => 'Единиц',
+		'help' => __('Units'),
 	),
 	'max_all_attaches_size' => array(
 		'type' => 'text',
@@ -112,11 +111,11 @@ $settingsInfo = array(
 	),
 	
 	
-	'Прочее' => 'Прочее',
+	__('Common'),
 	'active' => array(
 		'type' => 'checkbox',
-		'title' => 'Статус',
-		'description' => '(Активирован/Деактивирован)',
+		'title' => __('Status'),
+		'description' => __('Enable/Disable'),
 		'value' => '1',
 		'checked' => '1',
 	),

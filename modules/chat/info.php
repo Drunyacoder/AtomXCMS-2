@@ -2,10 +2,10 @@
 
 $menuInfo = array(
     'url' => 'settings.php?m=chat',
-    'ankor' => 'Чат',
+    'ankor' => __('Chat'),
 	'sub' => array(
-        'settings.php?m=chat' => 'Настройки',
-        'design.php?m=chat' => 'Дизайн',
+        'settings.php?m=chat' => __('Settings'),
+        'design.php?m=chat' => __('Design'),
 	),
 );
 
@@ -13,30 +13,30 @@ $menuInfo = array(
 $settingsInfo = array(
 	'title' => array(
 		'type' => 'text',
-		'title' => 'Заголовок',
-		'description' => 'Заголовок, который подставится в блок <title></title>',
+		'title' => __('Title'),
+		'description' => sprintf(__('Used in the template as %s'), '{{ meta_title }} | {{ title }}'),
 	),
 	'description' => array(
 		'type' => 'text',
-		'title' => 'Описание',
-		'description' => 'То, что подставится в мета тег description',
+		'title' => __('Description'),
+		'description' => sprintf(__('Used in the template as %s'), '{{ meta_description }}'),
 	),
 	
 	
-	'Ограничения' => 'Ограничения',
+	__('Restrictions'),
 	'max_lenght' => array(
 		'type' => 'text',
-		'title' => 'Максимальная длина сообщения',
+		'title' => __('Max message length'),
 		'description' => '',
-		'help' => 'Символов',
+		'help' => __('Symbols'),
 	),
 	
 	
-	'Прочее' => 'Прочее',
+	__('Common'),
 	'active' => array(
 		'type' => 'checkbox',
-		'title' => 'Статус',
-		'description' => '(Активирован/Деактивирован)',
+		'title' => __('Status'),
+		'description' => __('Enable/Disable'),
 		'value' => '1',
 		'checked' => '1',
 	),
