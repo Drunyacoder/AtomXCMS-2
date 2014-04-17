@@ -4,17 +4,16 @@
 
 $menuInfo = array(
     'url' => 'settings.php?m=users',
-    'ankor' => 'Пользователи',
+    'ankor' => __('Users'),
 	'sub' => array(
-        'settings.php?m=users' => 'Настройки',
-        'users_groups.php' => 'Редактор групп',
-        'users_rules.php' => 'Права групп',
-        'users_rating.php' => 'Ранги пользователей',
-        'users_sendmail.php' => 'Массовая рассылка писем',
-        'users_reg_rules.php' => 'Правила регистрации',
-        'settings.php?m=users' => 'Настройки',
-        'additional_fields.php?m=users' => 'Дополнительные поля',
-        'users_list.php' => 'Список пользователей',
+        'settings.php?m=users' => __('Settings'),
+        'users_groups.php' => __('Users groups'),
+        'users_rules.php' => __('Groups rules'),
+        'users_rating.php' => __('Users ranks'),
+        'users_sendmail.php' => __('Mass mailing'),
+        'users_reg_rules.php' => __('Registration rules'),
+        'additional_fields.php?m=users' => __('Additional fields'),
+        'users_list.php' => __('Users list'),
 	),
 );
 
@@ -24,68 +23,75 @@ $menuInfo = array(
 $settingsInfo = array(
     'title' => array(
         'type' => 'text',
-        'title' => 'Заголовок',
+        'title' => __('Title'),
+		'description' => sprintf(__('Used in the template as %s'), '{{ meta_title }} | {{ title }}'),
     ),
     'description' => array(
         'type' => 'text',
-        'title' => 'Описание',
+		'title' => __('Description'),
+		'description' => sprintf(__('Used in the template as %s'), '{{ meta_description }}'),
     ),
 
 
-    'Ограничения' => 'Ограничения',
+    __('Restrictions'),
     'max_avatar_size' => array(
         'type' => 'text',
-        'title' => 'Максимальный размер аватара',
-        'description' => 'Это картинка, которая отображаеться на форуме и в профиле пользователя',
-        'help' => 'Байт',
+        'title' => __('Max avatar size'),
+        'help' => __('KB'),
+		'onview' => array(
+			'division' => 1000,
+		),
+		'onsave' => array(
+			'multiply' => 1000,
+		),
     ),
     'users_per_page' => array(
         'type' => 'text',
-        'title' => 'Пользователей на одну страницу',
-        'description' => 'в списке зарегистрированных пользователей',
+        'title' => __('Users per page'),
+        'description' => __('in the already registered users list'),
     ),
     'max_mail_lenght' => array(
         'type' => 'text',
-        'title' => 'Максимальный размер письма',
-        'description' => 'которое один пользователь форума может написать другому',
+        'title' => __('Max email length'),
+        'description' => __('that one user can write to another user'),
     ),
     'max_count_mess' => array(
         'type' => 'text',
-        'title' => 'Максимальное количество личных сообщений',
-        'description' => 'в папках "Входящие" и "Исходящие"',
+        'title' => __('Max quantity of PM messages'),
+        'description' => __('when the limit is reached, the user can no longer send and receive messages'),
     ),
     'max_message_lenght' => array(
         'type' => 'text',
-        'title' => 'Максимальная длина личного сообщения',
+        'title' => __('Max PM length'),
         'description' => '',
     ),
     'rating_comment_lenght' => array(
         'type' => 'text',
-        'title' => 'Максимальная длина комментария к голосу',
+        'title' => __('Max comment length to a vote'),
         'description' => '',
     ),
     'warnings_by_ban' => array(
         'type' => 'text',
-        'title' => 'Кол-во предупреждений для наступления бана',
+        'title' => __('Quantity of warnings for ban'),
         'description' => '',
     ),
     'autoban_interval' => array(
         'type' => 'text',
-        'title' => 'Продолжительность бана, из-за предупреждений',
-        'help' => 'Секунд',
+        'title' => __('Duration of the ban by warnings level'),
+        'help' => __('Seconds'),
     ),
     'use_gravatar' => array(
         'type' => 'checkbox',
-        'title' => 'Использовать Gravatar на сайте',
+        'title' => __('Enable Gravatar'),
         'checked' => '1',
         'value' => '1',
     ),
 
 
-    'Обязательные поля' => 'Обязательные поля',
+    __('Required field'),
     'fields_login' => array(
         'type' => 'checkbox',
-        'title' => 'Имя',
+        'title' => __('Name'),
         'attr' => array(
             'disabled' => 'disabled',
             'checked' => 'checked',
@@ -93,7 +99,7 @@ $settingsInfo = array(
     ),
     'fields_email' => array(
         'type' => 'checkbox',
-        'title' => 'E-mail',
+        'title' => __('Email'),
         'attr' => array(
             'disabled' => 'disabled',
             'checked' => 'checked',
@@ -101,7 +107,7 @@ $settingsInfo = array(
     ),
     'fields_password' => array(
         'type' => 'checkbox',
-        'title' => 'Пароль',
+        'title' => __('Password'),
         'attr' => array(
             'disabled' => 'disabled',
             'checked' => 'checked',
@@ -109,7 +115,7 @@ $settingsInfo = array(
     ),
     'sub_keystring' => array(
         'type' => 'checkbox',
-        'title' => 'Код(каптча)',
+        'title' => __('Keystring (captcha)'),
         'fields' => 'fields',
         'value' => 'keystring',
         'checked' => '1',
@@ -130,81 +136,81 @@ $settingsInfo = array(
     ),
     'sub_pol' => array(
         'type' => 'checkbox',
-        'title' => 'Пол',
+        'title' => __('Gender'),
         'fields' => 'fields',
         'value' => 'pol',
         'checked' => '1',
     ),
     'sub_city' => array(
         'type' => 'checkbox',
-        'title' => 'Город',
+        'title' => __('City'),
         'fields' => 'fields',
         'value' => 'city',
         'checked' => '1',
     ),
     'sub_telephone' => array(
         'type' => 'checkbox',
-        'title' => 'Телефон',
+        'title' => __('Telephone'),
         'fields' => 'fields',
         'value' => 'telephone',
         'checked' => '1',
     ),
     'sub_byear' => array(
         'type' => 'checkbox',
-        'title' => 'Год рождения',
+        'title' => __('Year of birth'),
         'fields' => 'fields',
         'value' => 'byear',
         'checked' => '1',
     ),
     'sub_bmonth' => array(
         'type' => 'checkbox',
-        'title' => 'Месяц рождения',
+        'title' => __('Month of birth'),
         'fields' => 'fields',
         'value' => 'bmonth',
         'checked' => '1',
     ),
     'sub_bday' => array(
         'type' => 'checkbox',
-        'title' => 'День рождения',
+        'title' => __('Day of birth'),
         'fields' => 'fields',
         'value' => 'bday',
         'checked' => '1',
     ),
     'sub_url' => array(
         'type' => 'checkbox',
-        'title' => 'Домашняя страничка',
+        'title' => __('Home page'),
         'fields' => 'fields',
         'value' => 'url',
         'checked' => '1',
     ),
     'sub_about' => array(
         'type' => 'checkbox',
-        'title' => 'Интересы',
+        'title' => __('Interests'),
         'fields' => 'fields',
         'value' => 'about',
         'checked' => '1',
     ),
     'sub_signature' => array(
         'type' => 'checkbox',
-        'title' => 'Подпись',
+        'title' => __('Signature'),
         'fields' => 'fields',
         'value' => 'signature',
         'checked' => '1',
     ),
     'sub_timezone' => array(
         'type' => 'checkbox',
-        'title' => 'Временная зон',
+        'title' => __('Timezone'),
         'fields' => 'fields',
         'value' => 'timezone',
         'checked' => '1',
     ),
 
-    'Прочее' => 'Прочее',
+    __('Common'),
     'active' => array(
         'type' => 'checkbox',
-        'title' => 'Статус',
+        'title' => __('Status'),
         'checked' => '1',
         'value' => '1',
-        'description' => '(Активирован/Деактивирован)',
+        'description' => __('Enable/Disable'),
     ),
 );

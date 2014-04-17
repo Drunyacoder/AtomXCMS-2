@@ -3,10 +3,10 @@
 
 $menuInfo = array(
     'url' => 'settings.php?m=search',
-    'ankor' => 'Поиск',
+    'ankor' => __('Search'),
 	'sub' => array(
-        'settings.php?m=search' => 'Настройки',
-        'design.php?m=search&t=search_form' => 'Дизайн',
+        'settings.php?m=search' => __('Settings'),
+        'design.php?m=search&t=search_form' => __('Design'),
 	),
 );
 
@@ -15,38 +15,38 @@ $menuInfo = array(
 $settingsInfo = array(
     'title' => array(
         'type' => 'text',
-        'title' => 'Заголовок',
+        'title' => __('Title'),
+		'description' => sprintf(__('Used in the template as %s'), '{{ meta_title }} | {{ title }}'),
     ),
     'description' => array(
         'type' => 'text',
-        'title' => 'Описание',
+		'title' => __('Description'),
+		'description' => sprintf(__('Used in the template as %s'), '{{ meta_description }}'),
     ),
 
-    'Ограничения' => 'Ограничения',
+    __('Restrictions'),
     'index_interval' => array(
         'type' => 'text',
-        'title' => 'Частота обновления',
-        'description' => 'Через какое кол-во дней проводить переиндексацию сайта',
+        'title' => __('Refresh rate'),
+        'description' => __('After a number of days to carry out re-index the site'),
     ),
     'min_lenght' => array(
         'type' => 'text',
-        'title' => 'Минимальная длина запроса',
-        'description' => 'Поиск будет вестись только
-                по словам отвечающим этому требованию',
-        'help' => 'Символов',
+        'title' => __('Min search query length'),
+        'help' => __('Symbols'),
     ),
     'per_page' => array(
         'type' => 'text',
-        'title' => 'Результатов на страницу',
+        'title' => __('Results per page'),
         'description' => '',
     ),
 
-    'Прочее' => 'Прочее',
+    __('Common'),
     'active' => array(
         'type' => 'checkbox',
-        'title' => 'Статус',
+        'title' => __('Status'),
         'checked' => '1',
         'value' => '1',
-        'description' => '(Активирован/Деактивирован)',
+        'description' => __('Enable/Disable'),
     ),
 );

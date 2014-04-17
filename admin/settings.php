@@ -314,12 +314,12 @@ if (count($settingsInfo)) {
 				if (count($params['options'])) {
 					foreach ($params['options'] as $value => $visName) {
                         $options_attr = array();
-                        if (!empty($visName['attr'])) {
+                        if (is_array($visName) && !empty($visName['attr'])) {
                             $options_attr = $visName['attr'];
                             $visName = $visName['value'];
                         }
                         if (!empty($params['options_attr']) && is_array($params['options_attr']))
-                            array_merge($params['options_attr'], $visName['attr']);
+                            $options_attr = array_merge($params['options_attr'], $options_attr);
 						$options_ = '';
 						$state = ($_config[$fname] == $value) ? ' selected="selected"' : '';
 						

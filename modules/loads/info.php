@@ -3,16 +3,16 @@
 
 $menuInfo = array(
     'url' => 'settings.php?m=loads',
-    'ankor' => 'Каталог файлов',
+    'ankor' => __('Loads'),
 	'sub' => array(
-        'settings.php?m=loads' => 'Настройки',
-        'design.php?m=loads' => 'Дизайн',
-        'category.php?mod=loads' => 'Управление категориями',
-        'additional_fields.php?m=loads' => 'Дополнительные поля',
-		'materials_list.php?m=loads&premoder=1' => 'Премодерация',
-        'materials_list.php?m=loads' => 'Список материалов',
-		'comments_list.php?m=loads&premoder=1' => 'Премодерация комментариев',
-        'comments_list.php?m=loads' => 'Список комментариев',
+        'settings.php?m=loads' => __('Settings'),
+        'design.php?m=loads' => __('Design'),
+        'category.php?mod=loads' => __('Categories management'),
+        'additional_fields.php?m=loads' => __('Additional fields'),
+		'materials_list.php?m=loads&premoder=1' => __('Premoderation'),
+        'materials_list.php?m=loads' => __('List of materials'),
+		'comments_list.php?m=loads&premoder=1' => __('Comments premoderation'),
+        'comments_list.php?m=loads' => __('Comments list'),
 	),
 );
 
@@ -21,53 +21,61 @@ $menuInfo = array(
 $settingsInfo = array(
     'title' => array(
         'type' => 'text',
-        'title' => 'Заголовок',
+        'title' => __('Title'),
+		'description' => sprintf(__('Used in the template as %s'), '{{ meta_title }} | {{ title }}'),
     ),
     'description' => array(
         'type' => 'text',
-        'title' => 'Описание',
+		'title' => __('Description'),
+		'description' => sprintf(__('Used in the template as %s'), '{{ meta_description }}'),
     ),
 
-    'Ограничения' => 'Ограничения',
+    __('Restrictions'),
     'min_lenght' => array(
         'type' => 'text',
-        'title' => 'Минимальная длина описания',
+        'title' => __('Min description length'),
     ),
     'max_lenght' => array(
         'type' => 'text',
-        'title' => 'Максимальная длина описания',
+        'title' => __('Max description length'),
     ),
     'announce_lenght' => array(
         'type' => 'text',
-        'title' => 'Длина анонса',
+        'title' => __('Announce length'),
     ),
     'per_page' => array(
         'type' => 'text',
-        'title' => 'Материалов на странице',
+        'title' => __('Materials per page'),
     ),
     'max_file_size' => array(
         'type' => 'text',
-        'title' => 'Максимальный размер файла',
-        'description' => 'Байт',
+        'title' => __('Max the main file size'),
+		'help' => __('KB'),
+		'onview' => array(
+			'division' => 1000,
+		),
+		'onsave' => array(
+			'multiply' => 1000,
+		),
     ),
 
 	
-	'Изображения' => 'Изображения',
+	__('Images'),
 	'img_size_x' => array(
 		'type' => 'text',
-		'title' => 'Размер по оси Х',
+		'title' => __('Size of X axis'),
 		'description' => '',
-		'help' => 'Пикселей(Число)',
+		'help' => 'Px',
 	),
 	'img_size_y' => array(
 		'type' => 'text',
-		'title' => 'Размер по оси Y',
+		'title' => __('Size of Y axis'),
 		'description' => '',
-		'help' => 'Пикселей(Число)',
+		'help' => 'Px',
 	),
 	'max_attaches_size' => array(
 		'type' => 'text',
-		'title' => 'Максимальный "вес"',
+		'title' => __('Max an attach file size'),
 		'description' => '',
 		'help' => __('KB'),
 		'onview' => array(
@@ -79,9 +87,9 @@ $settingsInfo = array(
 	),
 	'max_attaches' => array(
 		'type' => 'text',
-		'title' => 'Максимальное кол-во файлов загружаемых за раз',
+		'title' => __('Max quantity of an uploaded files per time'),
 		'description' => '',
-		'help' => 'Единиц',
+		'help' => __('Units'),
 	),
 	'max_all_attaches_size' => array(
 		'type' => 'text',
@@ -109,10 +117,10 @@ $settingsInfo = array(
 	),
 	
 
-    'Обязательные поля' => 'Обязательные поля',
+    __('Required field'),
     'fields_cat' => array(
         'type' => 'checkbox',
-        'title' => 'Категория',
+        'title' => __('Category'),
         'attr' => array(
             'disabled' => 'disabled',
             'checked' => 'checked',
@@ -120,7 +128,7 @@ $settingsInfo = array(
     ),
     'fields_title' => array(
         'type' => 'checkbox',
-        'title' => 'Заголовок',
+        'title' => __('Title'),
         'attr' => array(
             'disabled' => 'disabled',
             'checked' => 'checked',
@@ -128,7 +136,7 @@ $settingsInfo = array(
     ),
     'fields_main' => array(
         'type' => 'checkbox',
-        'title' => 'Текст материала',
+        'title' => __('Text of material'),
         'attr' => array(
             'disabled' => 'disabled',
             'checked' => 'checked',
@@ -136,83 +144,84 @@ $settingsInfo = array(
     ),
     'sub_description' => array(
         'type' => 'checkbox',
-        'title' => 'Краткое описание',
+        'title' => __('Short description'),
         'fields' => 'fields',
         'value' => 'description',
         'checked' => '1',
     ),
     'sub_tags' => array(
         'type' => 'checkbox',
-        'title' => 'Теги',
+        'title' => __('Tags'),
         'fields' => 'fields',
         'value' => 'tags',
         'checked' => '1',
     ),
     'sub_sourse' => array(
         'type' => 'checkbox',
-        'title' => 'Источник(автор)',
+        'title' => __('Source'),
         'fields' => 'fields',
         'value' => 'sourse',
         'checked' => '1',
     ),
     'sub_sourse_email' => array(
         'type' => 'checkbox',
-        'title' => 'E-Mail автора',
+        'title' => __('Author email'),
         'fields' => 'fields',
         'value' => 'sourse_email',
         'checked' => '1',
     ),
     'sub_sourse_site' => array(
         'type' => 'checkbox',
-        'title' => 'Сайт автора',
+        'title' => __('Author site'),
         'fields' => 'fields',
         'value' => 'sourse_site',
         'checked' => '1',
     ),
     'sub_download_url' => array(
         'type' => 'checkbox',
-        'title' => 'Ссылка на файл',
+        'title' => __('Link to file'),
         'fields' => 'fields',
         'value' => 'download_url',
         'checked' => '1',
     ),
     'sub_download_url_size' => array(
         'type' => 'checkbox',
-        'title' => 'Размер удаленног файла',
+        'title' => __('Remote file size'),
         'fields' => 'fields',
         'value' => 'download_url_size',
         'checked' => '1',
     ),
     'sub_attach_file' => array(
         'type' => 'checkbox',
-        'title' => 'Файл',
+        'title' => __('File'),
         'fields' => 'fields',
         'value' => 'attach_file',
         'checked' => '1',
     ),
 
-    'Комментарии' => 'Комментарии',
+    __('Comments'),
     'comment_lenght' => array(
         'type' => 'text',
-        'title' => 'Максимальный размер',
+        'title' => __('Max length'),
+        'help' => __('Symbols'),
     ),
     'comment_per_page' => array(
         'type' => 'text',
-        'title' => 'Комментариев на страницу',
+        'title' => __('Comments per page'),
     ),
     'comments_order' => array(
         'type' => 'checkbox',
-        'title' => 'Новые сверху',
+        'title' => __('New on the top'),
         'value' => '1',
         'checked' => '1',
     ),
 
-    'Прочее' => 'Прочее',
+    __('Common'),
     'active' => array(
         'type' => 'checkbox',
-        'title' => 'Статус',
+        'title' => __('Status'),
         'checked' => '1',
         'value' => '1',
-        'description' => '(Активирован/Деактивирован)',
+        'description' => __('Enable/Disable'),
     ),
 );

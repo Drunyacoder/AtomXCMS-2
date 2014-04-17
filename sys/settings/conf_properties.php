@@ -192,7 +192,7 @@ $settingsInfo = array(
 		),
 		'announce_lenght' => array(
 			'type' => 'text',
-			'title' => __('Announce length'),
+			'title' => __('Announce length') . ' ' . strtolower(__('On home')),
 			'description' => '',
 		),
 

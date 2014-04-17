@@ -1,20 +1,13 @@
 <?php
 
-
-
-
-
 $menuInfo = array(
     'url' => 'settings.php?m=statistics',
-    'ankor' => 'Статистика',
+    'ankor' => __('Statistics'),
 	'sub' => array(
-        'settings.php?m=statistics' => 'Настройки',
-        'statistic.php' => 'Просмотр статистики',
+        'settings.php?m=statistics' => __('Settings'),
+        'statistic.php' => __('View statistics'),
 	),
 );
-
-
-
 
 
 
@@ -22,9 +15,9 @@ $menuInfo = array(
 $settingsInfo = array(
     'active' => array(
         'type' => 'checkbox',
-        'title' => 'Статус',
+        'title' => __('Status'),
         'checked' => '1',
         'value' => '1',
-        'description' => '(Активирован/Деактивирован)',
+        'description' => __('Enable/Disable'),
     ),
 );

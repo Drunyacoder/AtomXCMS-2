@@ -2,12 +2,12 @@
 
 $menuInfo = array(
     'url' => 'settings.php?m=foto',
-    'ankor' => 'Фото-каталог',
+    'ankor' => __('Foto'),
 	'sub' => array(
-        'settings.php?m=foto' => 'Настройки',
-        'design.php?m=foto' => 'Дизайн',
-        'category.php?mod=foto' => 'Управление категориями',
-        'materials_list.php?m=foto' => 'Список материалов',
+        'settings.php?m=foto' => __('Settings'),
+        'design.php?m=foto' => __('Design'),
+        'category.php?mod=foto' => __('Categories management'),
+        'materials_list.php?m=foto' => __('List of materials'),
 	),
 );
 
@@ -15,41 +15,47 @@ $menuInfo = array(
 $settingsInfo = array(
 	'title' => array(
 		'type' => 'text',
-		'title' => 'Заголовок',
-		'description' => 'Заголовок, который подставится в блок <title></title>',
+		'title' => __('Title'),
+		'description' => sprintf(__('Used in the template as %s'), '{{ meta_title }} | {{ title }}'),
 	),
 	'description' => array(
 		'type' => 'text',
-		'title' => 'Описание',
-		'description' => 'То, что подставится в мета тег description',
+		'title' => __('Description'),
+		'description' => sprintf(__('Used in the template as %s'), '{{ meta_description }}'),
 	),
 	
 	
-	'Ограничения' => 'Ограничения',
+	__('Restrictions'),
 	'max_file_size' => array(
 		'type' => 'text',
-		'title' => 'Максимальный размер картинки',
+		'title' => __('Max an attach file size'),
 		'description' => '',
-		'help' => 'Байт',
+		'help' => __('KB'),
+		'onview' => array(
+			'division' => 1000,
+		),
+		'onsave' => array(
+			'multiply' => 1000,
+		),
 	),
 	'per_page' => array(
 		'type' => 'text',
-		'title' => 'Материалов на странице',
+		'title' => __('Materials per page'),
 		'description' => '',
 		'help' => '',
 	),
 	'description_lenght' => array(
 		'type' => 'text',
-		'title' => 'Максимальная длина описания',
+		'title' => __('Max description length'),
 		'description' => '',
 		'help' => '',
 	),
 	
 	
-	'Поля обязательные для заполнения' => 'Поля обязательные для заполнения',
+	__('Required field'),
 	'category_field' => array(
 		'type' => 'checkbox',
-		'title' => 'Категория',
+		'title' => __('Category'),
 		'attr' => array(
 			'disabled' => 'disabled',
 			'checked' => 'checked',
@@ -57,7 +63,7 @@ $settingsInfo = array(
 	),
 	'title_field' => array(
 		'type' => 'checkbox',
-		'title' => 'Заголовок',
+		'title' => __('Title'),
 		'attr' => array(
 			'disabled' => 'disabled',
 			'checked' => 'checked',
@@ -65,7 +71,7 @@ $settingsInfo = array(
 	),
 	'file_field' => array(
 		'type' => 'checkbox',
-		'title' => 'Файл',
+		'title' => __('File'),
 		'attr' => array(
 			'disabled' => 'disabled',
 			'checked' => 'checked',
@@ -73,18 +79,18 @@ $settingsInfo = array(
 	),
 	'sub_description' => array(
 		'type' => 'checkbox',
-		'title' => 'Описание',
+		'title' => __('Description'),
 		'value' => 'description',
 		'fields' => 'fields',
 		'checked' => '1',
 	),
 	
 	
-	'Прочее' => 'Прочее',
+	__('Common'),
 	'active' => array(
 		'type' => 'checkbox',
-		'title' => 'Статус',
-		'description' => '(Активирован/Деактивирован)',
+		'title' => __('Status'),
+		'description' => __('Enable/Disable'),
 		'value' => '1',
 		'checked' => '1',
 	),
