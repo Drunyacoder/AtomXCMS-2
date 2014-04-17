@@ -111,7 +111,7 @@ class Fps_Viewer_TreesParser
 	private function getTokenParser($value)
 	{
 		if (!array_key_exists($value, $this->tokenParsers)) {
-			//TODO
+			throw new Exception("'$value' parser not found.");
 			return '';
 		}
 
