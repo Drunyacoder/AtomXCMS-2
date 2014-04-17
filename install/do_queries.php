@@ -298,7 +298,7 @@ $array[] = "CREATE TABLE `{$set['db']['prefix']}statistics` (
   `id` int(11) NOT NULL auto_increment,
   `ips` int(50) default '1',
   `cookie` int(11) default '0',
-  `referer` varchar(255) NOT NULL,
+  `referer` varchar(255) NOT NULL DEFAULT '',
   `date` date default NULL,
   `views` int(11) NOT NULL,
   `yandex_bot_views` int(11) NOT NULL default '0',

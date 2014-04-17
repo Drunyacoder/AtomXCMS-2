@@ -44,8 +44,8 @@ class StatisticsEntity extends FpsEntity
 	{
 		$params = array(
 			'ips' => $this->ips,
-			'cookie' => $this->cookie,
-			'referer' => $this->referer,
+			'cookie' => intval($this->cookie),
+			'referer' => (!empty($this->referer)) ? $this->referer : '',
 			'date' => $this->date,
 			'views' => intval($this->views),
 			'yandex_bot_views' => intval($this->yandex_bot_views),

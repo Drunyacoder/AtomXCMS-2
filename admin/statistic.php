@@ -38,7 +38,7 @@ if ($_date == date("Y-m-d")) {
 
 if (!empty($_POST['grfrom'])) $_POST['grfrom'] = preg_replace('#^(\d{1,2})/(\d{1,2})/(\d{4})$#', '$3-$1-$2', $_POST['grfrom']);
 if (!empty($_POST['grto'])) $_POST['grto'] = preg_replace('#^(\d{1,2})/(\d{1,2})/(\d{4})$#', '$3-$1-$2', $_POST['grto']);
-$graph_from = (!empty($_POST['grfrom']) && preg_match('#^\d{4}-\d{2}-\d{2}$#', $_POST['grfrom'])) ? $_POST['grfrom'] : '0000-00-00';
+$graph_from = (!empty($_POST['grfrom']) && preg_match('#^\d{4}-\d{2}-\d{2}$#', $_POST['grfrom'])) ? $_POST['grfrom'] : date("Y-m-d", time() - 2592000);
 $graph_to = (!empty($_POST['grto']) && preg_match('#^\d{4}-\d{2}-\d{2}$#', $_POST['grto'])) ? $_POST['grto'] : date("Y-m-d");
 
 
@@ -48,6 +48,18 @@ $all = $Model->getCollection(array(
 	"date >= '{$graph_from}'",
 	"date <= '{$graph_to}'",
 ));
+
+$interval = 2592000;
+while (count($all) < 2 && empty($_POST['grfrom']) && empty($_POST['grto'])) {
+	$interval += 2592000;
+	$graph_from = date("Y-m-d", time() - $interval);
+	$all = $Model->getCollection(array(
+		"date >= '{$graph_from}'",
+		"date <= '{$graph_to}'",
+	));
+}
+
+
 $users = $UsersModel->getCollection(array(
 	
 ), array(
@@ -188,9 +200,14 @@ include_once ROOT . '/admin/template/header.php';
 		<script type="text/javascript">
 		$(document).ready(function(){
 			var data = '<?php echo $json_data; ?>';
+			data = eval(data);
+			if (!data[0].length || !data[1].length) {
+				$('#graph').hide();
+				return false;
+			}
 			//data = '['+data+']';
 			//alert(data);
-		  var plot2 = $.jqplot ('graph', eval(data), {
+		  var plot2 = $.jqplot ('graph', data, {
 			  // Give the plot a title.
 			  title: 'Views and hosts',
 			  // You can specify options for all axes on the plot at once with
@@ -228,12 +245,12 @@ include_once ROOT . '/admin/template/header.php';
 			  {
 				// Change our line width and use a diamond shaped marker.
 				lineWidth:1,
-				fill: true,
+				fill: false,
 				fillAndStroke: true,
-				fillColor: '#d5eC86',
+				color:'#777',
+				fillColor: '#a4a2a2',
 				fillAlpha: 0.5,
 				label:'Views',
-				//color:'#333',
 				markerOptions: { style:'dimaond'}
 			  },
 			  {
@@ -241,11 +258,13 @@ include_once ROOT . '/admin/template/header.php';
 				// filled square markers.
 				lineWidth:5,
 				label:'Hosts',
+				color:'#96c703',
+				fillColor: '#567703',
 				markerOptions: { style:"filledSquare", size:10 }
 			  }
 			],
 			grid: {
-				background: '#282828'
+				background: '#f4f2f2'
 			},
 			});
 		});
@@ -270,7 +289,7 @@ include_once ROOT . '/admin/template/header.php';
 							&nbsp;От&nbsp;:&nbsp;&nbsp;<input class="tcal" id="ffrom" type="text" name="grfrom" />
 							&nbsp;До&nbsp;:&nbsp;&nbsp;<input class="tcal" id="fto" type="text" name="grto" />
 						</td>
-						<td><input type="submit" name="send" value="Отправить" /></td>
+						<td><input type="submit" name="send" class="save-button" value="Отправить" /></td>
 					</tr>
 				</table>
 				</form>
