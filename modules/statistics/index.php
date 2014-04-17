@@ -160,7 +160,7 @@ Class StatisticsModule
 		if (!empty($tmp_files) && count($tmp_files) > 1) {
 			foreach ($tmp_files as $file) {
 				$date = substr(strrchr($file, '/'), 1, 10);
-				if ($date == date("Y-m-d")) continue;
+				if ($date === date("Y-m-d")) continue;
 				StatisticsModule::_writeIntoDataBase($date);
 				unlink($file);
 				StatisticsModule::_deleteOveralKey('hits');
