@@ -105,7 +105,7 @@ Class StatModule extends Module {
 			? get_link(__('Add material'), '/' . $this->module . '/add_form/') : '';
 		$navi['navigation'] = $this->_buildBreadCrumbs();
 		$navi['pagination'] = $pages;
-		$navi['meta'] = __('Count all material') . $total;
+		$navi['meta'] = __('Total materials') . $total;
 		$this->_globalize($navi);
 
 
@@ -501,7 +501,7 @@ Class StatModule extends Module {
 		$navi['navigation'] = get_link(__('Home'), '/') . __('Separator')
 		. get_link(h($this->module_title), $this->getModuleURL()) . __('Separator') . sprintf(__('User materials'), h($user->getName())) . '"';
 		$navi['pagination'] = $pages;
-		$navi['meta'] = __('Count all material') . $total;
+		$navi['meta'] = __('Total materials') . $total;
 		$navi['category_name'] = sprintf(__('User materials'), h($user->getName()));
 		$this->_globalize($navi);
 

@@ -91,7 +91,7 @@ if ($_GET['ac'] == 'index'):
 	
 	<div class="popup" id="addCat">
 		<div class="top">
-			<div class="title">Добавление поля</div>
+			<div class="title"><?php echo __('Adding field') ?></div>
 			<div class="close" onClick="closePopup('addCat')"></div>
 		</div>
 		<div class="items">
@@ -151,7 +151,7 @@ if ($_GET['ac'] == 'index'):
 			<div class="item submit">
 				<div class="left"></div>
 				<div class="right" style="float:left;">
-					<input type="submit" value="Сохранить" name="send" class="save-button" />
+					<input type="submit" value="<?php echo __('Save') ?>" name="send" class="save-button" />
 				</div>
 				<div class="clear"></div>
 			</div>

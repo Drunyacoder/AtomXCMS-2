@@ -33,12 +33,12 @@ $cache->clean();
 
 
 
-$pageTitle = $pageNav = 'Глобальные блоки. Сниппеты.';
+$pageTitle = $pageNav = __('Snippets');
 $pageNavr = $pageTitle;
 if (isset($_GET['a']) && $_GET['a'] == 'ed') {
-    $pageNavr = 'Сниппеты &raquo; [редактирование] &raquo; <a href="snippets.php">создание</a>';
+    $pageNavr = __('Snippets') . ' &raquo; [' . strtolower(__('Editing')) . '] &raquo; <a href="snippets.php">' . strtolower(__('Adding')) . '</a>';
 } else {
-    $pageNavr = 'Сниппеты &raquo; <a href="snippets.php?a=ed">редактирование</a> &raquo; [создание]';
+    $pageNavr = __('Snippets') . ' &raquo; <a href="snippets.php?a=ed">' . strtolower(__('Editing')) . '</a> &raquo; [' . strtolower(__('Adding')) . ']';
 }
 
 
@@ -51,7 +51,7 @@ if (isset($_GET['a']) && $_GET['a'] == 'ed') {
 			'body' => $_POST['text_edit'],
 			'id' => $id,
 		));
-		$_SESSION['mess'] = 'Сниппет успешно сохранен!';
+		$_SESSION['mess'] = __('Snippet successfuly created');
 		
 		redirect('/admin/snippets.php?a=ed&id=' . $id);
 	}
@@ -59,7 +59,7 @@ if (isset($_GET['a']) && $_GET['a'] == 'ed') {
 
 	if(isset($_GET['delete'])) {
 		$sql = $FpsDB->query("DELETE FROM `" . $FpsDB->getFullTableName('snippets') . "` WHERE id='" . $id . "'");
-		$_SESSION['mess'] = 'Сниппет успешно удален!';
+		$_SESSION['mess'] = __('Snippet successfuly deleted');
 		redirect('/admin/snippets.php?a=ed');
 	}
 	if (!empty($id)) {
@@ -69,7 +69,7 @@ if (isset($_GET['a']) && $_GET['a'] == 'ed') {
 			$name = h($sql[0]['name']);
 		 }
 	} else {
-		$content = 'Выберите сниппет';
+		$content = __('Select snippet');
 	}
 
     include_once ROOT . '/admin/template/header.php';
@@ -96,7 +96,7 @@ if (isset($_GET['a']) && $_GET['a'] == 'ed') {
 
 <div class="white">
 	<div class="pages-tree" style="height:550px;">
-		<div class="title">Страницы</div>
+		<div class="title"><?php echo __('Snippets') ?></div>
 		<div class="wrapper">
 			<div class="tree-wrapper">
 				<div id="pageTree">
@@ -122,12 +122,12 @@ if (isset($_GET['a']) && $_GET['a'] == 'ed') {
 
 	
 	<div class="list pages-form">
-		<div class="title">Редактор страницы</div>
+		<div class="title"><?php echo __('Snippet editing') ?></div>
 		<div class="level1">
 			<div class="items">
 				<div class="setting-item">
 					<div class="left">
-						Имя сниппета
+						<?php echo __('Title') ?>
 					</div>
 					<div class="right">
 						<input disabled="disabled" name="my_title" type="text" style="" value="<?php echo (!empty($name)) ? $name : '';?>">
@@ -147,7 +147,7 @@ if (isset($_GET['a']) && $_GET['a'] == 'ed') {
 					<div class="left">
 					</div>
 					<div class="right">
-						<input class="save-button" type="submit" name="send" value="Сохранить" />
+						<input class="save-button" type="submit" name="send" value="<?php echo __('Save') ?>" />
 					</div>
 					<div class="clear"></div>
 				</div>
@@ -181,10 +181,10 @@ if (isset($_GET['a']) && $_GET['a'] == 'ed') {
 					'body' => $_POST['my_text'],
 				));
 				
-				$_SESSION['mess'] = "Сниппет создан! Применяйте его так: {[" . h($_POST['my_title']) . "]}";
+				$_SESSION['mess'] = __('Snippet successfuly created');
 				redirect('/admin/snippets.php?a=ed&id=' . $last_id);
 			} else {
-				$_SESSION['mess'] = 'Такой сниппет уже есть! Измените имя блока.';
+				$_SESSION['mess'] = __('Same snippet is already exists');
 			}
 		}
 	}
@@ -214,7 +214,7 @@ if (isset($_GET['a']) && $_GET['a'] == 'ed') {
 
 <div class="white">
 	<div class="pages-tree" style="height:550px;">
-		<div class="title">Страницы</div>
+		<div class="title"><?php __('Snippets') ?></div>
 		<div class="wrapper">
 			<div class="tree-wrapper">
 				<div id="pageTree">
@@ -240,12 +240,12 @@ if (isset($_GET['a']) && $_GET['a'] == 'ed') {
 
 	
 	<div class="list pages-form">
-		<div class="title">Редактор страницы</div>
+		<div class="title"><?php echo __('Snippet editing') ?></div>
 		<div class="level1">
 			<div class="items">
 				<div class="setting-item">
 					<div class="left">
-						Имя сниппета
+						<?php echo __('Title') ?>
 					</div>
 					<div class="right">
 						<input name="my_title" type="text" style="" value="<?php if (!empty($_POST['my_title'])) echo h($_POST['my_title']) ?>" />
@@ -262,7 +262,7 @@ if (isset($_GET['a']) && $_GET['a'] == 'ed') {
 					<div class="left">
 					</div>
 					<div class="right">
-						<input class="save-button" type="submit" name="send" value="Сохранить" />
+						<input class="save-button" type="submit" name="send" value="<?php echo __('Save') ?>" />
 					</div>
 					<div class="clear"></div>
 				</div>

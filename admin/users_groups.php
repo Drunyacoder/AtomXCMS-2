@@ -25,9 +25,9 @@ include_once '../sys/boot.php';
 include_once ROOT . '/admin/inc/adm_boot.php';
 
  
-$pageTitle = 'Пользователи';
+$pageTitle = __('Users');
 $pageNav = $pageTitle;
-$pageNavr = '<a href="javascript://" onClick="openPopup(\'Add_group\')">Добавить группу</a>&nbsp;|&nbsp;<a href="users_rules.php">Редактор прав</a>';
+$pageNavr = '<a href="javascript://" onClick="openPopup(\'Add_group\')">' . __('Add group') . '</a>&nbsp;|&nbsp;<a href="users_rules.php">' . __('Groups rules') . '</a>';
 
 
 
@@ -72,11 +72,11 @@ if (!empty($_GET['ac']) && $_GET['ac'] == 'move') {
 			$allowed_colors = array('000000', 'EF1821', '368BEB', '959385', 'FBCA0B', '00AA2B', '9B703F', 'FAAA3C');
 			if (!in_array($_POST['color'], $allowed_colors)) $errors[] = 'Не допустимый цвет';
 			if (mb_strlen($_POST['title']) > 100 || mb_strlen($_POST['title']) < 2) {
-				$errors[] = 'Поле "имя группы" должно быть в пределах 2-100 символов';
+				$errors[] = sprintf(__('Field %s must be between %s-%s chars'), __('Group name'), 2, 100);
 			} 
 
 			if (!preg_match('#^[\w\d-_a-zа-я0-9 ]+$#ui', trim($_POST['title']))) {
-				$errors[] = 'Поле "имя группы" содержит недопустимые символы';
+				$errors[] = sprintf(__('Wrong chars in "..."'), __('Group name'));
 			}
 			if (empty($errors)) {
 				if (key_exists($id, $acl_groups)) {
@@ -85,7 +85,7 @@ if (!empty($_GET['ac']) && $_GET['ac'] == 'move') {
 				}
 			}
 		} else {
-			$errors[] = 'Не заполненно поле "имя группы"';
+			$errors[] = sprintf(__('Empty field "%s"'), __('Group name'));
 		}
 	}
 	if(empty($errors)) redirect('/admin/users_groups.php');
@@ -95,7 +95,7 @@ if (!empty($_GET['ac']) && $_GET['ac'] == 'move') {
 	if (isset($_GET['id']) && is_numeric($_GET['id']) && (int)$_GET['id'] !== 0 && (int)$_GET['id'] !== 1) {
 		$id = (int)$_GET['id'];
 		if ($groups[$_GET['id']]['cnt_users'] > 0) {
-			$errors[] = 'Группа не пуста. Сперва перенесите пользователей';
+			$errors[] = __('Group not empty. First replace users');
 		} else {
 			unset($acl_groups[$_GET['id']]);
 			$ACL->save_groups($acl_groups);
@@ -109,17 +109,17 @@ if (!empty($_GET['ac']) && $_GET['ac'] == 'move') {
 		$allowed_colors = array('000000', 'EF1821', '368BEB', '959385', 'FBCA0B', '00AA2B', '9B703F', 'FAAA3C');
 		if (!in_array($_POST['color'], $allowed_colors)) $errors[] = 'Не допустимый цвет';
 		if (mb_strlen($_POST['title']) > 100 || mb_strlen($_POST['title']) < 2) {
-			$errors[] = 'Поле "имя группы" должно быть в пределах 2-100 символов';
+			$errors[] = sprintf(__('Field %s must be between %s-%s chars'), __('Group name'), 2, 100);
 		}
 		if (!preg_match('#^[\w\d-_a-zа-я0-9 ]+$#ui', $_POST['title'])) {
-			$errors[] = 'Поле "имя группы" содержит недопустимые символы';
+			$errors[] = sprintf(__('Wrong chars in "..."'), __('Group name'));
 		}
 		if (empty($errors)) {
 			$acl_groups[] = array('title' => h($_POST['title']), 'color' => h($_POST['color']));
 			$ACL->save_groups($acl_groups);
 		}
 	} else {
-		$errors[] = 'Не заполненно поле "имя группы"';
+		$errors[] = sprintf(__('Empty field "%s"'), __('Group name'));
 	}
 	if(empty($errors)) redirect('/admin/users_groups.php');
 

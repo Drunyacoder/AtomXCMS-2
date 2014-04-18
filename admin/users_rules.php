@@ -47,7 +47,7 @@ function saveRules($rules) {
 }
 
 
-$pageTitle = 'Пользователи';
+$pageTitle = __('Users');
 
 
 $ACL = $Register['ACL'];
@@ -255,7 +255,7 @@ foreach ($acl_rules as $k => $rule) {
 
 
 $pageNav = $pageTitle;
-$pageNavr = '<a href="users_groups.php">Редактор групп</a>';
+$pageNavr = '<a href="users_groups.php">' . __('Users groups') . '</a>';
 
 
 
@@ -315,7 +315,7 @@ $('#autocomplete_inp').keypress(function(e){
 <!-- Add new special rules -->
 <div id="sp_rules_add" class="popup" style="display:block;">
 		<div class="top">
-			<div class="title">Редактирование прав</div>
+			<div class="title"><?php echo __('Groups rules') ?></div>
 			<div onClick="closePopup('sp_rules_add');" class="close"></div>
 		</div>
 		<form action="users_rules.php?ac=special&uid=<?php echo $k ?>" method="POST">
@@ -437,7 +437,7 @@ $('#autocomplete_inp').keypress(function(e){
 			<div class="item submit">
 				<div class="left"></div>
 				<div class="right" style="float:left;">
-					<input type="submit" value="Save" name="send" class="save-button" />
+					<input type="submit" value="<?php echo __('Save') ?>" name="send" class="save-button" />
 				</div>
 				<div class="clear"></div>
 			</div>
@@ -472,7 +472,7 @@ $('#users_selector').live('change', function(){
 
 <?php if(!empty($specialRules)): ?>
 <div id="special_rules_container"class="list">
-<div class="title">Индивидуальные права пользователей</div>
+<div class="title"><?php echo __('Individual user rights') ?></div>
 <div class="add-cat-butt">
 	<select id="users_selector" style="width:150px;">
 		<?php foreach($specialRules as $k => $userRules): ?>
@@ -532,7 +532,7 @@ $('#users_selector').live('change', function(){
 	<!-- Edit special rules -->
 	<div id="sp_rules_<?php echo $k ?>" class="popup">
 		<div class="top">
-			<div class="title">Редактирование прав</div>
+			<div class="title"><?php echo __('Edit rights') ?></div>
 			<div onClick="closePopup('sp_rules_<?php echo $k ?>');" class="close"></div>
 		</div>
 		<form action="users_rules.php?ac=special&uid=<?php echo str_replace('user_', '', $k) ?>" method="POST">
@@ -654,7 +654,7 @@ $('#users_selector').live('change', function(){
 			<div class="item submit">
 				<div class="left"></div>
 				<div class="right" style="float:left;">
-					<input type="submit" value="Save" name="send" class="save-button" />
+					<input type="submit" value="<?php echo __('Save') ?>" name="send" class="save-button" />
 				</div>
 				<div class="clear"></div>
 			</div>
@@ -671,7 +671,7 @@ $('#users_selector').live('change', function(){
 <!-- Groups rules -->
 <form action="users_rules.php" method="POST">
 <div class="list">
-<div class="title">Права групп</div>
+<div class="title"><?php echo __('Groups rules') ?></div>
 <table cellspacing="0" class="grid" style="min-width:100%">
 
 
@@ -707,7 +707,7 @@ $('#users_selector').live('change', function(){
 	<?php endforeach; ?>
 	<tr>
 		<td align="center" colspan="<?php echo count($acl_groups) + 2 ?>">
-			<input class="save-button" name="send" type="submit" value="Сохранить"  />
+			<input class="save-button" name="send" type="submit" value="<?php echo __('Save') ?>"  />
 		</td>
 	</tr>
 </table>

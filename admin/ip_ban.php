@@ -25,7 +25,7 @@ include_once '../sys/boot.php';
 include_once ROOT . '/admin/inc/adm_boot.php';
 
  
-$pageTitle = 'Баны по IP адресам';
+$pageTitle = __('Bans by IP');
  
  
 if ( !isset( $_GET['ac'] ) ) $_GET['ac'] = 'index';
@@ -77,18 +77,18 @@ function index(&$page_title) {
 	}
 	
 	if (empty($content)) $content = '<div class="list">
-		<div class="title">Баны IP адресов</div>
+		<div class="title">' . __('Bans by IP') . '</div>
 		<div class="add-cat-butt" onClick="openPopup(\'addBan\');"><div class="add"></div>' . __('Add') . '
-		</div><table style="width:100%;" cellspacing="0" class="grid"><tr><td colspan="2">Записей пока нет</td></tr></table></div>';
+		</div><table style="width:100%;" cellspacing="0" class="grid"><tr><td colspan="2">' . __('Records not found') . '</td></tr></table></div>';
 	else $content = '<div class="list">
-		<div class="title">Баны IP адресов</div>
+		<div class="title">' . __('Bans by IP') . '</div>
 		<div class="add-cat-butt" onClick="openPopup(\'addBan\');"><div class="add"></div>' . __('Add') . '
 		</div><table cellspacing="0" style="width:100%;" class="grid">' . $content . '</table></div>';
 	
 	//add form
 	$content .= '<div id="addBan" class="popup">
 			<div class="top">
-				<div class="title">Добавление категории</div>
+				<div class="title">' . __('Add IP') . '</div>
 				<div onClick="closePopup(\'addBan\');" class="close"></div>
 			</div>
 			<form action="ip_ban.php?ac=add" method="POST">
@@ -104,7 +104,7 @@ function index(&$page_title) {
 				<div class="item submit">
 					<div class="left"></div>
 					<div class="right" style="float:left;">
-						<input type="submit" value="Сохранить" name="send" class="save-button" />
+						<input type="submit" value="' . __('Save') . '" name="send" class="save-button" />
 					</div>
 					<div class="clear"></div>
 				</div>
@@ -133,7 +133,7 @@ function add() {
 	$error = null;
 	
 	
-	if (!preg_match('#^\d{1,3}\.\d{1,3}.\d{1,3}.\d{1,3}$#', $ip)) $error = '<li>Не верный формат IP адреса</li>';
+	if (!preg_match('#^\d{1,3}\.\d{1,3}.\d{1,3}.\d{1,3}$#', $ip)) $error = '<li>' . sprintf(__('Wrong chars in "..."'), 'IP') . '</li>';
 	if (!empty($error)) {
 		$_SESSION['add']['errors'] = '<ul class="uz_err">' . $error . '</ul>';
 		redirect('/admin/ip_ban.php');
@@ -169,7 +169,7 @@ function delete() {
 				$data = implode("", $_data);
 				file_put_contents(ROOT . '/sys/logs/ip_ban/baned.dat', $data);
 			} else {
-				$_SESSION['add']['errors'] = '<ul class="error"><li>Записи с таким ключом не найдено</li></ul>';
+				$_SESSION['add']['errors'] = '<ul class="error"><li>' . __('Record with this ID not found') . '</li></ul>';
 			}
 		}
 	}

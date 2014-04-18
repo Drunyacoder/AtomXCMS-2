@@ -233,7 +233,7 @@ function buildCatsList($catsTree, $catsList, $indent = '') {
 			
 		$popups .=	'<div id="' . $cat['id'] . '_cat" class="popup">
 				<div class="top">
-					<div class="title">Редактрование категорий</div>
+					<div class="title">' . __('Category editing') . '</div>
 					<div onClick="closePopup(\'' . $cat['id'] . '_cat\');" class="close"></div>
 				</div>
 				<form action="category.php?mod=' . getCurrMod() . '&ac=edit&id=' . $cat['id'] . '" method="POST">
@@ -277,7 +277,7 @@ function buildCatsList($catsTree, $catsList, $indent = '') {
 					<div class="item submit">
 						<div class="left"></div>
 						<div class="right" style="float:left;">
-							<input type="submit" value="Сохранить" name="send" class="save-button" />
+							<input type="submit" value="' . __('Save') . '" name="send" class="save-button" />
 						</div>
 						<div class="clear"></div>
 					</div>
@@ -346,7 +346,7 @@ function index(&$page_title) {
 	
 	$popups .=	'<div id="addCat" class="popup">
 			<div class="top">
-				<div class="title">Добавление категории</div>
+				<div class="title">' . __('Adding category') . '</div>
 				<div onClick="closePopup(\'addCat\');" class="close"></div>
 			</div>
 			<form action="category.php?mod=' . getCurrMod() . '&ac=add" method="POST">
@@ -391,7 +391,7 @@ function index(&$page_title) {
 				<div class="item submit">
 					<div class="left"></div>
 					<div class="right" style="float:left;">
-						<input type="submit" value="Сохранить" name="send" class="save-button" />
+						<input type="submit" value="' . __('Save') . '" name="send" class="save-button" />
 					</div>
 					<div class="clear"></div>
 				</div>
@@ -403,12 +403,12 @@ function index(&$page_title) {
 	
 	
 	$html .= '<div class="list">
-		<div class="title">Управление разделами</div>
+		<div class="title">' . __('Categories management') . '</div>
 		<div class="add-cat-butt" onClick="openPopup(\'addCat\');"><div class="add"></div>' . __('Add section') . '</div>
 
 		<div class="level1">
 			<div class="head">
-				<div class="title">Раздел</div>
+				<div class="title">' . __('Category') . '</div>
 				<div class="buttons">
 				</div>
 				<div class="clear"></div>

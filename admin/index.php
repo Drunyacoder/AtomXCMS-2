@@ -110,7 +110,7 @@ endif;
 
 <!--************ GENERAL **********-->							
 <div class="list">
-	<div class="title">Общие настройки</div>
+	<div class="title"><?php echo __('Common settings') ?></div>
 	<div class="level1">
 		<div class="head">
 			<div class="title settings"><?php echo __('Name'); ?></div>
@@ -165,17 +165,17 @@ endif;
 
 <!--************ USERS **********-->							
 <div class="list">
-	<div class="title">Пользователи</div>
+	<div class="title"><?php echo __('Users') ?></div>
 	<div class="level1">
 		<div class="head">
-			<div class="title settings">Группа</div>
-			<div class="title-r">Кол-во</div>
+			<div class="title settings"><?php echo __('Group') ?></div>
+			<div class="title-r"><?php echo __('Quantity') ?></div>
 			<div class="clear"></div>
 		</div>
 		<div class="items">
 			<div class="setting-item">
 				<div class="left">
-					Всего пользователей
+					<?php echo __('All users') ?>
 				</div>
 				<div class="right"><?php echo $cnt_usrs ?></div>
 				<div class="clear"></div>
@@ -188,7 +188,7 @@ endif;
 				<?php if($key === 0): ?>
 				<div class="left">
 					Гости
-					<span class="comment">*Гость - абстрактная группа</span>
+					<span class="comment"><?php echo '*' . __('Guest') . __(' - abstrack group') ?></span>
 				</div>
 				<div class="right"><div class="<?php echo (Config::read('antisql', 'secure') == 1) ? 'yes' : 'no' ?>"></div></div>
 				<?php else: ?>
@@ -210,7 +210,7 @@ endif;
 
 <!--************ STATISTIC **********-->							
 <div class="list">
-	<div class="title">Статистика</div>
+	<div class="title"><?php echo __('Statistics') ?></div>
 	<div class="level1">
 		<div class="head">
 			<div class="title settings"><?php echo __('Name'); ?></div>
@@ -220,7 +220,7 @@ endif;
 		<div class="items">
 			<div class="setting-item">
 				<div class="left">
-					Хостов за все время
+					<?php echo __('Total hosts') ?>
 					<span class="comment">*Хост - это уникальный посетитель, фактически - это<br />
 					заход на сайт с разных компьютеров или IP адресов</span>
 				</div>
@@ -229,7 +229,7 @@ endif;
 			</div>
 			<div class="setting-item">
 				<div class="left">
-					Хитов за все время
+					<?php echo __('Total hits') ?>
 					<span class="comment">*Хиты(hits) - это просмотры, фактически - это любой<br />
 						просмотрт страницы, даже с одного IP. На один хост может приходиться<br />
 						любое кол-во хитов</span>
@@ -239,14 +239,14 @@ endif;
 			</div>
 			<div class="setting-item">
 				<div class="left">
-					Хостов сегодня
+					<?php echo __('Today hosts') ?>
 				</div>
 				<div class="right"><?php echo $today_hosts ?></div>
 				<div class="clear"></div>
 			</div>
 			<div class="setting-item">
 				<div class="left">
-					Хитов за сегодня
+					<?php echo __('Today hits') ?>
 				</div>
 				<div class="right"><?php echo $today_hits ?></div>
 				<div class="clear"></div>
@@ -263,14 +263,14 @@ endif;
 	<div class="title">Модули</div>
 	<div class="level1">
 		<div class="head">
-			<div class="title settings">Модуль</div>
-			<div class="title-r">Состояние</div>
+			<div class="title settings"><?php echo __('Module') ?></div>
+			<div class="title-r"><?php echo __('Status') ?></div>
 			<div class="clear"></div>
 		</div>
 		<div class="items">
 			<div class="setting-item">
 				<div class="left">
-					Всего модулей
+					<?php echo __('Total modules') ?>
 					<span class="comment">*Модули, которые присутствуют у Вас на сайте</span>
 				</div>
 				<div class="right"><?php echo count($modules); ?></div>
@@ -300,45 +300,45 @@ endif;
 
 <!--************ MATERIALS **********-->							
 <div class="list">
-	<div class="title">Материалы</div>
+	<div class="title"><?php echo __('Materials') ?></div>
 	<div class="level1">
 		<div class="head">
-			<div class="title settings">Материал</div>
-			<div class="title-r">Кол-во</div>
+			<div class="title settings"><?php echo __('Material') ?></div>
+			<div class="title-r"><?php echo __('Quantity') ?></div>
 			<div class="clear"></div>
 		</div>
 		<div class="items">
 			<div class="setting-item">
 				<div class="left">
-					Всего материалов
+					<?php echo __('Total materials') ?>
 				</div>
 				<div class="right"><?php echo $cnt_mat ?></div>
 				<div class="clear"></div>
 			</div>
 			<div class="setting-item">
 				<div class="left">
-					Новостей
+					<?php echo __('News') ?>
 				</div>
 				<div class="right"><?php echo $cnt_news ?></div>
 				<div class="clear"></div>
 			</div>
 			<div class="setting-item">
 				<div class="left">
-					Загрузок
+					<?php echo __('Loads') ?>
 				</div>
 				<div class="right"><?php echo $cnt_load ?></div>
 				<div class="clear"></div>
 			</div>
 			<div class="setting-item">
 				<div class="left">
-					Статей
+					<?php echo __('Stat') ?>
 				</div>
 				<div class="right"><?php echo $cnt_stat ?></div>
 				<div class="clear"></div>
 			</div>
 			<div class="setting-item">
 				<div class="left">
-					Тем на форуме
+					<?php echo __('Forum topics') ?>
 				</div>
 				<div class="right"><?php echo $cnt_for ?></div>
 				<div class="clear"></div>

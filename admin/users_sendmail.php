@@ -29,7 +29,7 @@ include_once ROOT . '/admin/inc/adm_boot.php';
 
 
 
-$pageTitle = 'Массовая рассылка писем';
+$pageTitle = __('Mass mailing');
 $pageNav = $pageTitle;
 $pageNavr = '';
 
@@ -126,13 +126,13 @@ if (isset($_POST['send'])) {
 			}
 			
 			if (empty($error)) 
-				$_SESSION['info_message'] = 'Писем отправленно: ' . $n 
+				$_SESSION['info_message'] = __('Mails are sent') . ': ' . $n 
 				. '<br>Времени потрачено: ' . round(microtime(true) - $start_time, 4) . ' сек.';
 		} else {
-			$_SESSION['info_message'] = '<span style="color:red;">Не найдено пользователей с заданными параметрами</span>';
+			$_SESSION['info_message'] = '<span style="color:red;">' . __('Users not found') . '</span>';
 		}
 	} else {
-		$_SESSION['info_message'] = '<span style="color:red;">Заполните поля.</span>';
+		$_SESSION['info_message'] = '<span style="color:red;">' . __('Needed fields are empty') . '</span>';
 	}
 	
 	redirect('/admin/users_sendmail.php');
@@ -161,17 +161,17 @@ include_once ROOT . '/admin/template/header.php';
 
 
 <div class="warning">
-	<span class="greytxt">Email-ов доступно:</span> <?php echo $all_users_cnt; ?><br /><br />
+	<span class="greytxt"><?php echo __('Available emails') ?>:</span> <?php echo $all_users_cnt; ?><br /><br />
 
 
-	<span class="greytxt">Максимальный размер письма:</span> 10000 символов<br /><br />
+	<span class="greytxt"><?php echo __('Max email length') ?>:</span> 10000 <?php echo __('Symbols') ?><br /><br />
 
 
-	<span class="greytxt"><b>В теле письма доступны следующие метки:</b></span><br />
-	{{ user }}<span class="greytxt"> - Получатель(так же доступны все поля объекта пользователь)</span><br />
-	{{ site_title }}<span class="greytxt"> - Название сайта</span><br />
-	{{ site_url }}<span class="greytxt"> - Адрес вашего сайта</span><br />
-	{{ subject }}<span class="greytxt"> - Тема письма</span><br />
+	<span class="greytxt"><b><?php echo __('In the mail body available below markers') ?>:</b></span><br />
+	{{ user }}<span class="greytxt"> - <?php echo __('Receiver') ?>(<?php echo __('also available an user object variables') ?>)</span><br />
+	{{ site_title }}<span class="greytxt"> - <?php echo __('Site name') ?></span><br />
+	{{ site_url }}<span class="greytxt"> - <?php echo __('Your site URL') ?></span><br />
+	{{ subject }}<span class="greytxt"> - <?php echo __('Subject') ?></span><br />
 </div>
 
 
@@ -181,13 +181,13 @@ include_once ROOT . '/admin/template/header.php';
 
 <form action="" method="POST">
 <div class="list">
-	<div class="title">Рассылка</div>
+	<div class="title"><?php echo __('Mass mailing') ?></div>
 	<!--<div class="add-cat-butt" onClick="openPopup('sec');"><div class="add"></div>Список подписчиков</div>-->
 	<div class="level1">
 		<div class="items">
 			<div class="setting-item">
 				<div class="left">
-					Отправить группам
+					<?php echo __('Send to groups') ?>
 				</div>
 				<div class="right">
 					<table>
@@ -205,21 +205,21 @@ include_once ROOT . '/admin/template/header.php';
 			</div>
             <div class="setting-item">
                 <div class="left">
-                    Шаблон письма
+                    <?php echo __('Email template') ?>
                 </div>
                 <div class="right">
                     <select onChange="window.location.href = '<?php echo get_url('/admin/users_sendmail.php?tpl=') ?>'+$(this).val();" name="template">
                         <?php
                         if (!empty($email_templates)) {
                             ?>
-                            <option value="">Без шаблона</option>
+                            <option value=""><?php echo __('Without template') ?></option>
                             <?php
                             foreach ($email_templates as $template) {
                                 echo '<option '.((!empty($_GET['tpl']) && $_GET['tpl'] == $template) ? 'selected="selected"' : '')
                                     .' value="'.$template.'">'.$template.'</option>';
                             }
                         } else {
-                            echo '<option selected="selected" value="">Нет шаблонов</option>';
+                            echo '<option selected="selected" value="">' . __('Templates not found') . '</option>';
                         }
                         ?>
                     </select>
@@ -228,7 +228,7 @@ include_once ROOT . '/admin/template/header.php';
             </div>
 			<div class="setting-item">
 				<div class="left">
-					Тема
+					<?php echo __('Subject') ?>
 				</div>
 				<div class="right">
 					<input size="120" type="text" name="subject" />
@@ -237,7 +237,7 @@ include_once ROOT . '/admin/template/header.php';
 			</div>
 			<div class="setting-item">
 				<div class="left">
-					Обратный адрес
+					<?php echo __('Sender\'s email') ?>
 				</div>
 				<div class="right">
 					<input size="120" type="text" name="from" value="<?php 
@@ -247,7 +247,7 @@ include_once ROOT . '/admin/template/header.php';
 			</div>
 			<div class="setting-item">
 				<div class="left">
-					Текст письма
+					<?php echo __('Email text') ?>
 				</div>
 				<div class="right">
 					<textarea name="message" style="height:200px;"><?php echo $message_text ?></textarea>
@@ -258,7 +258,7 @@ include_once ROOT . '/admin/template/header.php';
 				<div class="left">
 				</div>
 				<div class="right">
-					<input class="save-button" type="submit" name="send" value="Отправить" />
+					<input class="save-button" type="submit" name="send" value="<?php echo __('Send') ?>" />
 				</div>
 				<div class="clear"></div>
 			</div>

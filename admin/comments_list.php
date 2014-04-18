@@ -198,7 +198,7 @@ class MaterialsList {
 			<div class="left">
 			</div>
 			<div class="right">
-				<input class="save-button" type="submit" name="send" value="Сохранить" />
+				<input class="save-button" type="submit" name="send" value="' . __('Save') . '" />
 			</div>
 			<div class="clear"></div>
 		</div>';
@@ -226,8 +226,8 @@ include_once ROOT . '/admin/template/header.php';
 	<div class="title"><?php echo $pageNav; ?></div>
 	<div class="level1">
 		<div class="head">
-			<div class="title settings">Имя</div>
-			<div class="title-r">Сообщение</div>
+			<div class="title settings"><?php echo __('Name') ?></div>
+			<div class="title-r"><?php echo __('Message') ?></div>
 			<div class="clear"></div>
 		</div>
 		<div class="items">

@@ -95,7 +95,7 @@ if (count($query) < 1) {
 
 
 
-$pageTitle = 'Ранги пользователей';
+$pageTitle = __('Users ranks');
 $pageNav = $pageTitle;
 $pageNavl = '';
 include_once ROOT . '/admin/template/header.php';

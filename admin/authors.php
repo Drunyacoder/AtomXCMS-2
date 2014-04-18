@@ -4,11 +4,11 @@
 | @Author:       Andrey Brykin (Drunya)          |
 | @Email:        drunyacoder@gmail.com           |
 | @Site:         http://fapos.net                |
-| @Version:      1.3                             |
+| @Version:      1.5                             |
 | @Project:      CMS                             |
 | @package       CMS Fapos                       |
 | @subpackege    Authors list (Admin Part)       |
-| @copyright     ©Andrey Brykin 2010-2013        |
+| @copyright     ©Andrey Brykin 2010-2014        |
 \-----------------------------------------------*/
 
 /*-----------------------------------------------\
@@ -73,6 +73,7 @@ include_once ROOT . '/admin/template/header.php';
 			<div class="setting-item">
 				<div class="center">
 					<h3>Design and Templates</h3>
+					Lapin Boris (MrBoriska)<br />
 					Andrey Brykin (Drunya)<br />
 					Alexandr Bognar (Krevedko)<br />
 					Roman Maximov (r00t_san)<br />

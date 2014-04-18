@@ -28,7 +28,7 @@ include_once ROOT . '/admin/inc/adm_boot.php';
 
 
 
-$pageTitle = 'Управление дизайном - меню';
+$pageTitle = __('Menu editor');
 $pageNav = $pageTitle;
 $pageNavR = '';
 $popups = '';
@@ -185,14 +185,14 @@ function buildMenu($node) {
 			
 			$popups .= '<div id="edit' . $value['id'] . '" class="popup">
 				<div class="top">
-					<div class="title">Добавление пункта</div>
+					<div class="title">' . __('Add an item') . '</div>
 					<div onClick="closePopup(\'edit' . $value['id'] . '\')" class="close"></div>
 				</div>
 				<form action="menu_editor.php?ac=edit&id=' . $value['id'] . '" method="POST">
 				<div class="items">
 					<div class="item">
 						<div class="left">
-							Текст ссылки:
+							' . __('Visible text') . ':
 						</div>
 						<div class="right">
 							<input type="text" name="ankor" value="' . h($value['title']) . '" />
@@ -201,7 +201,7 @@ function buildMenu($node) {
 					</div>
 					<div class="item">
 						<div class="left">
-							Сылка(URL):
+							URL:
 						</div>
 						<div class="right">
 							<input type="text" name="url" value="' . h($value['url']) . '" />
@@ -210,7 +210,7 @@ function buildMenu($node) {
 					</div>
 					<div class="item">
 						<div class="left">
-							Префикс:
+							' . __('Prefix') . ':
 						</div>
 						<div class="right">
 							<textarea name="prefix">' . h($value['prefix']) . '</textarea>
@@ -219,7 +219,7 @@ function buildMenu($node) {
 					</div>
 					<div class="item">
 						<div class="left">
-							Суфикс:
+							' . __('Sufix') . ':
 						</div>
 						<div class="right">
 							<textarea name="sufix">' . h($value['sufix']) . '</textarea>
@@ -228,7 +228,7 @@ function buildMenu($node) {
 					</div>
 					<div class="item">
 						<div class="left">
-							В новом окне:
+							' . __('In new window') . ':
 						</div>
 						<div class="right">
 							<input id="newwin' . $value['id'] . '" type="checkbox" value="1" name="newwin" ' . $checked . ' />
@@ -240,7 +240,7 @@ function buildMenu($node) {
 					<div class="item submit">
 						<div class="left"></div>
 						<div class="right" style="float:left;">
-							<input type="submit" value="Сохранить" name="send" class="save-button" />
+							<input type="submit" value="' . __('Save') . '" name="send" class="save-button" />
 						</div>
 						<div class="clear"></div>
 					</div>
@@ -358,12 +358,12 @@ function form1() {
 
 
 <div class="list">
-	<div class="title">Редактор меню</div>
-	<div onClick="openPopup('addCat');" class="add-cat-butt"><div class="add"></div>Добавить пункт</div>
+	<div class="title"><?php echo __('Menu editor') ?></div>
+	<div onClick="openPopup('addCat');" class="add-cat-butt"><div class="add"></div><?php echo __('Add an item') ?></div>
 	<table cellspacing="0" style="width:100%;" class="grid">
 		<tr>
 			<td>
-				Код для вставки: 
+				<?php echo __('Template marker') ?>: 
 				<input style="width:100px; font-size:16px;" type="text" value="{MAINMENU}" onClick="" />
 			</td>
 		</tr>
@@ -376,7 +376,7 @@ function form1() {
 		</tr>
 		<tr>
 			<td>
-				<input style="margin:auto;" class="save-button" type="submit" value="Сохранить" onClick="form1();" id="sendButton" />
+				<input style="margin:auto;" class="save-button" type="submit" value="<?php echo __('Save') ?>" onClick="form1();" id="sendButton" />
 			</td>
 		</tr>
 	</table>
@@ -389,14 +389,14 @@ function form1() {
 
 <div id="addCat" class="popup">
 	<div class="top">
-		<div class="title">Добавление пункта</div>
+		<div class="title"><?php echo __('Add an item') ?></div>
 		<div onClick="closePopup('addCat')" class="close"></div>
 	</div>
 	<form action="menu_editor.php?ac=add" method="POST">
 	<div class="items">
 		<div class="item">
 			<div class="left">
-				Текст ссылки:
+				<?php echo __('Visible text') ?>:
 			</div>
 			<div class="right">
 				<input type="text" name="ankor" value="" />
@@ -405,7 +405,7 @@ function form1() {
 		</div>
 		<div class="item">
 			<div class="left">
-				Сылка(URL):
+				URL:
 			</div>
 			<div class="right">
 				<input type="text" name="url" />
@@ -414,7 +414,7 @@ function form1() {
 		</div>
 		<div class="item">
 			<div class="left">
-				Префикс:
+				<?php echo __('Prefix') ?>:
 			</div>
 			<div class="right">
 				<textarea name="prefix"></textarea>
@@ -423,7 +423,7 @@ function form1() {
 		</div>
 		<div class="item">
 			<div class="left">
-				Суфикс:
+				<?php echo __('Sufix') ?>:
 			</div>
 			<div class="right">
 				<textarea name="sufix"></textarea>
@@ -432,7 +432,7 @@ function form1() {
 		</div>
 		<div class="item">
 			<div class="left">
-				В новом окне:
+				<?php echo __('In new window') ?>:
 			</div>
 			<div class="right">
 				<input id="newwin" type="checkbox" value="1" name="newwin" />
@@ -444,7 +444,7 @@ function form1() {
 		<div class="item submit">
 			<div class="left"></div>
 			<div class="right" style="float:left;">
-				<input type="submit" value="Сохранить" name="send" class="save-button" />
+				<input type="submit" value="<?php echo __('Save') ?>" name="send" class="save-button" />
 			</div>
 			<div class="clear"></div>
 		</div>

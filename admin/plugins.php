@@ -27,7 +27,7 @@ include_once '../sys/boot.php';
 include_once ROOT . '/admin/inc/adm_boot.php';
 
  
-$pageTitle = 'Плагины';
+$pageTitle = __('Plugins');
  
  
 if ( !isset( $_GET['ac'] ) ) $_GET['ac'] = 'index';
@@ -57,7 +57,7 @@ switch ( $_GET['ac'] )
 
 
 $pageNav = $pageTitle;
-$pageNavr = '<a href="plugins.php">Список Плагинов</a>';
+$pageNavr = '<a href="plugins.php">' . __('Plugins list') . '</a>';
 
 
 
@@ -73,7 +73,7 @@ include_once ROOT . '/admin/template/footer.php';
 	
 function index(&$page_title) {
 	global $FpsDB;
-	$page_title = 'Список Плагинов';
+	$page_title = __('Plugins list');
 	$content = '';
 
 	
@@ -83,19 +83,19 @@ function index(&$page_title) {
 			if (!is_dir($pl)) unset($plugs[$k]);
 		}
 	}
-	if (count($plugs) < 1) return '<div class="list"><table cellspacing="0" class="grid"><tr><td>Плагинов пока нет</td></tr></table></div>';
+	if (count($plugs) < 1) return '<div class="list"><table cellspacing="0" class="grid"><tr><td>' . __('Not found available plugins') . '</td></tr></table></div>';
 	
 	
 
 	
 	
 	$content .= "<div class=\"list\"><table cellspacing=\"0\" class=\"grid\">
-		<th width=\"\">Название</th>
-		<th width=\"25%\">Путь</th>
-		<th width=\"20%\">Описание</th>
+		<th width=\"\">" . __('Title') . "</th>
+		<th width=\"25%\">" . __('Path') . "</th>
+		<th width=\"20%\">" . __('Description') . "</th>
 		<th width=\"\">HOOK</th>
-		<th width=\"15%\">Каталог</th>
-		<th width=\"30px\" colspan=\"2\">Действие</th>";
+		<th width=\"15%\">" . __('Directory') . "</th>
+		<th width=\"30px\" colspan=\"2\">" . __('Action') . "</th>";
 	
 
 	
@@ -203,7 +203,7 @@ function offPlugin() {
 <?php
 if (!empty($_SESSION['info_message'])):
 ?>
-<script type="text/javascript">showHelpWin('<?php echo h($_SESSION['info_message']) ?>', 'Сообщение');</script>
+<script type="text/javascript">showHelpWin('<?php echo h($_SESSION['info_message']) ?>', '<?php echo __('Message') ?>');</script>
 <?php
 	unset($_SESSION['info_message']);
 endif;

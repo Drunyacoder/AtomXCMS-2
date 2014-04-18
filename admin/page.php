@@ -331,9 +331,9 @@ if(!empty($_REQUEST['operation']) && strpos($_REQUEST['operation'], '_') !== 0 &
 
 $Register = Register::getInstance();
 $FpsDB = $Register['DB'];
-$pageTitle = 'Редактор страниц';
+$pageTitle = __('Pages editor');
 $pageNav = $pageTitle;
-$pageNavr = 'Страницы &raquo; [редактирование]';
+$pageNavr = __('Pages') . ' &raquo; [' . __('Editing') . ']';
 
 
 $page = array(
@@ -356,7 +356,7 @@ include_once ROOT . '/admin/template/header.php';
 
 <div class="white">
 	<div class="pages-tree">
-		<div class="title">Страницы</div>
+		<div class="title"><?php echo __('Pages') ?></div>
 		<div class="wrapper" style="height:861px;">
 			<div class="tree-wrapper">
 				<div id="pageTree"></div>
@@ -373,12 +373,12 @@ include_once ROOT . '/admin/template/header.php';
 
 	
 	<div class="list pages-form">
-		<div class="title">Редактор страницы</div>
+		<div class="title"><?php echo __('Pages editor') ?></div>
 		<div class="level1">
 			<div class="items">
 				<div class="setting-item">
 					<div class="left">
-						Страница
+						<?php echo __('Page') ?>
 					</div>
 					<div class="right">
 						<input type="text" name="name" value="">
@@ -388,7 +388,7 @@ include_once ROOT . '/admin/template/header.php';
 				</div>
 				<div class="setting-item">
 					<div class="left">
-						Заголовок
+						<?php echo __('Title') ?>
 					</div>
 					<div class="right">
 						<input type="text" name="title" value="">
@@ -407,7 +407,7 @@ include_once ROOT . '/admin/template/header.php';
 				</div>
 				<div class="setting-item">
 					<div class="left">
-						Видна ли в меню
+						<?php echo __('In new window') ?>
 					</div>
 					<div class="right">
 						<input id="checkbox1" type="checkbox" name="visible" value="1" checked="checked">
@@ -417,7 +417,7 @@ include_once ROOT . '/admin/template/header.php';
 				</div>
 				<div class="setting-item">
 					<div class="left">
-						Позиция в меню<span class="comment">Определяет приоритет вывода</span>
+						<?php echo __('Position in the menu') ?>
 					</div>
 					<div class="right">
 						<input style="width:40px;" type="text" name="position" value="">
@@ -453,7 +453,8 @@ include_once ROOT . '/admin/template/header.php';
 				</div>
 				<div class="setting-item">
 					<div class="left">
-						Статус<span class="comment">Опубликован/Не опубликован</span>
+						<?php echo __('Status') ?>
+						<span class="comment"><?php echo __('Enable/Disable') ?></span>
 					</div>
 					<div class="right">
 						<input id="checkbox2" type="checkbox" name="publish" value="1" checked="checked">
@@ -463,7 +464,7 @@ include_once ROOT . '/admin/template/header.php';
 				</div>
 				<div class="setting-item">
 					<div class="left">
-						Шаблон
+						<?php echo __('Template') ?>
 					</div>
 					<div class="right">
 						<input type="text" name="template" value="">
@@ -472,7 +473,8 @@ include_once ROOT . '/admin/template/header.php';
 				</div>
 				<div class="setting-item">
 					<div class="left">
-						Динамический тег <span class="comment">(для использования в шаблоне)</span>
+						<?php echo __('Template marker') ?>
+						<span class="comment"><?php echo __('for use in the templates') ?></span>
 					</div>
 					<div class="right">
 						<input style="width:60px; text-align:center;" disabled="true" type="text" name="dinamic_tag" value="">
@@ -490,7 +492,7 @@ include_once ROOT . '/admin/template/header.php';
 					<div class="left">
 					</div>
 					<div class="right">
-						<input class="save-button" type="submit" name="send" value="Сохранить" />
+						<input class="save-button" type="submit" name="send" value="<?php echo __('Save') ?>" />
 					</div>
 					<div class="clear"></div>
 				</div>

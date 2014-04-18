@@ -44,7 +44,7 @@ if (!empty($log_files)) {
 
 
 
-$pageTitle = 'Лог действий';
+$pageTitle = __('Action log');
 $pageNav = $pageTitle;
 $pageNavr = '';
 include_once ROOT . '/admin/template/header.php';

@@ -25,7 +25,7 @@
 
 include_once '../sys/boot.php';
 include_once ROOT . '/admin/inc/adm_boot.php';
-$pageTitle = 'Список материалов';
+$pageTitle = __('List of materials');
 $Register = Register::getInstance();
 
 
@@ -49,7 +49,12 @@ list($output, $pages) = $Controll->{$action}($module);
 
 
 class MaterialsList {
-	public $pageTitle = 'Список материалов';
+	public $pageTitle;
+	
+	
+	public function __construct() {
+		$this->pageTitle = __('List of materials');
+	}
 
 
 	public function index($module) {
@@ -70,7 +75,7 @@ class MaterialsList {
 		));
 
 		
-		if (empty($materials)) $output = '<div class="setting-item"><div class="left"><b>Materials not found</b></div><div class="clear"></div></div>';
+		if (empty($materials)) $output = '<div class="setting-item"><div class="left"><b>' . __('Materials not found') . '</b></div><div class="clear"></div></div>';
 
 
 
@@ -83,7 +88,7 @@ class MaterialsList {
 			if ($module == 'foto') {
 				$output .= '<img src="' . WWW_ROOT . '/sys/files/foto/preview/' . $mat->getFilename() . '" />';
 			} else {
-				$output .= h(mb_substr($mat->getMain(), 0, 120));
+				$output .= h(mb_substr($mat->getMain(), 0, 500));
 			}
 			$output .= '<br /><span class="comment">' . AtmDateTime::getSimpleDate($mat->getDate()) . '</span>';
 			
@@ -99,7 +104,7 @@ class MaterialsList {
 				</div><div class="clear"></div></div>';
 			}
 		}
-		
+
 		return array($output, $pages);
 	}
 	
@@ -145,7 +150,7 @@ class MaterialsList {
 	
 	
 	public function edit($module) {
-		$this->pageTitle .= ' - редактирование';
+		$this->pageTitle .= ' - ' . __('Edit');
 	
 		$output = '';
 		$Register = Register::getInstance();
@@ -164,7 +169,7 @@ class MaterialsList {
 			
 			
 			$entity->save();
-			$_SESSION['message'] = 'Материал сохранен';
+			$_SESSION['message'] = __('Saved');
 			
 			redirect('/admin/materials_list.php?m=' . $module);
 		}
@@ -173,17 +178,17 @@ class MaterialsList {
 		
 		$output .= '
 		<div class="setting-item"><div class="left">
-			Имя
+			' . __('Title') . '
 		</div><div class="right">
 			<input type="text" name="title" value="'.h($entity->getTitle()).'" />
 		</div><div class="clear"></div></div>
 		<div class="setting-item"><div class="left">
-			Сообщение
+			' . __('Text of material') . '
 		</div><div class="right">
 			<textarea style="height:200px;" name="main">'.h($entity->getMain()).'</textarea>
 		</div><div class="clear"></div></div>
 		<div class="setting-item"><div class="left">
-			Email
+			' . __('Email') . '
 		</div><div class="right">
 			<input type="text" name="email" value="'.h($entity->getSourse_email()).'" />
 		</div><div class="clear"></div></div>
@@ -191,7 +196,7 @@ class MaterialsList {
 			<div class="left">
 			</div>
 			<div class="right">
-				<input class="save-button" type="submit" name="send" value="Сохранить" />
+				<input class="save-button" type="submit" name="send" value="' . __('Save') . '" />
 			</div>
 			<div class="clear"></div>
 		</div>';
@@ -207,6 +212,7 @@ class MaterialsList {
 $pageNav = $Controll->pageTitle;
 $pageNavr = '';
 include_once ROOT . '/admin/template/header.php';
+
 ?>
 
 
@@ -220,8 +226,8 @@ include_once ROOT . '/admin/template/header.php';
 	<div class="title"><?php echo $pageNav; ?></div>
 	<div class="level1">
 		<div class="head">
-			<div class="title settings">Имя</div>
-			<div class="title-r">Сообщение</div>
+			<div class="title settings"><?php echo __('Title') ?></div>
+			<div class="title-r"><?php echo __('Text of material') ?></div>
 			<div class="clear"></div>
 		</div>
 		<div class="items">

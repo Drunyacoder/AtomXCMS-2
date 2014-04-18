@@ -184,7 +184,7 @@ function index(&$page_title) {
 
 	$popups_content .=	'<div id="sec" class="popup">
 			<div class="top">
-				<div class="title">Добавление категории</div>
+				<div class="title">' . __('Adding category') . '</div>
 				<div onClick="closePopup(\'sec\');" class="close"></div>
 			</div>
 			<form action="forum_cat.php?ac=add" method="POST">
@@ -224,7 +224,7 @@ function index(&$page_title) {
 	
 	
 	$html .= '<div class="list">
-		<div class="title">Управление форумами</div>
+		<div class="title">' . __('Forums management') . '</div>
 		<div class="add-cat-butt" onClick="openPopup(\'sec\');"><div class="add"></div>' . __('Add section') . '</div>';
 
 
@@ -243,9 +243,9 @@ function index(&$page_title) {
 				<div class="head">
 					<div class="title">' . h($result->getTitle()) . '</div>
 					<div class="buttons">
-						<a title="Add" href="javascript://" onClick="openPopup(\'addForum' . $result->getId() . '\');" class="add"></a>
-						<a title="Edit" href="javascript://" onClick="openPopup(\'editSec' . $result->getId() . '\');" class="edit"></a>
-						<a title="Delete" href="?ac=del&id=' . $result->getId() . '&section" onClick="return _confirm();" class="delete"></a>
+						<a title="' . __('Add') . '" href="javascript://" onClick="openPopup(\'addForum' . $result->getId() . '\');" class="add"></a>
+						<a title="' . __('Edit') . '" href="javascript://" onClick="openPopup(\'editSec' . $result->getId() . '\');" class="edit"></a>
+						<a title="' . __('Delete') . '" href="?ac=del&id=' . $result->getId() . '&section" onClick="return _confirm();" class="delete"></a>
 					</div>
 					<div class="clear"></div>
 				</div>
@@ -263,7 +263,7 @@ function index(&$page_title) {
 		
 			$popups_content .= '<div id="addForum' . $result->getId() . '" class="popup">
 					<div class="top">
-						<div class="title">Добавление категории</div>
+						<div class="title">' . __('Add forum') . '</div>
 						<div onClick="closePopup(\'addForum' . $result->getId() . '\');" class="close"></div>
 					</div>
 					<form action="forum_cat.php?ac=add" method="POST" enctype="multipart/form-data">
@@ -370,7 +370,7 @@ function index(&$page_title) {
 				
 			$popups_content .= '<div id="editSec' . $result->getId() . '" class="popup">
 					<div class="top">
-						<div class="title">Добавление категории</div>
+						<div class="title">' . __('Category editing') . '</div>
 						<div onClick="closePopup(\'editSec' . $result->getId() . '\');" class="close"></div>
 					</div>
 					<form action="forum_cat.php?ac=edit&id=' . $result->getId() . '" method="POST">
@@ -461,9 +461,8 @@ function index(&$page_title) {
 								<div class="number">' . $cat->getId() . '</div>
 								<div class="title">' . h($cat->getTitle()) . ' ' . $issubforum . '</div>
 								<div class="buttons">
-									<a title="edit" href="javascript://" onClick="openPopup(\'editForum' . $cat->getId() . '\')" class="edit"></a>
-									<a title="acl" href="javascript://" onClick="openPopup(\'acl' . $cat->getId() . '\');" class="acl"></a>
-									<a title="delete" href="?ac=del&id=' . $cat->getId() . '" onClick="return _confirm();" class="delete"></a>
+									<a title="' . __('Edit') . '" href="javascript://" onClick="openPopup(\'editForum' . $cat->getId() . '\')" class="edit"></a>
+									<a title="' . __('Delete') . '" href="?ac=del&id=' . $cat->getId() . '" onClick="return _confirm();" class="delete"></a>
 								</div>
 								<div class="posts">' . $cat->getThemes() . '</div>
 							</div>';
@@ -473,7 +472,7 @@ function index(&$page_title) {
 					/* EDIT FORUM FORM */	
 					$popups_content .= '<div id="editForum' . $cat->getId() . '" class="popup">
 							<div class="top">
-								<div class="title">Добавление категории</div>
+								<div class="title">' . __('Edit forum') . '</div>
 								<div onClick="closePopup(\'editForum' . $cat->getId() . '\');" class="close"></div>
 							</div>
 							<form action="forum_cat.php?ac=edit&id=' . $cat->getId() . '" method="POST" enctype="multipart/form-data">

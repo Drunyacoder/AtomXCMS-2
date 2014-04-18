@@ -26,7 +26,7 @@ include_once '../sys/boot.php';
 include_once ROOT . '/admin/inc/adm_boot.php';
 
  
-$pageTitle = 'Пользователи';
+$pageTitle = __('Users');
  
  
 if ( !isset( $_GET['ac'] ) ) $_GET['ac'] = 'index';
@@ -54,7 +54,7 @@ switch ( $_GET['ac'] )
 
 
 $pageNav = $pageTitle;
-$pageNavl = '<a href="users_list.php">Список пользователей</a>';
+$pageNavl = '<a href="users_list.php">' . __('Users list') . '</a>';
 
 
 
@@ -73,7 +73,7 @@ function index(&$page_title) {
     $Register = Register::getInstance();
     $FpsDB = $Register['DB'];
    	$ACL = $Register['ACL'];
-	$page_title = 'Список пользователей';
+	$page_title = __('Users list');
 	$order = '';
 	$limit = 30;
 	$content = '';
@@ -97,12 +97,12 @@ function index(&$page_title) {
 	$sql = "SELECT * FROM `" . $FpsDB->getFullTableName('users') . "` {$str_search} {$order} LIMIT {$start}, {$limit}";
 	$query = $FpsDB->query($sql);
 	
-	$nick = (!empty($_GET['cond']) && $_GET['cond'] == 'name') ? '<a href="?cond=name&value=0">Ник</a>' : '<a href="?cond=name&value=1">Ник</a>';
-	$email = (!empty($_GET['cond']) && $_GET['cond'] == 'email') ? '<a href="?cond=email&value=0">Почта</a>' : '<a href="?cond=email&value=1">Почта</a>';
-	$puttime = (!empty($_GET['cond']) && $_GET['cond'] == 'puttime') ? '<a href="?cond=puttime&value=0">Дата регистрации</a>' : '<a href="?cond=puttime&value=1">Дата регистрации</a>';
-	$status = (!empty($_GET['cond']) && $_GET['cond'] == 'status') ? '<a href="?cond=status&value=0">Статус</a>' : '<a href="?cond=status&value=1">Статус</a>';
-	$themes = (!empty($_GET['cond']) && $_GET['cond'] == 'themes') ? '<a href="?cond=themes&value=0">Тем</a>' : '<a href="?cond=themes&value=1">Тем</a>';
-	$posts = (!empty($_GET['cond']) && $_GET['cond'] == 'posts') ? '<a href="?cond=posts&value=0">Постов</a>' : '<a href="?cond=posts&value=1">Постов</a>';
+	$nick = (!empty($_GET['cond']) && $_GET['cond'] == 'name') ? '<a href="?cond=name&value=0">' . __('Name') . '</a>' : '<a href="?cond=name&value=1">' . __('Name') . '</a>';
+	$email = (!empty($_GET['cond']) && $_GET['cond'] == 'email') ? '<a href="?cond=email&value=0">' . __('Email') . '</a>' : '<a href="?cond=email&value=1">' . __('Email') . '</a>';
+	$puttime = (!empty($_GET['cond']) && $_GET['cond'] == 'puttime') ? '<a href="?cond=puttime&value=0">' . __('Registration date') . '</a>' : '<a href="?cond=puttime&value=1">' . __('Registration date') . '</a>';
+	$status = (!empty($_GET['cond']) && $_GET['cond'] == 'status') ? '<a href="?cond=status&value=0">' . __('Status') . '</a>' : '<a href="?cond=status&value=1">' . __('Status') . '</a>';
+	$themes = (!empty($_GET['cond']) && $_GET['cond'] == 'themes') ? '<a href="?cond=themes&value=0">' . __('Topics') . '</a>' : '<a href="?cond=themes&value=1">' . __('Topics') . '</a>';
+	$posts = (!empty($_GET['cond']) && $_GET['cond'] == 'posts') ? '<a href="?cond=posts&value=0">' . __('Posts') . '</a>' : '<a href="?cond=posts&value=1">' . __('Posts') . '</a>';
 	
 	$pages = '<div class="pages">' . $pages . '</div>';
 	$content .= "<div class=\"list\">
@@ -113,7 +113,7 @@ function index(&$page_title) {
 			<th width=\"15%\">{$status}</th>
 			<th width=\"9%\">{$themes}</th>
 			<th width=\"9%\">{$posts}</th>
-			<th width=\"20px\" colspan=\"2\">Действие</th>";
+			<th width=\"20px\" colspan=\"2\">" . __('Action') . "</th>";
 	
 
 	
@@ -134,7 +134,7 @@ function index(&$page_title) {
 	
 	$content .= '<form method="POST" action="users_list.php?ac=index"><table class="metatb"><tr><td>
 				<input type="text" name="search" />
-				<input type="submit" name="send" value="Поиск" />
+				<input type="submit" name="send" class="save-button" value="' . __('Search') . '" />
 				</td></tr></table></form>';
 	
 	return $content;
@@ -150,12 +150,12 @@ function editAnk(&$page_title) {
    	$ACL = $Register['ACL'];
 	if (!is_numeric($_GET['id'])) redirect('/admin/users_list.php');
 	
-	$page_title = 'Редактирование данных пользователя';
+	$page_title = __('Edit user');
 	$content = '';
 	$statuses = $ACL->get_group_info();
 	$query = $FpsDB->select('users', DB_FIRST, array('cond' => array('id' => $_GET['id'])));
 	
-	if (empty($query)) return '<span style="color:red;">Запись не найдена</span>';
+	if (empty($query)) return '<span style="color:red;">' . __('Can not find user') . '</span>';
 
 	foreach ($query[0] as $key => $value) {
 		$$key = (!empty($_SESSION['edit_ank'][$key])) ? $_SESSION['edit_ank'][$key] : $value;
@@ -178,12 +178,12 @@ function editAnk(&$page_title) {
 	
 	
 	$content .= '<form action="users_list.php?ac=save&id=' . $_GET['id'] . '" method="POST"><div class="list">
-			<div class="title">Редактирование анкеты (' . h($name) . ')</div>
+			<div class="title">' . __('Edit user') . ' (' . h($name) . ')</div>
 			<div class="level1">
 				<div class="items">
 					<div class="setting-item">
 						<div class="left">
-							Имя
+							' . __('Name') . '
 						</div>
 						<div class="right">
 							<input type="hidden" value="' . $_SESSION['adm_form_key'] . '" name="adm_form_key" />
@@ -193,7 +193,7 @@ function editAnk(&$page_title) {
 					</div>
 					<div class="setting-item">
 						<div class="left">
-							Ранг
+							' . __('Rank') . '
 						</div>
 						<div class="right">
 							<input type="text" name="state" value="' . h($state) .'" />
@@ -202,7 +202,7 @@ function editAnk(&$page_title) {
 					</div>
 					<div class="setting-item">
 						<div class="left">
-							Пароль
+							' . __('Password') . '
 						</div>
 						<div class="right">
 							<input type="text" name="passw" value="" />
@@ -211,7 +211,7 @@ function editAnk(&$page_title) {
 					</div>
 					<div class="setting-item">
 						<div class="left">
-							Почта
+							' . __('Email') . '
 						</div>
 						<div class="right">
 							<input type="text" name="email" value="' . h($email) .'" />
@@ -220,7 +220,7 @@ function editAnk(&$page_title) {
 					</div>
 					<div class="setting-item">
 						<div class="left">
-							Сайт
+							' . __('Site') . '
 						</div>
 						<div class="right">
 							<input type="text" name="url" value="' . h($url) .'" />
@@ -247,7 +247,7 @@ function editAnk(&$page_title) {
 					</div>
 					<div class="setting-item">
 						<div class="left">
-							City
+							' . __('City') . '
 						</div>
 						<div class="right">
 							<input type="text" name="city" value="' . h($city) .'" />
@@ -256,7 +256,7 @@ function editAnk(&$page_title) {
 					</div>
 					<div class="setting-item">
 						<div class="left">
-							Telephone
+							' . __('Telephone') . '
 						</div>
 						<div class="right">
 							<input type="text" name="telephone" value="' . h($telephone) .'" />
@@ -265,7 +265,7 @@ function editAnk(&$page_title) {
 					</div>
 					<div class="setting-item">
 						<div class="left">
-							Пол
+							' . __('Gender') . '
 						</div>
 						<div class="right">
 							<input type="radio" name="pol" value="m" '.$mpol.' id="polm" /><label for="polm">М</label><br /><br />
@@ -275,7 +275,7 @@ function editAnk(&$page_title) {
 					</div>
 					<div class="setting-item">
 						<div class="left">
-							Дата рождения
+							' . __('Birth date') . '
 						</div>
 						<div class="right">
 							<select style="width:80px;" name="byear">'
@@ -292,7 +292,7 @@ function editAnk(&$page_title) {
 					</div>
 					<div class="setting-item">
 						<div class="left">
-							О себе
+							' . __('Interests') . '
 						</div>
 						<div class="right">
 							<textarea name="about" style="height:100px;">' . h($about) .'</textarea>
@@ -301,7 +301,7 @@ function editAnk(&$page_title) {
 					</div>
 					<div class="setting-item">
 						<div class="left">
-							Подпись
+							' . __('Signature') . '
 						</div>
 						<div class="right">
 							<textarea  style="height:100px;" name="signature" />' . h($signature) .'</textarea>
@@ -316,11 +316,11 @@ function editAnk(&$page_title) {
 							<select name="locked">';
 						
 							if ($locked == 0) {
-								$content .= '<option value="1">Заблокирован</option>
-											<option value="0" selected="selected">Разблокирован</option>';
+								$content .= '<option value="1">' . __('Banned') . '</option>
+											<option value="0" selected="selected">' . __('Unbanned') . '</option>';
 							} else {
-								$content .= '<option value="1" selected="selected">Заблокирован</option>
-											<option value="0">Разблокирован</option>';	
+								$content .= '<option value="1" selected="selected">' . __('Banned') . '</option>
+											<option value="0">' . __('Unbanned') . '</option>';	
 							}
 							
 							$content .= '</select>
@@ -329,7 +329,7 @@ function editAnk(&$page_title) {
 					</div>
 					<div class="setting-item">
 						<div class="left">
-							Статус
+							' . __('Group') . '
 						</div>
 						<div class="right">
 							<select name="status">';
@@ -340,14 +340,14 @@ function editAnk(&$page_title) {
 															'<option value="' . $key . '">' . $value['title'] . '</option>';
 							}
 							$activation = (!empty($activation)) 
-							? '<input id="activation" name="activation" type="checkbox" value="1" ><label for="activation">Активировать</label>' : '<span style="color:blue;">Активирован</span>';
+							? '<input id="activation" name="activation" type="checkbox" value="1" ><label for="activation">' . __('Activate') . '</label>' : '<span style="color:blue;">' . __('Active') . '</span>';
 							$content .=	 '</select>
 						</div>
 						<div class="clear"></div>
 					</div>
 					<div class="setting-item">
 						<div class="left">
-							Активация
+							' . __('Activation') . '
 						</div>
 						<div class="right">
 							' . $activation . '
@@ -359,7 +359,7 @@ function editAnk(&$page_title) {
 						<div class="left">
 						</div>
 						<div class="right">
-							<input class="save-button" type="submit" name="send" value="Сохранить" />
+							<input class="save-button" type="submit" name="send" value="' . __('Save') . '" />
 						</div>
 						<div class="clear"></div>
 					</div>
@@ -387,7 +387,7 @@ function saveAnk() {
 	
 	$check_user = $FpsDB->select('users', DB_FIRST, array('cond' => array('id' => (int)$_GET['id'])));
 	if (count($check_user) < 1) {
-		$_SESSION['info_message'] = 'Не найден пользователь с таким ID';
+		$_SESSION['info_message'] = __('Record with this ID not found');
 		redirect('/admin/users_list.php');
 	}
 	
@@ -415,33 +415,34 @@ function saveAnk() {
 
 	//check data for wrong chars
 	if ($v_obj->cha_val($login, V_TITLE) !== true) 
-		$errors .= '<li>Имя содержит недопустимые символы</li>';
+		$errors .= '<li>' . sprintf(__('Wrong chars in "..."'), __('Name')) . '</li>';
 	//if (!empty($state) && $v_obj->cha_val($state, V_TEXT) !== true) 
 	//	$errors .= '<li>Ранг содержит недопустимые символы</li>';
 	if (!empty($email) && $v_obj->cha_val($email, V_MAIL) !== true) 
-		$errors .= '<li>некоректный Email</li>';
+		$errors .= '<li>' . sprintf(__('Wrong chars in "..."'), __('Email')) . '</li>';
 	if (!empty($url) && $v_obj->cha_val($url, V_URL) !== true) 
-		$errors .= '<li>Не коректный URL сайта</li>';
+		$errors .= '<li>' . sprintf(__('Wrong chars in "..."'), __('Site')) . '</li>';
 	if (!empty($icq) && $v_obj->cha_val($icq, V_INT) !== true) 
-		$errors .= '<li>ICQ должно содержать только цифры</li>';
+		$errors .= '<li>' . sprintf(__('Field %s may only contain numbers'), 'ICQ') . '</li>';
 	if (!empty($about) && $v_obj->cha_val($about, V_TEXT) !== true) 
-		$errors .= '<li>Поле "о себе" содержит недопустимые символы</li>';
+		$errors .= '<li>' . sprintf(__('Wrong chars in "..."'), __('Interests')) . '</li>';
 	if (!empty($signature) && $v_obj->cha_val($signature, V_TEXT) !== true) 
-		$errors .= '<li>Подпись содержит недопустимые символы</li>';
+		$errors .= '<li>' . sprintf(__('Wrong chars in "..."'), __('Signature')) . '</li>';
 
 	//check data for max/min lenght
+	$min_password_length = Config::read('min_password_lenght');
 	if ($v_obj->len_val($login, 3, 15) !== true) 
-		$errors .= '<li>Имя слишком короткое/длинное. Должно быть в диапазоне 3-15 символов</li>';
-	if ($v_obj->len_val($url, 0) !== true) 
-		$errors .= '<li>Слишком длинный URL</li>';
+		$errors .= '<li>' . sprintf(__('Field %s must be between %s-%s chars'), __('Name'), 3, 20) . '</li>';
+	if ($v_obj->len_val($url, 0, 100) !== true) 
+		$errors .= '<li>' . sprintf(__('Very big "material"'), __('Site'), 100) . '</li>';
 	if ($v_obj->len_val($icq, 0, 10) !== true) 
-		$errors .= '<li>ICQ не должно превышать 10 символов </li>';
+		$errors .= '<li>' . sprintf(__('Very big "material"'), __('ICS'), 100) . '</li>';
 	if ($v_obj->len_val($about, 0, 300) !== true) 
-		$errors .= '<li>Поле "о себе" не должно превышать 300 символов</li>';
+		$errors .= '<li>' . sprintf(__('Very big "material"'), __('Interests'), 300) . '</li>';
 	if ($v_obj->len_val($signature, 0) !== true) 
-		$errors .= '<li>Подпись не должна превышать 100 символов</li>';
-	if (!empty($passw) && $v_obj->len_val($passw, 6, 32) !== true) 
-		$errors .= '<li>Пароль слишком длинный/короткий. Он должен содержать 6-32 символа</li>';
+		$errors .= '<li>' . sprintf(__('Very big "material"'), __('Signature'), 100) . '</li>';
+	if (!empty($passw) && $v_obj->len_val($passw, $min_password_length, 32) !== true) 
+		$errors .= '<li>' . sprintf(__('Field %s must be between %s-%s chars'), __('Password'), $min_password_length, 32) . '</li>';
 	
 
 	if ($locked != 1 && $locked != 0) $locked = 0;
@@ -450,7 +451,7 @@ function saveAnk() {
 	
 	if (!empty($check_user[0]['name']) && $check_user[0]['name'] !== $login) {
 		if ($v_obj->uniq_val($login, array('table' => 'users', 'field' => 'name'), 'hight') != true) 
-			$errors .= '<li>Это имя уже занято :(</li>';
+			$errors .= '<li>' . sprintf(__('Name already exists'), h($login)) . '</li>';
 	}
 	
 	if (!empty($errors)) {
@@ -495,7 +496,7 @@ function saveAnk() {
 <?php
 if (!empty($_SESSION['info_message'])):
 ?>
-<script type="text/javascript">showHelpWin('<?php echo h($_SESSION['info_message']) ?>', 'Сообщение');</script>
+<script type="text/javascript">showHelpWin('<?php echo h($_SESSION['info_message']) ?>', '<?php echo __('Message') ?>');</script>
 <?php
 	unset($_SESSION['info_message']);
 endif;

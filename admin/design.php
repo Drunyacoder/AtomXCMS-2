@@ -31,7 +31,7 @@ include_once ROOT . '/admin/inc/adm_boot.php';
 
 $pageTitle = __('Design - templates');
 $pageNav = $pageTitle;
-$pageNavr = '<a href="set_default_dis.php" onClick="return confirm(\'Система востановит стандартный шаблон. Вы уверены?\')">' . __('Return to default template') . '</a>&nbsp;|&nbsp;<a href="backup_dis.php" onClick="return confirm(\'Система сделает резервную копию шаблона. Вы уверены?\')">' . __('Save current state of template') . '</a>';
+$pageNavr = '<a href="set_default_dis.php" onClick="return confirm(\'' . __('System will be restore the last saved template version. Are you sure?') . '\')">' . __('Return to default template') . '</a>&nbsp;|&nbsp;<a href="backup_dis.php" onClick="return confirm(\'' . __('System will be make a backup copy of template. Are you sure?') . '\')">' . __('Save current state of template') . '</a>';
 
 
 $allowedFiles = array(
@@ -145,13 +145,13 @@ if (!empty($_GET['ac']) && $_GET['ac'] === 'add_template') {
 	$path2 = ROOT . '/template/' . $Register['Config']->read('template') . '/html/' . $title . '/main.html';
 	
 	if (file_exists($path) && is_dir($path)) {
-		$_SESSION['info_message'] = 'Такой шаблон уже существует';
+		$_SESSION['info_message'] = __('Same template already exists');
 	
 	} else {
 		mkdir($path, 0777);
 	
 		file_put_contents($path2, $code);
-		$_SESSION['info_message'] = 'Шаблон создан';
+		$_SESSION['info_message'] = __('Template is created');
 	}	
 }
 
@@ -283,9 +283,9 @@ if(isset($mess) && $mess != NULL) {
 
 <div class="white">
 	<div class="pages-tree">
-		<div class="title">Страницы</div>
+		<div class="title"><?php echo __('Pages') ?></div>
 		<div class="wrapper">
-			<div class="tbn">Ваши шаблоны</div>
+			<div class="tbn"><?php echo __('Your templates') ?></div>
 				<?php foreach ($custom_tpl as $file): ?>
 				<div class="tba1">
 				<a href="design.php?d=default&t=<?php echo $file; ?>&m=custom"><?php echo $file; ?></a>
@@ -320,8 +320,8 @@ if(isset($mess) && $mess != NULL) {
 
 	
 	<div class="list pages-form">
-		<div class="title">Редактор шаблонов</div>
-		<div class="add-cat-butt" onClick="openPopup('sec');"><div class="add"></div>Добавить шаблон</div>
+		<div class="title"><?php echo __('Template editing') ?></div>
+		<div class="add-cat-butt" onClick="openPopup('sec');"><div class="add"></div><?php echo __('Add template') ?></div>
 		
 		<div class="level1">
 			<div class="items">
@@ -335,7 +335,7 @@ if(isset($mess) && $mess != NULL) {
 					<div class="left">
 					</div>
 					<div class="right">
-						<input class="save-button" type="submit" name="send" value="Сохранить" />
+						<input class="save-button" type="submit" name="send" value="<?php echo __('Save') ?>" />
 					</div>
 					<div class="clear"></div>
 				</div>
@@ -348,21 +348,21 @@ if(isset($mess) && $mess != NULL) {
 </form>
 <div id="sec" class="popup">
 <div class="top">
-	<div class="title">Добавление шаблона</div>
+	<div class="title"><?php echo __('Adding template') ?></div>
 	<div onClick="closePopup('sec');" class="close"></div>
 </div>
 <form action="design.php?ac=add_template" method="POST">
 <div class="items">
 	<div class="item">
 		<div class="left">
-			Название
+			<?php echo __('Name') ?>
 		</div>
 		<div class="right"><input type="text" name="title" /></div>
 		<div class="clear"></div>
 	</div>
 	<div class="item">
 		<div class="left">
-			Код(HTML)
+			HTML
 		</div>
 		<div class="right">
 			<br />
@@ -373,7 +373,7 @@ if(isset($mess) && $mess != NULL) {
 	<div class="item submit">
 		<div class="left"></div>
 		<div class="right" style="float:left;">
-			<input type="submit" value="send" name="send" class="save-button" />
+			<input type="submit" value="<?php echo __('Save') ?>" name="send" class="save-button" />
 		</div>
 		<div class="clear"></div>
 	</div>
@@ -438,8 +438,9 @@ function(){
 <ul class="markers">
 	<h2>Глобальные метки</h2>
 	<li><div class="global-marks">{{ content }}</div> - Основной контент страницы</li>
-	<li><div class="global-marks">{{ title }}</div> - Заголовок страницы</li>
-	<li><div class="global-marks">{{ description }}</div> - Содержание Мета-тега description</li>
+	<li><div class="global-marks">{{ meta_title }}</div> - <?php echo __('Page title') ?></li>
+	<li><div class="global-marks">{{ meta_keywords }}</div> - <?php echo __('Keywords') ?></li>
+	<li><div class="global-marks">{{ meta_description }}</div> - Содержание Мета-тега description</li>
 	<li><div class="global-marks">{{ fps_wday }}</div> - День кратко</li>
 	<li><div class="global-marks">{{ fps_date }}</div> - Дата</li>
 	<li><div class="global-marks">{{ fps_time }}</div> - Время</li>
