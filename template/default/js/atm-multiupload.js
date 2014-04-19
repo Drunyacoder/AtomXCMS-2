@@ -1,4 +1,4 @@
-function initAtomMultiload(module_text, error_text)
+function initAtomMultiload(module_text, error_text, template_path)
 {
 	var parseResponse = function(module, data){
 		if (typeof data.errors != 'undefined' && data.errors.length > 0) {
@@ -17,13 +17,13 @@ function initAtomMultiload(module_text, error_text)
 		$(data).each(function(key, value){
 			if (value.is_image == 1) {
 				$('#attaches-info').html($('#attaches-info').html() + 
-					'<img id="attach-' + value.id + '" title="' + getTitle(value) + '" src="/sys/files/' + module + 
-					'/' + value.filename + '" ' + 
+					'<img id="attach-' + value.id + '" title="' + getTitle(value) + '" src="/image/' + module + 
+					'/' + value.filename + '/150/" ' + 
 					' onClick="AtomX.insetAtomImage(' + value.id + ');" /><div class="attach-delete" ' + 
 					' onClick="AtomX.deleteAttach(\'' + module + '\', ' + value.id + ')"></div>');
 			} else {
 				$('#attaches-info').html($('#attaches-info').html() + 
-					'<img id="attach-' + value.id + '" title="' + getTitle(value) + '" src="/template/default/img/' + 
+					'<img id="attach-' + value.id + '" title="' + getTitle(value) + '" src="' + template_path + '/img/' + 
 					'/atm-file-icon.png" ' + 
 					' onClick="AtomX.insetAtomImage(' + value.id + ');" /><div class="attach-delete" ' + 
 					' onClick="AtomX.deleteAttach(\'' + module + '\', ' + value.id + ')"></div>');
