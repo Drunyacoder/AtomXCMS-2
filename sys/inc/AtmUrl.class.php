@@ -188,7 +188,7 @@ class AtmUrl {
 		$def_lang = Config::read('language');
 		$root = (
 			$useLang && 
-			!preg_match('#^(/?sys/.+|/?template/|/?admin)#', $url) &&
+			!preg_match('#^(/?sys/.+|/image/.+|/?template/|/?admin)#', $url) &&
 			$lang !== $def_lang
 		) 
 			? '/' . WWW_ROOT . $lang . '/'

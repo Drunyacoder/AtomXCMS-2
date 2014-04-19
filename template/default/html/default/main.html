@@ -54,8 +54,9 @@ $(document).ready(function() {
 	</div>
 	<script>
 		$(function(){
-			$('.lang a:eq(0)').attr('href', $('.lang a:eq(0)').attr('href') + window.location.pathname + window.location.search);
-			$('.lang a:eq(1)').attr('href', $('.lang a:eq(1)').attr('href') + window.location.pathname + window.location.search);
+			var path = window.location.pathname.replace(/\/(rus|eng)/, '');
+			$('.lang a:eq(0)').attr('href', $('.lang a:eq(0)').attr('href') + path + window.location.search);
+			$('.lang a:eq(1)').attr('href', $('.lang a:eq(1)').attr('href') + path + window.location.search);
 		});
 	</script>
 </div>
