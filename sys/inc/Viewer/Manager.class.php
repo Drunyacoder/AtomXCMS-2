@@ -122,7 +122,7 @@ class Fps_Viewer_Manager
 		$path = ROOT . '/template/' . $template . '/html/' . '%s' . '/' . $fileName;
 		if (file_exists(sprintf($path, $this->layout))) $path = sprintf($path, $this->layout);
 		else $path = sprintf($path, $this->loader->rootDir);
-		
+		$path = preg_replace('#([\\/])+#', '\\1', $path);
 		return $path;
 	}
 	

@@ -86,19 +86,19 @@ class AtmSnippets {
         $Register = Register::getInstance();
         $Model = $Register['ModManager']->getModelInstance('snippets');
 
-
+		
 		
         foreach ($this->snippets as $snippet) {
             $regex = '#\{\[([!]*)('.$snippet['hash'].$snippet['name'].')(\??.*)\]\}#U';
 			
             preg_match_all($regex, $source, $mas);
 			
-
-            for ($i= 0; $i < count($mas[2]); $i++) {
+			
+            for ($ix_= 0; $ix_ < count($mas[2]); $ix_++) {
                 // snippet params
                 $params = array();
-                if (!empty($mas[3][$i])) {
-                    preg_match_all('#([\w]+)=([^&]+)#', $mas[3][$i], $matches);
+                if (!empty($mas[3][$ix_])) {
+                    preg_match_all('#([\w]+)=([^&]+)#', $mas[3][$ix_], $matches);
 
                     if (!empty($matches)) {
                         foreach ($matches[1] as $k => $v) {
@@ -107,14 +107,14 @@ class AtmSnippets {
                     }
                 }
 
-
+				
                 if ($snippet['cached']) {
                     $cache_key = 'snippet_' . strtolower($snippet['name']);
                     $cache_key .= (!empty($_SESSION['user']['status'])) ? '_' . $_SESSION['user']['status'] : '_guest';
 
                     if ($this->Cache->check($cache_key)) {
                         $res = $this->Cache->read($cache_key);
-                        $source = preg_replace('#' . preg_quote($mas[0][$i]) . '#', $res, $source);
+                        $source = preg_replace('#' . preg_quote($mas[0][$ix_]) . '#', $res, $source);
                         continue;
                     }
                 }
@@ -129,8 +129,8 @@ class AtmSnippets {
                     eval($db_snippet->getBody());
                     $res = ob_get_contents();
                     ob_end_clean();
-                    $source = preg_replace('#' . preg_quote($mas[0][$i]) . '#', $res, $source);
-
+                    $source = preg_replace('#' . preg_quote($mas[0][$ix_]) . '#', $res, $source);
+					
                     if ($snippet['cached'])
                         $this->Cache->write($res, $cache_key, array());
                 }
