@@ -179,9 +179,11 @@ class Fps_Viewer_CompileParser
 		$class = $this->getTmpClassName();
 	
 		$str = '<?php' . "\n";
-		$str .= 'class ' . $class . ' extends Fps_Viewer_Template {' . "\n";
-		$str .= '	public function display() {' . "\n";
+		$str .= 'if (!class_exists("' . $class . '")) {' . "\n";
+		$str .= '	class ' . $class . ' extends Fps_Viewer_Template {' . "\n";
+		$str .= '		public function display() {' . "\n";
 		$str .= $this->output;
+		$str .= '		}' . "\n";
 		$str .= '	}' . "\n";
 		$str .= '}' . "\n";
 		$str .= "\${$class} = new {$class}(\$context);" . "\n";
