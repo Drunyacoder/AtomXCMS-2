@@ -792,14 +792,17 @@ class Module {
 						$style_ = (array_key_exists($attach->getId(), $sizes) && !empty($sizes[$attach->getId()])) 
 							? ' style="width:' . $sizes[$attach->getId()] . 'px;"'
 							: $style;
+						$size = (array_key_exists($attach->getId(), $sizes) && !empty($sizes[$attach->getId()]))
+							? '/' . $sizes[$attach->getId()]
+							: '';
 						
 						$announce = preg_replace('#\{ATTACH' . $attach->getId() . '[^\}]*\}#', 
 							'<a class="gallery" href="' . get_url('/sys/files/' . $module . '/' . $attach->getFilename()) 
 							. '"><img' . $style_ . ' alt="' . h($entity->getTitle()) . '" title="' . h($entity->getTitle()) 
-							. '" title="" src="' . get_url('/image/' . $module . '/' . $attach->getFilename()) . '" /></a>',
+							. '" title="" src="' . get_url('/image/' . $module . '/' . $attach->getFilename()) . $size . '" /></a>',
 							$announce);
 					} else {
-						$announce = preg_replace('#\{ATTACH' . $attach->getId() . '\}#', 
+						$announce = preg_replace('#\{ATTACH' . $attach->getId() . '[^\}]*\}#', 
 							__('Attachment') . $attach->getAttach_number() 
 							. ': ' . get_img('/sys/img/file.gif', array('alt' => __('Open file'), 'title' => __('Open file'))) 
 							. '&nbsp;' . get_link(($attach->getSize() / 1000) .' Kb', '/forum/download_file/' 
