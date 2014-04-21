@@ -7,7 +7,7 @@ class Fps_Viewer_ExpresionParser
 	
 	private $parser;
 	private $binaryOperators;
-	private $inFunc = false;
+	private $inFunc = 0;
 	private $inIfDefinition = 0;
 
 	
@@ -188,11 +188,11 @@ class Fps_Viewer_ExpresionParser
 				//concat
 				} elseif ('~' == $token->getValue()) { 
 					$this->parser->getStream()->next();
-					$this->inFunc = true;
+					$this->inFunc++;
 					$expr = $this->parsePrimaryExpression();
 					$node = new Fps_Viewer_Node_Concat($this->parser->setNode($node, $this->inFunc));
 					$node->addElement($expr);
-					$this->inFunc = false;
+					$this->inFunc--;
                 } else {
                     break;
                 }
@@ -258,7 +258,7 @@ class Fps_Viewer_ExpresionParser
 		$this->parser->getStream()->next();
 		$node = $this->parser->getStream()->getCurrent();
 
-		$this->inFunc = true;
+		$this->inFunc++;
 
 		if (')' === $node->getValue()) return new Fps_Viewer_Node_Text($func . '()');
 		
@@ -271,7 +271,7 @@ class Fps_Viewer_ExpresionParser
             $expr->addParam($param);
         }
 
-		$this->inFunc = false;
+		$this->inFunc--;
 
 		$this->parser->getStream()->next();
 		return $expr;
