@@ -55,6 +55,11 @@ class AtmSnippets {
     }
 	
 	
+	public function cleanCahe() {
+		$this->Cache->clean();
+	}
+	
+	
 	public function setSource(&$tplSource) {
 		$this->source = &$tplSource;
 		return $this;

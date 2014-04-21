@@ -27,4 +27,7 @@ include_once ROOT . '/admin/inc/adm_boot.php';
 
 $_SESSION['clean_cache'] = true;
 $Register['Cache']->clean();
+$Snippets = new AtmSnippets;
+$Snippets->cleanCahe();
+_unlink(ROOT . '/sys/cache/templates/');
 redirect('/admin');
