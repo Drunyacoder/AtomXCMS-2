@@ -1,8 +1,8 @@
 <div class="material">
-	  <div class="mat-title">Профиль пользователя - {{ user.name }}</div>
+	  <div class="mat-title">{{ 'User profile'|lang }} - {{ user.name }}</div>
 	  <div class="mat-content">
 		  <ul class="userslinks">
-		         <li class="active"><a href="{{ www_root }}/users/info/{{ user.id }}">Обзор Профиля</a></li>
+		         <li class="active"><a href="{{ www_root }}/users/info/{{ user.id }}">{{ 'Browse Profile'|lang }}</a></li>
 				 {% if user.edit_profile_link %}				 
 				 <li>{{ user.edit_profile_link }}</li>
 				 {% endif %}
@@ -10,16 +10,16 @@
 				 <li><a href="{{ www_root }}/users/edit_form_by_admin/{{ user.id }}">{{ __('Edit profile') }}</a></li>
 				 {% endif %}
 				 {% if fps_user_id == user.id %}
-				 <li><a href="{{ www_root }}/users/pm/">Личные сообщения</a></li>
+				 <li><a href="{{ www_root }}/users/pm/">{{ 'Private messages'|lang }}</a></li>
 				 {% endif %}
 				 {% if user.privatemessage %}	
-				 <li><a href="{{ www_root }}/users/pm_send_form/{% if fps_user_id != user.id %}{{ user.id }}{% endif %}">Отправить ЛС</a></li>
+				 <li><a href="{{ www_root }}/users/pm_send_form/{% if fps_user_id != user.id %}{{ user.id }}{% endif %}">{{ 'Send PM'|lang }}</a></li>
                  {% endif %}
 				 {% if fps_user_id != user.id %}
-				 <li><a href="{{ www_root }}/users/send_mail_form/{{ user.id }}">Отправить на почту</a></li>
+				 <li><a href="{{ www_root }}/users/send_mail_form/{{ user.id }}">{{ 'Send e-mail'|lang }}</a></li>
 				 {% endif %}
 				 {% if user.statistic %}
-                     <li class="category"><a>Публикации</a></li>
+                     <li class="category"><a>{{ 'Publications'|lang }}</a></li>
                      <li class="submenu">
                          {% for stat in user.statistic %}
                          {% if stat.count %}
@@ -34,68 +34,68 @@
 			      <div class="profileavatar"><img class="avatar"  title="{{ user.name }}" src="{{ user.avatar }}"></div>
 				  <div class="userinfocell">
 				       <div class="nameuser">{{ user.name }}</div>
-					   <div>Регистрация: {{ user.puttime }}</div>
-					   <div class="lastrun">{% if CheckUserOnline(user.id) %}<img src="{{ template_path }}/img/online.png" title="online" alt="online">{% else %}Последняя активность: {{ user.lastvisit }}{% endif %}</div>
+					   <div>{{ 'Registration'|lang }}: {{ user.puttime }}</div>
+					   <div class="lastrun">{% if CheckUserOnline(user.id) %}<img src="{{ template_path }}/img/online.png" title="online" alt="online">{% else %}Recent activity'|lang }}: {{ user.lastvisit }}{% endif %}</div>
 					   <div class="shkalakrut"><img border="0" src="{{ template_path }}/img/{{ getUserRatingImg(user.posts) }}" alt="" /></div>
 
 				  </div>
                      {% if user.rating %}
 				        {% if user.rating >= 1 %}
-				        	<div class="userReputation" style="background-color: #780;"><div class="Rep-number">{{ user.rating }}</div><div>Положительная</div></div>
+				        	<div class="userReputation" style="background-color: #780;"><div class="Rep-number">{{ user.rating }}</div><div>{{ 'Positive'|lang }}</div></div>
 					    {% else %}
-					        <div class="userReputation" style="background-color: #C54C4C;"><div class="Rep-number">{{ user.rating }}</div><div>Отрицательная</div></div>
+					        <div class="userReputation" style="background-color: #C54C4C;"><div class="Rep-number">{{ user.rating }}</div><div>{{ 'Negative'|lang }}</div></div>
 						{% endif %}
 				     {% else %}
-                            <div class="userReputation" style="background-color: #999;"><div class="Rep-number">{{ user.rating }}</div><div>Нейтральная</div></div>
+                            <div class="userReputation" style="background-color: #999;"><div class="Rep-number">{{ user.rating }}</div><div>{{ 'Neutral'|lang }}</div></div>
                      {% endif %}
 			  </div>
 			  
 			  <div class="bottomuserinfo">
-								<div class="head">Статистика</div>
+								<div class="head">{{ 'Statistics'|lang }}</div>
 								<ul class="spisokinfouser">
 								    {% if user.full_name %}
 								    <li>
-										<span class="siu_title">Полное имя:</span>
+										<span class="siu_title">{{ 'Full name'|lang }}:</span>
 										<span class="siu_data">{{ user.full_name }}</span>
 									</li>
 									{% endif %}
 									<li>
-										<span class="siu_title">Группа:</span>
+										<span class="siu_title">{{ 'Group'|lang }}:</span>
 										<span class="siu_data">
 										   <span>{{ user.group }}</span>
 									</span>
 									</li>
 									<li>
-										<span class="siu_title">Репутация:</span>
+										<span class="siu_title">{{ 'Reputation'|lang }}:</span>
 										<span class="siu_data">
                                             <a href="javascript:void(0)" onClick="showFpsWin('{{ www_root }}/users/votes_story/{{ user.id }}', '', 'История рейтинга ({{ user.name }})');">{{ user.rating }}</a>&nbsp;&nbsp;
                                             <a href="javascript:void(0)" onClick="$('#setRating_{{ user.id }}').show();">-&nbsp;/&nbsp;+</a>
 										</span>
 									</li>
 									<li>
-										<span class="siu_title">Предупреждения:</span>
+										<span class="siu_title">{{ 'Warning'|lang }}:</span>
 										<span class="siu_data">
                                             <a href="javascript:void(0)" onClick="showFpsWin('{{ www_root }}/users/warnings_story/{{ user.id }}', '', 'История предупреждений ({{ user.name }})');">{{ user.warnings }}</a>&nbsp;&nbsp;
                                             <a href="javascript:void(0)" onClick="$('#addWarning_{{ user.id }}').show();">-&nbsp;/&nbsp;+</a>
 										</span>
 									</li>
 									<li>
-										<span class="siu_title">Сообщений на форуме:</span>
+										<span class="siu_title">{{ 'Messages on the forum'|lang }}:</span>
 										<span class="siu_data">{{ user.posts }}</span>
 									</li>
 									{% if user.telephone %}
 									<li>
-										<span class="siu_title">Телефон:</span>
+										<span class="siu_title">{{ 'Telephone'|lang }}:</span>
 										<span class="siu_data"> {{ user.telephone }}</span>
 									</li>
 									{% endif %}
 									{% if user.age %}
 									<li>
-										<span class="siu_title">Возраст:</span>
+										<span class="siu_title">{{ 'Age'|lang }}:</span>
 										<span class="siu_data"> {{ user.age }} </span>	
 									</li>
 									<li>
-										<span class="siu_title">День рождения:</span>
+										<span class="siu_title">{{ 'Birthday'|lang }}:</span>
 										<span class="siu_data">{{ user.byear }}-{{ user.bmonth }}-{{ user.bday }}</span>
 									</li>
 									{% endif %}
@@ -106,18 +106,18 @@
 									</li>
 									{% endif %}
                                     <li>
-										<span class="siu_title">Пол:</span>
-                                        <span class="siu_data">{% if user.pol %} {{ user.pol }} {% else %} Не указан {% endif %}</span>
+										<span class="siu_title">{{ 'Sex'|lang }}:</span>
+                                        <span class="siu_data">{% if user.pol %} {{ user.pol }} {% else %} {{ 'Not specified'|lang }} {% endif %}</span>
 									</li>
 									{% if user.city %}
 									<li>
-										<span class="siu_title">Город:</span>
+										<span class="siu_title">{{ 'City'|lang }}:</span>
                                         <span class="siu_data">{{ user.city }}</span>
 									</li>
 									{% endif %}
 									{% if user.icq %}
 									<li>
-										<span class="siu_title">Номер в ICQ:</span>
+										<span class="siu_title">{{ 'ICQ number'|lang }}:</span>
                                         <span class="siu_data">{{ user.icq }}</span>
 									</li>
 									{% endif %}
@@ -129,13 +129,13 @@
 									{% endif %}
 									{% if user.lastpost %}
 									<li>
-										<span class="siu_title">Последнее сообщение:</span>
+										<span class="siu_title">{{ 'Last message'|lang }}:</span>
                                         <span class="siu_data">{{ user.lastpost }}</span>
 									</li>
 									{% endif %}
 									{% if user.about %}
 									<li>
-										<span class="siu_title">Интересы:</span>
+										<span class="siu_title">{{ 'Interests'|lang }}:</span>
                                         <span class="siu_data">{{ user.about }}</span>
 									</li>
 									{% endif %}
@@ -155,7 +155,7 @@
 </style>	
 <div id="setRating_{{ user.id }}" class="fps-fwin" style="display:none;">
 <div class="drag_window">
-    <div class="fps-title" onmousedown="drag_object(event, this.parentNode)">Голос для <b>{{ user.name }}</b></div>
+    <div class="fps-title" onmousedown="drag_object(event, this.parentNode)">{{ 'The voice for'|lang }} <b>{{ user.name }}</b></div>
     <div onClick="$('#setRating_{{ user.id }}').hide()" class="fps-close"></div>
     <div class="fps-cont">
         <form id="ratingForm_{{ user.id }}">
@@ -171,37 +171,37 @@
 </div>
 <div id="addWarning_{{ user.id }}" class="fps-fwin" style="display:none;">
     <div class="drag_window">
-        <div class="fps-title" onmousedown="drag_object(event, this.parentNode)">Замечание для <b>{{ user.name }}</b></div>
+        <div class="fps-title" onmousedown="drag_object(event, this.parentNode)">{{ 'Note for'|lang }} <b>{{ user.name }}</b></div>
         <div onClick="$('#addWarning_{{ user.id }}').hide()" class="fps-close"></div>
         <div class="fps-cont">
             <form id="warningForm_{{ user.id }}">
                 <fieldset>
-                    <legend><b>Действие</b></legend>
-                    <input type="radio" name="points" value="1">[+]Повысить уровень замечаний<br />
-                    <input type="radio" name="points" value="-1">[-]Понизить уровень замечаний(снять бан)<br />
+                    <legend><b>{{ 'Action'|lang }}</b></legend>
+                    <input type="radio" name="points" value="1">[+]{{ 'To increase the level of comments'|lang }}<br />
+                    <input type="radio" name="points" value="-1">[-]{{ 'Lowering the number of observations(remove the ban)'|lang }}<br />
                 </fieldset>
                 <fieldset>
-                    <legend><b>Причина</b></legend>
+                    <legend><b>{{ 'Reason'|lang }}</b></legend>
                     <textarea style="width:96%;" name="cause"></textarea>
                 </fieldset>
                 <fieldset>
-                    <legend><b>Бан</b></legend>
+                    <legend><b>{{ 'Ban'|lang }}</b></legend>
                     <input style="width:50px;margin:2px;" type="text" name="cnt" value="" />
                     <select style="width:80px;margin:2px;" name="mult">
-                        <option value="h">Часа</option>
-                        <option value="d">Дней</option>
-                        <option value="w">Недель</option>
-                        <option value="m">Месяцев</option>
-                        <option value="y">Лет</option>
+                        <option value="h">{{ 'Hours'|lang }}</option>
+                        <option value="d">{{ 'Days'|lang }}</option>
+                        <option value="w">{{ 'Weeks'|lang }}</option>
+                        <option value="m">{{ 'Months'|lang }}</option>
+                        <option value="y">{{ 'Years'|lang }}</option>
                     </select>
-                    <input type="checkbox" name="permanently" value="1" />Навсегда
+                    <input type="checkbox" name="permanently" value="1" />{{ 'Forever'|lang }}
                 </fieldset>
                 <fieldset>
-                    <legend><b>Уведомление</b></legend>
-                    <input type="checkbox" name="noticepm" value="1" />Личные сообщения
+                    <legend><b>Уведомление{{ 'Additions'|lang }}</b></legend>
+                    <input type="checkbox" name="noticepm" value="1" />{{ 'Private messages'|lang }}
                 </fieldset>
                 <fieldset>
-                    <input type="button" value="Отправить" onClick="addWarning_({{ user.id }}, 'warningForm_{{ user.id }}');" />
+                    <input type="button" value="{{ 'Send'|lang }}" onClick="addWarning_({{ user.id }}, 'warningForm_{{ user.id }}');" />
                 </fieldset>
             </form>
             <div id="winfomess_{{ user.id }}"></div>

@@ -22,8 +22,8 @@ function renderPollResults(data) {
 		
 		var row = '<li>'
 		+'<span class="answer">' + poll.ansver + '</span>'
-		+'<span class="votes"> (' + poll.votes + ' голосов [' + poll.percentage + '%])</span>'
-		+'<p class="progress_bar" title="Процент голосов: ' + poll.percentage + '%">'
+		+'<span class="votes"> (' + poll.votes + ' {{ 'votes'|lang }} [' + poll.percentage + '%])</span>'
+		+'<p class="progress_bar" title="{{ 'The percentage of votes'|lang }}: ' + poll.percentage + '%">'
 		+'<span style="width: ' + poll.percentage + '%"></span>'
 		+'</p>'
 		+'</li>';
@@ -46,7 +46,7 @@ function renderPollResults(data) {
 </script>
 <div class="poll_question">
 {% if poll.question %}
-<h4 class="question"><b>Голосование:</b> {{ poll.question }} ?</h4>
+<h4 class="question"><b>{{ 'Voting'|lang }}:</b> {{ poll.question }} ?</h4>
 {% endif %}
 {% if poll.can_voted %} 	
 		<ol id="pollVote">
@@ -57,7 +57,7 @@ function renderPollResults(data) {
 			  </li>
               {% endfor %}
 			  <li>
-                   <input onClick="sendVote();" type="button" name="poll_send" value="Голосовать" />	
+                   <input onClick="sendVote();" type="button" name="poll_send" value="{{ 'To vote'|lang }}" />	
               </li>			   
 		</ol>
 {% endif %}
@@ -66,8 +66,8 @@ function renderPollResults(data) {
                {% for variant in poll.variants %}		
 			<li>
 						<span class="answer">{{ variant.ansver }}</span>
-						<span class="votes"> ({{ variant.votes }} голосов [{{ variant.percentage }}%])</span>
-						<p class="progress_bar" title="Процент голосов: {{ variant.percentage }}%">
+						<span class="votes"> ({{ variant.votes }} {{ 'votes'|lang }} [{{ variant.percentage }}%])</span>
+						<p class="progress_bar" title="{{ 'The percentage of votes'|lang }}: {{ variant.percentage }}%">
 						         <span style="width: {{ variant.percentage }}%"></span>
 						</p>
 			</li>	

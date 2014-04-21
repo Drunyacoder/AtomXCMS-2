@@ -66,15 +66,15 @@ function update() {
 <form action="{{ data.action }}" method="POST" onSubmit="sebmitChat(this); return false;">
 <div class="chat-addfrom">
 	<div>
-	    <span>Автообновление:</span>
+	    <span>{{ 'AutoUpdate'|lang }}:</span>
 		<span>
 			<select id="chat_refresh_time" onchange="update()" style="width:65px;">
-			<option value='0'>Выкл</option>
-			<option value='10'>10 сек</option>
-			<option value='30'>30 сек</option>
-			<option value='60'>1 мин</option>
-			<option value='120'>2 мин</option>
-			<option value='300' selected="selected">5 мин</option>
+			<option value='0'>{{ 'Off'|lang }}</option>
+			<option value='10'>10 {{ 'sec'|lang }}</option>
+			<option value='30'>30 {{ 'sec'|lang }}</option>
+			<option value='60'>1 {{ 'min'|lang }}</option>
+			<option value='120'>2 {{ 'min'|lang }}</option>
+			<option value='300' selected="selected">5 {{ 'min'|lang }}</option>
 			</select>
 		</span>
 	</div>
@@ -88,7 +88,7 @@ function update() {
 			 <span style="display:none;font-size: 19px;" id="testAjax" class="vectorcssloader">
 	              <span class="css3loading" data-icon1="↻"></span> 
              </span>
-			<input type="submit" name="send" value="Отправить" />
+			<input type="submit" name="send" value="{{ 'Send'|lang }}" />
 	</div>
 </div>
 </form>

@@ -2,12 +2,12 @@
 {{ form.errors }}
 <div class="material">
 	   <form method="POST" id="sendForm" action="{{ form.action }}">
-       <div class="mat-title">Редактирование комментария</div>
+       <div class="mat-title">{{ 'Editing a comment'|lang }}</div>
 	   <div class="mat-content">
           <ul class="spisok-all">
 		  {% if fps_user_id == 0 %}
           <li>
-            <span class="siu_title"><strong><font color="red">*</font>Псевдоним:</strong></span>
+            <span class="siu_title"><strong><font color="red">*</font>{{ 'Alias'|lang }}:</strong></span>
             <span class="siu_data"><input {{ form.disabled }} type="text" name="login" value="{{ form.name }}" /></span>
           </li>
 		  {% endif %}

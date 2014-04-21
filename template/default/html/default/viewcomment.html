@@ -1,6 +1,6 @@
 {% if commentsr %}
 <div class="material">
-	  <div class="inftitle">Комментарии</div>
+	  <div class="inftitle">{{ 'Comments'|lang }}</div>
 	  <div class="mat-content">
           <ul class="userlist">
              {% for comment in commentsr %}
@@ -16,7 +16,7 @@
 			                                {{ comment.add_markers.message }}
 		                                  </div>
 								          <div class="info">
-								               {% if comment.add_markers.editdate %}<span><b>Комментарий был изменён:</b> {{ comment.add_markers.editdate }}</span>{% endif %}<span> {{ AtmGetDate(comment.date) }}</span>
+								               {% if comment.add_markers.editdate %}<span><b>{{ 'The comment was changed'|lang }}:</b> {{ comment.add_markers.editdate }}</span>{% endif %}<span> {{ AtmGetDate(comment.date) }}</span>
 								          </div>
 							        </div>
                             </li>

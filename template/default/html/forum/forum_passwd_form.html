@@ -1,17 +1,17 @@
 <html>
 <head>
-<title>Вход на форум</title>
+<title>{{ 'Entrance to the forum'|lang }}</title>
 <link rel="icon" href="{{ www_root }}/sys/img/favicon.ico" type="image/x-icon" />
 <link rel="shortcut icon" href="{{ www_root }}/sys/img/favicon.ico" type="image/x-icon" />
 <link type="text/css" rel="StyleSheet" href="{{ template_path }}/css/style.css" />
 </head>
 <body>
 <div class="messegesokno" style="width:223px;height:143px;">
-      <span class="headfutbutton">Этот форум закрыт на пароль</span>
+      <span class="headfutbutton">{{ 'This forum is closed for the password'|lang }}</span>
 	<div>
 	<form method="POST" action="">
 		<br /><input type="text" name="forum_lock_pass" /><br /><br />
-		<input type="submit" name="send" value="Отправить">
+		<input type="submit" name="send" value="Отправить{{ 'Send'|lang }}">
 	</form>
 	</div>
     </div>

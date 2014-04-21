@@ -1,16 +1,16 @@
 <form name='editThemeForm' action="{{ context.action }}" method="POST">
 <div class="forumblock">
-	  <div class="forumtitle">Соединение тем: {{ theme.title }}</div> 
+	  <div class="forumtitle">{{ 'Merge topics'|lang }}: {{ theme.title }}</div> 
 	  <div class="mat-content">
           <ul class="spisok-all">
           <li>
-            <span class="siu_title"><strong>Идентификатор темы:</strong>Порядковый номер темы с которой вы хотите соединить эту тему, узнать его можно из адреса страницы темы. Этот номер находится в конце адреса, после <b>view_theme/</b></span>
+            <span class="siu_title"><strong>{{ 'The ID of the topic'|lang }}:</strong>{{ 'The sequence number of the topics with which you want to connect this topic, see from page address topics. This room is located in the end of the address, after'|lang }} <b>view_theme/</b></span>
             <span class="siu_data"><input type="text" name="theme" maxlength="55" value="{{ context.theme }}" /></span>
           </li>
 		  <li>
-            <input type="submit" name="sendForm" value="Соединить темы" />
-			<br />Сообщения будут распределены относительно даты их создания.
-			<br />Название темы и местоположение будет взято у темы <b>в которую</b> перемещают.
+            <input type="submit" name="sendForm" value="Соединить темы{{ 'Topic not yet created'|lang }}" />
+			<br />{{ 'Messages will be distributed on the date of their creation'|lang }}.
+			<br />{{ 'The topic name and location will be taken from topics'|lang }} <b>{{ 'in which'|lang }}</b> {{ 'move'|lang }}.
           </li>
 		  </ul>
 	  </div>

@@ -1,23 +1,23 @@
  <form action="{{ context.action }}" method="POST">
 <div class="material">
-       <div class="inftitle">Поиск по материалам</div>
+       <div class="inftitle">{{ 'Search by materials'|lang }}</div>
        <div class="infcont">
 	        <input type="text" value="{{ context.search }}" name="search" style="width:82%;" />
-            <input  type="submit" value="Искать" name="send" />
+            <input  type="submit" value="{{ 'Search'|lang }}" name="send" />
 	        <br /><br />
-	   <b>Искать в:</b>
+	   <b>{{ 'Search in'|lang }}:</b>
 	        <br />
 			<input id="smdforum" type="checkbox" value="forum" name="m[]" {{ context.forum }}>
-            <label for="smdforum">Форум</label><br />
+            <label for="smdforum">{{ 'Forum'|lang }}</label><br />
 
             <input id="smdnews" type="checkbox" value="news" name="m[]" {{ context.news }}>
-            <label for="smdnews">Новости</label><br />
+            <label for="smdnews">{{ 'News'|lang }}</label><br />
 
             <input id="smdstat" type="checkbox" value="stat" name="m[]" {{ context.stat }}>
-            <label for="smdstat">Статьи</label><br />
+            <label for="smdstat">{{ 'Articles'|lang }}</label><br />
 
             <input id="smdloads" type="checkbox" value="loads" name="m[]" {{ context.loads }}>
-            <label for="smdloads">Загрузки</label>
+            <label for="smdloads">{{ 'Files'|lang }}</label>
        </div>
 </div>
 </form>

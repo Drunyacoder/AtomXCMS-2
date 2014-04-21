@@ -964,6 +964,7 @@ box-shadow: inset 0 0 5px #333;  -webkit-box-shadow: inset 0 0 5px #333;  -moz-b
 #attaches-show-all, #attaches-hide {text-decoration:none;}
 #attaches-hide {margin-left:5px; display:none;}
 #attaches-hide:before {content:"   |   "; color:#3C3C3C; margin-right:3px;}
+#attachments {max-width:550px;}
 #attachments #preloader span {font-size:30px;}
 #attachments #preloader img {max-width:30px; height:auto;}
 .button2, .forumblock .footerpostinfo .footerpostbuttons,.forumblock .footerpostinfo span, .userpostrepa .ratingblock, .postuserzamechanya .ratingblock, .spoiler-open input {

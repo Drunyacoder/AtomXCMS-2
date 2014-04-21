@@ -9,24 +9,24 @@
 				       <span class="downloadbutton"><div>{{ entity.add_markers.attachment }}<div class="infoload">Downloads: {{ entity.downloads }}</div></div></span>
 		          {% else %}
 				  <div class="errorfile">
-		              Файл не найден
+		              {{ 'File not found'|lang }}
 				  </div>
 		          {% endif %}
 		        {% else %}
 				<div class="errorfile">
-		          У вас нет прав на скачивание файла
+		          {{ 'You have no rights to file download'|lang }}
 				</div>
 		        {% endif %}
 				{% if entity.tags %}
-				<br /><b>Теги: </b>{% for tag in entity.tags %}<a href="{{ www_root }}/loads/index/{{ tag }}">{{ tag }}</a>; {% endfor %}
+				<br /><b>{{ 'Tags'|lang }}: </b>{% for tag in entity.tags %}<a href="{{ www_root }}/loads/index/{{ tag }}">{{ tag }}</a>; {% endfor %}
 				{% endif %}
-				{% if entity.sourse %}<br /><b>Источник:</b> {{ entity.sourse }}{% endif %}
+				{% if entity.sourse %}<br /><b>{{ 'Source'|lang }}:</b> {{ entity.sourse }}{% endif %}
 				</div>
 		        <div class="infomatsright">
-			      <b>Автор:</b><a href="{{ entity.add_markers.profile_url }}"> {{ entity.author.name }}</a>
-				  <br /><b>Категория:</b><a href="{{ entity.add_markers.category_url }}"> {{ entity.category.title }}</a>
-			      <br /><b>Просмотров:</b> {{ entity.views }}
-				  <br /><b>Комментариев:</b> {{ entity.comments }}
+			      <b>{{ 'Author'|lang }}:</b><a href="{{ entity.add_markers.profile_url }}"> {{ entity.author.name }}</a>
+				  <br /><b>{{ 'Section2'|lang }}:</b><a href="{{ entity.add_markers.category_url }}"> {{ entity.category.title }}</a>
+			      <br /><b>{{ 'Pageviews'|lang }}:</b> {{ entity.views }}
+				  <br /><b>{{ 'Comments'|lang }}:</b> {{ entity.comments }}
 				  <br />
 				  <br /><script language="JavaScript" type="text/javascript" src="{{ template_path }}/js/share.js"></script>
 			    </div>

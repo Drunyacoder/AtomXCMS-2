@@ -2,18 +2,18 @@
 {{ data.errors }}
 <div class="material">
 	   <form method="POST" id="sendForm" action="{{ data.action }}">
-       <div class="inftitle">Добавление комментария</div>
+       <div class="inftitle">{{ 'Adding a comment'|lang }}</div>
 	   <div class="mat-content">
           <ul class="spisok-all">
 		  {% if fps_user_id == 0 %}
           <li>
-            <span class="siu_title"><strong><font color="red">*</font>Псевдоним:</strong></span>
+            <span class="siu_title"><strong><font color="red">*</font>{{ 'Alias'|lang }}:</strong></span>
             <span class="siu_data"><input {{ data.disabled }} type="text" name="login" size="47" value="{{ data.add_comment_name }}" /></span>
           </li>
 		  {% endif %}
 		  {% if data.add_comment_captcha %}
 		  <li>
-		    <span class="siu_title"><strong><font color="red">*</font>Код подтверждения:</strong>{{ data.add_comment_captcha_text }}</span>
+		    <span class="siu_title"><strong><font color="red">*</font>{{ 'Confirmation code'|lang }}:</strong>{{ data.add_comment_captcha_text }}</span>
             <span class="siu_data" style="max-width: 40%;">{{ data.add_comment_captcha }}</span>
 		  </li> 
 		  {% endif %}
@@ -21,7 +21,7 @@
             <textarea class="comment-ta" id="editor" {{ editor_text }} name="message" >{{ data.add_comment_message }}</textarea>
           </li>
 		  <li>
-            <input type="submit" name="send" value="Отправить" />
+            <input type="submit" name="send" value="{{ 'Send'|lang }}" />
           </li>
           </ul>
       </div>

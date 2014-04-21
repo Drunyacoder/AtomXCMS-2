@@ -4,18 +4,18 @@
 	    <div class="photos_albums_container">
 		    <div class="bigimg margin">
 		      <a class="bigimglink gallery" href="{{ entity.add_markers.main }}"><img alt="{{ entity.add_markers.foto_alt }}" src="{{ entity.add_markers.main }}"/></a>
-			  <a class="rotatorimg before" title="Предыдущее фото" href="{{ entity.add_markers.previous_url }}"></a>
-			  <a class="rotatorimg after" title="Следующее фото" href="{{ entity.add_markers.next_url }}"></a>
+			  <a class="rotatorimg before" title="{{ 'Previous photo'|lang }}" href="{{ entity.add_markers.previous_url }}"></a>
+			  <a class="rotatorimg after" title="{{ 'Next photo'|lang }}" href="{{ entity.add_markers.next_url }}"></a>
 			</div>
             <div class="infomats">
 		        <div class="namesmats"><b class="title">{{ entity.title }}</b>
                   <br />{{ entity.add_markers.description }}
 				</div>
 		        <div class="infomatsright">
-			      <b>Автор:</b><a href="{{ entity.add_markers.profile_url }}"> {{ entity.author.name }}</a>
-				  <br /><b>Альбом:</b><a href="{{ entity.add_markers.category_url }}"> {{ entity.category.title }}</a>
-			      <br /><b>Просмотров:</b> {{ entity.views }}
-			      <br /><b>Дата:</b> {{ AtmGetDate(entity.date) }}
+			      <b>{{ 'Author'|lang }}:</b><a href="{{ entity.add_markers.profile_url }}"> {{ entity.author.name }}</a>
+				  <br /><b>{{ 'Album'|lang }}:</b><a href="{{ entity.add_markers.category_url }}"> {{ entity.category.title }}</a>
+			      <br /><b>{{ 'Viewings'|lang }}:</b> {{ entity.views }}
+			      <br /><b>{{ 'Date'|lang }}:</b> {{ AtmGetDate(entity.date) }}
 			      <br />{{ entity.add_markers.moder_panel }}
 			    </div>
 	        </div>

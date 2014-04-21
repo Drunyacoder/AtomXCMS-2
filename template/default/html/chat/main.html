@@ -47,39 +47,39 @@ $(document).ready(function() {
 <body>
 <div class="headpanel">
  <div class="linksap">
-<div><a href="http://fapos.net/users/info/1/">Контакты</a></div>
+<div><a href="http://atomx.net/users/info/1/">{{ 'Contacts'|lang }}</a></div>
 <div><a href="https://github.com/Drunyacoder/AtomXCMS-2">GitHub</a></div>
-<div><a href="http://fapos.net/forum/">Поддержка</a></div></div>
+<div><a href="http://atomx.net/forum/">{{ 'Support'|lang }}</a></div></div>
  <div class="userlinksap">
 {% if fps_user_id %}
-<div><a href="{{ www_root }}/users/pm/">Сообщения</a></div>
+<div><a href="{{ get_url('/users/pm/') }}">{{ 'Message'|lang }}</a></div>
 <div class="activewindow"><a href="{{ personal_page_link }}">{{ fps_user_name }}</a><div class="miniprofileadm" style="width: 300px;padding: 10px;{% if fps_admin_access == 1 %}height:150px;{% endif %}">
-    <span class="avatarminpro"><img class="avatar" src="{{ fps_user_avatar_url }}"></span>
+    <span class="avatarminpro"><img class="avatar" src="{{ getAvatar(fps_user.id) }}"></span>
     <span class="uslinkminpro">
-        <a href="{{ personal_page_link }}">Мой профиль</a>
-        <a href="{{ www_root }}/users/pm_send_form/">Отправить сообщение</a>
-		<a href="{{ www_root }}/users/pm/">Отправленные</a>
-		<a href="{{ www_root }}/users/edit_form/{{ fps_user_id }}">Настройки</a>
+        <a href="{{ personal_page_link }}">{{ 'Profile'|lang }}</a>
+        <a href="{{ get_url('/users/pm_send_form/') }}">{{ 'Send a message'|lang }}</a>
+		<a href="{{ get_url('/users/pm/') }}">{{ 'Message'|lang }}</a>
+		<a href="{{ get_url('/users/edit_form/' ~ fps_user_id) }}">{{ 'Edit profile'|lang }}</a>
         {% if fps_admin_access == 1 %}
-		<a href="{{ www_root }}/admin/" target="_blank">Админка</a>
+		<a href="{{ get_url('/admin/', false, false) }}" target="_blank">{{ 'panel'|lang }}</a>
 		{% endif %}
     </span>
 </div></div>
-<div><a href="{{ www_root }}/users/logout">Выход</a></div>
+<div><a href="{{ get_url('/users/logout/') }}">{{ 'Exit'|lang }}</a></div>
 {% else %}
-<div><a href="{{ www_root }}/users/add_form">Регистрация</a></div>
-<div class="activewindow"><a href="{{ www_root }}/users/login_form/">Войти</a>
-<div style="width: 250px;"><span>
-<form action="/users/login/" method="post">
-	Логин: <input type="text" class="loginad" name="username">
-	Пароль: <input type="password" class="passad" name="password">
-	Автовход: <input type="checkbox" name="autologin" value="1">
-	<button type="submit" onclick="submit();" class="buttonadm">ВОЙТИ</button>
+<div><a href="{{ get_url('/users/add_form/') }}">{{ 'Registration'|lang }}</a></div>
+<div class="activewindow"><a href="{{ get_url('/users/login_form/') }}">{{ 'Enter'|lang }}</a>
+<div style="width: 258px;"><span>
+<form id="mloginForm"  action="{{ get_url('/users/login/?ajax') }}" method="post">
+	{{ 'Login:'|lang }} <input type="text" class="loginad" name="username">
+	{{ 'Password:'|lang }} <input type="password" class="passad" name="password">
+	{{ 'The autologin:'|lang }} <input type="checkbox" name="autologin" value="1">
+	<button type="submit" onclick="sendu('mloginForm'); return false" class="buttonadm">{{ 'Enter'|lang }}</button>
 	<input type="hidden" value="submit" name="submitForm">
 </form>
 </span></div></div>
 {% endif %}
-<div><a href="{{ www_root }}/users/">Пользователи</a></div>
+<div><a href="{{ get_url('/users/') }}">{{ 'Users'|lang }}</a></div>
  </div>
 </div>
 <div class="global">
@@ -94,51 +94,44 @@ $(document).ready(function() {
 		   <div><div class="nameload">DOWNLOAD ATOMX</div>
 		   <div class="infoload">FILE IS 8.7MB(.ZIP)</div></div>
 		 </a>
-	     <a class="ahother" href="http://home.develdo.com/downloads.php">Cкачать другие версии AtomX</a>
-	     <a class="knownot" href="http://fapos.net/documa/?p=ustanovka">Не знаете как установить?</a>
+	     <a class="ahother" href="http://home.develdo.com/downloads.php">{{ 'Download other versions'|lang }} AtomX</a>
+	     <a class="knownot" href="http://fapos.net/documa/?p=ustanovka">{{ 'Know how to install'|lang }}?</a>
 	   </div>
-	   <div class="info1"><b>AtomX CMS</b> - Это инструмент для создания сайтов любой сложности, людьми не имеющими профессиональных навыков. Множество готовых шаблонов позволят выбрать вам подходящий дизайн. И это все абсолютно БЕСПЛАТНО!</div>
+	   <div class="info1"><b>AtomX CMS</b> - {{ 'It is a tool for creation of sites of any complexity, people with no professional skills. Many templates, allowing you to choose a suitable design. And it\'s all FREE'|lang }}!</div>
 	   <div class="info2">
 	   <div class="l">
 	   50+<br>
 	   15+<br>
 	   5000+<br>
-	   5 лет<br>
+	   5 {{ 'years'|lang }}<br>
 	   100+
 	   </div>
 	   <div class="r">
-	   Шаблонов<br>
-	   Модулей<br>
-	   Пользователей<br>
-	   Разработки<br>
-	   Дополнений
+	   {{ 'Templates'|lang }}<br>
+	   {{ 'Modules'|lang }}<br>
+	   {{ 'Members'|lang }}<br>
+	   {{ 'Development'|lang }}<br>
+	   {{ 'Additions'|lang }}
 	   </div>
 	   </div>
 	 </div>
 	 <div class="sots">
-	   <a href="http://fapos.net/documa/">ДОКУМЕНТАЦИЯ</a>
-	   <a href="http://fapos.net/loads/category/5">ШАБЛОНЫ</a>
-	   <a href="http://fapos.net/forum/view_theme/362">СНИППЕТЫ</a>
-	   <a href="#">ПЛАГИНЫ</a>
-	   <a href="http://fapos.net/forum/view_forum/2">МОДУЛИ</a>
+	   <a href="http://atomx.net/documa/">{{ 'DOCUMENTATION'|lang }}</a>
+	   <a href="http://atomx.net/loads/category/5">{{ 'TEMPLATES'|lang }}</a>
+	   <a href="http://atomx.net/forum/view_theme/362">{{ 'SNIPPETS'|lang }}</a>
+	   <a href="#">{{ 'PLUGINS'|lang }}</a>
+	   <a href="http://atomx.net/forum/view_forum/2">{{ 'MODULES'|lang }}</a>
 	 </div>
    </div>
 </div>
 
 <div class="sider">
     <div class="sidertop">
-	  <ul>
-        <li><a href="{{ www_root }}/">HOME</a></li>
-		<li><a href="{{ www_root }}/forum">ФОРУМ</a></li>
-		<li><a href="{{ www_root }}/news">НОВОСТИ</a></li>
-		<li><a href="{{ www_root }}/stat">СТАТЬИ</a></li>
-		<li><a href="{{ www_root }}/foto">ФОТОКАТАЛОГ</a></li>
-		<li><a href="{{ www_root }}/loads/">ФАЙЛЫ</a></li>
-	  </ul>
+	 {{ mainmenu }}
 	  <div class="search">
 	   <form method="POST" action="{{ www_root }}/search/"> 
         <input type="hidden" name="subaction" value="search"> 
-        <input name="search" placeholder="Найти что-нибудь..." type="text"> 
+       <input name="search" placeholder="{{ 'Search'|lang }}..." type="text"> 
         <input value="GO!" type="submit" name="send"> 
        </form> 
 	  </div>
@@ -147,11 +140,11 @@ $(document).ready(function() {
     <div class="content">
 <div class="spedbar">
     <div>
-        <div><a href="/">Главная</a>  » Чат</div>
+        <div><a href="/">{{ 'Home'|lang }}</a>  » {{ 'Chat'|lang }}</div>
     </div>
 </div>
 <div class="material">
-	  <div class="mat-title">Общий чат</div>
+	  <div class="mat-title">{{ 'General chat'|lang }}</div>
 	  <div class="mat-content">
          <div class="bigchat">
             <iframe id="fpsChat" scrolling="auto" src="{{ www_root }}/chat/view_messages/" ></iframe>
@@ -163,7 +156,7 @@ $(document).ready(function() {
 	  </div>
 </div>
 	<div class="material">
-           <div class="inftitle">Сейчас online: {{ all_online }}. Зарегестрированных: {{ users_online }}. Гостей: {{ guests_online }}. </div>
+           <div class="inftitle">{{ 'Now online:'|lang }} {{ all_online }}.{{ 'Registered:'|lang }} {{ users_online }}. {{ 'Guests:'|lang }} {{ guests_online }}. </div>
 	       <div class="infcont">{{ online_users_list }}</div>
 	    </div>
 	</div>
@@ -171,25 +164,25 @@ $(document).ready(function() {
 </div>
 <!--------------------------------------------------------FOOTER-BUTTONS------------------------------------------------------------------>
 <div class="footer">
-<div class="people"><span>Сообщество</span>
-<a href="{{ www_root }}/">Главная</a>
-<br><a href="{{ www_root }}/forum/">Форум</a>
-<br><a href="{{ www_root }}/news/">Новости</a>
-<br><a href="{{ www_root }}/stat/">Статьи</a>
-<br><a href="{{ www_root }}/loads/">Файлы</a>
-<br><a href="{{ www_root }}/foto/">Фотокаталог</a>
+<div class="people"><span>{{ 'Community'|lang }}</span>
+<a href="{{ get_url('/') }}">{{ 'Home'|lang }}</a>
+<br><a href="{{ get_url('/forum/') }}">{{ 'Forum'|lang }}</a>
+<br><a href="{{ get_url('/news/') }}">{{ 'News'|lang }}</a>
+<br><a href="{{ get_url('/stat/') }}">{{ 'Articles'|lang }}</a>
+<br><a href="{{ get_url('/loads/') }}">{{ 'Files'|lang }}</a>
+<br><a href="{{ get_url('/foto/') }}">{{ 'Photo catalog'|lang }}</a>
 </div>
-<div class="support"><span>Поддержка</span>
-<a href="http://home.develdo.com/downloads.php">Пользовательское соглашение</a>
-<br><a href="http://fapos.net/documa/">Документация</a>
-<br><a href="{{ www_root }}/users/add_form/">Правила сайта</a>
-<br><a href="#">Заказать рекламу</a>
-<br><a href="{{ www_root }}/sitemap.xml">Карта сайта</a>
+<div class="support"><span>{{ 'Support'|lang }}</span>
+<a href="http://home.develdo.com/downloads.php">{{ 'User agreement'|lang }}</a>
+<br><a href="http://atomx.net/documa/">{{ 'Documentation'|lang }}</a>
+<br><a href="{{ www_root }}/users/add_form/">{{ 'Website rules'|lang }}</a>
+<br><a href="#">{{ 'To order advertising'|lang }}</a>
+<br><a href="{{ www_root }}/sitemap.xml">{{ 'Site map'|lang }}</a>
 </div>
-<div class="faposcms"><span>Fapos CMS</span>
-<a href="http://home.develdo.com/downloads.php">Скачать CMS</a>
-<br><a href="http://www.youtube.com/watch?v=7GYpzleSWUU">Видео-руководство</a>
-<br><a href="http://atomx.net/forum/">Сообщить о баге</a>
+<div class="faposcms"><span>AtomX CMS</span>
+<a href="http://home.develdo.com/downloads.php">{{ 'Download CMS'|lang }}</a>
+<br><a href="http://www.youtube.com/watch?v=7GYpzleSWUU">{{ 'Video guide'|lang }}</a>
+<br><a href="http://atomx.net/forum/">{{ 'To report a bug'|lang }}</a>
 </div>
 <div style="float: right;padding: 0;">
 <div class="socnet" style="display:block;">

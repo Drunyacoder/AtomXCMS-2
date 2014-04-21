@@ -26,14 +26,14 @@ $(function() {
 {{ context.errors }}
 <form name='editThemeForm' action="{{ context.action }}" method="POST">
 <div class="forumblock">
-	  <div class="forumtitle">Разделение темы: {{ theme.title }}</div> 
+	  <div class="forumtitle">{{ 'The division of topic'|lang }}: {{ theme.title }}</div> 
 	  <div class="mat-content">
           <ul class="spisok-all">
 
 		  <li>
 			<span class="siu_title">
-				<strong>Новая тема(найти):</strong><br>
-				Поиск по названию
+				<strong>{{ 'New topic(search)'|lang }}:</strong><br>
+				{{ 'Search by name'|lang }}
 			</span>
 			<span class="siu_data">
 				<input type="text" name="theme" maxlength="55" list="findthemes" value="{{ context.theme }}" />
@@ -41,24 +41,24 @@ $(function() {
 			</span>
 		  </li>
 		  <li>
-			<span class="siu_title"><strong>Создать тему и <br>перенести сообщения в нее:</strong></span>
+			<span class="siu_title"><strong>{{ 'To create a topic and'|lang }} <br>{{ 'to move the messages to it'|lang }}:</strong></span>
 			<span class="siu_data"><input type="checkbox" onClick="if($('#new_theme').is(':visible')){$('#new_theme').hide();}else{$('#new_theme').show();}" value="1" name="new_theme" /></span>
 		  </li>
 		  <div id="new_theme" style="display:none;">
 			  <li>
-				<span class="siu_title"><strong>Форум новой темы:</strong></span>
+				<span class="siu_title"><strong>{{ 'The new forum topics'|lang }}:</strong></span>
 				<span class="siu_data"><select name="forum_id"> {{ context.options }}</select></span>
 			  </li>
 			  <li>
-				<span class="siu_title"><strong>Название новой темы:</strong></span>
+				<span class="siu_title"><strong>{{ 'The title of the new topic'|lang }}:</strong></span>
 				<span class="siu_data"><input type="text" name="title" maxlength="55" value="{{ context.theme }}" /></span>
 			  </li>
 			  <li>
-				<span class="siu_title"><strong>Описание новой темы:</strong></span>
+				<span class="siu_title"><strong>{{ 'Description of a new topic'|lang }}:</strong></span>
 				<span class="siu_data"><input type="text" name="description" maxlength="128" value="{{ context.description }}" /></span>
 			  </li>
 			  <li>
-				<span class="siu_title"><strong>Закрыть доступ:</strong></span>
+				<span class="siu_title"><strong>{{ 'To close access'|lang }}:</strong></span>
 				<span class="siu_data">
 				{% for group in atm_users_groups %}
 						<label><input type="checkbox" {% for curr in context.gr_access %} {% if curr == group.id %} checked="checked" {% endif %} {% endfor %} value="{{ group.id }}" name="gr_access_{{ group.id }}" />&nbsp;{{ group.title }}</label><br />
@@ -66,20 +66,20 @@ $(function() {
 				</span>
 			  </li>
 			  <li>
-				<span class="siu_title"><strong>Закрепить первое сообщение темы:</strong></span>
+				<span class="siu_title"><strong>{{ 'To fix the first message of the topic'|lang }}:</strong></span>
 				<span class="siu_data"><input type="checkbox" name="first_top" {% if context.first_top %} checked="checked" {% endif %} /></span>
 			  </li>
 			  {% if checkAccess([module,'close_themes']) %}
 			  <li>
-				<span class="siu_title"><strong>Закрыть тему:</strong>Запрет на добавление сообщений в теме</span>
+				<span class="siu_title"><strong>{{ 'To close the topic'|lang }}:</strong>{{ 'Avoid adding messages in the topic'|lang }}</span>
 				<span class="siu_data"><input type="checkbox" name="locked" {% if context.locked %} checked="checked" {% endif %} /></span>
 			  </li>
 			  {% endif %}
 
 		  </div>
 		  <li>
-			<input type="submit" name="sendForm" value="Разделить" />
-			<br />Будет создана новая тема с выделенными сообщениями.
+			<input type="submit" name="sendForm" value="{{ 'To share'|lang }}" />
+			<br />{{ 'Will create a new topic with the selected messages'|lang }}.
 		  </li>
 		  </ul>
 	  </div>
@@ -87,11 +87,11 @@ $(function() {
 <input type="hidden" name="posts_ids[]" value="{{ post.id }}" />
 <div class="forumpost" id="post{{ post.id }}">
 <div class="poststarterinfo">
-<a class="postusername">{% if post.author.name %}{{ post.author.name }}{% else %} Гость {% endif %}</a>
+<a class="postusername">{% if post.author.name %}{{ post.author.name }}{% else %} {{ 'Guest'|lang }} {% endif %}</a>
 </div>
 
 <div class="posttextuser">
-	          <div class="headpostinfo"><span class="postdate">Отправлено: {{ AtmGetDate(post.time) }}</span>
+	          <div class="headpostinfo"><span class="postdate">{{ 'Sent'|lang }}: {{ AtmGetDate(post.time) }}</span>
 			  </div>
 	          <div class="posttext">{{ post.message }}</div>
 	       </div>

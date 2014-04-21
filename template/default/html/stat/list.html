@@ -3,17 +3,17 @@
 		  <div class="mat-title"><a href="{{ entity.add_markers.entry_url }}">{{ entity.title }}</a><div class="mod-panel">{{ entity.add_markers.moder_panel }}</div></div>
 		  <div class="mat-content">
 		    <div class="topinfo">
-		        <span class="left">Раздел: <a href="{{ entity.add_markers.category_url }}">{{ entity.category.title }}</a></span>
-				<span>Просмотров: {{ entity.views }}</span>
-				<span>Комментарии: {{ entity.comments }}</span>
-		        <span class="right">Автор: <a href="{{ entity.add_markers.profile_url }}">{{ entity.author.name }}</a></span>
+		        <span class="left">{{ 'Section'|lang }}: <a href="{{ entity.add_markers.category_url }}">{{ entity.category.title }}</a></span>
+				<span>{{ 'Viewings'|lang }}: {{ entity.views }}</span>
+				<span>{{ 'Comments'|lang }}: {{ entity.comments }}</span>
+		        <span class="right">{{ 'Author'|lang }}: <a href="{{ entity.add_markers.profile_url }}">{{ entity.author.name }}</a></span>
 		    </div>
 		    <div class="announce">
 				{{ entity.add_markers.announce }}
-				<div style="clear:both;"></div> <a class="fps-show-mat" href="{{ entity.add_markers.entry_url }}">Подробнее</a>
+				<div style="clear:both;"></div> <a class="fps-show-mat" href="{{ entity.add_markers.entry_url }}">{{ 'Read more'|lang }}</a>
 			</div>
 		    <div class="footerinfo">
-		       Добавлено: {{ AtmGetDate(entity.date) }}
+		       {{ 'Added'|lang }}: {{ AtmGetDate(entity.date) }}
 	       </div>
 		 </div>
 </div>

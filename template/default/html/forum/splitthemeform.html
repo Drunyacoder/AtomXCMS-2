@@ -1,22 +1,22 @@
 <form name='editThemeForm' action="{{ context.action }}" method="POST">
 <div class="forumblock">
-	  <div class="forumtitle">Разделение темы: {{ theme.title }}</div> 
+	  <div class="forumtitle">{{ 'The division of topic'|lang }}: {{ theme.title }}</div> 
 	  <div class="mat-content">
           <ul class="spisok-all">
           <li>
-            <span class="siu_title"><strong>Форум новой темы:</strong></span>
+            <span class="siu_title"><strong>{{ 'The new forum topics'|lang }}:</strong></span>
             <span class="siu_data"><select name="id_forum"> {{ context.options }}</select></span>
           </li>
 		  <li>
-            <span class="siu_title"><strong>Название новой темы:</strong></span>
+            <span class="siu_title"><strong>{{ 'The title of the new topic'|lang }}:</strong></span>
             <span class="siu_data"><input type="text" name="theme" maxlength="55" value="{{ context.theme }}" /></span>
           </li>
 		  <li>
-            <span class="siu_title"><strong>Описание новой темы:</strong></span>
+            <span class="siu_title"><strong>{{ 'Description of a new topic'|lang }}:</strong></span>
             <span class="siu_data"><input type="text" name="description" maxlength="128" value="{{ context.description }}" /></span>
           </li>
 		  <li>
-            <span class="siu_title"><strong>Закрыть доступ:</strong></span>
+            <span class="siu_title"><strong>{{ 'To close access'|lang }}:</strong></span>
             <span class="siu_data">
 			{% for group in atm_users_groups %}
 					<label><input type="checkbox" {% for curr in context.gr_access %} {% if curr == group.id %} checked="checked" {% endif %} {% endfor %} value="{{ group.id }}" name="gr_access_{{ group.id }}" />&nbsp;{{ group.title }}</label><br />
@@ -24,29 +24,29 @@
 			</span>
           </li>
 		  <li>
-            <span class="siu_title"><strong>Закрепить первое сообщение темы:</strong></span>
+            <span class="siu_title"><strong>{{ 'To fix the first message of the topic'|lang }}:</strong></span>
             <span class="siu_data"><input type="checkbox" name="first_top" {% if context.first_top %} checked="checked" {% endif %} /></span>
           </li>
 		  {% if checkAccess([module,'close_themes']) %}
 		  <li>
-            <span class="siu_title"><strong>Закрыть тему:</strong>Запрет на добавление сообщений в теме</span>
+            <span class="siu_title"><strong>{{ 'To close the topic'|lang }}:</strong>{{ 'Avoid adding messages in the topic'|lang }}</span>
             <span class="siu_data"><input type="checkbox" name="locked" {% if context.locked %} checked="checked" {% endif %} /></span>
           </li>
 		  {% endif %}
 		  <li>
-            <input type="submit" name="sendForm" value="Разделить" />
-			<br />Будет создана новая тема с выделенными сообщениями.
+            <input type="submit" name="sendForm" value="{{ 'To share'|lang }}" />
+			<br />{{ 'Will create a new topic with the selected messages'|lang }}.
           </li>
 		  </ul>
 	  </div>
 {% for post in posts %}
 <div class="forumpost" id="post{{ post.id }}">
 <div class="poststarterinfo">
-<a class="postusername">{% if post.author.name %}{{ post.author.name }}{% else %} Гость {% endif %}</a>
+<a class="postusername">{% if post.author.name %}{{ post.author.name }}{% else %} {{ 'Guest'|lang }} {% endif %}</a>
 </div>
 
 <div class="posttextuser">
-	          <div class="headpostinfo"><span class="postdate">Отправлено: {{ AtmGetDate(post.time) }}</span>
+	          <div class="headpostinfo"><span class="postdate">Отправлено{{ 'Sent'|lang }}: {{ AtmGetDate(post.time) }}</span>
 			  <label class="postidlink"><input type="checkbox" {% for curr in context.posts_select %} {% if curr == post.id %} checked="checked" {% endif %} {% endfor %} value="{{ post.id }}" name="post_{{ post.id }}" /></label>
 			  </div>
 	          <div class="posttext">{{ post.message }}</div>

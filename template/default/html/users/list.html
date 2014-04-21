@@ -1,9 +1,9 @@
 <div class="material">
-	  <div class="mat-title">Список пользователей</div>
+	  <div class="mat-title">{{ 'User list'|lang }}</div>
 	  <div class="mat-content">
 
         <div class="userlistsortirovka">
-		Сортировать по:
+		{{ 'Sort by'|lang }}:
             <ul>
                    <li>{{ getOrderLink(['name','Имя']) }}</li>
 		           <li>{{ getOrderLink(['puttime','Дата регистрации']) }}</li>
@@ -19,9 +19,9 @@
 							       <div class="userlistavatar"><img src="{{ getAvatar(user.id) }}" class="avatar"></div>
 							        <div class="listuser">
 								          <ul class="listuserbuttons">
-									          <li><a href="{{ www_root }}/users/info/{{ user.id }}" class="button2">Профиль</a></li>
-                                              {% if user.pm %}<li><a href="{{ www_root }}/users/pm_send_form/{{ user.id }}" class="button2">Отправить ЛС</a></li>{% endif %}
-                                              {% if user.moder_panel %}<li><a href="{{ www_root }}/users/edit_form_by_admin/{{ user.id }}" class="button2">Изменить профиль</a></li>{% endif %}									
+									          <li><a href="{{ www_root }}/users/info/{{ user.id }}" class="button2">{{ 'Profile'|lang }}</a></li>
+                                              {% if user.pm %}<li><a href="{{ www_root }}/users/pm_send_form/{{ user.id }}" class="button2">{{ 'Send PM'|lang }}</a></li>{% endif %}
+                                              {% if user.moder_panel %}<li><a href="{{ www_root }}/users/edit_form_by_admin/{{ user.id }}" class="button2">{{ 'Edit profile'|lang }}</a></li>{% endif %}									
 								          </ul>
 								          <h3 class="userlisttitle"><a href="{{ www_root }}/users/info/{{ user.id }}">{{ user.name }}</a></h3>
 										   {% if user.rating %}
@@ -37,9 +37,9 @@
 							        </div>
 									  <div class="user-info">
 										   <span><b class="group">{{ user.group }}</b></span><br>
-										   <span>{{ user.posts }} сообщений</span><br>
-										   <span><b>Регистрация:</b>  {{ AtmGetDate(user.puttime) }}</span><br>
-										   <span><b>Последний визит:</b> {{ AtmGetDate(user.last_visit) }}</span>
+										   <span>{{ user.posts }} {{ 'message'|lang }}</span><br>
+										   <span><b>{{ 'Registration'|lang }}:</b>  {{ AtmGetDate(user.puttime) }}</span><br>
+										   <span><b>{{ 'Last visit'|lang }}:</b> {{ AtmGetDate(user.last_visit) }}</span>
 									  </div>
                             </li>
 			{% endfor %}
@@ -47,7 +47,7 @@
          </ul>
 		 
         <div class="userlistsortirovka">
-		Сортировать по:
+		{{ 'Sort by'|lang }}:
             <ul>
                    <li>{{ getOrderLink(['name','Имя']) }}</li>
 		           <li>{{ getOrderLink(['puttime','Дата регистрации']) }}</li>

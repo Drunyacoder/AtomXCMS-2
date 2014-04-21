@@ -10,32 +10,32 @@ $(document).ready(function(){
 {{ context.errors }}
 <form name="sendForm" id="sendForm" action="{{ context.action }}" method="POST" enctype="multipart/form-data" onsubmit="return checkForm(this)">
 <div class="material">
-	  <div class="mat-title">Редактирование сообщения</div>
+	  <div class="mat-title">{{ 'Edit message'|lang }}</div>
 	  <div class="mat-content">
 		<ul class="spisok-all">
 		  <li><textarea {{ editor_text }} class="text-area" id="editor" name="mainText">{{ context.main_text }}</textarea></li>
 		  
 			{% if checkAccess([module,'edit_posts']) %}
 			<li>
-				<span class="siu_title"><strong>Добавить строку "Отредактировано":</strong></span> 
+				<span class="siu_title"><strong>{{ 'Add row'|lang }} "{{ 'Edited'|lang }}":</strong></span> 
 				<span class="siu_data"><input type="checkbox" name="add_editor"{% if context.add_editor %}checked="checked"{% endif %}/></span>
 			</li>
 			{% endif %}
 				
 			<li id="attachments">
-				<span class="siu_title"><strong>Прикрепить файлы:</strong></span>
+				<span class="siu_title"><strong>{{ 'Attached files'|lang }}:</strong></span>
 				<span class="siu_data">
 					<input class="attachField" type="file" id="attach" multiple="multiple" name="attach[]">
 					<div id="preloader">
 						<span id="loader"><img src="/sys/img/ajaxload.gif" alt="loading"></span>
 					</div>
 					<div><progress style="display:none;"></progress></div>
-					<br><a id="attaches-show-all" href="javascript:void(0);" onClick="AtomX.loadAllAttaches('{{ module }}'); $('#attaches-hide').show();">Показать все</a>
-					<a id="attaches-hide" href="javascript:void(0);" onClick="$('.attaches-info, #attaches-hide').hide();">Закрыть</a>
+					<br><a id="attaches-show-all" href="javascript:void(0);" onClick="AtomX.loadAllAttaches('{{ module }}'); $('#attaches-hide').show();">{{ 'Show all'|lang }}</a>
+					<a id="attaches-hide" href="javascript:void(0);" onClick="$('.attaches-info, #attaches-hide').hide();">{{ 'Close'|lang }}</a>
 					<div class="attaches-info" id="attaches-info"></div>
 				</span>
 			</li>
-			<li class="sumbitbuttons"><input type="submit" name="submitForm" value="Сохранить изменения" /></li>
+			  <li class="sumbitbuttons"><input type="submit" name="submitForm" value="{{ 'Save changes'|lang }}" /></li>
 		</ul>
 	</div>
 </div>

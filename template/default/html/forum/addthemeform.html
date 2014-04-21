@@ -23,15 +23,15 @@ $(document).ready(function(){
 <form name="sendForm" id="sendForm" action="{{ context.action }}" method="POST" 
 enctype="multipart/form-data" onsubmit="return checkForm(this)">
 <div class="material">
-	  <div class="mat-title">Coздание новой темы</div>
+	  <div class="mat-title">{{ 'Create new topic'|lang }}</div>
 	  <div class="mat-content">
           <ul class="spisok-all">
           <li>
-            <span class="siu_title"><strong>Название темы:</strong></span>
+            <span class="siu_title"><strong>{{ 'Topic title'|lang }}:</strong></span>
             <span class="siu_data"><input type="text" name="theme" maxlength="55" value="{{ context.theme }}"/></span>
           </li>
 		  <li>
-            <span class="siu_title"><strong>Описание:</strong></span>
+            <span class="siu_title"><strong>{{ 'Description'|lang }}:</strong></span>
             <span class="siu_data"><input type="text" name="description" maxlength="128" value="{{ context.description }}" /></span>
           </li>
 		  <li>
@@ -39,7 +39,7 @@ enctype="multipart/form-data" onsubmit="return checkForm(this)">
           </li>
 		   {% if fps_admin_access == 1 %}
 		  <li>
-            <span class="siu_title"><strong>Закрыть доступ к теме</strong></span>
+            <span class="siu_title"><strong>{{ 'To close access'|lang }}</strong></span>
             <span class="siu_data">
 			{% for group in context.users_groups %}
 			<label><input type="checkbox" {% if context.gr_access != '' %} {% for curr in context.gr_access %} {% if curr == group.id %} checked="checked" {% endif %} {% endfor %} {% endif %} value="{{ group.id }}" name="gr_access_{{ group.id }}" /> {{ group.title }}</label><br />
@@ -48,7 +48,7 @@ enctype="multipart/form-data" onsubmit="return checkForm(this)">
           </li>
 		  {% endif %}
 		  <li id="attachments">
-            <span class="siu_title"><strong>Прикрепить файлы</strong></span>
+            <span class="siu_title"><strong>{{ 'Attach files'|lang }}</strong></span>
             <span class="siu_data" id="attachments">
                 <input class="attachField" type="file" id="attach" multiple="multiple" name="attach[]">
 				<div id="preloader">
@@ -61,29 +61,29 @@ enctype="multipart/form-data" onsubmit="return checkForm(this)">
 			</span>
           </li>
 		  <li>
-            <span class="siu_title"><strong>Добавить опрос:</strong></span>
+            <span class="siu_title"><strong>{{ 'Add poll'|lang }}:</strong></span>
             <span class="siu_data"><input type="checkbox" name="poll" value="1" onClick="pollForm(this);" {% if context.poll %} checked="checked" {% endif %}/></span>
           </li>
 		  <li id="poll_question" {% if context.poll == 0 %} style="display:none;" {% endif %}>
-            <span class="siu_title"><strong>Вопрос:</strong>Знак вопроса(<b>?</b>) добавлять не нужно, он добавится автоматически.</span>
+            <span class="siu_title"><strong>{{ 'Question'|lang }}:</strong>{{ 'Question mark'|lang }}(<b>?</b>) {{ 'add is not necessary, it will be added automatically'|lang }}.</span>
             <span class="siu_data"><input type="text" name="poll_question" value="{{ context.poll_question }}" /><b style="font-size: 20px;"> ? </b></span>
          </li>
 		 <li id="poll_ansvers" {% if context.poll == 0 %} style="display:none;" {% endif %}>
-            <span class="siu_title"><strong>Варианты ответов:</strong>Каждый вариант ответа должен быть на отдельной строке.</span>
+            <span class="siu_title"><strong>{{ 'Answers'|lang }}:</strong>{{ 'Each answer should be on a separate line'|lang }}.</span>
             <span class="siu_data"><textarea name="poll_ansvers">{{ context.poll_ansvers }}</textarea></span>
           </li>
 		  <li>
-            <span class="siu_title"><strong>Закрепить первое сообщение темы:</strong></span>
+            <span class="siu_title"><strong>{{ 'To fix the first message of the topic'|lang }}:</strong></span>
             <span class="siu_data"><input type="checkbox" name="first_top"{% if context.first_top %} checked="checked"{% endif %}/></span>
           </li>
 		  {% if checkAccess([module,'close_themes']) %}
 		  <li>
-            <span class="siu_title"><strong>Закрыть тему(Запретить отвечать на тему):</strong></span>
+            <span class="siu_title"><strong>{{ 'To close the topic'|lang }}({{ 'To forbid to answer the topic'|lang }}):</strong></span>
             <span class="siu_data"><input type="checkbox" name="locked"{% if context.locked %} checked="checked"{% endif %}/></span>
           </li>
 		  {% endif %}
 		  <li>
-		  <input class="subm" type="submit" name="submitForm" value="Создать тему" />
+		  <input class="subm" type="submit" name="submitForm" value="{{ 'To create a topic'|lang }}" />
 		  </li>
 		  </ul>
 	  </div>

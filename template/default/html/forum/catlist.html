@@ -2,7 +2,7 @@
 {% for category in forum_cats %}
 <div class="forumblock">
 	  <div class="forumtitle"><a href="{{ category.cat_url }}">{{ category.title }}</a></div>
-	  <div class="forumhead"><div class="forstatus"> </div><div class="forname">Форум</div><div class="forteme">Темы</div><div class="foranswer">Ответы</div><div class="fornewmess">Обновления</div></div>
+	  <div class="forumhead"><div class="forstatus"> </div><div class="forname">{{ 'Forum'|lang }}</div><div class="forteme">{{ 'Topics'|lang }}</div><div class="foranswer">{{ 'Answers'|lang }}</div><div class="fornewmess">{{ 'Update'|lang }}</div></div>
 	  {% if category.forums %}
 	  {% for forum in category.forums %}
 	  <div class="forumcontent" id="{{ category.id }}">

@@ -29,80 +29,80 @@ $(document).ready(function(){
 	  <div class="mat-content">
           <ul class="spisok-all">
 		  <li>
-            <span class="siu_title"><strong><font color="red">*</font>Категория:</strong></span>
+            <span class="siu_title"><strong><font color="red">*</font>{{ 'Section2'|lang }}:</strong></span>
             <span class="siu_data"><select name="cats_selector">{{ context.cats_selector }}</select></span>
           </li>
 		  <li>
-            <span class="siu_title"><strong><font color="red">*</font>Название файла:</strong></span>
+            <span class="siu_title"><strong><font color="red">*</font>{{ 'File name'|lang }}:</strong></span>
             <span class="siu_data"><input type="text" name="title" maxlength="128" value="{{ context.title }}"></span>
           </li>
 		  
 		  <li>
-            <span class="siu_title"><strong><font color="red">*</font>Загрузить файл:</strong></span>
+            <span class="siu_title"><strong><font color="red">*</font>{{ 'Download file'|lang }}:</strong></span>
             <span class="siu_data"><input type="file" name="attach_file" /> Удалить:<input type="checkbox" name="delete_file" value="1" /> </span>
           </li>
 		   <li>
-            <span class="siu_title"><strong>Указать зеркало:</strong>Зеркало, это ссылка на файл на стороннем сайте</span>
+            <span class="siu_title"><strong>{{ 'To specify the mirror'|lang }}:</strong>{{ 'The mirror is a link to the file on the third party website'|lang }}</span>
             <span class="siu_data"><input size="70" type="text" name="download_url" value="{{ context.download_url }}" /></span>
           </li>
 		  <li>
-            <span class="siu_title"><strong>Размер файла на зеркале:</strong></span>
+            <span class="siu_title"><strong>{{ 'The file size to the mirror'|lang }}:</strong></span>
             <span class="siu_data"><input size="70" type="text" name="download_url_size" value="{{ context.download_url_size }}" /></span>
           </li>
 		  <li class="margin">
             <textarea {{ editor_text }} id="editor" class="text-area" name="mainText">{{ context.mainText }}</textarea>
           </li>
 		  <li>
-            <span class="siu_title"><strong>Загрузить скриншоты:</strong></span>
+            <span class="siu_title"><strong>{{ 'Download screenshots'|lang }}:</strong></span>
             <span class="siu_data" id="attachments">
                 <input class="attachField" type="file" id="attach" multiple="multiple" name="attach[]">
 				<div id="preloader">
 					<span id="loader"><img src="/sys/img/ajaxload.gif" alt="loading"></span>
 				</div>
 				<div><progress style="display:none;"></progress></div>
-				<br><a id="attaches-show-all" href="javascript:void(0);" onClick="AtomX.loadAllAttaches('{{ module }}'); $('#attaches-hide').show();">Показать все</a>
-				<a id="attaches-hide" href="javascript:void(0);" onClick="$('.attaches-info, #attaches-hide').hide();">Закрыть</a>
+				<br><a id="attaches-show-all" href="javascript:void(0);" onClick="AtomX.loadAllAttaches('{{ module }}'); $('#attaches-hide').show();">{{ 'Show all'|lang }}</a>
+				<a id="attaches-hide" href="javascript:void(0);" onClick="$('.attaches-info, #attaches-hide').hide();">{{ 'Close'|lang }}</a>
 				<div class="attaches-info" id="attaches-info"></div>
 		   </span>
           </li>
 		  <li>
-            <span class="siu_title"><strong>Настройка для поиска:</strong></span>
+            <span class="siu_title"><strong>{{ 'Configuring for search'|lang }}:</strong></span>
             <span class="siu_data"><input type="checkbox" onClick="metaTags(this);" /></span>
           </li>
 		  <li id="meta" style="display:none;">
-            <span class="siu_title"><strong>Meta description:</strong>Нужно для более быстрой индексации поисковыми роботами</span>
+            <span class="siu_title"><strong>Meta description:</strong>{{ 'Need for faster indexing by search engines'|lang }}</span>
             <span class="siu_data"><textarea name="description">{{ context.description }}</textarea></span>
           </li>
 		  <li id="tags" style="display:none;">
-            <span class="siu_title"><strong>Теги:</strong>Слова по которым будет искаться файл</span>
+            <span class="siu_title"><strong>{{ 'Tags'|lang }}:</strong>{{ 'The words on which we will look for a file'|lang }}</span>
             <span class="siu_data"><input size="70" type="text" name="tags" value="{{ context.tags }}" /></span>
           </li>
 		  <li>
-            <span class="siu_title"><strong>Разработчик:</strong>Автор файла</span>
+            <span class="siu_title"><strong>{{ 'Developer'|lang }}:</strong>{{ 'The author of the file'|lang }}</span>
             <span class="siu_data"><input size="70" type="text" name="sourse" value="{{ context.sourse }}" /></span>
           </li>
 		  <li>
-            <span class="siu_title"><strong>E-Mail автора:</strong></span>
+            <span class="siu_title"><strong>{{ 'E-Mail of the author'|lang }}:</strong></span>
             <span class="siu_data"><input size="70" type="text" name="sourse_email" value="{{ context.sourse_email }}" /></span>
           </li>
 		  <li>
-            <span class="siu_title"><strong>Ссылка на первоисточник:</strong>Ссылка на тот сайт откуда вы взяли файл</span>
+            <span class="siu_title"><strong>{{ 'Reference to the source is'|lang }}:</strong>{{ 'Link to the website where did you get the news'|lang }}</span>
             <span class="siu_data"><input size="70" type="text" name="sourse_site" value="{{ context.sourse_site }}" /></span>
           </li>
 		  {% if checkAccess([module,'record_comments_management']) %}
 		  <li>
-            <span class="siu_title"><strong>Разрешить комментирование?:</strong></span>
+            <span class="siu_title"><strong>{{ 'Allow comments'|lang }}?:</strong></span>
             <span class="siu_data"><input type="checkbox" name="commented" value="1" {{ context.commented }} /></span>
           </li>
 		  {% endif %}
 		  {% if checkAccess([module,'hide_material']) %}
 		  <li>
-            <span class="siu_title"><strong>Доступен для просмотра:</strong></span>
+            <span class="siu_title"><strong>{{ 'Available for viewing'|lang }}:</strong></span>
             <span class="siu_data"><input type="checkbox" name="available" value="1" {{ context.available }} /></span>
           </li>
 		  {% endif %}
 		  <li>
-            <input type="submit" name="submitForm" value="Отправить" />
+            <input type="submit" name="submitForm" value="{{ 'Send'|lang }}" />
           </li>
 		  </ul>
 	  </div>

@@ -1,11 +1,11 @@
 <div class="material">
-<div class="mat-title">Каталог файлов</div>
-<ul class="fotocatalog"><li class="attributes"> <div class="razmery"><span class="annonce"> </span><span class="name">Имя</span><span class="author">Автор</span><span class="cat">Раздел</span><span class="number">Скачивания</span><span class="number">Просмотры</span><span class="number">Комментарии</span><span class="date">Дата добавления</span></div></li>
+<div class="mat-title">{{ 'The files directory'|lang }}</div>
+<ul class="fotocatalog"><li class="attributes"> <div class="razmery"><span class="annonce"> </span><span class="name">{{ 'Name'|lang }}</span><span class="author">{{ 'Author'|lang }}</span><span class="cat">{{ 'Section'|lang }}</span><span class="number">{{ 'Downloads'|lang }}</span><span class="number">{{ 'Pageviews'|lang }}</span><span class="number">{{ 'Comments'|lang }}</span><span class="date">{{ 'Date added'|lang }}</span></div></li>
 {% for entity in entities %}
 <li class="file"><div class="razmery"><span class="annonce" onclick="if($('#{{ entity.id }}').css('display') == 'none'){$('#{{ entity.id }}').show();}else{$('#{{ entity.id }}').hide();}">INFO</span><span class="name"><a href="{{ entity.add_markers.entry_url }}">{{ entity.title }}</a><div class="mod-panel">{{ entity.add_markers.moder_panel }}</div></span><span class="author"><a href="{{ entity.add_markers.profile_url }}">{{ entity.author.name }}</a></span><span class="cat"><a href="{{ entity.add_markers.category_url }}">{{ entity.category.title }}</a></span><span class="number">{{ entity.downloads }}</span><span class="number">{{ entity.views }}</span><span class="number">{{ entity.comments }}</span><span class="date">{{ AtmGetDate(entity.date) }}</span></div>
 	<div class="announce" id="{{ entity.id }}">
 		{{ entity.add_markers.announce }}
-		<div style="clear:both;"></div> <a class="fps-show-mat" href="{{ entity.add_markers.entry_url }}">Подробнее</a>
+		<div style="clear:both;"></div> <a class="fps-show-mat" href="{{ entity.add_markers.entry_url }}">{{ 'Read more'|lang }}</a>
 	</div>
 </li>
 {% endfor %}

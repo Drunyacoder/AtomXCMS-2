@@ -1,21 +1,21 @@
 {{ context.errors }}
 <form name="loginForm" action="{{ context.action }}" method="POST" id="sendForm">
 	<div class="material">
-	  <div class="mat-title">Авторизация</div>
+	  <div class="mat-title">{{ 'Authorization'|lang }}</div>
 	  <div class="mat-content">
           <ul class="spisok-all">
           <li>
-            <span class="siu_title"><strong>Логин:</strong></span>
+            <span class="siu_title"><strong>{{ 'Login'|lang }}:</strong></span>
             <span class="siu_data"><input type="text" name="username" maxlength="30" value="" /></span>
 			<br />
-			<span class="siu_title"><strong>Пароль:</strong></span>
+			<span class="siu_title"><strong>{{ 'Password'|lang }}:</strong></span>
             <span class="siu_data"><input type="password" name="password" maxlength="30" />{{ context.form_key }}</span>
 			<br />
-			<span class="siu_title"><strong>Запомнить:</strong></span>
+			<span class="siu_title"><strong>{{ 'Remember'|lang }}:</strong></span>
             <span class="siu_data"><input type="checkbox" name="autologin" value="1" /></span>
 		  </li>
 		  <li>
-			<input type="submit" name="submitForm"value="Вход" /> {{ context.new_password }}
+			<input type="submit" name="submitForm"value="{{ 'Enter'|lang }}" /> {{ context.new_password }}
           </li>
 		  </ul>
 	  </div>

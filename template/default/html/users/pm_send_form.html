@@ -32,10 +32,10 @@ $(function() {
 {% endif %}
 
 <div class="material">
-    <div class="mat-title">Профиль пользователя - {{ user.name }}</div>
+    <div class="mat-title">{{ 'User profile'|lang }} - {{ user.name }}</div>
     <div class="mat-content">
         <ul class="userslinks">
-            <li><a href="{{ www_root }}/users/info/{{ user.id }}">Обзор Профиля</a></li>
+            <li><a href="{{ www_root }}/users/info/{{ user.id }}">{{ 'Browse Profile'|lang }}</a></li>
             {% if checkAccess(['users', 'edit_users']) %}
             <li><a href="{{ www_root }}/users/edit_form_by_admin/{{ user.id }}">{{ __('Edit profile') }}</a></li>
             {% else %}
@@ -44,14 +44,14 @@ $(function() {
                 {% endif %}
             {% endif %}
             {% if fps_user_id == user.id %}
-            <li><a href="{{ www_root }}/users/pm/">Личные сообщения</a></li>
+            <li><a href="{{ www_root }}/users/pm/">{{ 'Private messages'|lang }}</a></li>
             {% endif %}
-            <li class="active"><a href="{{ www_root }}/users/pm_send_form/{% if fps_user_id != user.id %}{{ user.id }}{% endif %}">Отправить ЛС</a></li>
+            <li class="active"><a href="{{ www_root }}/users/pm_send_form/{% if fps_user_id != user.id %}{{ user.id }}{% endif %}">{{ 'Send PM'|lang }}</a></li>
             {% if fps_user_id != user.id %}
-            <li><a href="{{ www_root }}/users/send_mail_form/{{ user.id }}">Отправить на почту</a></li>
+            <li><a href="{{ www_root }}/users/send_mail_form/{{ user.id }}">{{ 'Send e-mail'|lang }}</a></li>
             {% endif %}
             {% if user.statistic %}
-            <li class="category"><a>Публикации</a></li>
+            <li class="category"><a>{{ 'Publications'|lang }}</a></li>
             <li class="submenu">
                 {% for stat in user.statistic %}
                 {% if stat.count %}
@@ -66,34 +66,34 @@ $(function() {
                 <div class="profileavatar"><img class="avatar"  title="{{ user.name }}" src="{{ user.avatar }}"></div>
                 <div class="userinfocell">
                     <div class="nameuser">{{ user.name }}</div>
-                    <div>Регистрация: {{ user.puttime }}</div>
-                    <div class="lastrun">{% if CheckUserOnline(user.id) %}<img src="{{ template_path }}/img/online.png" title="online" alt="online">{% else %}Последняя активность: {{ user.last_visit }}{% endif %}</div>
+                    <div>{{ 'Registration'|lang }}: {{ user.puttime }}</div>
+                    <div class="lastrun">{% if CheckUserOnline(user.id) %}<img src="{{ template_path }}/img/online.png" title="online" alt="online">{% else %}{{ 'Recent activity'|lang }}: {{ user.last_visit }}{% endif %}</div>
                     <div class="shkalakrut"><img border="0" src="{{ template_path }}/img/{{ getUserRatingImg(user.posts) }}" alt="" /></div>
                 </div>
                 {% if user.rating %}
                 {% if user.rating >= 1 %}
-                <div class="userReputation" style="background-color: #780;"><div class="Rep-number">{{ user.rating }}</div><div>Положительная</div></div>
+                <div class="userReputation" style="background-color: #780;"><div class="Rep-number">{{ user.rating }}</div><div>{{ 'Positive'|lang }}</div></div>
                 {% else %}
-                <div class="userReputation" style="background-color: #C54C4C;"><div class="Rep-number">{{ user.rating }}</div><div>Отрицательная</div></div>
+                <div class="userReputation" style="background-color: #C54C4C;"><div class="Rep-number">{{ user.rating }}</div><div>{{ 'Negative'|lang }}</div></div>
                 {% endif %}
                 {% else %}
-                <div class="userReputation" style="background-color: #999;"><div class="Rep-number">{{ user.rating }}</div><div>Нейтральная</div></div>
+                <div class="userReputation" style="background-color: #999;"><div class="Rep-number">{{ user.rating }}</div><div>{{ 'Neutral'|lang }}</div></div>
                 {% endif %}
             </div>
             <div class="bottomuserinfo">
-                <div class="head">Личные сообщения(написать)</div>
+                <div class="head">{{ 'Personal message(write)'|lang }}</div>
                 <form name="sendForm" id="sendForm" action="{{ context.action }}" method="POST" enctype="multipart/form-data" onsubmit="return checkForm(this)">
                     {{ context.errors }}
                     <ul class="spisok-all">
                         <li>
-                            <span class="siu_title"><strong><font color="red">*</font> Кому:</strong>Внимание в форме предусмотрен поиск по именам</span>
+                            <span class="siu_title"><strong><font color="red">*</font> {{ 'Who'|lang }}:</strong>{{ 'Attention in the form you can search by name'|lang }}</span>
                               <span class="siu_data">
                                 <input type="text" name="toUser" id="toUser" maxlength="30" value="{{ context.touser }}" list="findusers" />
                                 <datalist id="findusers"></datalist>
                               </span>
                         </li>
                         <li>
-                            <span class="siu_title"><strong><font color="red">*</font> Заголовок сообщения:</strong></span>
+                            <span class="siu_title"><strong><font color="red">*</font> {{ 'Message header'|lang }}:</strong></span>
                               <span class="siu_data"><input type="text" name="subject" maxlength="60" value="{{ context.subject }}" />
                               </span>
                         </li>
@@ -101,7 +101,7 @@ $(function() {
                             <textarea class="text-area" {{ editor_text }} name="mainText">{{ context.main_text }}</textarea>
                         </li>
                         <li>
-                            <input class="subm" type="submit" name="submitForm" value="Отправить" />
+                            <input class="subm" type="submit" name="submitForm" value="{{ 'Send'|lang }}" />
                         </li>
                     </ul>
                 </form>

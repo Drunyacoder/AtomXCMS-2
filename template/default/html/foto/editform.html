@@ -1,15 +1,15 @@
 ﻿{{ editor_body }}
 <form name="sendForm" id="sendForm" action="{{ context.action }}" method="POST" enctype="multipart/form-data">
 <div class="material">
-	  <div class="mat-title">Редактирование фотографии: {{ context.title }} </div>
+	  <div class="mat-title">{{ 'Editing pictures'|lang }}: {{ context.title }} </div>
 	  <div class="mat-content">
           <ul class="spisok-all">
 		  <li>
-            <span class="siu_title"><strong><font color="red">*</font>Категория:</strong></span>
+            <span class="siu_title"><strong><font color="red">*</font>{{ 'Section2'|lang }}:</strong></span>
             <span class="siu_data"><select name="cats_selector">{{ context.cats_selector }}</select></span>
           </li>
 		  <li>
-            <span class="siu_title"><strong><font color="red">*</font>Название фотографии:</strong></span>
+            <span class="siu_title"><strong><font color="red">*</font>{{ 'Photo title'|lang }}:</strong></span>
             <span class="siu_data"><input type="text" name="title" maxlength="128" value="{{ context.title }}"></span>
           </li>
 		  <li class="margin">
@@ -17,12 +17,12 @@
           </li>
 		  {% if checkAccess([module,'record_comments_management']) %}
 		  <li>
-            <span class="siu_title"><strong>Комментарии:</strong></span>
+            <span class="siu_title"><strong>{{ 'Comments'|lang }}:</strong></span>
             <span class="siu_data"><input type="checkbox" name="commented" value="1" {{ context.commented }} /></span>
           </li>
 		  {% endif %}
 		  <li>
-            <input type="submit" name="submitForm" value="Отправить" />
+            <input type="submit" name="submitForm" value="{{ 'Send'|lang }}" />
           </li>
 		  </ul>
 	  </div>

@@ -1,9 +1,9 @@
 {% set user = fetch('users', context.id) %}
 <div class="material">
-    <div class="mat-title">Профиль пользователя - {{ user.name }}</div>
+    <div class="mat-title">{{ 'User profile'|lang }} - {{ user.name }}</div>
     <div class="mat-content">
         <ul class="userslinks">
-            <li><a href="{{ www_root }}/users/info/{{ user.id }}">Обзор Профиля</a></li>
+            <li><a href="{{ www_root }}/users/info/{{ user.id }}">{{ 'Browse Profile'|lang }}</a></li>
             {% if checkAccess(['users', 'edit_users']) %}
             <li class="active"><a href="{{ www_root }}/users/edit_form_by_admin/{{ user.id }}">{{ __('Edit profile') }}</a></li>
 			{% else %}
@@ -12,14 +12,14 @@
 				{% endif %}
             {% endif %}
             {% if fps_user_id == user.id %}
-            <li><a href="{{ www_root }}/users/pm/">Личные сообщения</a></li>
+            <li><a href="{{ www_root }}/users/pm/">{{ 'Private messages'|lang }}</a></li>
             {% endif %}
-			<li><a href="{{ www_root }}/users/pm_send_form/{% if fps_user_id != user.id %}{{ user.id }}{% endif %}">Отправить ЛС</a></li>
+			<li><a href="{{ www_root }}/users/pm_send_form/{% if fps_user_id != user.id %}{{ user.id }}{% endif %}">{{ 'Send PM'|lang }}</a></li>
             {% if fps_user_id != user.id %}
-			<li><a href="{{ www_root }}/users/send_mail_form/{{ user.id }}">Отправить на почту</a></li>
+			<li><a href="{{ www_root }}/users/send_mail_form/{{ user.id }}">{{ 'Send e-mail'|lang }}</a></li>
             {% endif %}
             {% if user.statistic %}
-            <li class="category"><a>Публикации</a></li>
+            <li class="category"><a>{{ 'Publications'|lang }}</a></li>
             <li class="submenu">
                 {% for stat in user.statistic %}
                 {% if stat.count %}
@@ -35,36 +35,36 @@
                 <form name="addNewUserFormByAdmin" id="sendForm" action="{{ context.action }}" method="POST" enctype="multipart/form-data">
                     <ul class="spisok-all">
                         <li>
-                            <span class="siu_title"><strong>Логин:</strong></span>
+                            <span class="siu_title"><strong>{{ 'Login'|lang }}:</strong></span>
                             <span class="siu_data"><input type="text" name="name" maxlength="30" value="{{ context.name }}" /></span>
                         </li>
                         <li>
-                            <span class="siu_title"><strong>Адрес e-mail:</strong></span>
+                            <span class="siu_title"><strong>{{ 'E-mail'|lang }}:</strong></span>
                             <span class="siu_data">
                             <input type="hidden" name="oldEmail" value="{{ context.oldemail }}" />
                             <input type="text" name="email" maxlength="60" value="{{ context.email }}" /></span>
                         </li>
                         <li>
-                            <span class="siu_title"><strong>Новый пароль:</strong>Указывайте пароль <em>только</em> если вы хотите его поменять.</span>
+                            <span class="siu_title"><strong>{{ 'New password'|lang }}:</strong>{{ 'Specify the password'|lang }} <em>{{ 'only'|lang }}</em> {{ 'if you want to change it'|lang }}.</span>
                             <span class="siu_data"><input type="password" name="newpassword" maxlength="30" value=""  /></span>
                         </li>
                         <li>
-                            <span class="siu_title"><strong>Подтвердите пароль:</strong>Только если вы указали новый пароль</span>
+                            <span class="siu_title"><strong>{{ 'Confirm password'|lang }}:</strong>{{ 'Only if you specify a new password'|lang }}</span>
                             <span class="siu_data"><input type="password" name="confirm" maxlength="30" value=""  /></span>
                         </li>
                         <li>
-                            <span class="siu_title"><strong>Пол:</strong></span>
+                            <span class="siu_title"><strong>{{ 'Sex'|lang }}:</strong></span>
                             <span class="siu_data">
-                                  Мужской<input type="radio" name="pol" value="1"{{ context.mpol }} />
-                                  Женский<input type="radio" name="pol" value="2"{{ context.fpol }} />
+                                  {{ 'Man'|lang }}<input type="radio" name="pol" value="1"{{ context.mpol }} />
+                                  {{ 'Women'|lang }}<input type="radio" name="pol" value="2"{{ context.fpol }} />
                             </span>
                         </li>
                         <li>
-                            <span class="siu_title"><strong>Город:</strong></span>
+                            <span class="siu_title"><strong>{{ 'City'|lang }}:</strong></span>
                             <span class="siu_data"><input type="text" name="city" maxlength="100" value="{{ context.city }}" /></span>
                         </li>
                         <li>
-                            <span class="siu_title"><strong>Дата рождения:</strong>(день;месяц;год)</span>
+                            <span class="siu_title"><strong>{{ 'Date of birth'|lang }}:</strong>{{ '(day, month, year)'|lang }}</span>
                              <span class="siu_data">
                                  <select style="width:50px;" name="bday">
                                      {{ context.bday_selector }}
@@ -79,35 +79,39 @@
                             </span>
                         </li>
                         <li>
-                            <span class="siu_title"><strong>Коррекция временных зон:</strong>Укажите разницу вашего времени относительно серверного, чтобы скорректировать время на часах сайта под вас.</span>
+                            <span class="siu_title"><strong>{{ 'Time zone setting'|lang }}:</strong>{{ 'Specify the difference of your time server side to adjust the time on the clock of a site under you'|lang }}.</span>
                             <span class="siu_data">
                                <select name="timezone">
                                    {{ context.options }}
                                </select>
-                             Текущее время на сервере: {{ context.servertime }}</span>
+                           {{ 'The current time on the server'|lang }}: {{ context.servertime }}</span>
                         </li>
                         <li>
-                            <span class="siu_title"><strong>Аватар:</strong>Показывает небольшое изображение рядом с вашими ответами, материалами и т.п</span>
-                            <span class="siu_data"><img title="{{ context.name }}" class="avatar" border="0" src="{{ context.avatar }}"><input type="file" name="avatar"  />{{ context.unlinkfile }}</span>
+                            <span class="siu_title"><strong>{{ 'Avatar'|lang }}:</strong>{{ 'Shows a small picture next to your answers, materials'|lang }}</span>
+                            <span class="siu_data">
+                                <img title="{{ context.name }}" class="avatar" border="0" src="{{ context.avatar }}">
+                                <br /><input type="file" name="avatar"  />
+                                <br />{{ context.unlinkfile }}
+                            </span>
                         </li>
                         <li>
-                            <span class="siu_title"><strong>Подпись:</strong>Показывается под вашими сообщениями</span>
+                            <span class="siu_title"><strong>{{ 'Signature'|lang }}:</strong>{{ 'Displayed under your messages'|lang }}</span>
                             <span class="siu_data"><textarea name="signature" cols="30" rows="3">{{ context.signature }}</textarea></span>
                         </li>
                         <li>
-                            <span class="siu_title"><strong>О себе:</strong></span>
+                            <span class="siu_title"><strong>{{ 'About myself'|lang }}:</strong></span>
                             <span class="siu_data"><textarea name="about" cols="30" rows="3">{{ context.about }}</textarea></span>
                         </li>
                         <li>
-                            <span class="siu_title"><strong>Домашняя страничка:</strong> Ваш WEB-site или ссылка на вашу страницу в соц. сети</span>
+                            <span class="siu_title"><strong>{{ 'Home page'|lang }}:</strong> {{ 'Your WEB-site or a link to your page in a social network'|lang }}</span>
                             <span class="siu_data"><input type="text" name="url" maxlength="60" value="{{ context.url }}"  /></span>
                         </li>
                         <li>
-                            <span class="siu_title"><strong>Телефон:</strong></span>
+                            <span class="siu_title"><strong>{{ 'Telephone'|lang }}:</strong></span>
                             <span class="siu_data"><input type="text" name="telephone" maxlength="100" value="{{ context.telephone }}" /></span>
                         </li>
                         <li>
-                            <span class="siu_title"><strong>Номер ICQ:</strong></span>
+                            <span class="siu_title"><strong>{{ 'ICQ number'|lang }}:</strong></span>
                             <span class="siu_data"><input type="text" name="icq" maxlength="12" value="{{ context.icq }}"  /></span>
                         </li>
                         <li>
@@ -115,15 +119,11 @@
                             <span class="siu_data"><input type="text" name="jabber" maxlength="100" value="{{ context.jabber }}" /></span>
                         </li>
                         <li>
-                            <span class="siu_title"><strong>Статус:</strong></span>
-                            <span class="siu_data">{{ context.status }}</span>
+                            <span class="siu_title"><strong>{{ 'Get notified by Email'|lang }}:</strong></span>
+                            <span class="siu_data"><input type="checkbox" {% if context.email_notification %}checked="checked"{% endif %} name="email_notification" value="1" /></span>
                         </li>
                         <li>
-                            <span class="siu_title"><strong>Активация:</strong></span>
-                            <span class="siu_data">{{ context.activation }}</span>
-                        </li>
-                        <li>
-                            <input type="submit" name="submitForm" value="Сохранить" />
+                            <input type="submit" name="submitForm" value="{{ 'Save'|lang }}" />
                         </li>
                     </ul>
                 </form>

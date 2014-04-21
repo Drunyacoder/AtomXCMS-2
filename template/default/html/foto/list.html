@@ -6,7 +6,7 @@
           <a href="{{ entity.add_markers.entry_url }}" class="img_link" >
 		      <img alt="{{ entity.add_markers.foto_alt }}" src="{{ entity.add_markers.preview_foto }}" />
 			  <div class="photo_album_info">
-				 <b>Автор: 
+				 <b>{{ 'Author'|lang }}: 
 				 <a href="{{ entity.add_markers.profile_url }}">{{ entity.author.name }}</a>
 				 </b>
               </div>
@@ -18,8 +18,8 @@
 		      {% endif %}
 			 
               <span class="photo_album_title">
-                    <span class="ge_photos_album fl_l" title="Название фотографии: {{ entity.title }}">{{ entity.title }}</span>
-                    <span class="camera fl_r" title="Просмотров: {{ entity.views }}">{{ entity.views }}</span>
+                    <span class="ge_photos_album fl_l" title="{{ 'Photo title'|lang }}: {{ entity.title }}">{{ entity.title }}</span>
+                    <span class="camera fl_r" title="{{ 'Viewings'|lang }}: {{ entity.views }}">{{ entity.views }}</span>
               </span>
           </a>
        </div>
