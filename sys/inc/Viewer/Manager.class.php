@@ -129,7 +129,7 @@ class Fps_Viewer_Manager
 	
 	
 	
-	public function parseTemplate($code, $context, &$cached)
+	public function parseTemplate($code, $context, &$cached = false)
 	{
 		$key = md5($code);
         // preprocess snippets
