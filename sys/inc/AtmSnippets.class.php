@@ -2,12 +2,12 @@
 /*---------------------------------------------\
 |											   |
 | Author:       Andrey Brykin (Drunya)         |
-| Version:      1.1                            |
+| Version:      1.2                            |
 | Project:      CMS                            |
 | package       CMS Fapos                      |
 | subpackege    AtmSnippets class              |
 | copyright     ©Andrey Brykin 2010-2014       |
-| last mod.     2014/02/21                     |
+| last mod.     2014/04/21                     |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
@@ -48,7 +48,7 @@ class AtmSnippets {
         if (!empty($tplSource)) $this->source = &$tplSource;
         $Register = Register::getInstance();
 
-        $this->Cache = $Register['Cache'];
+        $this->Cache = clone $Register['Cache'];
         $this->Cache->prefix = 'snippet';
         $this->Cache->cacheDir = ROOT . '/sys/cache/snippets/';
         $this->Cache->lifeTime = 3600;
@@ -154,7 +154,7 @@ class AtmSnippets {
     private function __findBlocks() {
         preg_match_all('#\{\[([!]*)([\d\w]+?)(\??.*)\]\}#U', $this->source, $mas);
 
-        for ($i= 0; $i < count($mas[2]); $i++) {
+        for ($i = 0; $i < count($mas[2]); $i++) {
             $block_name = $mas[2][$i];
             $cached = ($mas[1][$i] === '!') ? false : true;
 
@@ -165,7 +165,7 @@ class AtmSnippets {
                 'cached' => $cached,
                 'params' => $mas[3][$i]
             );
-            $snippet_params['hash'] = $this->__getBlockHash($snippet_params);
+            $snippet_params['hash'] = $this->__getBlockHash($snippet_params, $i);
             array_push($this->snippets, $snippet_params);
         }
 
@@ -198,7 +198,7 @@ class AtmSnippets {
      * @param array $snippet
      * @return string
      */
-    private function __getBlockHash($snippet) {
-        return md5($snippet['definition']) . rand();
+    private function __getBlockHash($snippet, $number) {
+        return md5($snippet['definition']) . $number;
     }
 }

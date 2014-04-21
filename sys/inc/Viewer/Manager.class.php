@@ -62,6 +62,7 @@ class Fps_Viewer_Manager
 	public function view($fileName, $context = array())
 	{
 		$filePath = null;
+		$cached = false;
 		$fileSource = $this->getTemplateFile($fileName, $filePath);
 	
 		
@@ -75,13 +76,13 @@ class Fps_Viewer_Manager
 		}
 		
 		$start = getMicroTime();
-		$data = $this->parseTemplate($fileSource, $context);
+		$data = $this->parseTemplate($fileSource, $context, $cached);
         $took = getMicroTime($start);
 		
 		call_user_func(
 			array($this->loader->debug, 'addRow'),
-			array('Templates', 'Compile time'), 
-			array(str_replace(ROOT, '', $filePath), $took)
+			array('Templates', 'Compile time', 'Cached'), 
+			array(str_replace(ROOT, '', $filePath), $took, ($cached ? 'From cache' : 'Compiled'))
 		);
 		
 		return $data;
@@ -128,25 +129,38 @@ class Fps_Viewer_Manager
 	
 	
 	
-	public function parseTemplate($code, $context)
+	public function parseTemplate($code, $context, &$cached)
 	{
+		$key = md5($code);
         // preprocess snippets
 		$this->loader->snippetsParser->setSource($code);
         $this->loader->snippetsParser->preprocess();
 
-
-		$this->treesParser->cleanStack();
-		$tokens = $this->getTokens($code);
-		$nodes = $this->getTreeFromTokens($tokens);
-		$this->compileParser->clean();
-		$this->compileParser->setTmpClassName($this->getTmpClassName($code));
-		$this->compile($nodes);
-		$sourceCode = $this->compileParser->getOutput();
+		
+		$Register = Register::getInstance();
+		$Cache = $Register['Cache'];
+		if (
+			$this->loader->cache && 
+			call_user_func(array($this->loader->config, 'read'), 'templates_cache') && 
+			call_user_func($this->loader->cache['check'], $key)
+		) {
+			$sourceCode = call_user_func($this->loader->cache['read'], $key);
+			$cached = true;
+		} else {
+			$this->treesParser->cleanStack();
+			$tokens = $this->getTokens($code);
+			$nodes = $this->getTreeFromTokens($tokens);
+			$this->compileParser->clean();
+			$this->compileParser->setTmpClassName($this->getTmpClassName($code));
+			$this->compile($nodes);
+			$sourceCode = $this->compileParser->getOutput();
+			
+			call_user_func($this->loader->cache['write'], $sourceCode, $key);
+		}
+		
 		$output = $this->executeSource($sourceCode, $context);
-
         // replace snippets markers
         $output = $this->loader->snippetsParser->replace($output);
-
 		return $output;
 	}
 	

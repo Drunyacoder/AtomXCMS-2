@@ -74,6 +74,8 @@ class Fps_Viewer_Loader
 	
 	
 	public $rootDir = 'default';
+	
+	public $cache = false;
 
 
 	public function __construct(array $params = array())
@@ -87,6 +89,17 @@ class Fps_Viewer_Loader
             $this->config = (!empty($params['config_class'])) ? $params['config_class'] : 'Config';
             $this->debug = (!empty($params['debug_class'])) ? $params['debug_class'] : 'AtmDebug';
             $this->rootDir = (isset($params['root_dir'])) ? $params['root_dir'] : 'default';
+
+			$cache = clone $Register['Cache'];
+			$cache->prefix = 'template';
+			$cache->cacheDir = ROOT . '/sys/cache/templates/';
+			$cache->lifeTime = 86400;
+			$this->cache = array(
+				'check' => array($cache, 'check'),
+				'read' => array($cache, 'read'),
+				'write' => array($cache, 'write'),
+			);
+			
         }
 	}
 }

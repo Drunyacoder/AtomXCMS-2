@@ -15,6 +15,7 @@ $set = array (
   'redirect_delay' => '1',
   'time_on_line' => '10',
   'template' => 'default',
+  'templates_cache' => 1,
   'use_additional_fields' => 0,
   'hlu' => 1,
   'hlu_extention' => '.htm',
