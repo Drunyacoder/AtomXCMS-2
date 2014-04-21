@@ -6,6 +6,11 @@ function initAtomMultiload(module_text, error_text, template_path)
 			return;
 		}
 		
+		if (typeof data == 'undefined' || data.length == 0 || data == false) {
+			fpsWnd('add-attach-errors', 'Information', 'Файлов не нашлось');
+			return;
+		}
+		
 		var getTitle = function(data) {
 			return "Click to insert\n" + 
 				"Name: " + data.filename + 

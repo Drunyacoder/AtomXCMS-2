@@ -626,8 +626,14 @@ class Module {
 	{
 		$this->counter = false;
 		$key = ($this->module === 'forum') ? 'add_posts' : 'add_materials';
-		$this->ACL->turn(array($this->module, $key));
-		$this->ACL->turn(array($this->module, 'use_attaches'));
+		if (!$this->ACL->turn(array($this->module, $key), false) ||
+		!$this->ACL->turn(array($this->module, 'use_attaches'), false)) {
+			$this->showAjaxResponse(array(
+				'errors' => __('Permission denied'), 
+				'result' => '0'
+			));
+		}
+		
 		
 		$attachModel = $this->Register['ModManager']->getModelInstance($this->module . 'Attaches');
 		$errors = '';
