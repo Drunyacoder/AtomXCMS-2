@@ -145,8 +145,8 @@ class AtmUrl {
         $url_params = parse_url('http://' . $_SERVER['HTTP_HOST'] . $url);
         if (!empty($url_params['path']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
             return (false === (strpos($url_params['path'], '//')) &&
-                (preg_match('#(\.[\w\-_]+$)|([%20|\s+]\w+$)#iu', $url_params['path']) ||
-                preg_match('#/[^/\?&\.\s(%20)]+/$#iu', $url_params['path'])));
+                (preg_match('#(\.[\w\-_]+|((%20|\s)+\w+$)#umi', $url_params['path']) ||
+                preg_match('#/[^/\?&\.\s(%20)]+/$#umi', $url_params['path'])));
         }
         return true;
     }
@@ -162,7 +162,7 @@ class AtmUrl {
 
             // if path doesn't like file(has extension), add slash at the end
             $url_params['path'] = rtrim($url_params['path'], '/');
-            if (!preg_match('#(\.[\w\-_]+$)|([%20|\s+]\w+$)#umi', $url_params['path']))
+            if (!preg_match('#(\.[\w\-_]+$)|((%20|\s)+\w+$)#umi', $url_params['path']))
                 $url_params['path'] .= '/';
 
             if (false !== (strpos($url_params['path'], '//'))) {
