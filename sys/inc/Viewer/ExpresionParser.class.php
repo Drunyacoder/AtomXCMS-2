@@ -155,7 +155,7 @@ class Fps_Viewer_ExpresionParser
                 }
         }
 
-
+		
         $node = $this->postfixExpression($node);
 
 
@@ -260,7 +260,11 @@ class Fps_Viewer_ExpresionParser
 
 		$this->inFunc++;
 
-		if (')' === $node->getValue()) return new Fps_Viewer_Node_Text($func . '()');
+		if (')' === $node->getValue()) {
+			$this->parser->getStream()->next();
+			$this->inFunc--;
+			return new Fps_Viewer_Node_Function($func);
+		}
 		
 		$expr = new Fps_Viewer_Node_Function($func); //$this->parsePrimaryExpression()
         $expr->addParam($this->parsePrimaryExpression());

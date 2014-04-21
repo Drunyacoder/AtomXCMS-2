@@ -154,7 +154,6 @@ class Fps_Viewer_Manager
 			$this->compileParser->setTmpClassName($this->getTmpClassName($code));
 			$this->compile($nodes);
 			$sourceCode = $this->compileParser->getOutput();
-			
 			call_user_func($this->loader->cache['write'], $sourceCode, $key);
 		}
 		
