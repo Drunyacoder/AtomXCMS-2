@@ -748,6 +748,8 @@ return array(
 	'Sender\'s email' 				=> 'Sender\'s email',
 	'Email text'	 				=> 'Email text',
 	'Send'			 				=> 'Send',
+	'Pending moderation materials'	=> 'Pending moderation materials',
+	'Pending moderation comments'	=> 'Pending moderation comments',
 
 	// Templates name
 	'Add form'  					=> 'Add form',

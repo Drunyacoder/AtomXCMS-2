@@ -781,6 +781,8 @@ return array(
 	'Sender\'s email' 				=> 'Обратный адрес',
 	'Email text'	 				=> 'Текст письма',
 	'Send'			 				=> 'Отправить',
+	'Pending moderation materials'	=> 'Ожидающие модерации материалы',
+	'Pending moderation comments'	=> 'Ожидающие модерации комментарии',
 
 	// Templates name
 	'Add form'  					=> 'Форма добавления',

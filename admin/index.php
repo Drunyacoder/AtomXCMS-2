@@ -3,11 +3,11 @@
 ##################################################
 ##												##
 ## Author:       Andrey Brykin (Drunya)         ##
-## Version:      0.9                            ##
+## Version:      1.0                            ##
 ## Project:      CMS                            ##
 ## package       CMS Fapos                      ##
 ## subpackege    Admin Panel module             ##
-## copyright     ©Andrey Brykin 2010-2011       ##
+## copyright     ©Andrey Brykin 2010-2014       ##
 ##################################################
 
 
@@ -54,9 +54,15 @@ if (!empty($users_groups)) {
 
 $cnt_for = $FpsDB->select('themes', DB_COUNT);
 $cnt_news = $FpsDB->select('news', DB_COUNT);
-$cnt_load = $FpsDB->select('loads', DB_COUNT);
+$cnt_premoder_news = $FpsDB->select('news', DB_COUNT, array('cond' => array('premoder' => 'nochecked')));
+$cnt_premoder_news_comments = $FpsDB->select('comments', DB_COUNT, array('cond' => array('premoder' => 'nochecked', 'module' => 'news')));
+$cnt_loads = $FpsDB->select('loads', DB_COUNT);
+$cnt_premoder_loads = $FpsDB->select('loads', DB_COUNT, array('cond' => array('premoder' => 'nochecked')));
+$cnt_premoder_loads_comments = $FpsDB->select('comments', DB_COUNT, array('cond' => array('premoder' => 'nochecked', 'module' => 'loads')));
 $cnt_stat = $FpsDB->select('stat', DB_COUNT);
-$cnt_mat = $cnt_news + $cnt_for + $cnt_load + $cnt_stat;
+$cnt_premoder_stat = $FpsDB->select('stat', DB_COUNT, array('cond' => array('premoder' => 'nochecked')));
+$cnt_premoder_stat_comments = $FpsDB->select('comments', DB_COUNT, array('cond' => array('premoder' => 'nochecked', 'module' => 'stat')));
+$cnt_mat = $cnt_news + $cnt_for + $cnt_loads + $cnt_stat;
 
 $all_hosts = $FpsDB->query("
 	SELECT 
@@ -161,7 +167,67 @@ endif;
 		</div>
 	</div>
 </div>
-							
+
+<!--************ MATERIALS **********-->							
+<div class="list">
+	<div class="title"><?php echo __('Materials') ?></div>
+	<div class="level1">
+		<div class="head">
+			<div class="title settings"><?php echo __('Material') ?></div>
+			<div class="title-r"><?php echo __('Quantity') . ' / ' . __('Pending moderation materials') . ' / ' . __('Pending moderation comments') ?></div>
+			<div class="clear"></div>
+		</div>
+		<div class="items">
+			<div class="setting-item">
+				<div class="left">
+					<?php echo __('Total materials') ?>
+				</div>
+				<div class="right"><?php echo $cnt_mat ?></div>
+				<div class="clear"></div>
+			</div>
+			<div class="setting-item">
+				<div class="left">
+					<?php echo __('News') ?>
+				</div>
+				<div class="right">
+					<?php echo $cnt_news ?> / 
+					<span class="red"><?php echo $cnt_premoder_news ?></span> / 
+					<span class="green"><?php echo $cnt_premoder_news_comments ?></span>
+				</div>
+				<div class="clear"></div>
+			</div>
+			<div class="setting-item">
+				<div class="left">
+					<?php echo __('Loads') ?>
+				</div>
+				<div class="right">
+					<?php echo $cnt_loads ?> / 
+					<span class="red"><?php echo $cnt_premoder_loads ?></span> / 
+					<span class="green"><?php echo $cnt_premoder_loads_comments ?></span>
+				</div>
+				<div class="clear"></div>
+			</div>
+			<div class="setting-item">
+				<div class="left">
+					<?php echo __('Stat') ?>
+				</div>
+				<div class="right">
+					<?php echo $cnt_stat ?> / 
+					<span class="red"><?php echo $cnt_premoder_stat ?></span> / 
+					<span class="green"><?php echo $cnt_premoder_stat_comments ?></span>
+				</div>
+				<div class="clear"></div>
+			</div>
+			<div class="setting-item">
+				<div class="left">
+					<?php echo __('Forum topics') ?>
+				</div>
+				<div class="right"><?php echo $cnt_for ?></div>
+				<div class="clear"></div>
+			</div>
+		</div>
+	</div>
+</div>							
 
 <!--************ USERS **********-->							
 <div class="list">
@@ -295,58 +361,6 @@ endif;
 
 	</div>
 </div>
-
-
-
-<!--************ MATERIALS **********-->							
-<div class="list">
-	<div class="title"><?php echo __('Materials') ?></div>
-	<div class="level1">
-		<div class="head">
-			<div class="title settings"><?php echo __('Material') ?></div>
-			<div class="title-r"><?php echo __('Quantity') ?></div>
-			<div class="clear"></div>
-		</div>
-		<div class="items">
-			<div class="setting-item">
-				<div class="left">
-					<?php echo __('Total materials') ?>
-				</div>
-				<div class="right"><?php echo $cnt_mat ?></div>
-				<div class="clear"></div>
-			</div>
-			<div class="setting-item">
-				<div class="left">
-					<?php echo __('News') ?>
-				</div>
-				<div class="right"><?php echo $cnt_news ?></div>
-				<div class="clear"></div>
-			</div>
-			<div class="setting-item">
-				<div class="left">
-					<?php echo __('Loads') ?>
-				</div>
-				<div class="right"><?php echo $cnt_load ?></div>
-				<div class="clear"></div>
-			</div>
-			<div class="setting-item">
-				<div class="left">
-					<?php echo __('Stat') ?>
-				</div>
-				<div class="right"><?php echo $cnt_stat ?></div>
-				<div class="clear"></div>
-			</div>
-			<div class="setting-item">
-				<div class="left">
-					<?php echo __('Forum topics') ?>
-				</div>
-				<div class="right"><?php echo $cnt_for ?></div>
-				<div class="clear"></div>
-			</div>
-		</div>
-	</div>
-</div>
-
 
 
 <?php
