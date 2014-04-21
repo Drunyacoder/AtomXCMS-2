@@ -33,7 +33,7 @@ class Plugins {
 
 
 	public function __construct() {
-		$dirs = glob(ROOT . '/sys/plugins/*');
+		$dirs = glob(ROOT . '/sys/plugins/*', GLOB_ONLYDIR);
 		
 		
 		if (!empty($dirs)) {
