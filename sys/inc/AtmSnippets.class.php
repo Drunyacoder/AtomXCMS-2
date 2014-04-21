@@ -86,6 +86,8 @@ class AtmSnippets {
         $Register = Register::getInstance();
         $Model = $Register['ModManager']->getModelInstance('snippets');
 
+
+		
         foreach ($this->snippets as $snippet) {
             $regex = '#\{\[([!]*)('.$snippet['hash'].$snippet['name'].')(\??.*)\]\}#U';
 			
@@ -127,7 +129,7 @@ class AtmSnippets {
                     eval($db_snippet->getBody());
                     $res = ob_get_contents();
                     ob_end_clean();
-                    $source = str_replace('#' . preg_quote($mas[0][$i]) . '#', $res, $source);
+                    $source = preg_replace('#' . preg_quote($mas[0][$i]) . '#', $res, $source);
 
                     if ($snippet['cached'])
                         $this->Cache->write($res, $cache_key, array());
