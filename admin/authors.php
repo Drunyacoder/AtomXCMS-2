@@ -93,6 +93,13 @@ include_once ROOT . '/admin/template/header.php';
 					Alexandr Verenik (Wasja)
 				</div>
 			</div>
+			<div class="setting-item">
+				<div class="center">
+					<h3>Translation</h3>
+					Victor Sproot (Sproot)<br />
+					Andrey Brykin (Drunya)
+				</div>
+			</div>
 		</div>
 	</div>
 </div>
