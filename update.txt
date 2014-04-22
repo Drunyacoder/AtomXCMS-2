@@ -1,5 +1,5 @@
 ********************************************************************************************************
-Апдейт с версии 2.4 RC6 до 2.5 RC1
+Апдейт с версии 2.5 RC1 до 2.6 RC1
 ********************************************************************************************************
 
 Обязательно делаем резервную копию всего сайта. И файлов и базы. В случае неудачи, мы сможем все вернуть в исходное состояние.
@@ -15,12 +15,66 @@
 	/sys/settings/* (если просто заменить, слетят ваши настройки. Я бы предложил воспользоваться BeyoundCompare 3.)
 	/sys/js/*
 	/template/* (опять же, если просто заменить, слетят ваши правки шаблона. Если мы этого не хотим, то либо не трогаем, либо BeyoundCompare 3.)
+	
+	/sys/settings/acl_rules.php
+	/sys/settings/conf_properties.php
+	/sys/settings/forums_moderators.php
+	
+	Обратите внимание в этой версии изменились названия файлов локализации /sys/settings/language/. Обязательно замените их.
+	
+	Так же рекомендуем использовать новый шаблон, так как он переведен и может использоваться с разными языками.
 
 2. Выполнить запрос 
-	ALTER TABLE `users` ADD `email_notification` enum('0','1') NOT NULL DEFAULT '1';
-	ALTER TABLE `comments` ADD `premoder` enum('nochecked','rejected','confirmed') NOT NULL DEFAULT 'nochecked';
+	ALTER TABLE `stat_attaches` CHANGE `entity_id` `entity_id` INT NOT NULL default '0';
+	ALTER TABLE `stat_attaches` CHANGE `attach_number` `attach_number` INT NOT NULL default '0';
+	ALTER TABLE `news_attaches` CHANGE `entity_id` `entity_id` INT NOT NULL default '0';
+	ALTER TABLE `news_attaches` CHANGE `attach_number` `attach_number` INT NOT NULL default '0';
+	ALTER TABLE `loads_attaches` CHANGE `entity_id` `entity_id` INT NOT NULL default '0';
+	ALTER TABLE `loads_attaches` CHANGE `attach_number` `attach_number` INT NOT NULL default '0';
+	ALTER TABLE `statistics` CHANGE `referer` `referer` varchar(255) NOT NULL DEFAULT '';
+	ALTER TABLE `forum_attaches` CHANGE `post_id` `post_id` INT NOT NULL default '0';
+	ALTER TABLE `forum_attaches` CHANGE `theme_id` `theme_id` INT NOT NULL default '0';
+	ALTER TABLE `forum_attaches` CHANGE `attach_number` `attach_number` INT NOT NULL default '0';
+
 	
-3. Добавить в конфиг опцию 'new_pm_mail' => 1
+3. Добавить в конфиг опции 
+
+'permitted_languages' => 'rus,eng', 
+'templates_cache' => 1,
+forum(
+    'max_attaches' => '10',
+    'max_attaches_size' => 5000000,
+    'max_all_attaches_size' => 200000000,
+    'max_guest_attaches_size' => 5000000,
+    'img_size_x' => '150',
+    'img_size_y' => '200',
+),
+news(
+    'max_all_attaches_size' => 200000000,
+    'max_guest_attaches_size' => 5000000,
+),
+stat(
+    'max_all_attaches_size' => 200000000,
+    'max_guest_attaches_size' => 5000000,
+),
+loads(
+    'max_all_attaches_size' => 200000000,
+    'max_guest_attaches_size' => 5000000,
+),
+secure(
+    'captcha_type' => 'question-image',
+    'captcha_text_questions' => 
+    array (
+      35 => '33 + 2 = ',
+      28 => '23 + 5 = ',
+      30 => '29 + 1 = ',
+      20 => '17 + 3 = ',
+    ),
+),
+users(
+	'use_gravatar' => 0,
+),
+
 	
 3. Потом смотрим, что получилось в режиме дебага(в этом случае, если будут ошибки, мы их увидим).
 	
