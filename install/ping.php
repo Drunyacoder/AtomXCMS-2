@@ -13,7 +13,7 @@ function checkUpdate() {
 	@$b = file_get_contents('http://home.develdo.com/cdn/versions.txt');
 	if ($b) {
 		if (preg_match('#[^></]+#i', $b)) {
-			echo '<a href="http://home.develdo.com/downloads.php">Последняя версия ' . trim($b) . '</a>';
+			echo '<a target="_blank" href="https://github.com/Drunyacoder/AtomXCMS-2/releases">Последняя версия ' . trim($b) . '</a>';
 		} else {
 			echo 'Не удалось узнать';
 		}
