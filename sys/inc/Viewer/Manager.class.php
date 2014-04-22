@@ -132,7 +132,6 @@ class Fps_Viewer_Manager
 	public function parseTemplate($code, $context, &$cached = false)
 	{
 		$key = md5($code);
-		AtmDebug::log($code, $key);
         // preprocess snippets
 		$this->loader->snippetsParser->setSource($code);
         $this->loader->snippetsParser->preprocess();
