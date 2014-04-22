@@ -93,8 +93,10 @@ function selectAclTab(id) {
 
 function openPopup(id) {
 	resizeWrapper($('#'+id));
+	var datatop = parseInt((typeof $('#'+id).data('top') != 'undefined') ? $('#'+id).data('top') : 0);
+	var newtop = window.scrollY + datatop;
 	$('#'+id).css({
-		'top': $(window).scrollTop() + $('#'+id).data('top')
+		'top': newtop
 	});
 
 	$('#' + id).fadeIn(1000);
