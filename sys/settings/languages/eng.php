@@ -750,6 +750,7 @@ return array(
 	'Send'			 				=> 'Send',
 	'Pending moderation materials'	=> 'Pending moderation materials',
 	'Pending moderation comments'	=> 'Pending moderation comments',
+	'Templetes cache'				=> 'Templetes cache',
 
 	// Templates name
 	'Add form'  					=> 'Add form',

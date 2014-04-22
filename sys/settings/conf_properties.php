@@ -205,6 +205,13 @@ $settingsInfo = array(
 			'checked' => '1',
 			'value' => '1',
 		),
+		'templates_cache' => array(
+			'type' => 'checkbox',
+			'title' => __('Templetes cache'),
+			'description' => __('If cache is enabled, the site will be load faster'),
+			'checked' => '1',
+			'value' => '1',
+		),
 		'cache_querys' => array(
 			'type' => 'checkbox',
 			'title' => 'Кэш SQl запросов',

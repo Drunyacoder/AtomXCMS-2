@@ -783,6 +783,7 @@ return array(
 	'Send'			 				=> 'Отправить',
 	'Pending moderation materials'	=> 'Ожидающие модерации материалы',
 	'Pending moderation comments'	=> 'Ожидающие модерации комментарии',
+	'Templetes cache'				=> 'Кэш шаблонов',
 
 	// Templates name
 	'Add form'  					=> 'Форма добавления',

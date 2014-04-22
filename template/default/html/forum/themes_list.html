@@ -26,7 +26,7 @@
     </div>
 	<div class="forumblock">
 	  <div class="forumtitle">{{ forum.title }}</div>
-	  <div class="forumhead"><div class="forstatus"></div><div class="fornametemes">{{ getOrderLink(['title','Тема']) }}</div><div class="foranswerteme">{{ getOrderLink(['posts','Ответы']) }}</div><div class="forviuwteme">{{ getOrderLink(['views','Просмотры']) }}</div><div class="forautorteme">{{ 'Author'|lang }}</div><div class="fornewposts">{{ getOrderLink(['last_post','Обновления']) }}</div></div>
+	  <div class="forumhead"><div class="forstatus"></div><div class="fornametemes">{{ getOrderLink(['title','Topics'|lang]) }}</div><div class="foranswerteme">{{ getOrderLink(['posts','Answers'|lang]) }}</div><div class="forviuwteme">{{ getOrderLink(['views','Pageviews'|lang]) }}</div><div class="forautorteme">{{ 'Author'|lang }}</div><div class="fornewposts">{{ getOrderLink(['last_post','Update'|lang]) }}</div></div>
       {% if themes %}
 	  {% for theme in themes %}  
 	  <div class="forumcontent {{ theme.fps_css_class }}">

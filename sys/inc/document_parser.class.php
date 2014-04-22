@@ -141,6 +141,7 @@ class Document_Parser {
 		$markers['fps_date'] = date("d-m-Y");
 		$markers['fps_time'] = date("H:i");
 		$markers['fps_year'] = date("Y");
+		$markers['version'] = FPS_VERSION;
 		
 		
 		$path = $Register['Config']->read('smiles_set');
