@@ -47,6 +47,7 @@ return array(
 	'can_premoder' 					=> 'Can make moderated', 	
 	'use_rating'					=> 'Rate the materials',
 	'use_attaches'					=> 'Can upload files',
+	'delete_attaches'					=> 'Can delete files',
 
 	'view_forums_list' 				=> 'To view the list of topics', 						
 	'view_forums' 					=> 'Watch forums', 						

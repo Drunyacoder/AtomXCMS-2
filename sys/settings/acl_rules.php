@@ -12,6 +12,9 @@ $acl_rules = array (
   'news.use_attaches' => array(
     'groups' => array(2,3,4,1,),
   ),
+  'news.delete_attaches' => array(
+    'groups' => array(2,3,4,),
+  ),
   'news.materials_require_premoder' => array(
     'groups' => array(0,1,),
   ),
@@ -69,6 +72,9 @@ $acl_rules = array (
   'stat.use_attaches' => array(
     'groups' => array(2,3,4,1,),
   ),
+  'stat.delete_attaches' => array(
+    'groups' => array(2,3,4,),
+  ),
   'stat.materials_require_premoder' => array(
     'groups' => array(0,1,),
   ),
@@ -125,6 +131,9 @@ $acl_rules = array (
   ),
   'loads.use_attaches' => array(
     'groups' => array(2,3,4,1,),
+  ),
+  'loads.delete_attaches' => array(
+    'groups' => array(2,3,4,),
   ),
   'loads.materials_require_premoder' => array(
     'groups' => array(0,1,),
@@ -230,6 +239,9 @@ $acl_rules = array (
   ),
   'forum.use_attaches' => array(
     'groups' => array(2,3,4,1,),
+  ),
+  'forum.delete_attaches' => array(
+    'groups' => array(2,3,4,),
   ),
   'forum.edit_themes' => array(
     'groups' => array(4,3,),

@@ -958,8 +958,8 @@ box-shadow: inset 0 0 5px #333;  -webkit-box-shadow: inset 0 0 5px #333;  -moz-b
 .forumblock .footerpostinfo {clear: both;margin: 10px;height: 24px;text-align: right;}
 .forumblock .footerpostinfo .editpostlink {font-size: 12px;margin-right: 10px;display: inline-block;}
 .attaches-info {width:100%; max-width:620px; overflow-y:auto; height:auto; max-height:245px; padding:5px;}
-.attaches-info > img {max-width:150px; max-height:100px; margin:0px; padding:2px; border:1px solid #999999;}
-.attaches-info > .attach-delete {width:14px; height:14px; position:relative; top:-86px; left:-20px; border:1px solid #999999; background: url('../img/fps-icons-sprite.png') no-repeat rgba(250, 250, 250, 0.7); border-radius:3px; display:inline-block; opacity:0; transition:all .3s ease; cursor:pointer;}
+.attaches-info > img {max-width:150px; max-height:100px; margin:0px 4px; padding:2px; border:1px solid #999999;}
+.attaches-info > .attach-delete {width:14px; height:14px; position:relative; top:-86px; left:0px; margin-left:-20px; border:1px solid #999999; background: url('../img/fps-icons-sprite.png') no-repeat rgba(250, 250, 250, 0.7); border-radius:3px; display:inline-block; opacity:0; transition:all .3s ease; cursor:pointer;}
 .attaches-info > img:hover + .attach-delete, .attach-delete:hover {opacity:1;}
 #attaches-show-all, #attaches-hide {text-decoration:none;}
 #attaches-hide {margin-left:5px; display:none;}

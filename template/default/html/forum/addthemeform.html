@@ -13,12 +13,7 @@ function pollForm(element) {
 </script>
 
 <!-- Multi attaches upload -->
-<script type="text/javascript" src="{{ template_path }}/js/atm-multiupload.js"></script>
-<script type="text/javascript">
-$(document).ready(function(){
-	initAtomMultiload('{{ module }}', '{{ 'Error'|lang }}', '{{ template_path }}');
-});
-</script>
+{% include '/atm-multiupload.html' %}
 
 <form name="sendForm" id="sendForm" action="{{ context.action }}" method="POST" 
 enctype="multipart/form-data" onsubmit="return checkForm(this)">
@@ -47,7 +42,7 @@ enctype="multipart/form-data" onsubmit="return checkForm(this)">
 			</span>
           </li>
 		  {% endif %}
-		  <li id="attachments">
+		  <li>
             <span class="siu_title"><strong>{{ 'Attach files'|lang }}</strong></span>
             <span class="siu_data" id="attachments">
                 <input class="attachField" type="file" id="attach" multiple="multiple" name="attach[]">

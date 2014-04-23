@@ -300,12 +300,9 @@ return array(
 	'Delete the downloaded pictures'   => 'Delete the downloaded pictures',
 	'Editing the article'            => 'Editing the article',
 	'Editing the article'            => 'Editing the article',
+	'Click to insert'            	 => 'Click to insert',
 
 
-
-
-	
-	
 	
 	'DOCUMENTATION' 		    => 'DOCUMENTATION',
 	'TEMPLATES' 		        => 'TEMPLATES',

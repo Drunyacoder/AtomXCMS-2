@@ -303,6 +303,7 @@ return array(
 	'Editing news'                   => 'Редактирование новости',
 	'Delete the downloaded pictures'   => 'Удаление загруженных изображений',
 	'Editing the article'            => 'Редактирование статьи',
+	'Click to insert'            	 => 'Кликните чтобы вставить',
 
 
 	

@@ -1,10 +1,5 @@
 <!-- Multi attaches upload -->
-<script type="text/javascript" src="{{ template_path }}/js/atm-multiupload.js"></script>
-<script type="text/javascript">
-$(document).ready(function(){
-	initAtomMultiload('{{ module }}', '{{ 'Error'|lang }}', '{{ template_path }}');
-});
-</script>
+{% include '/atm-multiupload.html' %}
 
 {{ editor_body }}
 {{ context.errors }}
@@ -22,9 +17,9 @@ $(document).ready(function(){
 			</li>
 			{% endif %}
 				
-			<li id="attachments">
+			<li>
 				<span class="siu_title"><strong>{{ 'Attached files'|lang }}:</strong></span>
-				<span class="siu_data">
+				<span class="siu_data" id="attachments">
 					<input class="attachField" type="file" id="attach" multiple="multiple" name="attach[]">
 					<div id="preloader">
 						<span id="loader"><img src="/sys/img/ajaxload.gif" alt="loading"></span>

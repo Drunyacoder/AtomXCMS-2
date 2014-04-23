@@ -702,7 +702,13 @@ class Module {
 	public function delete_attach($id)
 	{
 		$this->counter = false;
-		$this->ACL->turn(array($this->module, 'use_attaches'));
+		if (!$this->ACL->turn(array($this->module, 'delete_attaches'), false)) {
+			$this->showAjaxResponse(array(
+				'errors' => __('Permission denied'), 
+				'result' => '0'
+			));
+		}
+			
 		if (empty($_SESSION['user']['id'])) $this->showAjaxResponse(array());
 		$user_id = $_SESSION['user']['id'];
 		
