@@ -681,14 +681,6 @@ Class NewsModule extends Module {
 		}
 		
 		
-		// Auto tags generation
-		if (empty($tags)) {
-			$TagGen = new MetaTags;
-			$tags = $TagGen->getTags($_POST['main_text']);
-			$tags = (!empty($tags) && is_array($tags)) ? implode(',', array_keys($tags)) : '';
-		}
-		
-		
 		//remove cache
 		$this->Register['Cache']->clean(CACHE_MATCHING_ANY_TAG, array('module_' . $this->module));
 		$this->DB->cleanSqlCache();
@@ -697,13 +689,21 @@ Class NewsModule extends Module {
 		$post = $this->Register['Validate']->getAndMergeFormPost($this->getValidateRules(), array(), true);
 		extract($post);
 		
+		
+		// Auto tags generation
+		if (empty($tags)) {
+			$TagGen = new MetaTags;
+			$tags = $TagGen->getTags($_POST['main_text']);
+			$tags = (!empty($tags) && is_array($tags)) ? implode(',', array_keys($tags)) : '';
+		}
+		
 		// Обрезаем переменные до длины, указанной в параметре maxlength тега input
 		$commented = (!empty($_POST['commented'])) ? 1 : 0;
 		$available = (!empty($_POST['available'])) ? 1 : 0;
 		if (!$this->ACL->turn(array($this->module, 'record_comments_management'), false)) $commented = '1';
 		if (!$this->ACL->turn(array($this->module, 'hide_material'), false)) $available = '1';
 		
-		
+
 		$max_lenght = $this->Register['Config']->read('max_lenght', $this->module);
 		$add = mb_substr($main_text, 0, $max_lenght);
 		$res = array(
@@ -725,7 +725,6 @@ Class NewsModule extends Module {
 		if ($this->ACL->turn(array($this->module, 'materials_require_premoder'), false)) {
 			$res['premoder'] = 'nochecked';
 		}
-		
 		
 		$className = ucfirst($this->module) . 'Entity';
 		$new = new $className($res);

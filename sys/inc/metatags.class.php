@@ -2,12 +2,12 @@
 /*---------------------------------------------\
 |											   |
 | @Author:       Andrey Brykin (Drunya)        |
-| @Version:      1.0.1                         |
+| @Version:      1.0.2                         |
 | @Project:      CMS                           |
 | @Package       AtomX CMS                     |
 | @subpackege    Tag generator                 |
-| @copyright     ©Andrey Brykin 2010-2013      |
-| @last mod      2013/02/07                    |
+| @copyright     ©Andrey Brykin 2010-2014      |
+| @last mod      2014/04/23                    |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
@@ -53,9 +53,9 @@ class MetaTags
 	public function getTags($text)
 	{
 		$text = $this->clean($text);
-		
+
 		$words = $this->countWords($text);
-		
+
 		$tags = array_slice($words, 0, $this->maxTags);
 
 		return $tags;
@@ -73,6 +73,7 @@ class MetaTags
 		$text = str_replace("\n", ' ', $text);
 		$text = preg_replace('#([\s]{1,})#Umu', ' ', $text);
 		$text = preg_replace('#([^a-zа-я\d\s]{1,})#Umiu', '', $text);
+		$text = preg_replace('#(\d{1,})#Umiu', '', $text);
 		
 		$text = preg_replace('#IMAGE\d+#', '', $text);
 		
