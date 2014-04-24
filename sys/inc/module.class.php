@@ -481,11 +481,18 @@ class Module {
 			}
 		}
 		if (empty($cats)) {
-			$cats = $this->DB->select($this->module . '_sections', DB_ALL, array(
+			$current_cat = $this->DB->select($this->module . '_sections', DB_ALL, array(
 				'cond' => array(
-					'`parent_id` = 0 OR `parent_id` IS NULL ',
+					'id' => $id,
 				),
 			));
+			if ($current_cat) {
+				$cats = $this->DB->select($this->module . '_sections', DB_ALL, array(
+					'cond' => array(
+						'parent_id' => $current_cat[0]['parent_id'],
+					),
+				));
+			}
 		}
 		
 		
