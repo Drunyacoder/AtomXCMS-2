@@ -492,6 +492,12 @@ class Module {
 						'parent_id' => $current_cat[0]['parent_id'],
 					),
 				));
+			} else {
+				$cats = $this->DB->select($this->module . '_sections', DB_ALL, array(
+					'cond' => array(
+						'parent_id = 0 OR parent_id IN NULL',
+					),
+				));
 			}
 		}
 		
