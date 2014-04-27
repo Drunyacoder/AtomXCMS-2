@@ -21,6 +21,8 @@ class Fps_Viewer_Token
     const INTERPOLATION_END_TYPE    = 11;
     const URL_START_TYPE  			= 12;
     const URL_END_TYPE    			= 13;
+    const COMMENT_START_TYPE  		= 14;
+    const COMMENT_END_TYPE    		= 15;
 
     /**
      * Constructor.

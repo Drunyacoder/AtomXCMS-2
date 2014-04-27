@@ -54,7 +54,7 @@ class Fps_Viewer_ExpresionParser
 	
 	public function parseOperatorExpression($left, $type)
 	{
-        $this->inIfDefinition++;
+        $this->inFunc++;
 		if (!empty($type) && !array_key_exists($type, $this->binaryOperators)) {
 			throw new Exception("Operator type '$type' is not exists.");
 		}
@@ -64,7 +64,7 @@ class Fps_Viewer_ExpresionParser
 		// if use IF with only one parametr ( if($var) )
 		if ($stream->getCurrent()->getType() == Fps_Viewer_Token::BLOCK_END_TYPE) {
 			//$right = $this->parsePrimaryExpression();
-            $this->inIfDefinition--;
+            $this->inFunc--;
 			return new $this->binaryOperators['==']($left, null, true);
 		}
 		
@@ -77,7 +77,7 @@ class Fps_Viewer_ExpresionParser
 			$this->parser->setStack($left->getValue());
 		}
 		$right = $this->parsePrimaryExpression();
-        $this->inIfDefinition--;
+        $this->inFunc--;
 		
 		if ('for_definition' === $this->parser->getEnv() && $type === 'in') {
 			return new $this->binaryOperators[$type]($left, $right, $this->parser->getEnv());
@@ -146,10 +146,12 @@ class Fps_Viewer_ExpresionParser
 					
 				// Groups
                 } else if ($token->test(Fps_Viewer_Token::PUNCTUATION_TYPE, '(')) {
+					$this->inFunc++;
 					$this->parser->getStream()->next();
                     $expr = $this->parseExpression();
 					$node = new Fps_Viewer_Node_Group($expr);
 					$this->parser->getStream()->next();
+					$this->inFunc--;
                 } else {
                     throw new Exception("Unexpected token type.");
                 }
@@ -160,12 +162,9 @@ class Fps_Viewer_ExpresionParser
 
 
         // >2 parameters in IF block
-        if (
-            $this->parser->getCurrentToken()->test(Fps_Viewer_Token::OPERATOR_TYPE, array_keys($this->binaryOperators))
-            && $this->inIfDefinition > 0
-        ) {
+        if ($this->parser->getCurrentToken()->test(Fps_Viewer_Token::OPERATOR_TYPE, array_keys($this->binaryOperators))) {
             $node = $this->parseOperatorExpression(
-                $this->parser->setNode($node, $this->inFunc),
+                $this->parser->setNode($node, $this->inFunc + 1),
                 $this->parser->getCurrentToken()->getValue()
             );
         }

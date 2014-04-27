@@ -26,6 +26,7 @@ class Fps_Viewer_TokensParser
     const STATE_VAR             = 2;
     const STATE_STRING          = 3;
     const STATE_URL          	= 4;
+    const STATE_COMMENT         = 5;
 
     const REGEX_NAME            = '/[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*/uA';
     const REGEX_NUMBER          = '/[0-9]+(?:\.[0-9]+)?/uA';
@@ -44,13 +45,15 @@ class Fps_Viewer_TokensParser
 			'tag_var' => array('{{', '}}'),
 			'tag_block' => array('{%', '%}'),
 			'tag_url' => array('[~', '~]'),
+			'tag_comment' => array('{#', '#}'),
 		);
 		
 		$this->regexes = array(
-			'lex_var' => '#\s+' . preg_quote($this->delimiters['tag_var'][1], '/') . '#uA',
-			'lex_url' => '#\s+' . preg_quote($this->delimiters['tag_url'][1], '/') . '#uA',
+			'lex_var' => '#\s+' . preg_quote($this->delimiters['tag_var'][1], '#') . '#uA',
+			'lex_url' => '#\s+' . preg_quote($this->delimiters['tag_url'][1], '#') . '#uA',
+			'lex_comment' => '#\s+' . preg_quote($this->delimiters['tag_comment'][1], '#') . '#uA',
 			'lex_block' => '#\s+(?:' . preg_quote($this->delimiters['tag_block'][1]) . '|' . preg_quote($this->delimiters['tag_block'][1]) . ')#uA',
-			'lex_start' => '#(' . preg_quote($this->delimiters['tag_var'][0]) . '|' . preg_quote($this->delimiters['tag_block'][0]) . '|' . preg_quote($this->delimiters['tag_url'][0]) . ')\s#us',
+			'lex_start' => '#(' . preg_quote($this->delimiters['tag_var'][0]) . '|' . preg_quote($this->delimiters['tag_block'][0]) . '|' . preg_quote($this->delimiters['tag_url'][0]) . '|' . preg_quote($this->delimiters['tag_comment'][0], '#') . ')\s#us',
 			'operators' => '#not in(?=[\s()])|and(?=[\s()])|not(?=[\s()])|in(?=[\s()])|\<\=|\>\=|\=\=|or(?=[\s()])|\!\=|%|\>|\+|-|\<|/|\=|\*#uA',
 		);
 	}
@@ -96,6 +99,10 @@ class Fps_Viewer_TokensParser
 
 				case self::STATE_URL:
 					$this->lexUrl();
+					break;
+					
+				case self::STATE_COMMENT:
+					$this->lexComment();
 					break;
 			}
 		}
@@ -155,6 +162,24 @@ class Fps_Viewer_TokensParser
 	
 	
 	
+    protected function lexComment()
+    {
+		$start = $this->cursor;
+        while (!(empty($this->brackets) && preg_match($this->regexes['lex_comment'], $this->code, $match, null, $this->cursor))) {
+			$this->cursor++;
+		}
+		$end = $this->cursor;
+		
+		
+		$text = substr($this->code, $start, $end - $start);
+		$this->pushToken(Fps_Viewer_Token::TEXT_TYPE, $text);
+		$this->pushToken(Fps_Viewer_Token::COMMENT_END_TYPE);
+		$this->moveCursor($match[0]);
+		$this->popState();
+    }
+	
+	
+	
     protected function lexVar()
     { 
         if (empty($this->brackets) && preg_match($this->regexes['lex_var'], $this->code, $match, null, $this->cursor)) {
@@ -199,7 +224,7 @@ class Fps_Viewer_TokensParser
         $this->pushToken(Fps_Viewer_Token::TEXT_TYPE, $text);
         $this->moveCursor($textContent.$position[0]);
 
-		
+
         switch ($this->positions[1][$this->position][0]) {
             case $this->delimiters['tag_block'][0]:
                 $this->pushToken(Fps_Viewer_Token::BLOCK_START_TYPE);
@@ -214,6 +239,11 @@ class Fps_Viewer_TokensParser
             case $this->delimiters['tag_url'][0]:
                 $this->pushToken(Fps_Viewer_Token::URL_START_TYPE);
                 $this->pushState(self::STATE_URL);
+                break;
+				
+            case $this->delimiters['tag_comment'][0]:
+                $this->pushToken(Fps_Viewer_Token::COMMENT_START_TYPE);
+                $this->pushState(self::STATE_COMMENT);
                 break;
         }
 	}

@@ -150,10 +150,12 @@ class Fps_Viewer_Manager
 			$this->treesParser->cleanStack();
 			$tokens = $this->getTokens($code);
 			$nodes = $this->getTreeFromTokens($tokens);
+			
 			$this->compileParser->clean();
 			$this->compileParser->setTmpClassName($this->getTmpClassName($code));
 			$this->compile($nodes);
 			$sourceCode = $this->compileParser->getOutput();
+			//pr(h($sourceCode)); die();
 			call_user_func($this->loader->cache['write'], $sourceCode, $key);
 		}
 		

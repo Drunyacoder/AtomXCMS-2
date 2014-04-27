@@ -56,6 +56,16 @@ class Fps_Viewer_TreesParser
                     $this->stream->expect(Fps_Viewer_Token::URL_END_TYPE);
                     $rv[] = $expr;
                     break;
+					
+                case Fps_Viewer_Token::COMMENT_START_TYPE:
+                    $this->stream->next();
+					$token = $this->stream->getCurrent();
+					$expr = $this->setNode(new Fps_Viewer_Node_Comment($token->getValue()));
+					$this->stream->next();
+					//pr($node); die();
+                    $this->stream->expect(Fps_Viewer_Token::COMMENT_END_TYPE);
+                    $rv[] = $expr;
+                    break;
 
                 case Fps_Viewer_Token::BLOCK_START_TYPE:
                     $this->stream->next();
@@ -183,12 +193,8 @@ class Fps_Viewer_TreesParser
 	
 	public function setNode($node, $inFunc = false)
 	{
-		if (!$node instanceof Fps_Viewer_Node_Var
-			&& !$node instanceof Fps_Viewer_Node_Const
-			&& !$node instanceof Fps_Viewer_Node_Text
-			&& !$node instanceof Fps_Viewer_Node_Function
-			&& !$node instanceof Fps_Viewer_Node_Url
-			&& !$node instanceof Fps_Viewer_Node_Group
+		if ($node instanceof Fps_Viewer_Node_Comment
+			|| $node instanceof Fps_Viewer_Node_Comment
 		) {
 			return $node;
 		}
