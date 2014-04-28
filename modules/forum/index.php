@@ -367,8 +367,8 @@ Class ForumModule extends Module {
 			$markers['navigation'] = get_link(__('Forums list'), '/forum/') . __('Separator') 
 			. get_link(h($forum->getTitle()), '/forum/view_forum/' . $id_forum);
 			$markers['pagination'] = $pages;
-			$markers['add_link'] = '';
-			$markers['meta'] = $addLink;
+			$markers['add_link'] = $addLink;
+			$markers['meta'] = '';
 			$this->_globalize($markers);
 			
 			
