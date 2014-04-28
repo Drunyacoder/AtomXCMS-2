@@ -322,8 +322,7 @@ Class ForumModule extends Module {
 			$forum_moderators = $this->ACL->getForumModerators($id_forum);
 			if (!empty($forum_moderators) && is_array($forum_moderators))
 				$forum->setModerators($forum_moderators);
-			pr($forum); 
-			pr($е); die();
+
 			
 			// reply link
 			$addLink = ($this->ACL->turn(array('forum', 'add_themes'), false)) 
