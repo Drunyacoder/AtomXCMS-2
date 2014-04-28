@@ -2,7 +2,7 @@
 
 
 
-class Fps_Viewer_Node_Const
+class Fps_Viewer_Node_Const extends Fps_Viewer_Node_Expresion
 {
 
 	private $value;
@@ -17,7 +17,11 @@ class Fps_Viewer_Node_Const
 	
 	public function compile(Fps_Viewer_CompileParser $compiler)
 	{
-		$compiler->repr($this->value);
+        if (is_array($this->filters) && count($this->filters)) {
+            $this->parseFilters($compiler);
+        } else {
+            $compiler->repr($this->value);
+        }
 	}
 	
 	

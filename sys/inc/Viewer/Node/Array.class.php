@@ -2,7 +2,7 @@
 
 
 
-class Fps_Viewer_Node_Array
+class Fps_Viewer_Node_Array extends Fps_Viewer_Node_Expresion
 {
 
 
@@ -17,21 +17,25 @@ class Fps_Viewer_Node_Array
 	
 	public function compile(Fps_Viewer_CompileParser $compiler)
 	{
-		$compiler->raw('array(');
-		if (is_array($this->keys) && count($this->keys)) {
-			$i = 1;
-			foreach ($this->keys as $key => $val) {
-			
-			
-				$compiler->raw($key)->raw(' => ');
-				$val->compile($compiler);
-				if ($i < count($this->keys)) $compiler->raw(', ');
-				
-				
-				$i++;
-			}
-		}
-		$compiler->raw(")");
+        if (is_array($this->filters) && count($this->filters)) {
+            $this->parseFilters($compiler);
+        } else {
+            $compiler->raw('array(');
+            if (is_array($this->keys) && count($this->keys)) {
+                $i = 1;
+                foreach ($this->keys as $key => $val) {
+
+
+                    $compiler->raw($key)->raw(' => ');
+                    $val->compile($compiler);
+                    if ($i < count($this->keys)) $compiler->raw(', ');
+
+
+                    $i++;
+                }
+            }
+            $compiler->raw(")");
+        }
 	}
 	
 	

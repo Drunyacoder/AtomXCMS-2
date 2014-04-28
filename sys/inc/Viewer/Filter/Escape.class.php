@@ -26,13 +26,11 @@ class Fps_Viewer_Filter_Escape {
 
 	public function compile($value, Fps_Viewer_CompileParser $compiler)
 	{
-		if (is_callable($value)) {
-			$compiler->raw('htmlspecialchars(');
-			$value($compiler);
-			$compiler->raw(')');
-			return true;
-		}
-		return "htmlspecialchars($value)";
+        if (!is_callable($value)) throw new Exception('(Filter_Escape):Value for filtering must be callable.');
+
+        $compiler->raw('htmlspecialchars(');
+        $value($compiler);
+        $compiler->raw(')');
 	}
 	
 	

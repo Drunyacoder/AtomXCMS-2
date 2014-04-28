@@ -26,13 +26,11 @@ class Fps_Viewer_Filter_Bbcode {
 
 	public function compile($value, Fps_Viewer_CompileParser $compiler)
 	{
-		if (is_callable($value)) {
-			$compiler->raw('Register::getInstance()->PrintText->print_page(');
-			$value($compiler);
-			$compiler->raw(')');
-			return true;
-		}
-		return "Register::getInstance()->PrintText->print_page($value)";
+        if (!is_callable($value)) throw new Exception('(Filter_Bbcode):Value for filtering must be callable.');
+
+        $compiler->raw('Register::getInstance()->PrintText->print_page(');
+        $value($compiler);
+        $compiler->raw(')');
 	}
 	
 	

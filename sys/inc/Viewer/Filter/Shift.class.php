@@ -7,9 +7,9 @@
 | @Version:      1.0                           |
 | @Project:      CMS                           |
 | @Package       AtomX CMS                     |
-| @Subpackege    Show filter                   |
+| @Subpackege    Shift filter                  |
 | @Copyright     ©Andrey Brykin 2010-2014      |
-| @Last mod      2014/04/27                    |
+| @Last mod      2014/04/28                    |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
@@ -21,21 +21,22 @@
 | без согласия автора, является не законным    |
 \---------------------------------------------*/
 
-class Fps_Viewer_Filter_Show {
+class Fps_Viewer_Filter_Shift {
 
 
 	public function compile($value, Fps_Viewer_CompileParser $compiler)
 	{
-		if (!is_callable($value)) throw new Exception('(Filter_Show):Value for filtering must be callable.');
-        $compiler->raw("'<pre>' . print_r(");
-        $value($compiler);
-        $compiler->raw(", true) . '<pre>'");
-	}
+        if (!is_callable($value)) throw new Exception('(Filter_Shift):Value for filtering must be callable.');
 
+        $compiler->raw('array_shift(');
+        $value($compiler);
+        $compiler->raw(')');
+	}
+	
 	
 	public function __toString()
 	{
-		$out = '[filter]:show' . "\n";
+		$out = '[filter]:shift' . "\n";
 		return $out;
 	}
 }

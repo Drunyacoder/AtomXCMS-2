@@ -153,11 +153,10 @@ class Fps_Viewer_ExpresionParser
 					$this->parser->getStream()->next();
 					$this->inFunc--;
                 } else {
-                    throw new Exception("Unexpected token type.");
+                    throw new Exception("Unexpected token type.", $token->getLine());
                 }
         }
 
-		
         $node = $this->postfixExpression($node);
 
 
@@ -210,9 +209,25 @@ class Fps_Viewer_ExpresionParser
 			$filterName = $this->parser->getStream()->getCurrent()->getValue();
 			$filterName = 'Fps_Viewer_Filter_' . ucfirst($filterName);
 			if (class_exists($filterName)) {
-				$node->addFilter(new $filterName);
+                $filter = new $filterName;
 			}
 			$this->parser->getStream()->next();
+
+            // params
+            if ($this->parser->getStream()->getCurrent()->test(Fps_Viewer_Token::PUNCTUATION_TYPE, array('('))) {
+                $this->inFunc++;
+                $this->parser->getStream()->next();
+                $filter->addParam($this->parsePrimaryExpression());
+                while ($this->parser->getStream()->getCurrent()->test(Fps_Viewer_Token::PUNCTUATION_TYPE, array(','))) {
+                    $this->parser->getStream()->next();
+                    $param = $this->parsePrimaryExpression();
+                    $filter->addParam($param);
+                }
+                $this->inFunc--;
+                $this->parser->getStream()->next();
+            }
+
+            $node->addFilter($filter);
 		}
 		return $node;
 	}
@@ -286,6 +301,7 @@ class Fps_Viewer_ExpresionParser
         $stream = $this->parser->getStream();
         $stream->expect(Fps_Viewer_Token::PUNCTUATION_TYPE, '[', 'An array element was expected');
 
+        $this->inFunc++;
         $node = new Fps_Viewer_Node_Array(array(), $stream->getCurrent()->getLine());
         $first = true;
         while (!$stream->test(Fps_Viewer_Token::PUNCTUATION_TYPE, ']')) {
@@ -301,6 +317,7 @@ class Fps_Viewer_ExpresionParser
 
             $node->addElement($this->parseExpression());
         }
+        $this->inFunc--;
         $stream->expect(Fps_Viewer_Token::PUNCTUATION_TYPE, ']', 'An opened array is not properly closed');
 
         return $node;

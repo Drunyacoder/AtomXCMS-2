@@ -64,6 +64,7 @@ class Fps_Viewer_Manager
 		$filePath = null;
 		$cached = false;
 		$fileSource = $this->getTemplateFile($fileName, $filePath);
+        $filePath = str_replace(ROOT, '', $filePath);
 	
 		
 		if (!empty($this->loader->pluginsController) 
@@ -76,13 +77,13 @@ class Fps_Viewer_Manager
 		}
 		
 		$start = getMicroTime();
-		$data = $this->parseTemplate($fileSource, $context, $cached);
+		$data = $this->parseTemplate($fileSource, $context, $filePath, $cached);
         $took = getMicroTime($start);
 		
 		call_user_func(
 			array($this->loader->debug, 'addRow'),
 			array('Templates', 'Compile time', 'Cached'), 
-			array(str_replace(ROOT, '', $filePath), $took, ($cached ? 'From cache' : 'Compiled'))
+			array($filePath, $took, ($cached ? 'From cache' : 'Compiled'))
 		);
 		
 		return $data;
@@ -129,16 +130,14 @@ class Fps_Viewer_Manager
 	
 	
 	
-	public function parseTemplate($code, $context, &$cached = false)
+	public function parseTemplate($code, $context, $filePath = '', &$cached = false)
 	{
 		$key = md5($code);
         // preprocess snippets
 		$this->loader->snippetsParser->setSource($code);
         $this->loader->snippetsParser->preprocess();
 
-		
-		$Register = Register::getInstance();
-		$Cache = $Register['Cache'];
+
 		if (
 			$this->loader->cache && 
 			call_user_func(array($this->loader->config, 'read'), 'templates_cache') && 
@@ -147,15 +146,22 @@ class Fps_Viewer_Manager
 			$sourceCode = call_user_func($this->loader->cache['read'], $key);
 			$cached = true;
 		} else {
-			$this->treesParser->cleanStack();
-			$tokens = $this->getTokens($code);
-			$nodes = $this->getTreeFromTokens($tokens);
-			
-			$this->compileParser->clean();
-			$this->compileParser->setTmpClassName($this->getTmpClassName($code));
-			$this->compile($nodes);
-			$sourceCode = $this->compileParser->getOutput();
-			//pr(h($sourceCode)); die();
+            try {
+                $this->treesParser->cleanStack();
+                $tokens = $this->getTokens($code, $filePath);
+                $nodes = $this->getTreeFromTokens($tokens);
+                $this->compileParser->clean();
+                $this->compileParser->setTmpClassName($this->getTmpClassName($code));
+                $this->compile($nodes);
+                $sourceCode = $this->compileParser->getOutput();
+                //pr(h($sourceCode)); die();
+
+            } catch (Exception $e) {
+                throw new Exception('Parse template error on '
+                    . (!empty($filePath) ? h($filePath) : 'Undefined') . ':'
+                    . $e->getCode() . '. ' . $e->getMessage());
+            }
+
 			call_user_func($this->loader->cache['write'], $sourceCode, $key);
 		}
 		
@@ -183,9 +189,9 @@ class Fps_Viewer_Manager
 
 	
 	
-	public function getTokens($code)
+	public function getTokens($code, $filePath = '')
 	{
-		return $this->tokensParser->parseTokens($code);
+		return $this->tokensParser->parseTokens($code, $filePath);
 	}
 	
 	

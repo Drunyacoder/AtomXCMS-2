@@ -26,13 +26,11 @@ class Fps_Viewer_Filter_Urlencode {
 
 	public function compile($value, Fps_Viewer_CompileParser $compiler)
 	{
-		if (is_callable($value)) {
-			$compiler->raw('urlencode(');
-			$value($compiler);
-			$compiler->raw(')');
-			return true;
-		}
-		return "urlencode($value)";
+        if (!is_callable($value)) throw new Exception('(Filter_Urlencode):Value for filtering must be callable.');
+
+        $compiler->raw('urlencode(');
+        $value($compiler);
+        $compiler->raw(')');
 	}
 	
 	

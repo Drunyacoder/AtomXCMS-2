@@ -2,11 +2,9 @@
 
 
 
-class Fps_Viewer_Node_Group
+class Fps_Viewer_Node_Group extends Fps_Viewer_Node_Expresion
 {
 	private $body = array();
-
-	private $filters = array();
 	
 	
 	public function __construct($node)
@@ -18,32 +16,22 @@ class Fps_Viewer_Node_Group
 	
 	public function compile(Fps_Viewer_CompileParser $compiler)
 	{
-		$compiler->raw('(');
-		if (is_array($this->filters) && count($this->filters)) {
-			foreach ($this->filters as $filter) {
-				$objContext = $this;
-				$filter->compile(function($compiler) use ($objContext) {
-					$objContext->body->compile($compiler);
-				}, $compiler);
-			}
-		} else {
-			$this->body->compile($compiler);
-		}
-		$compiler->raw(')');
+
+        if (is_array($this->filters) && count($this->filters)) {
+            $this->parseFilters($compiler);
+        } else {
+            $compiler->raw('(');
+            $this->body->compile($compiler);
+            $compiler->raw(')');
+        }
 	}
-	
 	
 	
 	public function addElement($element)
 	{
 		$this->keys[] = $element;
 	}
-	
-	
-	public function addFilter($filter)
-	{
-		$this->filters[] = $filter;
-	}
+
 	
 	
 	protected function _keysCallback($markers, $key)

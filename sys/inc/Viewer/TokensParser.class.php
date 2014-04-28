@@ -13,7 +13,7 @@ class Fps_Viewer_TokensParser
 	private $positions;
 	private $cursor;
 	private $code;
-	private $linenum;
+	private $lineno;
 	private $end;
 	private $tokens;
 	private $brackets;
@@ -65,11 +65,12 @@ class Fps_Viewer_TokensParser
 	{
 		$this->state = self::STATE_DATA;
 		$this->code = $this->prepareCode($code);
-		$this->linenum = 1;
+		$this->lineno = 1;
 		$this->end = strlen($this->code);
 		$this->tokens = array();
 		$this->position = -1;
 		$this->cursor = 0;
+        $this->filename = $filename;
 		
 
 		
@@ -111,7 +112,7 @@ class Fps_Viewer_TokensParser
 		
         if (!empty($this->brackets)) {
             list($expect, $lineno) = array_pop($this->brackets);
-            throw new Exception(sprintf('Unclosed "%s"', $expect), $lineno, $this->filename);
+            throw new Exception(sprintf('Unclosed "%s"', $expect), $lineno);
         }
 		
 
@@ -137,7 +138,7 @@ class Fps_Viewer_TokensParser
 
             list($expect, $lineno) = array_pop($this->brackets);
             if ($this->code[$this->cursor] != '"') {
-                throw new Exception(sprintf('Unclosed "%s"', $expect), $lineno, $this->filename);
+                throw new Exception(sprintf('Unclosed "%s"', $expect), $lineno);
             }
 
             $this->popState();
@@ -305,13 +306,12 @@ class Fps_Viewer_TokensParser
             // closing bracket
             elseif (false !== mb_strpos(')]}', $this->code[$this->cursor])) {
                 if (empty($this->brackets)) {
-                    //throw new Exception(sprintf('Unexpected "%s"', $this->code[$this->cursor]), $this->lineno, $this->filename);
-					die('Error. Line ' . $this->linenum);
+                    throw new Exception(sprintf('Unexpected "%s"', $this->code[$this->cursor]), $this->lineno);
                 }
 
                 list($expect, $lineno) = array_pop($this->brackets);
                 if ($this->code[$this->cursor] != strtr($expect, '([{', ')]}')) {
-                    throw new Exception(sprintf('Unclosed "%s"', $expect), $lineno, $this->filename);
+                    throw new Exception(sprintf('Unclosed "%s"', $expect), $lineno);
                 }
             }
 
@@ -331,7 +331,7 @@ class Fps_Viewer_TokensParser
         }
         // unlexable
         else {
-            throw new Exception(sprintf('Unexpected character "%s"', $this->code[$this->cursor]), $this->lineno, $this->filename);
+            throw new Exception(sprintf('Unexpected character "%s"', $this->code[$this->cursor]), $this->lineno);
         }
     }
 	
@@ -344,7 +344,7 @@ class Fps_Viewer_TokensParser
             return;
         }
 
-        $this->tokens[] = new Fps_Viewer_Token($type, $value, $this->linenum);
+        $this->tokens[] = new Fps_Viewer_Token($type, $value, $this->lineno);
 	}
 	
 	

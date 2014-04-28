@@ -2,12 +2,10 @@
 
 
 
-class Fps_Viewer_Node_Var
+class Fps_Viewer_Node_Var extends Fps_Viewer_Node_Expresion
 {
 
 	private $value;
-
-	private $filters = array();
 
 	private $attr;
 
@@ -37,13 +35,12 @@ class Fps_Viewer_Node_Var
 
     public function compile(Fps_Viewer_CompileParser $compiler)
     {
-		$value = $this->compileValue($compiler);
 		if (is_array($this->filters) && count($this->filters)) {
-			foreach ($this->filters as $filter) {
-				$value = $filter->compile($value, $compiler);
-			}
-		}
-        $compiler->raw($value);
+            $this->parseFilters($compiler);
+		} else {
+            $value = $this->compileValue($compiler);
+            $compiler->raw($value);
+        }
     }
 
 
@@ -90,14 +87,6 @@ class Fps_Viewer_Node_Var
 	public function setDef($flag)
 	{
 		$this->def = $flag;
-	}
-	
-	
-	
-	
-	public function addFilter($filter)
-	{
-		$this->filters[] = $filter;
 	}
 	
 	
