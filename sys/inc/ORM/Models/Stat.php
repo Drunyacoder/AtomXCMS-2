@@ -52,6 +52,20 @@ class StatModel extends FpsModel
         ),
     );
 
+	
+	
+    /**
+     * @param array $params
+     * @param array $addParams
+     * @return array|bool
+     */
+    public function getCollection($params = array(), $addParams = array())
+   	{
+        $entities = parent::getCollection($params, $addParams);
+		$entities = $this->getMaterialsAttaches($entities, 'stat');
+		return $entities;
+   	}
+	
 
 
     /**

@@ -750,10 +750,11 @@ class Module {
 	}
 	
 	
+	
 	/**
 	 * Replace image marker
 	 */
-	function insertImageAttach($entity, $announce, $module = null)
+	public function insertImageAttach($entity, $announce, $module = null)
 	{
 		$attachment = null;
 		$module = (!empty($module)) ? $module : $this->module;
@@ -803,8 +804,9 @@ class Module {
 			}
 			$ids = implode(', ', $ids);
 			
-			$attachesModel = $this->Register['ModManager']->getModelInstance($module . 'Attaches');
-			$attaches = $attachesModel->getCollection(array("`id` IN ($ids)"));
+			//$attachesModel = $this->Register['ModManager']->getModelInstance($module . 'Attaches');
+			//$attaches = $attachesModel->getCollection(array("`id` IN ($ids)"));
+			$attaches = $entity->getAttaches();
 			if ($attaches) {
 				foreach ($attaches as $attach) {
 					if ($attach->getIs_image() == 1) {

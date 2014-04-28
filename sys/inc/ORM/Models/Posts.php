@@ -50,7 +50,19 @@ class PostsModel extends FpsModel
             'foreignKey' => 'post_id',
       	),
     );
-
+	
+	
+    /**
+     * @param array $params
+     * @param array $addParams
+     * @return array|bool
+     */
+    public function getCollection($params = array(), $addParams = array())
+   	{
+        $entities = parent::getCollection($params, $addParams);
+		$entities = $this->getMaterialsAttaches($entities, 'forum');
+		return $entities;
+   	}
 	
 	
 	public function deleteByTheme($theme_id)

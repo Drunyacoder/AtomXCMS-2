@@ -57,8 +57,6 @@ class ForumModel extends FpsModel
     );
 	
 	
-	
-	
 	public function getStats()
 	{
 		$result = $this->getDbDriver()->query("

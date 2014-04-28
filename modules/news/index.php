@@ -125,7 +125,6 @@ Class NewsModule extends Module {
 		$records = $this->Model->getCollection($query_params['cond'], $params);
 
 
-
 		if (is_object($this->AddFields) && count($records) > 0) {
 			$records = $this->AddFields->mergeRecords($records);
 		}

@@ -319,8 +319,11 @@ Class ForumModule extends Module {
 			// Check access to this forum. May be locked by pass or posts count
 			$this->__checkForumAccess($forum);
 			$this->page_title = h($forum->getTitle()) . ' - ' . $this->page_title;
-			
-			
+			$forum_moderators = $this->ACL->getForumModerators($id_forum);
+			if (!empty($forum_moderators) && is_array($forum_moderators))
+				$forum->setModerators($forum_moderators);
+			pr($forum); 
+			pr($е); die();
 			
 			// reply link
 			$addLink = ($this->ACL->turn(array('forum', 'add_themes'), false)) 
