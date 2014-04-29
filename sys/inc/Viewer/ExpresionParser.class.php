@@ -25,6 +25,7 @@ class Fps_Viewer_ExpresionParser
 			'+' => 'Fps_Viewer_Operator_BinarySumm',
 			'-' => 'Fps_Viewer_Operator_BinarySubtrac',
 			'*' => 'Fps_Viewer_Operator_BinaryMult',
+			'**' => 'Fps_Viewer_Operator_BinaryPower',
 			'/' => 'Fps_Viewer_Operator_BinaryDivis',
             '//' => 'Fps_Viewer_Operator_BinaryDivisFloor',
 			'%' => 'Fps_Viewer_Operator_BinaryMod',
