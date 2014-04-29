@@ -18,17 +18,21 @@ class Fps_Viewer_ExpresionParser
 		$this->binaryOperators = array(
 			'==' => 'Fps_Viewer_Operator_BinaryEqual',
 			'!=' => 'Fps_Viewer_Operator_BinaryNotEqual',
-			'>=' => 'Fps_Viewer_Operator_BinaryMore',
-			'<=' => 'Fps_Viewer_Operator_BinaryLess',
+			'>=' => 'Fps_Viewer_Operator_BinaryMoreEq',
+			'>' => 'Fps_Viewer_Operator_BinaryMore',
+			'<=' => 'Fps_Viewer_Operator_BinaryLessEq',
+			'<' => 'Fps_Viewer_Operator_BinaryLess',
 			'+' => 'Fps_Viewer_Operator_BinarySumm',
 			'-' => 'Fps_Viewer_Operator_BinarySubtrac',
 			'*' => 'Fps_Viewer_Operator_BinaryMult',
 			'/' => 'Fps_Viewer_Operator_BinaryDivis',
+            '//' => 'Fps_Viewer_Operator_BinaryDivisFloor',
 			'%' => 'Fps_Viewer_Operator_BinaryMod',
 			'in' => 'Fps_Viewer_Operator_BinaryIn',
 			'not in' => 'Fps_Viewer_Operator_BinaryNotIn',
 			'and' => 'Fps_Viewer_Operator_BinaryAnd',
 			'or' => 'Fps_Viewer_Operator_BinaryOr',
+
 		);
 	}
 	

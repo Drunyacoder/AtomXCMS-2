@@ -17,7 +17,7 @@ class Fps_Viewer_Operator_BinaryLess
     public function compile(Fps_Viewer_CompileParser $compiler)
     {
         $this->left->compile($compiler);
-		$compiler->raw(' <= ');
+		$compiler->raw(' < ');
         $this->right->compile($compiler);
     }
 

@@ -1,6 +1,6 @@
 <?php
 
-class Fps_Viewer_Operator_BinaryMore
+class Fps_Viewer_Operator_BinaryLessEq
 {
 	private $left;
 	private $right;
@@ -17,7 +17,7 @@ class Fps_Viewer_Operator_BinaryMore
     public function compile(Fps_Viewer_CompileParser $compiler)
     {
         $this->left->compile($compiler);
-		$compiler->raw(' > ');
+		$compiler->raw(' <= ');
         $this->right->compile($compiler);
     }
 
