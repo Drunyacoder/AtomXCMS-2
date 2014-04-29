@@ -171,7 +171,8 @@ $language_data = array (
     'STRICT_MODE_APPLIES' => GESHI_ALWAYS,
     'SCRIPT_DELIMITERS' => array(
         -1 => array(
-            '<!--' => '-->'
+            '<!--' => '-->',
+            '{#' => '#}'
             ),
         0 => array(
             '<!DOCTYPE' => '>'
