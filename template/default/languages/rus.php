@@ -176,7 +176,8 @@ return array(
     'The name of the forum'          => 'Название форума ',
 	'Description of the forum'       => 'Описание форума',
 	'Merge topics'                   => 'Соединение тем',
-	
+	'The autologin'                  => 'Запомнить',
+
 	'Show all'		                 => 'Показать все',
 	'Close'		                     => 'Закрыть',
 	'in which'                       => 'в которую',

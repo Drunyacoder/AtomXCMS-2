@@ -174,6 +174,7 @@ return array(
 	'Editing of the forum'           => 'Editing of the forum',
 	'Description of the forum'       => 'Description of the forum',
 	'Merge topics'                   => 'Merge topics',
+    'The autologin'                  => 'The autologin',
 	
 	'Show all'		                 => 'Показать все',
 	'Close'		                     => 'Закрыть',

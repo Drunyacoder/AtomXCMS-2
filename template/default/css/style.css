@@ -261,6 +261,7 @@ margin: 10px;
 /*----------------------------------------/CHAT------------------------------------------*/
 /*-------------------------ACTIVWINDOW-----------------------------*/
 .headpanel div .activewindow {height: 31px;}
+.activewindow div {font-size:13px;}
 .headpanel div .activewindow div {
 position: absolute;
 overflow: hidden;

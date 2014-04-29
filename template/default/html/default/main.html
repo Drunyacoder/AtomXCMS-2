@@ -84,9 +84,9 @@ $(document).ready(function() {
 <div class="activewindow"><a href="{{ get_url('/users/login_form/') }}">{{ 'Enter'|lang }}</a>
 <div style="width: 258px;"><span>
 <form id="mloginForm"  action="{{ get_url('/users/login/?ajax') }}" method="post">
-	{{ 'Login:'|lang }} <input type="text" class="loginad" name="username">
-	{{ 'Password:'|lang }} <input type="password" class="passad" name="password">
-	{{ 'The autologin:'|lang }} <input type="checkbox" name="autologin" value="1">
+	{{ 'Login'|lang }}: <input type="text" class="loginad" name="username">
+	{{ 'Password'|lang }}: <input type="password" class="passad" name="password">
+	{{ 'The autologin'|lang }}: <input type="checkbox" name="autologin" value="1">
 	<button type="submit" onclick="sendu('mloginForm'); return false" class="buttonadm">{{ 'Enter'|lang }}</button>
 	<input type="hidden" value="submit" name="submitForm">
 </form>
