@@ -3,6 +3,13 @@ WBBPRESET = {
 	traceTextarea: false,
 	imgupload: false,
 	allButtons: {
+        link: {
+            transform: {
+                '<a href="{SELTEXT}">{SELTEXT}</a>':'[url]{SELTEXT}[/url]',
+                '<a href="{URL}">{SELTEXT}</a>':'[url={URL}]{SELTEXT}[/url]',
+                '<a href="{URL}">{SELTEXT}</a>':'[url="{URL}"]{SELTEXT}[/url]'
+            }
+        },
 		spoiler : {
 			title: CURLANG.spoiler,
 			buttonText: 'spoiler',
