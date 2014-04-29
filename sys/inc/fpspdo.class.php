@@ -192,6 +192,7 @@ class FpsPDO {
 		if ((array_key_exists('id', $values) && !empty($values['id'])) || !empty($params)) {
 			if (!empty($values['id'])) {
 				$conditions = array('id' => $values['id']);
+                $this->queryParams['id'] = $values['id'];
 				unset($values['id']);
 			} else {
 				$conditions = $params;
@@ -336,11 +337,10 @@ class FpsPDO {
 	
 	private function getQueryDump($query) {
 		if (empty($this->queryParams)) return $query;
-		
 
 		foreach ($this->queryParams as $k => $v) {
 			$v = "'$v'";
-			$query = preg_replace('#([ =,\(])('.$k.')([ \),])#i', "$1".$v."$3", $query);
+			$query = preg_replace('#([ =,\(])('.$k.')([ \),]{1}|$)#i', "$1".$v."$3", $query);
 		}
 
 		return $query;

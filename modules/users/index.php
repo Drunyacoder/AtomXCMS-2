@@ -2206,8 +2206,9 @@ Class UsersModule extends Module {
 		
 		
 		if (empty($last_vote) || ($last_vote[0]->getFrom_user() != $from_id)) {
-			$user->setRating($user->getRating() + 1);
+			$user->setRating($user->getRating() + $points);
 			$user->save();
+
 
 			$voteEntity = $this->Register['ModManager']->getEntityName('UsersVotes');
 			$voteEntity = new $voteEntity(array(
