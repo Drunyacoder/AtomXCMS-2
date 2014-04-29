@@ -46,9 +46,10 @@ class FpsSitemapGen {
 
 
 	public function __construct($params = array()) {
+        $Register = Register::getInstance();
 		$this->host = $_SERVER['HTTP_HOST'] . '/';
 		$this->uniqUrl[] = 'http://' . $this->host;
-		$this->DB = FpsDataBase::get();
+		$this->DB = $Register['DB'];
 	}
 	
 	
