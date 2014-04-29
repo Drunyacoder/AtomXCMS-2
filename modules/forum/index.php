@@ -889,11 +889,11 @@ Class ForumModule extends Module {
 				// Если сообщение редактировалось...
 				if ($post->getId_editor()) {
 					if ($post->getId_author() && $post->getId_author() == $post->getId_editor()) {
-						$editor = __('Edit by author') . ' ' . $post->getEdittime();
+						$editor = __('Edit by author') . ' ' . AtmDateTime::getDate($post->getEdittime());
 					} else {
 						$status_info = $this->ACL->get_user_group($post->getEditor()->getStatus());
 						$editor = __('Edited') . $post->getEditor()->getName() . '(' 
-							. $status_info['title'] . ') ' . $post->getEdittime();
+							. $status_info['title'] . ') ' . AtmDateTime::getDate($post->getEdittime());
 					}
 				} else {
 					$editor = '';
@@ -2356,7 +2356,7 @@ Class ForumModule extends Module {
 			. __('Added') . date("Y.m.d  H-i") . "[/color]\n\n" . $message;
 			
 			$prev_post[0]->setMessage($message);
-			$prev_post[0]->setTime(new Expr('NOW()'));
+			$prev_post[0]->setEdittime(new Expr('NOW()'));
 			$prev_post[0]->save();
 			
 			$theme->setLast_post(new Expr('NOW()'));
