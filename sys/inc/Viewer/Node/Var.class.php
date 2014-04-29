@@ -57,8 +57,9 @@ class Fps_Viewer_Node_Var extends Fps_Viewer_Node_Expresion
 
 
 			if (is_array($this->attr)) {
-				while (count($this->attr)) {
-					$key = array_shift($this->attr);
+                $attr = $this->attr;
+				while (count($attr)) {
+					$key = array_shift($attr);
 					$key = $key instanceof Fps_Viewer_Node_Var 
 						? $key->compileValue($compiler) 
 						: "'$key'";
