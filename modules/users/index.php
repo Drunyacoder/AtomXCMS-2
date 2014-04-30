@@ -733,7 +733,7 @@ Class UsersModule extends Module {
         $markers = array();
 		
 		$fields = array('email', 'icq', 'jabber', 'pol', 'city', 'telephone', 'byear', 
-			'bmonth', 'bday', 'url', 'about', 'signature', 'email_notification');
+			'bmonth', 'bday', 'url', 'about', 'signature', 'email_notification', 'summer_time');
 		
 		$fields_settings = (array)$this->Register['Config']->read('fields', 'users');
 		$fields_settings = array_merge($fields_settings, array('email'));
@@ -772,6 +772,7 @@ Class UsersModule extends Module {
 		$about        = mb_substr($about, 0, 1000);
 		$signature    = mb_substr($signature, 0, 500);
 		$email_notification = intval($email_notification);
+		$summer_time = intval($summer_time);
 
 
 		// Additional fields
@@ -829,7 +830,7 @@ Class UsersModule extends Module {
 			$_SESSION['FpsForm'] = array_merge(array('login' => null, 'email'=> null, 'timezone' => null, 
 			'icq' => null, 'url' => null, 'about' => null, 'signature' => null, 'pol' => $pol, 
 			'telephone' => null, 'city' => null, 'jabber' => null, 'byear' => null, 
-			'bmonth' => null, 'bday' => null, 'email_notification' => null), $_POST);
+			'bmonth' => null, 'bday' => null, 'email_notification' => null, 'summer_time' => null), $_POST);
 			$_SESSION['FpsForm']['error']     = '<p class="errorMsg">' . __('Some error in form') . '</p>'.
 			"\n".'<ul class="errorMsg">'."\n".$errors.'</ul>'."\n";
 			redirect('/users/edit_form/');
@@ -876,6 +877,7 @@ Class UsersModule extends Module {
         $user->setAbout($about);
         $user->setSignature($signature);
         $user->setEmail_notification($email_notification);
+        $user->setSummer_time($summer_time);
         $user->save();
 
 		// Additional fields saving

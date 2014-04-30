@@ -30,6 +30,7 @@ return array(
 	'Download CMS' 		        => 'Download CMS',
 	'Video guide' 		        => 'Video guide',
 	'To report a bug' 		    => 'To report a bug',
+	'Auto switch to summer time' => 'Auto switch to summer time',
 	
 	'Templates' 		        => 'Templates',
 	'Modules' 		            => 'Modules',

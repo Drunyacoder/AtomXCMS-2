@@ -84,7 +84,10 @@
                                <select name="timezone">
                                    {{ context.options }}
                                </select>
-                           {{ 'The current time on the server'|lang }}: {{ context.servertime }}</span>
+                           {{ 'The current time on the server'|lang }}: {{ context.servertime }}<br>
+						   <input type="checkbox" name="summer_time" value="1"{% if context.summer_time %} checked="checked" {% endif %}/>
+						   {{ 'Auto switch to summer time'|lang }}
+						   </span>
                         </li>
                         <li>
                             <span class="siu_title"><strong>{{ 'Avatar'|lang }}:</strong>{{ 'Shows a small picture next to your answers, materials'|lang }}</span>

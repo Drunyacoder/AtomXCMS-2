@@ -5,6 +5,7 @@
             <div class="infomats">
 		        <div class="namesmats"><b class="title">{{ entity.title|escape }}</b>
 				<br />
+				<b>{{ 'Added'|lang }}: </b>{{ AtmGetDate(entity.date) }}<br />
 				{% if entity.tags %}
 				<br /><b>{{ 'Tags'|lang }}: </b>{% for tag in entity.tags %}<a href="{{ www_root }}/news/index/{{ tag }}">{{ tag }}</a>; {% endfor %}
 				{% endif %}

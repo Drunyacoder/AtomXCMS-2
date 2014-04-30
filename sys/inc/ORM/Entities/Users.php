@@ -56,6 +56,7 @@ class UsersEntity extends FpsEntity
 	protected $warnings;
 	protected $ban_expire;
 	protected $email_notification;
+	protected $summer_time;
 
 
 
@@ -91,6 +92,7 @@ class UsersEntity extends FpsEntity
             'warnings' => intval($this->warnings),
             'ban_expire' => $this->ban_expire ? $this->ban_expire : '0000-00-00 00:00:00',
             'email_notification' => intval($this->email_notification),
+            'summer_time' => intval($this->summer_time),
         );
 		
         if ($this->id) $params['id'] = $this->id;

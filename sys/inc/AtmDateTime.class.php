@@ -46,12 +46,19 @@ class AtmDateTime {
         $user_timezone = (!empty($_SESSION['user']) && !empty($_SESSION['user']['timezone']))
             ? $_SESSION['user']['timezone']
             : '+00';
-
+		date_default_timezone_set('Europe/Rome');
+		if (
+			(!empty($_SESSION['user']) && 
+			!empty($_SESSION['user']['summer_time']) &&
+			date('I', strtotime($date)) === '1')) $user_timezone += 1;
+		date_default_timezone_set('UTC');
+		
+		
         $result = '';
         $dateObj = new DateTime($date);
         $currentDate = new DateTime();
         $diff = $dateObj->diff($currentDate);
-
+		//$dateObj->setTimezone(new DateTimeZone('Europe/Kiev'));
 
         $y = $diff->y; $m = $diff->m; $d = $diff->d; $h = $diff->h; $i = $diff->i; $s = $diff->s;
 

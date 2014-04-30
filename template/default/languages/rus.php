@@ -30,6 +30,7 @@ return array(
 	'Download CMS' 		        => 'Скачать CMS',
 	'Video guide' 		        => 'Видео-руководство',
 	'To report a bug' 		    => 'Сообщить о баге',
+	'Auto switch to summer time' => 'Автоматический переход на летнее время',
 	
 	'Templates' 		        => 'Шаблонов',
 	'Modules' 		            => 'Модулей',

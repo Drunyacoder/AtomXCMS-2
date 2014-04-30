@@ -68,7 +68,7 @@ $(document).ready(function() {
 <div><a href="{{ get_url('/users/logout/') }}">{{ 'Exit'|lang }}</a></div>
 {% else %}
 <div><a href="{{ get_url('/users/add_form/') }}">{{ 'Registration'|lang }}</a></div>
-<div class="activewindow"><a href="{{ get_url('/users/login_form/') }}">{{ 'Enter'|lang }}</a>
+<div class="activewindow login"><a href="{{ get_url('/users/login_form/') }}">{{ 'Enter'|lang }}</a>
 <div style="width: 258px;"><span>
 <form id="mloginForm"  action="{{ get_url('/users/login/?ajax') }}" method="post">
 	{{ 'Login'|lang }}: <input type="text" class="loginad" name="username">
