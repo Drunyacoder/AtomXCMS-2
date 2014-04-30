@@ -495,7 +495,7 @@ class Module {
 			} else {
 				$cats = $this->DB->select($this->module . '_sections', DB_ALL, array(
 					'cond' => array(
-						'parent_id = 0 OR parent_id IN NULL',
+						'parent_id = 0 OR parent_id IS NULL',
 					),
 				));
 			}
