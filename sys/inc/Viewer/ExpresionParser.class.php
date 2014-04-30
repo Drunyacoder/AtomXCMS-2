@@ -148,6 +148,9 @@ class Fps_Viewer_ExpresionParser
             default:
                 if ($token->test(Fps_Viewer_Token::PUNCTUATION_TYPE, '[')) {
                     $node = $this->parseArrayExpression();
+
+                } else if ($token->test(Fps_Viewer_Token::PUNCTUATION_TYPE, '{')) {
+                    $node = $this->parseJsonExpression();
 					
 				// Groups
                 } else if ($token->test(Fps_Viewer_Token::PUNCTUATION_TYPE, '(')) {
@@ -212,7 +215,10 @@ class Fps_Viewer_ExpresionParser
 		while($this->parser->getStream()->getCurrent()->test(Fps_Viewer_Token::PUNCTUATION_TYPE, array('|'))) {
 			$this->parser->getStream()->next();
 			$filterName = $this->parser->getStream()->getCurrent()->getValue();
-			$filterName = 'Fps_Viewer_Filter_' . ucfirst($filterName);
+			$filterName = 'Fps_Viewer_Filter_'
+                . ucfirst(preg_replace_callback('/_([a-z])/', function($c){
+                    return strtoupper($c[1]);
+                }, $filterName));
 			if (class_exists($filterName)) {
                 $filter = new $filterName;
 			}
@@ -328,6 +334,37 @@ class Fps_Viewer_ExpresionParser
         return $node;
     }
 
+
+    public function parseJsonExpression()
+    {
+        $stream = $this->parser->getStream();
+        $stream->expect(Fps_Viewer_Token::PUNCTUATION_TYPE, '{', 'An array element was expected');
+
+        $this->inFunc++;
+        $node = new Fps_Viewer_Node_Array(array(), $stream->getCurrent()->getLine());
+        $first = true;
+        while (!$stream->test(Fps_Viewer_Token::PUNCTUATION_TYPE, '}')) {
+            if (!$first) {
+                $stream->expect(Fps_Viewer_Token::PUNCTUATION_TYPE, ',', 'An array element must be followed by a comma');
+
+                // trailing ,?
+                if ($stream->test(Fps_Viewer_Token::PUNCTUATION_TYPE, '}')) {
+                    break;
+                }
+            }
+            $first = false;
+
+            $key = $stream->getCurrent()->getValue();
+            $stream->next();
+            $stream->expect(Fps_Viewer_Token::PUNCTUATION_TYPE, ':', 'An array keys, elements must be separated by a ":"');
+            $value = $this->parseExpression();
+            $node->addElement($value, $key);
+        }
+        $this->inFunc--;
+        $stream->expect(Fps_Viewer_Token::PUNCTUATION_TYPE, '}', 'An opened array is not properly closed');
+
+        return $node;
+    }
 
 	
     public function parseStringExpression()

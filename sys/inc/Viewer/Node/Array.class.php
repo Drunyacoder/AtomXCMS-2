@@ -26,7 +26,7 @@ class Fps_Viewer_Node_Array extends Fps_Viewer_Node_Expresion
                 foreach ($this->keys as $key => $val) {
 
 
-                    $compiler->raw($key)->raw(' => ');
+                    $compiler->string($key)->raw(' => ');
                     $val->compile($compiler);
                     if ($i < count($this->keys)) $compiler->raw(', ');
 
@@ -40,9 +40,12 @@ class Fps_Viewer_Node_Array extends Fps_Viewer_Node_Expresion
 	
 	
 	
-	public function addElement($element)
+	public function addElement($element, $key = null)
 	{
-		$this->keys[] = $element;
+        if (!empty($key))
+            $this->keys[$key] = $element;
+        else
+		    $this->keys[] = $element;
 	}
 	
 	

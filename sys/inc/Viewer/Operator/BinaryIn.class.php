@@ -2,20 +2,27 @@
 
 class Fps_Viewer_Operator_BinaryIn
 {
-	private $left;
+	private $key;
+	private $value;
 	private $right;
 	private $env;
 	
 	
-	public function __construct($left, $right, $env = 'if')
+	public function __construct($value, $right, $env = 'if', $key = null)
 	{
-		$left->setTmpContext($left->getValue());
-		$this->left = $left;
+        if ($key) $this->setKey($key);
+        $value->setTmpContext($value->getValue());
+		$this->value = $value;
 		$this->right = $right;
 		$this->env = $env;
 	}
 	
-	
+
+    public function setKey($key)
+    {
+        $key->setTmpContext($key->getValue());
+        $this->key = $key;
+    }
 	
 	
 	public function compile(Fps_Viewer_CompileParser $compiler)
@@ -23,10 +30,14 @@ class Fps_Viewer_Operator_BinaryIn
 		if ($this->env === 'for_definition') {
 			$this->right->compile($compiler);
 			$compiler->raw(' as ');
-			$this->left->compile($compiler);
+            if (is_object($this->key)) {
+                $this->key->compile($compiler);
+                $compiler->raw(' => ');
+            }
+			$this->value->compile($compiler);
 		} else {
 			$compiler->raw(' in_array(');
-			$this->left->compile($compiler);
+			$this->value->compile($compiler);
 			$compiler->raw(', ');
 			$this->right->compile($compiler);
 			$compiler->raw(') ');
@@ -38,7 +49,8 @@ class Fps_Viewer_Operator_BinaryIn
 	
 	public function __toString()
 	{
-		$out = '[left]:' . $this->left . "\n";
+		$out = '[key]:' . $this->key . "\n";
+		$out .= '[value]:' . $this->value . "\n";
 		$out .= '[right]:' . $this->right . "\n";
 		return $out;
 	}
