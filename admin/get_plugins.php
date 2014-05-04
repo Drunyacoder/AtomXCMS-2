@@ -134,8 +134,8 @@ foreach ($our_plugins as &$pl) {
 
 // get foreign plugins (API)
 $url = $api_url . 'plugins_api.php';
-$data = json_decode(file_get_contents($url), true);
-
+$data = json_decode(@file_get_contents($url), true);
+if (!$data) $data = array();
 
 
 include 'template/header.php';
@@ -195,7 +195,7 @@ endif;
 	</form>
 </div>
 
-
+<?php if (!empty($data)): ?>
 <!-- Download from official server -->							
 <div class="list">
 	<div class="title"><?php echo __('Plugins download') ?></div>
@@ -228,6 +228,9 @@ endif;
 		</div>
 	</div>
 </div>
+<?php else: ?>
+<div class="warning"><?php echo __('Records not found') ?></div>
+<?php endif; ?>
 							
 
 

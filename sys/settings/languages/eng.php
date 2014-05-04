@@ -489,7 +489,7 @@ return array(
 	'File type should be ZIP'		=> 'The file format should be ZIP',
 	'Download plugin from remote server' => 'Download the plugin from a remote server',
 	'Plugins instruction' 			=> 'A valid file format - zip archives, of no more than 10 MB.<br />
-										You can find the plugin on the website <a href="http://atomx.net">atomx.net</a>',
+										Choose a plugins in list below.',
 	'Files ...'      				=> 'Installed files: ',
 	'Add user'      				=> 'Add user',
 	'Moderators'      				=> 'Moderators',

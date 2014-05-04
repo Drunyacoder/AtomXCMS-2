@@ -521,7 +521,7 @@ return array(
 	'File type should be ZIP'		=> 'Формат файла должен быть ZIP',
 	'Download plugin from remote server' => 'Загрузить плагин с удаленного сервера',
 	'Plugins instruction' 			=> 'Допустимый формат файлов - zip архивы, не более 10 Мб.<br />
-										Вы можете найти плагины на сайте <a href="http://atomx.net">atomx.net</a>',
+										Выберите плагины в списке ниже.',
 	'Files ...'      				=> 'Установленные файлы: ',
 	'Add user'      				=> 'Добавить пользователя',
 	'Moderators'      				=> 'Модераторы',

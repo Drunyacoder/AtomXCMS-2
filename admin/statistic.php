@@ -50,13 +50,19 @@ $all = $Model->getCollection(array(
 ));
 
 $interval = 2592000;
+$i = 0;
 while (count($all) < 2 && empty($_POST['grfrom']) && empty($_POST['grto'])) {
-	$interval += 2592000;
-	$graph_from = date("Y-m-d", time() - $interval);
+	if ($i < 5) {
+		$interval += 2592000;
+		$graph_from = date("Y-m-d", time() - $interval);
+	} else {
+		$graph_from = '0000-00-00 00:00:00';
+	}
 	$all = $Model->getCollection(array(
 		"date >= '{$graph_from}'",
 		"date <= '{$graph_to}'",
 	));
+	$i++;
 }
 
 
