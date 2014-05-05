@@ -57,10 +57,11 @@ R405239497933
 	/sys/files  и на все подпапки
 	/sys/cache
 	/sys/tmp
+	/sys/js
+	/sys/img
 	/sys/settings
 	/sys/plugins
-	/templates/шаблон/css/*
-	/templates/шаблон/html/*
+	/templates/*
 	/sitemap.xml
 	(Версии выше 0.9.7 не требуют это делать, в противном случае, инсталятор вас оповестит)
 3. Перейдите по ссылке "Ваш домен/install" и проведите установку.
