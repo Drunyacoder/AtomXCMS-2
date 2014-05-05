@@ -233,16 +233,13 @@ if(isset($_POST['send']) && isset($_POST['templ'])) {
 	
 	
 	if(fputs($file, $_POST['templ'])) {
-		$mess = __('Template is saved');
+		$_SESSION['message'] = __('Template is saved');
 	} else {
-		$mess = __('Template is not saved');
+		$_SESSION['errors'] = __('Template is not saved');
 	}
 	fclose($file);
 }
-if (!empty($_SESSION['message'])) {
-    $mess = $_SESSION['message'];
-    unset($_SESSION['message']);
-}
+
 
 
 
@@ -269,15 +266,18 @@ echo '<form action="' . $_SERVER['REQUEST_URI'] . '" method="POST">';
 
 ?>
 
-<div class="warning">
-<?php
-if(isset($mess) && $mess != NULL) {
-	echo '<b>'.$mess.'</b>';
-} else {
-	echo __('Change template and save');
-}
-?>
-</div>
+
+<?php if (!empty($_SESSION['message'])): ?>
+<div class="warning ok"><?php echo $_SESSION['message'] ?></div>
+<?php unset($_SESSION['message']); ?>
+<?php elseif (!empty($_SESSION['errors'])): ?>
+<div class="warning error"><?php echo $_SESSION['errors'] ?></div>
+<?php unset($_SESSION['errors']); ?>
+<?php else: ?>
+<div class="warning"><?php echo __('Change template and save') ?></div>
+<?php endif; ?>
+
+
 
 
 

@@ -68,16 +68,15 @@ include_once ROOT . '/admin/template/header.php';
 
 <div class="warning">
 <?php echo __('If you delete a category, all the materials in it will be removed') ?><br /><br />
-
 <?php echo __('Each forum should be inherited from the section') ?>
-
+</div>
 <?php
 if (!empty($_SESSION['addErrors'])) {
-	echo '<ul class="error" style="list-style-type:none;color:red;">' . $_SESSION['addErrors'] . '</ul>';
+	echo '<div class="warning error"><ul class="error" style="list-style-type:none;">' . $_SESSION['addErrors'] . '</ul></div>';
 	unset($_SESSION['addErrors']);
 }
 ?>
-</div>
+
 
 
 <?php

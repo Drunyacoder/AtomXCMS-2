@@ -229,7 +229,7 @@ endif;
 	</div>
 </div>
 <?php else: ?>
-<div class="warning"><?php echo __('Records not found') ?></div>
+<div class="warning error"><?php echo __('Records not found') ?></div>
 <?php endif; ?>
 							
 

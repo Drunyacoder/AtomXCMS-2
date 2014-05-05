@@ -51,7 +51,7 @@ if (isset($_GET['a']) && $_GET['a'] == 'ed') {
 			'body' => $_POST['text_edit'],
 			'id' => $id,
 		));
-		$_SESSION['mess'] = __('Snippet successfuly created');
+		$_SESSION['message'] = __('Snippet successfuly created');
 		
 		redirect('/admin/snippets.php?a=ed&id=' . $id);
 	}
@@ -59,7 +59,7 @@ if (isset($_GET['a']) && $_GET['a'] == 'ed') {
 
 	if(isset($_GET['delete'])) {
 		$sql = $FpsDB->query("DELETE FROM `" . $FpsDB->getFullTableName('snippets') . "` WHERE id='" . $id . "'");
-		$_SESSION['mess'] = __('Snippet successfuly deleted');
+		$_SESSION['message'] = __('Snippet successfuly deleted');
 		redirect('/admin/snippets.php?a=ed');
 	}
 	if (!empty($id)) {
@@ -82,16 +82,13 @@ if (isset($_GET['a']) && $_GET['a'] == 'ed') {
 	После того, как Вы добавите метку в шаблон, она будет заменена на результат выполнения кода сниппета.<br />
 	Тут приведен список, уже созданных, сниппетов. Вы можете их просматривать и редактировать.<br />
 	Для то, что бы создавать и редактировать сниппеты, желательно, обладать, хотя бы, базовыми знаниями PHP
-	
-
-	<?php if (isset($_SESSION['mess'])): ?>
-	<br />
-	<br />
-	<br />
-	<b><?php echo $_SESSION['mess'] ?></b>
-	<?php unset($_SESSION['mess']); 
-	endif; ?>
 </div>
+<?php if (!empty($_SESSION['message'])): ?>
+<div class="warning ok"><?php echo $_SESSION['message'] ?></div>
+<?php unset($_SESSION['message']); ?>
+<?php elseif (!empty($_SESSION['errors'])): ?>
+<div class="warning error"><?php echo $_SESSION['errors'] ?></div>
+<?php unset($_SESSION['errors']); endif; ?>
 
 
 <div class="white">
@@ -172,8 +169,8 @@ if (isset($_GET['a']) && $_GET['a'] == 'ed') {
 	
 	 
 	if (isset($_POST['send'])) {
-		if (empty($_POST['my_title']) || mb_strlen($_POST['my_text']) < 3 || empty($_POST['my_title'])) $_SESSION['mess'] = 'Заполните все поля';
-		if (empty($_SESSION['mess'])) {
+		if (empty($_POST['my_title']) || mb_strlen($_POST['my_text']) < 3 || empty($_POST['my_title'])) $_SESSION['errors'] = 'Заполните все поля';
+		if (empty($_SESSION['errors'])) {
 			$countchank = $FpsDB->select('snippets', DB_COUNT, array('cond' => array('name' => $_POST['my_title'])));
 			if ($countchank == 0) {
 				$last_id = $FpsDB->save('snippets', array(
@@ -181,10 +178,10 @@ if (isset($_GET['a']) && $_GET['a'] == 'ed') {
 					'body' => $_POST['my_text'],
 				));
 				
-				$_SESSION['mess'] = __('Snippet successfuly created');
+				$_SESSION['message'] = __('Snippet successfuly created');
 				redirect('/admin/snippets.php?a=ed&id=' . $last_id);
 			} else {
-				$_SESSION['mess'] = __('Same snippet is already exists');
+				$_SESSION['errors'] = __('Same snippet is already exists');
 			}
 		}
 	}
@@ -199,17 +196,13 @@ if (isset($_GET['a']) && $_GET['a'] == 'ed') {
 	После того, как Вы добавите метку в шаблон, она будет заменена на результат выполнения кода сниппета.<br />
 	На странице редактирования приведен список, уже созданных, сниппетов. Вы можете их просматривать и редактировать.<br />
 	Для то, что бы создавать и редактировать сниппеты, желательно, обладать, хотя бы, базовыми знаниями PHP
-	
-
-	
-	<?php if (isset($_SESSION['mess'])): ?>
-	<br />
-	<br />
-	<br />
-	<b><?php echo $_SESSION['mess'] ?></b>
-	<?php unset($_SESSION['mess']); 
-	endif; ?>
 </div>
+<?php if (!empty($_SESSION['message'])): ?>
+<div class="warning ok"><?php echo $_SESSION['message'] ?></div>
+<?php unset($_SESSION['message']); ?>
+<?php elseif (!empty($_SESSION['errors'])): ?>
+<div class="warning error"><?php echo $_SESSION['errors'] ?></div>
+<?php unset($_SESSION['errors']); endif; ?>
 
 
 <div class="white">

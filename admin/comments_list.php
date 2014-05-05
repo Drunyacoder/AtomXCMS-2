@@ -141,7 +141,7 @@ class MaterialsList {
 					'module_' . $module,
 					'record_id_' . $entity->getUser_id()));
 		} else {
-			$_SESSION['message'] = __('Some error occurred');
+			$_SESSION['errors'] = __('Some error occurred');
 		}
 		redirect('/admin/comments_list.php?m=' . $module . '&premoder=1');
 	}
@@ -217,8 +217,11 @@ include_once ROOT . '/admin/template/header.php';
 
 
 <?php if (!empty($_SESSION['message'])): ?>
-<div class="warning"><?php echo $_SESSION['message'] ?></div>
+<div class="warning ok"><?php echo $_SESSION['message'] ?></div>
 <?php unset($_SESSION['message']); endif; ?>
+<?php if (!empty($_SESSION['errors'])): ?>
+<div class="warning error"><?php echo $_SESSION['errors'] ?></div>
+<?php unset($_SESSION['errors']); endif; ?>
 
 
 <form method="POST" action="" enctype="multipart/form-data">

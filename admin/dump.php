@@ -151,7 +151,7 @@ include_once ROOT . '/admin/template/header.php';
 
 ?>
 
-<div class="warning">
+<div class="warning ok">
 <?php echo __('DB backup is cool') ?>
 </div>
 

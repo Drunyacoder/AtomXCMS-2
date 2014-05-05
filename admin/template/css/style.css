@@ -91,6 +91,8 @@ table.side-separator, table.side-separator tr td {vertical-align:top; min-height
 
 #content-wrapper {padding:15px 15px 70px 15px; position:relative;}
 .warning {padding:15px 15px 15px 70px; background:#f4f2f2 url('../img/warning-icon.png') 14px center no-repeat; position:relative; -moz-border-radius:3px; -webkit-border-radius:3px; border-radius:3px; color:#a1a1a1; font-size:12px; margin-bottom:10px;}
+.warning.ok {background:#ccf4cc url('../img/warning-icon.png') 14px center no-repeat; color:#777;}
+.warning.error {background:#f4cccc url('../img/warning-icon.png') 14px center no-repeat; color:#777;}
 
 .list {position:relative; margin:10px 0px; background:#fff; -moz-border-radius:3px; -webkit-border-radius:3px; border-radius:3px; overflow: hidden;}
 .list > .title {height:17px; padding:12px 20px; color:#96c703; font-size:15px; font-weight:bold; background:url('../img/list-title-bg.png') repeat-x; border-bottom:1px solid #8e8e8e; -moz-border-radius: 4px 4px 0 0; -webkit-border-radius: 4px 4px 0 0; border-radius: 4px 4px 0 0;}

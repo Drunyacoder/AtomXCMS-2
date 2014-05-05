@@ -382,7 +382,7 @@ include_once ROOT . '/admin/template/header.php';
 
 
 <?php if (!empty($_SESSION['message'])): ?>
-<div class="warning"><?php echo $_SESSION['message'] ?></div>
+<div class="warning ok"><?php echo $_SESSION['message'] ?></div>
 <?php unset($_SESSION['message']); endif; ?>
 
 

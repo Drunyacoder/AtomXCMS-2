@@ -327,7 +327,7 @@ function index(&$page_title) {
 	
 	$html = '';
 	if (!empty($_SESSION['errors'])) {
-		$html .= '<div class="warning"><ul style="color:red;list-style-type:none;">' . $_SESSION['errors'] . '</ul></div>';
+		$html .= '<div class="warning error"><ul style="list-style-type:none;">' . $_SESSION['errors'] . '</ul></div>';
 		unset($_SESSION['errors']);
 	}
 	
@@ -502,7 +502,7 @@ function edit() {
 
 function add() {
 	global $FpsDB;
-	if (empty($_POST['title'])) redirect('/admin/category.php?mod=' . getCurrMod());
+	if (!isset($_POST['title'])) redirect('/admin/category.php?mod=' . getCurrMod());
 	
 	
 	$Register = Register::getInstance();
