@@ -359,6 +359,7 @@ $array[] = "CREATE TABLE `{$set['db']['prefix']}users` (
 	`warnings` INT DEFAULT '0' NOT NULL,
 	`ban_expire` DATETIME DEFAULT 0 NOT NULL,
 	`email_notification` enum('0','1') NOT NULL DEFAULT '1',
+	`summer_time` ENUM( '0', '1' ) NOT NULL DEFAULT '1',
 	PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
 ##########################################################################
