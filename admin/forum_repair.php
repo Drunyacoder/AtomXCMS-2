@@ -61,7 +61,7 @@ include_once ROOT . '/admin/template/header.php';
 ?>
 
 
-<div class="info-str"><?php echo __('All done') ?></div>
+<div class="warning ok"><?php echo __('All done') ?></div>
 
 
 <?php
