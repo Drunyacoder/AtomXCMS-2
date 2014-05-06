@@ -202,9 +202,8 @@ class Document_Parser {
 	
 		if (strstr($page, '{{ fps_chat }}')) {
 			include_once ROOT . '/modules/chat/index.php';
-			$chat_link = get_url('/chat/view_messages/');
-			$markers['fps_chat'] = '<iframe id="fpsChat" src="' . $chat_link 
-			. '" width="100%" height="400" style="overflow:auto; margin:0px; padding:0px; border:none;"></iframe>';
+            $markers['fps_chat'] = '<div id="fpsChat" '
+                . ' style="width:100%; height:400px; overflow:auto; margin:0px; padding:0px; border:none;"></div>';
 			$markers['fps_chat'] .= ChatModule::add_form();
 		}
 		

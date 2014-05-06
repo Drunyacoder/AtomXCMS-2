@@ -1,5 +1,19 @@
 <script type="text/javascript">
 
+function updateChat(){
+    $.ajax({
+        url: "{{ get_url('/chat/view_messages/?ajax') }}",
+        type: "GET",
+        data: {},
+        success: function(response){
+            if(typeof response.result != "undefined")
+                $("#fpsChat").html(response.result);
+        },
+        dataType: "json"
+    });
+};
+
+
 function sebmitChat(e) {
 	var message = $("textarea#chatModule").val();
 	var message = encodeURIComponent(message);
@@ -30,6 +44,7 @@ function responseData(resp, data) {
 	}
 	
 	refreshCaptcha();
+    updateChat();
 }
 function refreshCaptcha() {
 	if ($('img#fps_captcha').length) {
@@ -55,7 +70,7 @@ function update() {
 	var value = document.getElementById("chat_refresh_time").value;
 	createCookie('chat_refresh_time', value, 360);
 	if (value > 0) {
-		var chat_refresh = setInterval(forUpdate, 1000 * value);
+		var chat_refresh = setInterval(function(){updateChat();}, 1000 * value);
 	} else {
 		clearInterval(chat_refresh);
 	}
@@ -115,6 +130,7 @@ for (var i = 0; i < selopt.length; i++) {
 		break;
 	}
 }
+updateChat();
 update();
 
 </script>

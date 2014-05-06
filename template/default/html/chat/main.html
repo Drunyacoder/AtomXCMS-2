@@ -15,7 +15,7 @@
 <link rel="icon" href="{{ template_path }}/favicon.ico" type="image/x-icon" />
 <link rel="shortcut icon" href="{{ template_path }}/favicon.ico" type="image/x-icon" />
 <link type="text/css" rel="StyleSheet" href="{{ template_path }}/css/style.css" />
-<script language="JavaScript" type="text/javascript" src="{{ www_root }}/sys/js/jquery-1.8.1.min.js"></script>
+<script language="JavaScript" type="text/javascript" src="{{ www_root }}/sys/js/jquery.js"></script>
 <script language="JavaScript" type="text/javascript" src="{{ www_root }}/sys/js/send_message.js"></script>
 <!--<script src="{{ www_root }}/sys/js/jquery.form.min.js"></script>-->
 {{ editor_head }}
@@ -147,7 +147,7 @@ $(document).ready(function() {
 	  <div class="mat-title">{{ 'General chat'|lang }}</div>
 	  <div class="mat-content">
          <div class="bigchat">
-            <iframe id="fpsChat" scrolling="auto" src="{{ www_root }}/chat/view_messages/" ></iframe>
+            <div id="fpsChat" scrolling="auto"></div>
          </div>
          <div class="bigadd-form">
 		    {{ editor_body }}

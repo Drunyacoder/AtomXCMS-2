@@ -88,9 +88,8 @@ class ChatModule extends Module {
 				$content = $this->render('list.html', array('messages' => $data));
 			}
 		}
-		
-		header('Refresh: 10; url=' . get_url('/chat/view_messages/'));
-		echo $content;
+
+        $this->showAjaxResponse(array('result' => $content));
 	}
 	
 

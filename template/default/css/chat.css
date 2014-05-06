@@ -1,15 +1,16 @@
-body {padding-right: 6px;}
-.block {
-width:100%; 
+.chat {width:98%;}
+.chat .block {
+width:96.5%;
 font-family: Arial,sans-serif; 
 overflow:auto; 
 font-size: 13px; 
 background: #f5f5f5; 
 border: 1px solid #ddd; 
 margin-bottom: 3px; 
-padding: 3px
+padding: 7px;
+line-height:20px;
 }
-.block:hover {background: #eee;}
+.chat .block:hover {background: #eee;}
 .fps-ip, .fps-del, .fps-user {
 width:14px; 
 height:14px; 
@@ -21,5 +22,5 @@ background:url('../img/fps-icons-sprite.png') no-repeat;
 .fps-user {background-position:-14px 0;}
 .fps-ip {background-position:0px -154px;}
 .fps-del {background-position:0px 0px;}
-.name {color:#9DC13F; font-weight:bold; text-decoration: none;}
+.name {color:#9DC13F; font-weight:bold; text-decoration: none; text-shadow:none;}
 .mess {font-size:11px;color:#525252;padding-top: 3px}

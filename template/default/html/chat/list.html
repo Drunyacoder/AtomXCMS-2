@@ -1,8 +1,5 @@
-<html>
-<head>
+<div class="chat">
 <link type="text/css" rel="StyleSheet" href="{{ template_path }}/css/chat.css" />
-</head>
-<body>
 {% if messages %}
 {% for message in messages %}
 
@@ -12,12 +9,11 @@
 <div style="float: right">{% if message.user_id %}<a class="fps-user" href="{{ www_root }}/users/info/{{ message.user_id }}" target="_blank"></a>{% endif %} {{ message.ip }} {% if message.del %}<a class="fps-del" href="{{ message.del }}"></a>{% endif %}</div>
 
 <span class="mess">({{ AtmGetDate(message.date) }})</span> <a href="javascript:void('{{ 'To reply to a message'|lang }}')" onclick="parent.window.document.getElementById('chatModule').value+='[b]{{ message.name }}[/b], ';return false;" class="name">{{ message.name }}</a>:
-<div style="padding:5px 2px;">{{ message.message }}</div>
+<div>{{ message.message }}</div>
 
 </div>
 
 
 {% endfor %}
 {% endif %}
-</body>
-</html>
+</div>
