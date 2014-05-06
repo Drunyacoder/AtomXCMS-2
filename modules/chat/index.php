@@ -78,8 +78,8 @@ class ChatModule extends Module {
 				
 					/* view ip adres if admin */
 					if ($this->ACL->turn(array('chat', 'delete_materials'), false)) {
-						$record['ip'] = '<a target="_blank" href="https://apps.db.ripe.net/search/query.html?searchtext=' 
-							. h($record['ip']) . '" class="fps-ip" title="IP: ' . h($record['ip']) . '"></a>';
+						$record['ip'] = '<noindex><a rel="nofollow" target="_blank" href="https://apps.db.ripe.net/search/query.html?searchtext='
+							. h($record['ip']) . '" class="fps-ip" title="IP: ' . h($record['ip']) . '"></a></noindex>';
 					} else {
 						$record['ip'] = '';
 					}
