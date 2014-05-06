@@ -408,7 +408,7 @@ class Validate {
 		switch ($type) {
 		
 			case 'required':
-				$message = __('Empty field') . ' "' . $title;
+				$message = sprintf(__('Empty field "%s"'), $title);
 				break;
 				
 			case 'max_lenght':
