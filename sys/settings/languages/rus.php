@@ -785,6 +785,9 @@ return array(
 	'Pending moderation materials'	=> 'Ожидающие модерации материалы',
 	'Pending moderation comments'	=> 'Ожидающие модерации комментарии',
 	'Templetes cache'				=> 'Кэш шаблонов',
+	'Views'				            => 'Просмотры',
+	'Date'				            => 'Дата',
+	'Ordering'				        => 'Сортировка',
 
 	// Templates name
 	'Add form'  					=> 'Форма добавления',

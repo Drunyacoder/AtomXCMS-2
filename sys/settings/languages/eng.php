@@ -752,6 +752,9 @@ return array(
 	'Pending moderation materials'	=> 'Pending moderation materials',
 	'Pending moderation comments'	=> 'Pending moderation comments',
 	'Templetes cache'				=> 'Templetes cache',
+    'Views'				            => 'Views',
+    'Date'				            => 'Date',
+    'Ordering'				        => 'Ordering',
 
 	// Templates name
 	'Add form'  					=> 'Add form',

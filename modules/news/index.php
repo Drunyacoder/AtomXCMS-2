@@ -664,8 +664,8 @@ Class NewsModule extends Module {
 			$cat = $categoryModel->getById($_POST['cats_selector']);
 			if (empty($cat)) $errors .= '<li>' . __('Can not find category') . '</li>'."\n";
 		}
-			
-			
+
+
 		// Errors
 		if (!empty($errors)) {
 			$_SESSION['FpsForm'] = array_merge($form_fields, $_POST);
@@ -684,7 +684,7 @@ Class NewsModule extends Module {
 		$this->Register['Cache']->clean(CACHE_MATCHING_ANY_TAG, array('module_' . $this->module));
 		$this->DB->cleanSqlCache();
 		
-		// SQL query to add row
+
 		$post = $this->Register['Validate']->getAndMergeFormPost($this->getValidateRules(), array(), true);
 		extract($post);
 		

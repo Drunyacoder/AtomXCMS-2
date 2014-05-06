@@ -375,6 +375,10 @@ function getOrderParam($claas_name) {
 	$order = (!empty($_GET['order'])) ? trim($_GET['order']) : '';
 	
 	switch ($claas_name) {
+		case 'Comments':
+            $allowed_keys = array('user_id', 'date', 'premoder');
+            $default_key = 'date';
+            break;
 		case 'FotoModule':
 		case 'StatModule':
 		case 'NewsModule':

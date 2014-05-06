@@ -83,7 +83,7 @@ table.side-separator, table.side-separator tr td {vertical-align:top; min-height
 
 
 /* Content */
-.crumbs, rcrumbs {height:17px; width:45%; padding:17px 20px; color:#a1a1a1; font-style:italic; font-size:12px;}
+.crumbs, .rcrumbs {height:17px; width:45%; padding:17px 20px; color:#a1a1a1; font-style:italic; font-size:12px;}
 .crumbs a, .rcrumbs a {color:#a1a1a1; font-style:italic; text-decoration:underline; font-size:12px;}
 .crumbs a:hover, .rcrumbs a:hover {text-decoration:none;}
 .rcrumbs {float:right; padding:17px 60px 17px 10px;}
@@ -98,6 +98,8 @@ table.side-separator, table.side-separator tr td {vertical-align:top; min-height
 .list > .title {height:17px; padding:12px 20px; color:#96c703; font-size:15px; font-weight:bold; background:url('../img/list-title-bg.png') repeat-x; border-bottom:1px solid #8e8e8e; -moz-border-radius: 4px 4px 0 0; -webkit-border-radius: 4px 4px 0 0; border-radius: 4px 4px 0 0;}
 .list .add-cat-butt {width:165px; height:22px; position:absolute; top:8px; right:0px; color:#c7c6c6; text-decoration:underline; -moz-text-shadow:0px 0px 1px #888; -webkit-text-shadow:0px 0px 1px #888; text-shadow:0px 0px 1px #888; cursor:pointer;}
 .list div.add {display:inline-block; width:22px; height:22px; background:url('../img/icons-sprite.png') 0px center no-repeat; margin-bottom: -6px; margin-right:5px;}
+.list .add-cat-butt + .add-cat-butt {right:175px;}
+.list .add-cat-butt select, .list .add-cat-butt input {width:160px;}
 
 .list > .level1 {border-top:1px solid #000;}
 .list > .level1 > .head {height:53px; color:#717171; font-size:13px; font-weight:bold; border-bottom:1px solid #c7c7c7; -moz-background:linear-gradient(#c2c1c1, #ececec); -ms-background:linear-gradient(#c2c1c1, #ececec); -webkit-background:linear-gradient(#c2c1c1, #ececec); background:linear-gradient(#c2c1c1, #ececec);}

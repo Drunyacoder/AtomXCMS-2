@@ -405,7 +405,6 @@ function index(&$page_title) {
 	$html .= '<div class="list">
 		<div class="title">' . __('Categories management') . '</div>
 		<div class="add-cat-butt" onClick="openPopup(\'addCat\');"><div class="add"></div>' . __('Add section') . '</div>
-
 		<div class="level1">
 			<div class="head">
 				<div class="title">' . __('Category') . '</div>
