@@ -99,7 +99,11 @@ Class StatisticsModule
 		$referer = (!empty($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER'] : '';
 		
 		//check coocie
-		if (isset($_COOKIE['counter'])) {
+		if (isset($_COOKIE['counter']) || (
+			!empty($other_bot) ||
+			!empty($yandex_bot) ||
+			!empty($google_bot)
+		)) {
 			$cookie = 0;
 		} else {
 			$cookie = 1;
