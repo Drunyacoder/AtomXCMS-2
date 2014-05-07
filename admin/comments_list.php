@@ -27,7 +27,7 @@ $Register = Register::getInstance();
 
 
 
-$allowed_mods = array('news', 'stat', 'loads');
+$allowed_mods = $Register['ModManager']->getAllowedModules('commentsList');
 $allowed_actions = array('edit', 'delete', 'index', 'premoder');
 if (empty($_GET['m']) || !in_array($_GET['m'], $allowed_mods)) redirect('/admin/');
 $module = $_GET['m'];
@@ -66,9 +66,10 @@ class MaterialsList {
         $order = getOrderParam('Comments');
 
 		$total = $model->getTotal(array('cond' => $where));
-		list ($pages, $page) = pagination($total, 20, '/admin/comments_list.php?m=' . $module . '&order=' . $_GET['order']
+		list ($pages, $page) = pagination($total, 20, '/admin/comments_list.php?m=' . $module
+            . (!empty($_GET['order']) ? '&order=' . $_GET['order'] : '')
             . (!empty($_GET['asc']) ? '&asc=1' : ''));
-		
+
 
 		$model->bindModel('author');
 		$model->bindModel('parent_entity');
@@ -78,10 +79,11 @@ class MaterialsList {
 			'order' => $order,
 		));
 		
-		if (empty($materials)) 
+		if (empty($materials)) {
 			$output = '<div class="setting-item"><div class="left"><b>' 
 			. __('Materials not found') . '</b></div><div class="clear"></div></div>';
-
+            return array($output, $pages);
+        }
 	
 		foreach ($materials as $mat) {
 			$output .= '<div class="setting-item"><div class="left">';

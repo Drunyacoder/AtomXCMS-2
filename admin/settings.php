@@ -150,7 +150,7 @@ if (in_array($module, $sysMods)) {
 	$pathToModInfo = ROOT . '/modules/' . $module . '/info.php';
 	if (file_exists($pathToModInfo)) {
 		include ($pathToModInfo);
-		$pageTitle = (isset($menuInfo['ankor']) ? $menuInfo['ankor'] . ' - Настройки' : $pageTitle);
+		$pageTitle = (isset($menuInfo['ankor']) ? $menuInfo['ankor'] . ' - ' . __('Settings') : $pageTitle);
 	} else {
 		$_SESSION['mess'] = "Модуль \"{$module}\" не найден!";
 		$module = 'sys';

@@ -1,21 +1,29 @@
-<?php
-$FpsAllowModules = array(
-	'addFields' => array(
-		'news', 
-		'stat', 
-		'users', 
-		'loads'
-	),
-	'addFieldsTitles' => array(
-		'news' => 'Новости', 
-		'stat' => 'Статьи', 
-		'users' => 'Пользователи', 
-		'loads' => 'Файлы'
-	),
-	'categories' => array(
-		'news', 
-		'loads', 
-		'stat', 
-		'foto'
-	),
+<?php 
+$FpsAllowModules = array (
+  'addFields' => 
+  array (
+    1 => 'news',
+    2 => 'stat',
+    3 => 'users',
+    4 => 'loads',
+  ),
+  'categories' => 
+  array (
+    1 => 'news',
+    2 => 'stat',
+    3 => 'loads',
+    4 => 'foto',
+  ),
+  'materialsList' => 
+  array (
+    1 => 'news',
+    2 => 'stat',
+    3 => 'loads',
+  ),
+  'commentsList' => 
+  array (
+    1 => 'news',
+    2 => 'stat',
+    3 => 'loads',
+  ),
 );

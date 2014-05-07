@@ -41,26 +41,11 @@ class ModulesManager
 	}
 	
 	
-	public function getAddFieldsAllowedModules()
+	public function getAllowedModules($action)
 	{
 		$path = $this->accessFile;
 		include $path;
-		return (!empty($FpsAllowModules['addFields'])) ? $FpsAllowModules['addFields'] : array();
-	}
-	
-	public function getAddFieldsAllowedModulesTitles()
-	{
-		$path = $this->accessFile;
-		include $path;
-		return (!empty($FpsAllowModules['addFields'])) ? $FpsAllowModules['addFieldsTitles'] : array();
-	}
-	
-	
-	public function getCategoriesAllowedModules()
-	{
-		$path = $this->accessFile;
-		include $path;
-		return (!empty($FpsAllowModules['categories'])) ? $FpsAllowModules['categories'] : array();
+		return (!empty($FpsAllowModules[$action])) ? $FpsAllowModules[$action] : array();
 	}
 	
 	
@@ -145,4 +130,22 @@ class ModulesManager
 		
 		return $modules;
 	}
+
+
+    public function moduleExists($module)
+    {
+        return file_exists(ROOT . '/modules/' . $module . '/index.php');
+    }
+
+
+    public function getSettingsControllerClassName($module)
+    {
+        return ucfirst($module) . 'SettingsController';
+    }
+
+
+    public function getSettingsControllerPath($module)
+    {
+        return ROOT . '/modules/' . $module . '/settings.php';
+    }
 }

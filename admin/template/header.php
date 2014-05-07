@@ -6,25 +6,25 @@
 	<meta name="description" content="" />
 	<meta name="keywords" content="" />
 	<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-	<script language="JavaScript" type="text/javascript" src="../sys/js/jquery.js"></script>
+	<script language="JavaScript" type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jquery.js"></script>
 	
-	<script language="JavaScript" type="text/javascript" src="../sys/js/jquery.validate.js"></script>
-	<script language="JavaScript" type="text/javascript" src="../sys/js/jquery-ui-1.8.14.custom.min.js"></script>
-	<script type="text/javascript" src="js/drunya.lib.js"></script>
+	<script language="JavaScript" type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jquery.validate.js"></script>
+	<script language="JavaScript" type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jquery-ui-1.8.14.custom.min.js"></script>
+	<script type="text/javascript" src="<?php echo WWW_ROOT ?>/admin/js/drunya.lib.js"></script>
 
-	<script type="text/javascript" src="../sys/js/redactor/redactor.js"></script>
-	<link type="text/css" rel="StyleSheet" href="../sys/js/redactor/css/redactor.css" />
-	
-
-	
-	
-	<script type="text/javascript" src="../sys/js/jquery.cookie.js"></script>
-	<script type="text/javascript" src="../sys/js/jquery.hotkeys.js"></script>
-	<script type="text/javascript" src="../sys/js/jstree/jstree.min.js"></script>
+	<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/redactor/redactor.js"></script>
+	<link type="text/css" rel="StyleSheet" href="<?php echo WWW_ROOT ?>/sys/js/redactor/css/redactor.css" />
 	
 
 	
-	<link rel="StyleSheet" type="text/css" href="template/css/style.css" />
+	
+	<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jquery.cookie.js"></script>
+	<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jquery.hotkeys.js"></script>
+	<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jstree/jstree.min.js"></script>
+	
+
+	
+	<link rel="StyleSheet" type="text/css" href="<?php echo WWW_ROOT ?>/admin/template/css/style.css" />
 	
 	<script type="text/javascript">
 	
@@ -113,14 +113,12 @@
 					:  WWW_ROOT . '/sys/img/noavatar.png';
 				
 				}
-				
-				
-				@ini_set('default_socket_timeout', 5);
-				$new_ver = @file_get_contents('http://home.develdo.com/cdn/versions.txt');
+
+                $context  = stream_context_create(array('http' => array('method'  => 'GET', 'timeout' => 2)));
+				$new_ver = @file_get_contents('http://home.develdo.com/cdn/versions.txt', null, $context);
 				$new_ver = (!empty($new_ver) && $new_ver != FPS_VERSION) 
-				? '<a href="http://home.develdo.com/downloads.php" title="Last version">' . h($new_ver) . '</a>' 
+				? '<a href="https://github.com/Drunyacoder/AtomXCMS-2/releases" title="Last version">' . h($new_ver) . '</a>'
 				: '';
-				
 				
 				$group_info = $Register['ACL']->get_user_group($_SESSION['user']['status']);
 				$group_title = $group_info['title'];

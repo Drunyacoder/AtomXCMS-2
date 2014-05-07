@@ -807,16 +807,19 @@ function _unlink($path) {
  * Similar to copy
  * @Recursive
  */
-function copyr($source, $dest)
+function copyr($source, $dest, $perms = 0555)
 {
     // Simple copy for a file
     if (is_file($source)) {
-        return copy($source, $dest);
+        copy($source, $dest);
+        @chmod($dest, $perms);
+        return true;
     }
  
     // Make destination directory
     if (!is_dir($dest)) {
         mkdir($dest);
+        @chmod($dest, $perms);
     }
    
     // If the source is a symlink
@@ -835,7 +838,7 @@ function copyr($source, $dest)
  
         // Deep copy directories
         if ($dest !== "$source/$entry") {
-            copyr("$source/$entry", "$dest/$entry");
+            copyr("$source/$entry", "$dest/$entry", $perms);
         }
     }
  

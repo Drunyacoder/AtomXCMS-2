@@ -755,6 +755,8 @@ return array(
     'Views'				            => 'Views',
     'Date'				            => 'Date',
     'Ordering'				        => 'Ordering',
+    'Module "%s" has been installed' => 'Module "%s" has been installed',
+    'Module "%s" has been not installed (Reason: %s)' => 'Module "%s" has been not installed (Reason: %s)',
 
 	// Templates name
 	'Add form'  					=> 'Add form',

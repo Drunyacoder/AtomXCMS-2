@@ -1,6 +1,14 @@
 #php_flag log_errors on
 #php_value error_log ../sys/logs/php_errors.log
 
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^(.*)$ dispach.php?url=$1 [QSA,L]
+
+</IfModule>
 
 
 ErrorDocument 404 "ERROR 404"

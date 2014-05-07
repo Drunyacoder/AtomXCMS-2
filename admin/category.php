@@ -4,11 +4,11 @@
 | @Author:       Andrey Brykin (Drunya)          |
 | @Email:        drunyacoder@gmail.com           |
 | @Site:         http://fapos.net                |
-| @Version:      1.3                             |
+| @Version:      1.4                             |
 | @Project:      CMS                             |
 | @package       CMS Fapos                       |
 | @subpackege    Admin Panel module  			 |
-| @copyright     ©Andrey Brykin 2010-2013        |
+| @copyright     ©Andrey Brykin 2010-2014        |
 \-----------------------------------------------*/
 
 /*-----------------------------------------------\
@@ -34,7 +34,7 @@ include_once ROOT . '/admin/inc/adm_boot.php';
  */
 function getCurrMod() {
 	$ModulesManager = new ModulesManager();
-	$allow_mods = $ModulesManager->getCategoriesAllowedModules();
+	$allow_mods = $ModulesManager->getAllowedModules('categories');
 	if (empty($_GET['mod'])) redirect('/admin/category.php?mod=news');
 	
 	$mod = trim($_GET['mod']);
@@ -86,13 +86,7 @@ deleteCatsCollision();
 
 
 $head = file_get_contents('template/header.php');
-$ptitles = array(
-	'news' => __('News'),
-	'stat' => __('Article'),
-	'loads' => __('Loads'),
-	'foto' => __('Photo'),
-);
-$page_title = $ptitles[getCurrMod()];
+$page_title = __(ucfirst(getCurrMod()));
 $popups = '';
 
 

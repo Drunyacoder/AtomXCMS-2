@@ -788,6 +788,8 @@ return array(
 	'Views'				            => 'Просмотры',
 	'Date'				            => 'Дата',
 	'Ordering'				        => 'Сортировка',
+	'Module "%s" has been installed' => 'Модуль "%s" был успешно установлен',
+	'Module "%s" has been not installed (Reason: %s)' => 'Модуль "%s" не удалось установить (Причина: %s)',
 
 	// Templates name
 	'Add form'  					=> 'Форма добавления',

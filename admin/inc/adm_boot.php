@@ -177,7 +177,7 @@ if (!isset($_SESSION['adm_panel_authorize']) || $_SESSION['adm_panel_authorize']
 		}
 	}
 }
-;
+
 
 
 
@@ -187,7 +187,13 @@ if (!empty($_GET['install'])) {
 	$instMod = (string)$_GET['install'];
 	if (!empty($instMod) && preg_match('#^[a-z]+$#i', $instMod)) {
 		$ModulesInstaller = new FpsModuleInstaller();
-		$ModulesInstaller->installModule($instMod);
+		try {
+            $ModulesInstaller->installModule($instMod);
+            $_SESSION['message'] = sprintf(__('Module "%s" has been installed'), $instMod);
+        } catch (Exception $e) {
+            $_SESSION['errors'] = sprintf(__('Module "%s" has been not installed (Reason: %s)'), $instMod, $e->getMessage());
+        }
+        redirect('/admin/');
 	}
 }
 
@@ -213,4 +219,5 @@ function getAdmFrontMenuParams()
     }
     return $out;
 }
+
 ?>

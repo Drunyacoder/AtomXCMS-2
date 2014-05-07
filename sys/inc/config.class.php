@@ -52,7 +52,7 @@ class Config {
 	*/
 	static public function write($set) {
 		if ($fopen=@fopen(ROOT . '/sys/settings/config.php', 'w')) {
-            $data = '<?php ' . "\n" . '$set = ' . var_export($set, true) . "\n" . '?>';
+            $data = '<?php ' . "\n" . '$set = ' . var_export($set, true) . ";\n" . '?>';
 			fputs($fopen, $data);
 			fclose($fopen);
 			return true;

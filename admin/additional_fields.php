@@ -31,8 +31,7 @@ include_once ROOT . '/admin/inc/adm_boot.php';
 
 // Know module
 $ModulesManager = new ModulesManager();
-$allow_modules = $ModulesManager->getAddFieldsAllowedModules();
-$modules_titles = $ModulesManager->getAddFieldsAllowedModulesTitles();
+$allow_modules = $ModulesManager->getAllowedModules('addFields');
 
 
 
@@ -41,7 +40,7 @@ if (empty($_GET['m']) || !in_array($_GET['m'], $allow_modules)) {
 	$_GET['m'] = 'news';
 	$_GET['ac'] = 'index';
 }
-$pageTitle = $modules_titles[$_GET['m']] . ' - ' . __('Additional fields');
+$pageTitle = __(ucfirst($_GET['m'])) . ' - ' . __('Additional fields');
 
 // Know action
 if (!isset($_GET['ac'])) $_GET['ac'] = 'index';

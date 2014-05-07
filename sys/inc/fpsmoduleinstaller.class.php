@@ -6,8 +6,8 @@
 |  @Project:      CMS                            |
 |  @package       CMS Fapos                      |
 |  @subpackege    Module Installer  Class        |
-|  @copyright     ©Andrey Brykin 2010-2011       |
-|  @last mod.     2012/02/16                     |
+|  @copyright     ©Andrey Brykin 2010-2014       |
+|  @last mod.     2014/05/07                     |
 \-----------------------------------------------*/
 
 /*-----------------------------------------------\
@@ -45,6 +45,7 @@ class FpsModuleInstaller
         $this->modulesPath = ROOT . '/modules/';
 		
         $this->DBQueriesFile = 'install_db.php';
+        $this->OrmFiles = 'install_ORM';
         $this->rulesFile = 'install_groups_rules.php';
         $this->settingsFile = 'install_settings.php';
         $this->modulesAccessFile = 'install_modules_access.php';
@@ -104,24 +105,30 @@ class FpsModuleInstaller
 		
 		
 			$instDbQueries = $instmodPath . $this->DBQueriesFile;
+			$instOrm = $instmodPath . $this->OrmFiles;
 			$instGroupsRules = $instmodPath . $this->rulesFile;
 			$instSettings = $instmodPath . $this->settingsFile;
 			$instModulesAccess = $instmodPath . $this->modulesAccessFile;
-			
-			// DB INSTALL ----------------------------------------
-			$this->importDBQueries($instDbQueries);
-			
 
-			// SETTINGS IMPORT -----------------------------------
-			$this->importSettings($instSettings, $module);
-			
-			
-			// GROUPS RULES IMPORT -------------------------------
-			$this->importGroupsRules($instGroupsRules, $module);
-			
-			
-			// MODULES ACCESS IMPORT -------------------------------
-			$this->importModulesAccess($instModulesAccess);
+            try {
+                // SETTINGS IMPORT -----------------------------------
+                $this->importSettings($instSettings, $module);
+
+
+                // DB INSTALL ----------------------------------------
+                $this->importDBQueries($instDbQueries);
+                $this->importModelsAndEntities($instOrm);
+
+
+                // GROUPS RULES IMPORT -------------------------------
+                $this->importGroupsRules($instGroupsRules, $module);
+
+
+                // MODULES ACCESS IMPORT -------------------------------
+                $this->importModulesAccess($instModulesAccess);
+            } catch (Exception $e) {
+                throw new Exception('Module installation has been stoped (' . $e->getMessage() . ')');
+            }
 		}
     }
 	
@@ -139,6 +146,9 @@ class FpsModuleInstaller
 			if (!empty($FpsInstallAllowModules) && is_array($FpsInstallAllowModules)) {
 				$CurrAccess = $this->getCurrentModulesAccess();
 				$CurrAccess = array_merge_recursive($FpsInstallAllowModules, $CurrAccess);
+                foreach ($CurrAccess as $k => $v) {
+                    $CurrAccess[$k] = array_unique($v);
+                }
 				$this->saveModulesAccess($CurrAccess, $path);
 			}
 		}
@@ -147,7 +157,7 @@ class FpsModuleInstaller
 	
 	private function saveModulesAccess($accessList, $path)
 	{
-		file_put_contents($path, '<?php ' . "\n" . '$FpsAllowModules = ' . var_export($accessList, true) . "\n");
+		file_put_contents(ROOT . '/sys/settings/modules_access.php', '<?php ' . "\n" . '$FpsAllowModules = ' . var_export($accessList, true) . ";\n");
 	}
 	
 	
@@ -171,7 +181,7 @@ class FpsModuleInstaller
 			include_once $path;
 			if (!empty($FpsInstallRules) && is_array($FpsInstallRules)) {
 				$CurrRules = $Register['ACL']->getRules();
-				$CurrRules[$module] = $FpsInstallRules;
+				$CurrRules = array_merge($FpsInstallRules, $CurrRules);
 				$Register['ACL']->save_rules($CurrRules);
 			}
 		}
@@ -186,14 +196,13 @@ class FpsModuleInstaller
 	{
 		$Register = Register::getInstance();
 	
-		if (file_exists($path)) {
-			include_once $path;
-			if (!empty($FpsInstallSettings) && is_array($FpsInstallSettings)) {
-				$CurrSettings = $Register['Config']->read('all');
-				$CurrSettings[$module] = $FpsInstallSettings;
-				$Register['Config']->write($CurrSettings);
-			}
-		}
+		if (!file_exists($path)) throw new Exception("File \"install_settings.php\" for module \"$module\" not found.");
+        include_once $path;
+        if (!empty($FpsInstallSettings) && is_array($FpsInstallSettings)) {
+            $CurrSettings = $Register['Config']->read('all');
+            $CurrSettings[$module] = $FpsInstallSettings;
+            $Register['Config']->write($CurrSettings);
+        }
 	}
 	
 	
@@ -215,6 +224,17 @@ class FpsModuleInstaller
 	}
 
 
+    public function importModelsAndEntities($path)
+    {
+        if (file_exists($path . '/Models')) {
+            copyr($path . '/Models', ROOT . '/sys/inc/ORM/Models/');
+        }
+        if (file_exists($path . '/Entities')) {
+            copyr($path . '/Entities', ROOT . '/sys/inc/ORM/Entities/');
+        }
+    }
+
+
 	public function getTemplateParts($module)
 	{
 		$pathToFile = ROOT . '/modules/' . $module . '/template_parts.php';
@@ -223,5 +243,5 @@ class FpsModuleInstaller
 			if (!empty($allowedTemplateParts)) return $allowedTemplateParts;
 			return false;
 		}
-	}	
+	}
 }

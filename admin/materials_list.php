@@ -30,7 +30,7 @@ $Register = Register::getInstance();
 
 
 
-$allowed_mods = array('news', 'stat', 'loads', 'foto');
+$allowed_mods = $Register['ModManager']->getAllowedModules('materialsList');
 $allowed_actions = array('edit', 'delete', 'index', 'premoder');
 if (empty($_GET['m']) || !in_array($_GET['m'], $allowed_mods)) redirect('/admin/');
 $module = $_GET['m'];
@@ -67,8 +67,9 @@ class MaterialsList {
 
 		$total = $model->getTotal(array('cond' => $where));
 		list ($pages, $page) = pagination($total, 20, '/admin/materials_list.php?m=' . $module
-                . '&order=' . $_GET['order'] . (!empty($_GET['asc']) ? '&asc=1' : ''));
-		
+            . (!empty($_GET['order']) ? '&order=' . $_GET['order'] : '')
+            . (!empty($_GET['asc']) ? '&asc=1' : ''));
+
 		
 		$model->bindModel('author');
 		$materials = $model->getCollection($where, array(

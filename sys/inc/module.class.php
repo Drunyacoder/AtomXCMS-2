@@ -447,7 +447,7 @@ class Module {
 	 * @param mixed $cat_id
 	 * @return string.
 	 */
-	protected function _getCatsTree($cat_id = false) 
+	protected function _getCatsTree($cat_id = false, $url_sufix = '')
 	{
 		// Check cache
 		if ($this->cached && $this->Cache->check('category_' . $this->cacheKey)) {
@@ -505,7 +505,8 @@ class Module {
 		// Build list
 		if (count($cats) > 0) {
 			foreach ($cats as $cat) {
-				$output .= '<li>' . get_link(h($cat['title']), '/' . $this->module . '/category/' . $cat['id']) . '</li>';
+				$output .= '<li>' . get_link(h($cat['title']), '/' . $this->module
+                        . '/category/' . $cat['id'] . $url_sufix) . '</li>';
 			}
 		}
 		
