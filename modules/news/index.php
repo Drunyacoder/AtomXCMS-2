@@ -247,7 +247,11 @@ Class NewsModule extends Module {
 		
 
 		$total = $this->Model->getTotal($query_params);
-		list ($pages, $page) = pagination( $total, Config::read('per_page', $this->module), '/' . $this->module . '/');
+		list ($pages, $page) = pagination(
+			$total, 
+			Config::read('per_page', $this->module), 
+			$this->getModuleURL('/category/' . $id . '/')
+		);
 		$this->Register['pages'] = $pages;
 		$this->Register['page'] = $page;
 		$this->page_title .= ' (' . $page . ')';
