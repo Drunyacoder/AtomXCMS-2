@@ -441,14 +441,14 @@ class PrintText {
 	 */
 	public function highlight_php_string($str) {
 		$str = highlight_string($str, true);
-		
+
 		$cnt = 1;
 		if (preg_match_all('#(<br />)#iu', $str, $count)) {
 			$cnt = count($count[1]);
 		}
 
 		$box = '<div style="width:35px; float:left; padding-right:5px; text-align: right;" ><code>';
-		for ($i = 1; $i < ($cnt + 2); $i++) {
+		for ($i = 1; $i < ($cnt + 1); $i++) {
 			$box .= '&nbsp;' . $i . '&nbsp;<br />';
 		}
 		$box .= '</code></div>';
