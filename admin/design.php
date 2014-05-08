@@ -164,11 +164,14 @@ if (empty($_GET['d']) || !is_string($_GET['d'])) $_GET['d'] = 'default';
 
 
 $module = trim($_GET['m']);
-if (!array_key_exists($_GET['m'], $allowedFiles)) {
-	$extentionParams = $Register['ModManager']->getTemplateParts($module);
-	if (!empty($extentionParams)) {
-		$allowedFiles[$module] = $extentionParams;
-	}
+$modules = $Register['ModManager']->getModulesList();
+foreach ($modules as $module_) {
+    if (!array_key_exists($module_, $allowedFiles) && $Register['ModManager']->isInstall($module_)) {
+        $extentionParams = $Register['ModManager']->getTemplateParts($module_);
+        if (!empty($extentionParams)) {
+            $allowedFiles[$module_] = $extentionParams;
+        }
+    }
 }
 
 
@@ -297,8 +300,9 @@ echo '<form action="' . $_SERVER['REQUEST_URI'] . '" method="POST">';
 			<?php foreach ($allowedFiles as $mod => $files):
 				$title = ('default' == $mod)
                     ? __('Default')
-                    : (Config::read('title', $mod)) ? Config::read('title', $mod) : __(ucfirst($mod));
-				if (!empty($title)):
+                    : ((Config::read('title', $mod)) ? Config::read('title', $mod) : __(ucfirst($mod)));
+
+                if (!empty($title)):
 			?>
 
 				<div class="tbn"><?php echo $title; ?></div>

@@ -76,15 +76,14 @@ class FpsModuleInstaller
 
 
 
-    private function checkModule($modulePath)
+    public function checkModule($modulePath)
     {
 		$modTitle = $this->getModuleTitleFromPath($modulePath);
 		if (!$modTitle) return false; // TODO ERROR
 		
 		$this->module = $modTitle;
-		
-		$modSettings = Config::read($modTitle);
-		return (is_array($modSettings)) ? true : false;
+		$Register = Register::getInstance();
+		return $Register['ModManager']->isInstall($modTitle);
     }
 
 	
@@ -245,7 +244,7 @@ class FpsModuleInstaller
 	public function importTemplateFiles($pathToTemplateFiles)
 	{
         if (file_exists($pathToTemplateFiles) && is_dir($pathToTemplateFiles)) {
-            copyr($pathToTemplateFiles, ROOT . '/template/' . getTemplateName());
+            copyr($pathToTemplateFiles, ROOT . '/template/' . getTemplateName(), 0777);
         }
 	}
 }

@@ -159,4 +159,11 @@ class ModulesManager
         }
         return array();
     }
+
+
+    public function isInstall($module)
+    {
+        $modSettings = Config::read($module);
+        return (!empty($modSettings) && is_array($modSettings));
+    }
 }
