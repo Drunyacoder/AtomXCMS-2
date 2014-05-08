@@ -37,6 +37,7 @@ class AtmDateTime {
 			: '+00';
 		
 		$dateObj = new DateTime($date);
+        if ($dateObj->format('Y') < 1) $dateObj->setDate(1970, 1, 1);
 		$dateObj->modify($user_timezone . ' hour');
 		return $dateObj->format($format);
 	}
@@ -56,13 +57,13 @@ class AtmDateTime {
 		
         $result = '';
         $dateObj = new DateTime($date);
+        if ($dateObj->format('Y') < 1) $dateObj->setDate(1970, 1, 1);
         $currentDate = new DateTime();
         $diff = $dateObj->diff($currentDate);
 		//$dateObj->setTimezone(new DateTimeZone('Europe/Kiev'));
 
         $y = $diff->y; $m = $diff->m; $d = $diff->d; $h = $diff->h; $i = $diff->i; $s = $diff->s;
 
-		
         if (!empty($y)) {
             $result = $dateObj->format('j M Y');
 
