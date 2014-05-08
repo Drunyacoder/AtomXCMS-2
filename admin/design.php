@@ -98,11 +98,6 @@ $allowedFiles = array(
         'infomessagegrand',
     ),
 	'custom' => array(),
-    'blog' => array(
-        'main',
-        'somepage',
-        'css.chat',
-    ),
 );
 
 
