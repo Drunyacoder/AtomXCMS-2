@@ -148,4 +148,15 @@ class ModulesManager
     {
         return ROOT . '/modules/' . $module . '/settings.php';
     }
+
+
+    public function getTemplateParts($module)
+    {
+        $pathToTemplate = ROOT . '/modules/' . $module . '/info.php';
+        if (file_exists($pathToTemplate)) {
+            include_once $pathToTemplate;
+            return !empty($allowedTemplateFiles) ? $allowedTemplateFiles : array();
+        }
+        return array();
+    }
 }

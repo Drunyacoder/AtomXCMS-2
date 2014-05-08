@@ -36,6 +36,7 @@ class FpsModuleInstaller
 	private $rulesFile;
 	private $settingsFile;
 	private $modulesAccessFile;
+	private $templateFiles;
 
     /**
      *
@@ -49,6 +50,7 @@ class FpsModuleInstaller
         $this->rulesFile = 'install_groups_rules.php';
         $this->settingsFile = 'install_settings.php';
         $this->modulesAccessFile = 'install_modules_access.php';
+        $this->templateFiles = 'install_template';
     }
 
 
@@ -109,6 +111,7 @@ class FpsModuleInstaller
 			$instGroupsRules = $instmodPath . $this->rulesFile;
 			$instSettings = $instmodPath . $this->settingsFile;
 			$instModulesAccess = $instmodPath . $this->modulesAccessFile;
+			$instTemplateFiles = $instmodPath . $this->templateFiles;
 
             try {
                 // SETTINGS IMPORT -----------------------------------
@@ -126,6 +129,10 @@ class FpsModuleInstaller
 
                 // MODULES ACCESS IMPORT -------------------------------
                 $this->importModulesAccess($instModulesAccess);
+
+
+                // MODULES TEMPLATE IMPORT -------------------------------
+                $this->importTemplateFiles($instTemplateFiles);
             } catch (Exception $e) {
                 throw new Exception('Module installation has been stoped (' . $e->getMessage() . ')');
             }
@@ -235,13 +242,10 @@ class FpsModuleInstaller
     }
 
 
-	public function getTemplateParts($module)
+	public function importTemplateFiles($pathToTemplateFiles)
 	{
-		$pathToFile = ROOT . '/modules/' . $module . '/template_parts.php';
-		if (file_exists($pathToFile)) {
-			include $pathToFile;
-			if (!empty($allowedTemplateParts)) return $allowedTemplateParts;
-			return false;
-		}
+        if (file_exists($pathToTemplateFiles) && is_dir($pathToTemplateFiles)) {
+            copyr($pathToTemplateFiles, ROOT . '/template/' . getTemplateName());
+        }
 	}
 }

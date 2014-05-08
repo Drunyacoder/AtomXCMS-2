@@ -96,9 +96,13 @@ $allowedFiles = array(
     'default' => array(
         'main',
         'infomessagegrand',
-        'infomessagegrand_en',
     ),
 	'custom' => array(),
+    'blog' => array(
+        'main',
+        'somepage',
+        'css.chat',
+    ),
 );
 
 
@@ -166,8 +170,7 @@ if (empty($_GET['d']) || !is_string($_GET['d'])) $_GET['d'] = 'default';
 
 $module = trim($_GET['m']);
 if (!array_key_exists($_GET['m'], $allowedFiles)) {
-	$modInstaller = new FpsModuleInstaller();
-	$extentionParams = $modInstaller->getTemplateParts($module);
+	$extentionParams = $Register['ModManager']->getTemplateParts($module);
 	if (!empty($extentionParams)) {
 		$allowedFiles[$module] = $extentionParams;
 	}
@@ -196,9 +199,12 @@ $tmp_file = $_GET['t'];
 
 // path formating
 $module = (array_key_exists($_GET['m'], $allowedFiles)) ? $_GET['m'] : 'default';
-$filename = (in_array($_GET['t'], $allowedFiles[$module])) ? $_GET['t'] : 'main';
 $type = (in_array($_GET['d'], array('css', 'default'))) ? $_GET['d'] : 'default';
-if ('css' == $type) $file = 'style';
+if ($type === 'css') {
+    $filename = (in_array('css.' . $_GET['t'], $allowedFiles[$module])) ? $_GET['t'] : 'style';
+} else {
+    $filename = (in_array($_GET['t'], $allowedFiles[$module])) ? $_GET['t'] : 'main';
+}
 
 
 if ($module === 'custom') {
@@ -212,7 +218,7 @@ if ($module === 'custom') {
 
 if(isset($_POST['send']) && isset($_POST['templ'])) {
 	if ($type == 'css') {
-		$template_file = ROOT . '/template/' . $Register['Config']->read('template') . '/css/style.css';
+		$template_file = ROOT . '/template/' . $Register['Config']->read('template') . '/css/' . $filename . '.css';
 		if (!is_file($template_file . '.stand')) {
 			copy($template_file, $template_file . '.stand');
 		}
@@ -246,7 +252,7 @@ if(isset($_POST['send']) && isset($_POST['templ'])) {
 
 
 if ($_GET['d'] == 'css') {
-    $path = ROOT .'/template/' . Config::read('template') . '/css/style.css';
+    $path = ROOT .'/template/' . Config::read('template') . '/css/' . $filename . '.css';
 } else {
     clearstatcache();
     $path = ROOT .'/template/' . Config::read('template') . '/html/' . $module . '/' . $filename . '.html';
@@ -288,19 +294,30 @@ echo '<form action="' . $_SERVER['REQUEST_URI'] . '" method="POST">';
 			<div class="tbn"><?php echo __('Your templates') ?></div>
 				<?php foreach ($custom_tpl as $file): ?>
 				<div class="tba1">
-				<a href="design.php?d=default&t=<?php echo $file; ?>&m=custom"><?php echo $file; ?></a>
+				<a href="design.php?d=default&t=<?php echo $file; ?>&m=custom"><?php echo $file . '.html'; ?></a>
 				</div>
 				<?php endforeach; ?>
-			
+
+            <?php unset($allowedFiles['custom']); ?>
 			<?php foreach ($allowedFiles as $mod => $files):
-				$title = ('default' == $mod) ? __('Default') : Config::read('title', $mod);
+				$title = ('default' == $mod)
+                    ? __('Default')
+                    : (Config::read('title', $mod)) ? Config::read('title', $mod) : __(ucfirst($mod));
 				if (!empty($title)):
 			?>
 
 				<div class="tbn"><?php echo $title; ?></div>
 					<?php foreach ($files as $file): ?>
 					<div class="tba1">
-					<a href="design.php?d=default&t=<?php echo $file; ?>&m=<?php echo $mod; ?>"><?php echo $entities[$file]; ?></a>
+                        <?php if (substr($file, 0, 4) === 'css.'): ?>
+                            <a href="design.php?d=css&t=<?php echo substr($file, 4); ?>&m=<?php echo $mod; ?>">
+                                <?php echo (!empty($entities[$file])) ? $entities[$file] : substr($file, 4) . '.css'; ?>
+                            </a>
+                        <?php else: ?>
+                            <a href="design.php?d=default&t=<?php echo $file; ?>&m=<?php echo $mod; ?>">
+                                <?php echo (!empty($entities[$file])) ? $entities[$file] : $file . '.html'; ?>
+                            </a>
+                        <?php endif; ?>
 					</div>
 					<?php endforeach; ?>
 					<?php if ('default' == $mod): ?>
