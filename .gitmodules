@@ -1,6 +1,0 @@
-[submodule "test"]
-	path = test
-	url = https://github.com/Drunyacoder/DevModules.git
-[submodule "modules/shop"]
-	path = modules/shop
-	url = https://github.com/Drunyacoder/AtomShop.git
