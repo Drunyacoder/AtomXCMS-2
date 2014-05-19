@@ -54,7 +54,7 @@ switch ( $_GET['ac'] )
 
 
 $pageNav = $pageTitle;
-$pageNavl = '<a href="users_list.php">' . __('Users list') . '</a>';
+$pageNavr = '<a href="users_list.php">' . __('Users list') . '</a>';
 
 
 
@@ -107,13 +107,13 @@ function index(&$page_title) {
 	$pages = '<div class="pages">' . $pages . '</div>';
 	$content .= "<div class=\"list\">
 			<div class=\"title\">{$pages}</div>
-			<table cellspacing=\"0\" class=\"grid\"><th width=\"20%\">{$nick}</th>
+			<table cellspacing=\"0\" class=\"grid\"><tr><th width=\"20%\">{$nick}</th>
 			<th width=\"25%\">{$email}</th>
 			<th width=\"20%\">{$puttime}</th>
 			<th width=\"15%\">{$status}</th>
 			<th width=\"9%\">{$themes}</th>
 			<th width=\"9%\">{$posts}</th>
-			<th width=\"20px\" colspan=\"2\">" . __('Action') . "</th>";
+			<th width=\"20px\" colspan=\"2\">" . __('Action') . "</th></tr>";
 	
 
 	

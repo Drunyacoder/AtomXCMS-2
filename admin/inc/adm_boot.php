@@ -99,8 +99,8 @@ if (!isset($_SESSION['adm_panel_authorize']) || $_SESSION['adm_panel_authorize']
 	<meta name="description" content="" />
 	<meta name="keywords" content="" />
 	<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-	<link rel="StyleSheet" type="text/css" href="template/css/style.css" />
-	<script language="JavaScript" type="text/javascript" src="../sys/js/jquery.js"></script>
+	<link rel="StyleSheet" type="text/css" href="<?php echo WWW_ROOT ?>/admin/template/css/style.css" />
+	<script language="JavaScript" type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jquery.js"></script>
 	<script type="text/javascript">
 	</script>
 </head>
