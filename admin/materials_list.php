@@ -63,7 +63,6 @@ class MaterialsList {
 		$model = $Register['ModManager']->getModelInstance($_GET['m']);
 		
 		$where = (!empty($_GET['premoder'])) ? array('premoder' => 'nochecked') : array();
-        $order = getOrderParam(ucfirst($_GET['m']) . 'Module');
 
 		$total = $model->getTotal(array('cond' => $where));
 		list ($pages, $page) = pagination($total, 20, '/admin/materials_list.php?m=' . $module
@@ -75,7 +74,7 @@ class MaterialsList {
 		$materials = $model->getCollection($where, array(
 			'page' => $page,
 			'limit' => 20,
-			'order' => $order,
+			'order' => $model->getOrderParam(),
 		));
 
 		
@@ -234,12 +233,12 @@ include_once ROOT . '/admin/template/header.php';
     <div class="add-cat-butt">
         <select onChange="window.location.href='/admin/materials_list.php?m=<?php echo $_GET['m'] ?>&order='+this.value;">
             <option><?php echo __('Ordering') ?></option>
-            <option value="views"><?php echo __('Views') ?> (>)</option>
-            <option value="views&asc=1"><?php echo __('Views') ?> (<)</option>
-            <option value="comments"><?php echo __('Comments') ?> (<)</option>
-            <option value="comments&asc=1"><?php echo __('Comments') ?> (>)</option>
-            <option value="date"><?php echo __('Date') ?> (<)</option>
-            <option value="date&asc=1"><?php echo __('Date') ?> (>)</option>
+            <option value="views"><?php echo __('Views') ?> (↓)</option>
+            <option value="views&asc=1"><?php echo __('Views') ?> (↑)</option>
+            <option value="comments"><?php echo __('Comments') ?> (↓)</option>
+            <option value="comments&asc=1"><?php echo __('Comments') ?> (↑)</option>
+            <option value="date"><?php echo __('Date') ?> (↓)</option>
+            <option value="date&asc=1"><?php echo __('Date') ?> (↑)</option>
         </select>
     </div>
 	<div class="level1">

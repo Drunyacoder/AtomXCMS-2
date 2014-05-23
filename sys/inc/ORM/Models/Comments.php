@@ -33,13 +33,18 @@ class CommentsModel extends FpsModel
         'author' => array(
             'model' => 'Users',
             'type' => 'has_one',
-            'foreignKey' => 'user_id',
+            'internalKey' => 'user_id',
       	),
         'parent_entity' => array(
             'model' => 'this.module',
             'type' => 'has_one',
-            'foreignKey' => 'entity_id',
+            'internalKey' => 'entity_id',
         ),
+    );
+
+    protected $orderParams = array(
+        'allowed' => array('user_id', 'date', 'premoder'),
+        'default' => 'date',
     );
 
 	

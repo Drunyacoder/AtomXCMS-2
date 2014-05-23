@@ -28,7 +28,7 @@ $keystring = (isset($_POST['keystring'])) ? trim($_POST['keystring']) : '';
 
 
 // Check fields
-$errors = $this->Register['Validate']->check($this->getValidateRules());
+$errors = $this->Register['Validate']->check($this->Register['action']);
 
 
 

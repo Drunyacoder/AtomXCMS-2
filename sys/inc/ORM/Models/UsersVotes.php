@@ -32,12 +32,12 @@ class UsersVotesModel extends FpsModel
 		'touser' => array(
             'model' => 'Users',
             'type' => 'has_one',
-            'foreignKey' => 'to_user',
+            'internalKey' => 'to_user',
 		),
 		'fromuser' => array(
             'model' => 'Users',
             'type' => 'has_one',
-            'foreignKey' => 'from_user',
+            'internalKey' => 'from_user',
 		),
 	);
 	

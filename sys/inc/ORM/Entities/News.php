@@ -157,20 +157,6 @@ class NewsEntity extends FpsEntity
    	{
    		$this->author = $author;
    	}
-
-
-
-    /**
-     * @return object
-     */
-	public function getAuthor()
-	{
-        if (!$this->checkProperty('author')) {
-            $Model = new NewsModel('news');
-            $this->author = $Model->getAuthorByNew($this);
-        }
-		return $this->author;
-	}
 	
 	
 

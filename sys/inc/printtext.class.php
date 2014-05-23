@@ -66,8 +66,8 @@ class PrintText {
 			$announce = mb_substr($str, $start, $length);
 			//if (!preg_match('#[a-zа-я]$#ui', $announce)) $announce = mb_substr($announce, 0, -1);
 		}
-		
-		
+
+
 		if (is_object($material)) {
 			$ustatus = $material->getAuthor()->getStatus();
 			$title = $material->getTitle();

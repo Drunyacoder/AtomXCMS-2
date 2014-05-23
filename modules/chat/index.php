@@ -145,7 +145,7 @@ class ChatModule extends Module {
 			$this->Register['Validate']->disableFieldCheck('keystring');
 		}
 		
-		$errors .= $this->Register['Validate']->check($this->getValidateRules());
+		$errors .= $this->Register['Validate']->check($this->Register['action']);
 		
 		
 		/* remember name */
@@ -260,7 +260,7 @@ class ChatModule extends Module {
 				),
 			),
 		);
-		return array($this->module => $rules);
+		return $rules;
 	}
 }
 

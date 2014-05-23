@@ -5,9 +5,9 @@
 | @Version:      1.1                           |
 | @Project:      CMS                           |
 | @Package       AtomX CMS                     |
-| @subpackege    LoadsSections Entity          |
-| @copyright     ©Andrey Brykin 2010-2013      |
-| @last mod      2013/12/08                    |
+| @subpackege    LoadsCategories Entity        |
+| @copyright     ©Andrey Brykin 2010-2014      |
+| @last mod      2014/05/16                    |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
@@ -24,7 +24,7 @@
 /**
  *
  */
-class LoadsSectionsEntity extends FpsEntity
+class LoadsCategoriesEntity extends FpsEntity
 {
 	
 	protected $id;
@@ -50,7 +50,7 @@ class LoadsSectionsEntity extends FpsEntity
 		
 		if ($this->id) $params['id'] = intval($this->id);
 		$Register = Register::getInstance();
-		return $Register['DB']->save('loads_sections', $params);
+		return $Register['DB']->save('loads_categories', $params);
 	}
 	
 	
@@ -58,6 +58,6 @@ class LoadsSectionsEntity extends FpsEntity
 	public function delete()
 	{ 
 		$Register = Register::getInstance();
-		$Register['DB']->delete('loads_sections', array('id' => $this->id));
+		$Register['DB']->delete('loads_categories', array('id' => $this->id));
 	}
 }

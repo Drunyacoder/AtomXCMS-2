@@ -5,9 +5,9 @@
 | @Version:      1.1                           |
 | @Project:      CMS                           |
 | @Package       AtomX CMS                     |
-| @subpackege    NewsSections Entity           |
-| @copyright     ©Andrey Brykin 2010-2013      |
-| @last mod      2013/12/08                    |
+| @subpackege    NewsCategories Entity         |
+| @copyright     ©Andrey Brykin 2010-2014      |
+| @last mod      2014/05/16                    |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
@@ -24,7 +24,7 @@
 /**
  *
  */
-class NewsSectionsEntity extends FpsEntity
+class NewsCategoriesEntity extends FpsEntity
 {
 	
 	protected $id;
@@ -50,7 +50,7 @@ class NewsSectionsEntity extends FpsEntity
 		
 		if ($this->id) $params['id'] = intval($this->id);
 		$Register = Register::getInstance();
-		return $Register['DB']->save('news_sections', $params);
+		return $Register['DB']->save('news_categories', $params);
 	}
 	
 	
@@ -58,6 +58,6 @@ class NewsSectionsEntity extends FpsEntity
 	public function delete()
 	{ 
 		$Register = Register::getInstance();
-		$Register['DB']->delete('news_sections', array('id' => $this->id));
+		$Register['DB']->delete('news_categories', array('id' => $this->id));
 	}
 }

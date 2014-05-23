@@ -68,6 +68,8 @@ class FpsPDO {
 	private $dbh;
 	
 	private $queryParams = array();
+
+    private $statement;
 	
 	
 	public function __construct()
@@ -103,30 +105,7 @@ class FpsPDO {
 	public function select ($table, $type, $params = array()) {
 		$this->queryParams = array();
 		if (in_array($type, array('DB_FIRST', 'DB_ALL', 'DB_COUNT'))) $this->DB_TYPE = $type;
-		
-		
-		$params = array_merge(array(
-			'cond' => array(), 
-			'limit' => null, 
-			'page' => null, 
-			'fields' => null, 
-			'order' => null, 
-			'group' => null, 
-			'alias' => null, 
-			'joins' => array()), $params);
 
-				
-		if (!is_numeric($params['page']) || intval($params['page']) < 1) {
-			$params['page'] = 1;
-		}
-		
-		if ($params['page'] > 1 && !empty($params['limit'])) {
-			$params['offset'] = ($params['page'] - 1) * $params['limit'];
-		} else {
-			$params['offset'] = 0;
-		}
-		
-		
 		$query = $this->__buildQuery($params, $table);
 
 		// trying cache querys 
@@ -160,7 +139,8 @@ class FpsPDO {
 			if ($type == 'DB_COUNT') { 		//if type is COUNT
 				$_result = $data->fetchColumn();
 			} else { 					//if type not COUNT
-				$_result = $data->fetchAll(PDO::FETCH_ASSOC);
+				//$_result = $data->fetchAll(PDO::FETCH_ASSOC);
+				$_result = $this->prepareOutput($data);
 			}
 		}
 		
@@ -315,14 +295,200 @@ class FpsPDO {
 		if (Config::read('debug_mode') == 1)
             AtmDebug::addRow('DB Queries', array($this->getQueryDump($query), $took));
 	}
-	
+
+
+    private function prepareOutput(PDOStatement $query) {
+        $rows = $query->fetchAll(PDO::FETCH_NUM);
+
+        $model_conf = (!empty($this->relationsMap)) ? $this->relationsMap : array();
+        $this->relationsMap = array();
+        $meta = array();
+        $affected_rows = array();
+
+        foreach(range(0, $query->columnCount() - 1) as $column_index){
+            $meta[$column_index] = $query->getColumnMeta($column_index);
+        }
+
+        if (empty($model_conf)) {
+            return $this->prepareSimplifiedOutput($rows, $meta);
+        }
+
+
+        foreach ($rows as $k => $row) {
+            foreach($row as $column_index => $column_value) {
+                $column_db_name = $meta[$column_index]['name'];
+                $column_db_table = $meta[$column_index]['table'];
+
+                if (!isset($$column_db_table)) $$column_db_table = array();
+                if (!array_key_exists($column_db_table, $affected_rows)) $affected_rows[$column_db_table] = array();
+
+                $$column_db_table = array_merge($$column_db_table, array($column_db_name => $column_value));
+            }
+
+            foreach (array_keys($affected_rows) as $affected_table) {
+                $affect_t = $$affected_table;
+                if (array_key_exists('id', $affect_t))
+                    $affected_rows[$affected_table][$affect_t['id']] = $affect_t;
+                else
+                    $affected_rows[$affected_table][] = $affect_t;
+            }
+            unset($rows[$k]);
+        }
+
+
+        foreach ($model_conf as $table1 => $params) break;
+        $rows = &$affected_rows[$table1];
+        $this->prepareTableOutput($table1, $affected_rows, $rows, $model_conf);
+
+
+
+        if (empty($affected_rows)) return array();
+        $affected_rows = array_shift($affected_rows);
+
+        if (empty($affected_rows)) return array();
+        $affected_rows = array_values($affected_rows);
+        //pr($affected_rows); die();
+        return $affected_rows;
+    }
+
+
+    private function prepareTableOutput($table1, $affected_rows, &$rows, &$model_conf, $root_record_id = null)
+    {
+        $mergeRows = function($row1, $row2, $table1, $table2, $root_record_id) use (&$model_conf, $affected_rows) {
+            $params = $model_conf[$table1][$table2];
+            switch ($params['type']) {
+                case 'has_one':
+                    if (!empty($params['foreignKey']))
+                        if ($row2[$params['foreignKey']] !== $row1['id']) continue;
+                    if (!empty($params['internalKey']))
+                        if ($row1[$params['internalKey']] !== $row2['id']) continue;
+                    if (!empty($params['rootForeignKey'])) {
+                        if (!empty($root_record_id) && $row2[$params['rootForeignKey']] === $root_record_id)
+                            $row1[$table2] = $row2;
+                        continue;
+                    }
+                    $row1[$table2] = $row2;
+                    break;
+                case 'has_many':
+                    if (!array_key_exists($table2, $row1) || !is_array($row1[$table2])) $row1[$table2] = array();
+                    if (!empty($params['foreignKey']))
+                        if ($row2[$params['foreignKey']] !== $row1['id']) continue;
+                    if (!empty($params['internalKey']))
+                        if ($row1[$params['internalKey']] !== $row2['id']) continue;
+
+                    $row1[$table2][$row2['id']] = $row2;
+
+                    break;
+                case 'many_to_many':
+                    if (array_key_exists($table2, $model_conf)) {
+                        reset($model_conf[$table2]);
+                        $t2 = key($model_conf[$table2]);
+                    }
+
+                    if (empty($t2) || $model_conf[$table2][$t2]['type'] !== 'many_to_many') {
+                        $foreignKey2 = (!empty($model_conf[$table1][$table2]['foreignKey']))
+                            ? $model_conf[$table1][$table2]['foreignKey'] : '';
+
+                        if (!empty($foreignKey2)) {
+                            if ($row1[$foreignKey2] === $row2['id']) {
+                                $row1 = array_merge($row1, $row2);
+                            }
+                        }
+                        break;
+                    }
+
+                    if (!array_key_exists($table2, $row1) || !is_array($row1[$table2])) $row1[$table2] = array();
+                    if (!empty($params['foreignKey'])) {
+                        if ($row1['id'] === $row2[$params['foreignKey']]) {
+                            $row1[$table2][$row2['id']] = $row2;
+                        }
+                    }
+                    break;
+                case 'has_many_through':
+                    $t2 = null;
+                    $lefter_table = false;
+                    if (array_key_exists($table2, $model_conf)) {
+                        reset($model_conf[$table2]);
+                        $t2 = key($model_conf[$table2]);
+                        if ($model_conf[$table2][$t2]['type'] === 'has_many_through') $lefter_table = true;
+                    }
+
+                    if ($lefter_table) {
+                        $rows = array(&$row2);
+                        $this->prepareTableOutput($table2, $affected_rows, $rows, $model_conf, $root_record_id);
+                        if ($row1[$params['foreignKey']] === $row2['id']) {
+                            if (empty($row1[$table2])) $row1[$table2] = array();
+                            $row1[$table2] = $row2[$t2];
+                        }
+                    } else {
+                        if ($row1['id'] === $row2[$params['foreignKey']] &&
+                        !array_key_exists($params['foreignKey'], $row1)) {
+                            if (empty($row1[$table2])) $row1[$table2] = array();
+                            $row1[$table2][] = $row2;
+                        }
+                    }
+                    break;
+            }
+
+            return $row1;
+        };
+
+
+        foreach ($model_conf[$table1] as $table2 => $params) {
+			if (empty($rows)) break;
+            foreach ($rows as $id => $row) {
+                $root_id = (empty($root_record_id)) ? $row['id'] : $root_record_id;
+                if (empty($affected_rows[$table2])) {
+                    $rows[$id] = array();
+                    continue;
+                }
+                foreach ($affected_rows[$table2] as $row2) {
+                    $row = $mergeRows($row, $row2, $table1, $table2, $root_id);
+                    if (array_key_exists($table2, $model_conf) && array_key_exists($table2, $row)) {
+                        foreach ($row[$table2] as $key => $value) {
+                            if (!is_numeric($key))
+                                $rows2 = array(&$row[$table2]);
+                            else
+                                $rows2 = &$row[$table2];
+                            break;
+                        }
+                        $this->prepareTableOutput($table2, $affected_rows, $rows2, $model_conf, $root_id);
+                    }
+                    $rows[$id] = $row;
+                }
+            }
+        }
+    }
+
+
+    private function prepareSimplifiedOutput($rows, $meta)
+    {
+
+        if (empty($rows)) return array();
+        if (empty($meta)) throw new Exception('Empty meta data during prepare SQL query output. Query(' . $this->statement->queryString . ')');
+
+        $result = array();
+        foreach ($rows as $k => $row) {
+            if (!array_key_exists($k, $result)) $result[$k] = array();
+
+            foreach($row as $column_index => $column_value) {
+                $column_db_name = $meta[$column_index]['name'];
+                //$column_db_table = $meta[$column_index]['table'];
+                $result[$k][$column_db_name] = $column_value;
+            }
+            unset($rows[$k]);
+        }
+
+        return $result;
+    }
+
 	
 	private function runQuery($query) 
 	{
-		$statement = $this->dbh->prepare($query);
+        $this->statement = $statement = $this->dbh->prepare($query);
+        //pr($query);
+        //pr($this->queryParams);
 		$statement->execute($this->queryParams);
-		//pr($query);
-		//pr($this->queryParams);
 		return $statement;
 	}
 	
@@ -337,7 +503,6 @@ class FpsPDO {
 	
 	private function getQueryDump($query) {
 		if (empty($this->queryParams)) return $query;
-
 		foreach ($this->queryParams as $k => $v) {
 			$v = "'$v'";
 			$query = preg_replace('#([ =,\(])('.$k.')([ \),]{1}|$)#i', "$1".$v."$3", $query);
@@ -386,6 +551,9 @@ class FpsPDO {
 	 * Prepare SQL query uses params and table
 	 */
 	private function __buildQuery($params, $table) {
+        if ($this->DB_TYPE === 'DB_FIRST') $params['limit'] = 1;
+        $params = $this->repairParams($params);
+
 		if (!empty($params['joins'])) {
 			$count = count($params['joins']);
 			for ($i = 0; $i < $count; $i++) {
@@ -393,19 +561,70 @@ class FpsPDO {
 					$params['joins'][$i] = $this->__buildJoin($params['joins'][$i]);
 				}
 			}
+
+            if ($this->__limit($params['limit'], $params['offset'])) {
+                $cond = array();
+                if (!empty($params['cond']) && is_array($params['cond'])) {
+                    foreach ($params['cond'] as $k => $v) {
+                        if (is_numeric($k) || !strstr($k, '.')) {
+                            $cond[$k] = $v;
+                            unset($params['cond'][$k]);
+                        }
+                    }
+                }
+
+                $params_ = array(
+                    'table' => $this->__name($this->getFullTableName($table)),
+                    'limit' => $params['limit'],
+                    'offset' => $params['offset'],
+                    'cond' => $cond,
+                    //'cond' => $params['cond'],
+                );
+                $sub_query = $this->__buildQuery($params_, $table);
+                $params['limit'] = null;
+                $params['offset'] = null;
+                //$params['cond'] = null;
+            }
 		}
 
 		return $this->__renderQuery('select', array(
 			'conditions' => $this->__conditions($params['cond'], true, true),
 			'fields' => $this->__fields($params['fields']),
-			'table' => $this->__name($this->getFullTableName($table)),
+			'table' => (!empty($sub_query))
+                    ? '(' . $sub_query . ')'
+                    : $this->__name($this->getFullTableName($table)),
 			'alias' => (!empty($params['alias'])) ? $this->alias . $this->__name($params['alias']) : '',
-			'order' => $this->__order($params['order']),
+			'order' => $this->__order($params['order'], $params['alias']),
 			'limit' => $this->__limit($params['limit'], $params['offset']),
 			'joins' => implode(' ', $params['joins']),
 			'group' => $this->__group($params['group'])
 		));
 	}
+
+
+    private function repairParams($params) {
+        $params = array_merge(array(
+            'cond' => array(),
+            'limit' => null,
+            'page' => null,
+            'fields' => null,
+            'order' => null,
+            'group' => null,
+            'alias' => null,
+            'joins' => array()), $params);
+
+
+        if (!is_numeric($params['page']) || intval($params['page']) < 1) {
+            $params['page'] = 1;
+        }
+
+        if ($params['page'] > 1 && !empty($params['limit'])) {
+            $params['offset'] = ($params['page'] - 1) * $params['limit'];
+        } else {
+            $params['offset'] = 0;
+        }
+        return $params;
+    }
 	
 	
 	/**
@@ -485,9 +704,11 @@ class FpsPDO {
 	 *
 	 * @param string $order
 	 */
-	private function __order($order) {
+	private function __order($order, $alias = null) {
 		if (empty($order)) return null;
-		return ' ORDER BY ' . $order;
+		return ' ORDER BY '
+            . ((!empty($alias) && !strstr($order, '.')) ? $this->__name($alias) . '.' : '')
+            . $order;
 	}
 	
 	
@@ -497,7 +718,7 @@ class FpsPDO {
 	 * @param int $limit
 	 */
 	private function __limit($limit, $offset = null) {
-		if ($limit && $this->DB_TYPE != 'DB_FIRST') {
+		if ($limit) {
 			$rt = '';
 			if (!strpos(strtolower($limit), 'limit') || strpos(strtolower($limit), 'limit') === 0) {
 				$rt = ' LIMIT';
@@ -509,9 +730,8 @@ class FpsPDO {
 
 			$rt .= ' ' . $limit;
 			return $rt;
-		} else if ($this->DB_TYPE == 'DB_FIRST') {
-			return ' LIMIT 1';
 		}
+
 		return null;
 	}
 	
@@ -675,6 +895,8 @@ class FpsPDO {
 	 */
 	private function __value($value, $key = null) 
 	{
+        if (!empty($key) && strstr($key, '.')) $key = strtr($key, array('.' => '_'));
+
 		if (empty($value) && is_int($value)) $this->queryParams[":$key"] = '0';
 		if (empty($value)) $this->queryParams[":$key"] = "''";
 

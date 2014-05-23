@@ -113,7 +113,7 @@ if (!empty($_FILES['pl_file']['name'])) {
 
 $pageTitle = __('Admin Panel');
 $pageNav = $pageTitle . __(' - General information');
-$pageNavl = '';
+$pageNavr = '';
 
 
 // get our plugins

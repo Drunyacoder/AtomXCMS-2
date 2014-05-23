@@ -72,9 +72,8 @@ Class UsersModule extends Module {
 
 
         //order by
-        $order = getOrderParam(__CLASS__);
         $queryParams = array(
-            'order' => $order,
+            'order' => $this->Model->getOrderParam(),
             'page' => $page,
             'limit' => $this->Register['Config']->read('users_per_page', 'users')
         );
@@ -284,7 +283,7 @@ Class UsersModule extends Module {
 		$signature    = mb_substr($signature, 0, 500);
 
 
-		$errors = $this->Register['Validate']->check($this->getValidateRules());
+		$errors = $this->Register['Validate']->check($this->Register['action']);
 		
 		// Проверяем, заполнены ли обязательные поля
 		// Additional fields checker
@@ -496,7 +495,7 @@ Class UsersModule extends Module {
             $this->Register['Validate']->disableFieldCheck('username');
         }
 		// Проверяем, заполнены ли обязательные поля
-		$errors = $this->Register['Validate']->check($this->getValidateRules());
+		$errors = $this->Register['Validate']->check($this->Register['action']);
 		
 
 		if ( empty( $errors ) ) {
@@ -799,7 +798,7 @@ Class UsersModule extends Module {
         }
 		
 		
-		$errors .= $this->Register['Validate']->check($this->getValidateRules());
+		$errors .= $this->Register['Validate']->check($this->Register['action']);
 		
 		
 		$tmp_key = rand(0, 9999999);
@@ -1113,7 +1112,7 @@ Class UsersModule extends Module {
 		}
 		
 		
-		$errors .= $this->Register['Validate']->check($this->getValidateRules());
+		$errors .= $this->Register['Validate']->check($this->Register['action']);
 		
 		
 		$tmp_key = rand(0, 9999999);
@@ -1435,7 +1434,7 @@ Class UsersModule extends Module {
 		
 		
 		// Проверяем, заполнены ли обязательные поля
-		$errors = $this->Register['Validate']->check($this->getValidateRules());
+		$errors = $this->Register['Validate']->check($this->Register['action']);
 		
 		
 		// Проверяем, есть ли такой пользователь
@@ -1895,7 +1894,7 @@ Class UsersModule extends Module {
 		$message = trim( $_POST['message'] );
 
 		
-		$errors = $this->Register['Validate']->check($this->getValidateRules());
+		$errors = $this->Register['Validate']->check($this->Register['action']);
 
 		
 		// Проверяем, есть ли такой пользователь
@@ -2006,7 +2005,7 @@ Class UsersModule extends Module {
 			}
 		}
 
-		$errors = $this->Register['Validate']->check($this->getValidateRules());
+		$errors = $this->Register['Validate']->check($this->Register['action']);
 		
 		
 		// Защита от перебора пароля - при каждой неудачной попытке время задержки увеличивается
@@ -2975,7 +2974,7 @@ Class UsersModule extends Module {
 			),
 		);
 		
-		return array($this->module => $rules);
+		return $rules;
 	}
 }
 

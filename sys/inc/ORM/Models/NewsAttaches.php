@@ -33,7 +33,7 @@ class NewsAttachesModel extends FpsModel
         'user' => array(
             'model' => 'Users',
             'type' => 'has_one',
-            'foreignKey' => 'user_id',
+            'internalKey' => 'user_id',
         ),
     );
 	

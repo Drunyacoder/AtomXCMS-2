@@ -123,7 +123,7 @@ $json_data = json_encode(array(
 //pr($json_data); die();
 $pageTitle = 'Статистика';
 $pageNav = $pageTitle;
-$pageNavl = '';
+$pageNavr = '';
 include_once ROOT . '/admin/template/header.php';
 
 ?>

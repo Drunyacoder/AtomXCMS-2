@@ -165,7 +165,7 @@ class Module {
         $this->Register['params'] = $params;
 		
 		
-		$this->Register['Validate']->setPathParams($this->Register['module'], $this->Register['action']);
+		$this->Register['Validate']->setRules($this->getValidateRules());
         $this->setModel();
 
         //init needed objects. Core...
@@ -473,7 +473,7 @@ class Module {
 				case 'category':
 				case 'view':
 					$conditions = array('parent_id' => intval($id));
-					$cats = $this->DB->select($this->module . '_sections', DB_ALL, 
+					$cats = $this->DB->select($this->module . '_categories', DB_ALL,
 					array('cond' => $conditions));
 					break;
 				default:
@@ -481,19 +481,21 @@ class Module {
 			}
 		}
 		if (empty($cats)) {
-			$current_cat = $this->DB->select($this->module . '_sections', DB_ALL, array(
-				'cond' => array(
-					'id' => $id,
-				),
-			));
-			if ($current_cat) {
-				$cats = $this->DB->select($this->module . '_sections', DB_ALL, array(
+            if ($id) {
+                $current_cat = $this->DB->select($this->module . '_categories', DB_ALL, array(
+                    'cond' => array(
+                        'id' => $id,
+                    ),
+                ));
+            }
+			if (!empty($current_cat[0])) {
+				$cats = $this->DB->select($this->module . '_categories', DB_ALL, array(
 					'cond' => array(
 						'parent_id' => $current_cat[0]['parent_id'],
 					),
 				));
 			} else {
-				$cats = $this->DB->select($this->module . '_sections', DB_ALL, array(
+				$cats = $this->DB->select($this->module . '_categories', DB_ALL, array(
 					'cond' => array(
 						'parent_id = 0 OR parent_id IS NULL',
 					),
@@ -530,7 +532,7 @@ class Module {
 			$tree = json_decode($tree, true);
 			return $tree;
 		} else {
-			$tree = $this->DB->select($this->module . '_sections', DB_ALL);
+			$tree = $this->DB->select($this->module . '_categories', DB_ALL);
 			
 			if ($this->cached)
 				$this->Cache->write(json_encode($this->categories), 'category_tree_' . $this->cacheKey
@@ -678,7 +680,7 @@ class Module {
 			$errors .= '<li>' . sprintf(__('Max overal files size is %s Mb'), $max_overal_size / 1024 / 1024) . '</li>';
 		
 		
-		$errors .= $this->Register['Validate']->check($this->getValidateRules());
+		$errors .= $this->Register['Validate']->check($this->Register['action']);
 		if (!empty($errors)) $this->showAjaxResponse(array(
 			'errors' => $this->Register['Validate']->wrapErrors($errors), 
 			'result' => '0'
@@ -870,7 +872,7 @@ class Module {
 	public function getDeniSectionsCond($group = null)
 	{
 		$group = (!empty($_SESSION['user']['status'])) ? $_SESSION['user']['status'] : 0;
-		$sectionModel = $this->Register['ModManager']->getModelInstance($this->module . 'Sections');
+		$sectionModel = $this->Register['ModManager']->getModelInstance($this->module . 'Categories');
 		$deni_sections = $sectionModel->getCollection(array("CONCAT(',', `no_access`, ',') NOT LIKE '%,$group,%'"));
 		$ids = array();
 		if ($deni_sections) {

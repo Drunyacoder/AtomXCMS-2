@@ -37,17 +37,17 @@ class ForumModel extends FpsModel
         'category' => array(
             'model' => 'ForumCat',
             'type' => 'has_one',
-            'foreignKey' => 'id_cat',
+            'internalKey' => 'id_cat',
         ),
         'last_theme' => array(
             'model' => 'Themes',
             'type' => 'has_one',
-            'foreignKey' => 'last_theme_id',
+            'internalKey' => 'last_theme_id',
         ),
         'parent_forum' => array(
             'model' => 'Forum',
             'type' => 'has_one',
-            'foreignKey' => 'parent_forum_id',
+            'internalKey' => 'parent_forum_id',
         ),
         'subforums' => array(
             'model' => 'Forum',

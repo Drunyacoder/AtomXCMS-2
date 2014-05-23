@@ -32,7 +32,8 @@ class ChatModel extends FpsModel
         'author' => array(
             'model' => 'Users',
             'type' => 'has_one',
-            'foreignKey' => 'author_id',
+            'internalKey' => 'author_id',
+            'relationType' => FpsModel::DQ,
       	),
     );
 

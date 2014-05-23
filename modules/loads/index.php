@@ -85,7 +85,7 @@ Class LoadsModule extends Module {
 
         // we need to know whether to show hidden
 		$group = (!empty($_SESSION['user']['status'])) ? $_SESSION['user']['status'] : 0;
-		$sectionModel = $this->Register['ModManager']->getModelInstance($this->module . 'Sections');
+		$sectionModel = $this->Register['ModManager']->getModelInstance($this->module . 'Categories');
 		$deni_sections = $sectionModel->getCollection(array("CONCAT(',', `no_access`, ',') NOT LIKE '%,$group,%'"));
 		$ids = array();
 		if ($deni_sections) {
@@ -127,16 +127,14 @@ Class LoadsModule extends Module {
         }
 
 
-        $params = array(
-            'page' => $page,
-            'limit' => $this->Register['Config']->read('per_page', $this->module),
-            'order' => getOrderParam(__CLASS__),
-        );
-		
-
         $this->Model->bindModel('attaches');
         $this->Model->bindModel('author');
         $this->Model->bindModel('category');
+        $params = array(
+            'page' => $page,
+            'limit' => $this->Register['Config']->read('per_page', $this->module),
+            'order' => $this->Model->getOrderParam(),
+        );
         $records = $this->Model->getCollection($query_params['cond'], $params);
 
         if (is_object($this->AddFields) && count($records) > 0) {
@@ -203,7 +201,7 @@ Class LoadsModule extends Module {
         if (empty($id) || $id < 1) redirect('/');
 
 
-        $SectionsModel = $this->Register['ModManager']->getModelInstance($this->module . 'Sections');
+        $SectionsModel = $this->Register['ModManager']->getModelInstance($this->module . 'Categories');
         $category = $SectionsModel->getById($id);
         if (!$category)
             return showInfoMessage(__('Can not find category'), '/' . $this->module . '/');
@@ -229,7 +227,7 @@ Class LoadsModule extends Module {
         $childCats = implode(', ', $childCats);
 		
 		$group = (!empty($_SESSION['user']['status'])) ? $_SESSION['user']['status'] : 0;
-		$sectionModel = $this->Register['ModManager']->getModelInstance($this->module . 'Sections');
+		$sectionModel = $this->Register['ModManager']->getModelInstance($this->module . 'Categories');
 		$deni_sections = $sectionModel->getCollection(array(
 			"CONCAT(',', `no_access`, ',') NOT LIKE '%,$group,%'",
 			"`id` IN ({$childCats})",
@@ -275,11 +273,6 @@ Class LoadsModule extends Module {
         }
 
 
-        $params = array(
-            'page' => $page,
-            'limit' => Config::read('per_page', $this->module),
-            'order' => getOrderParam(__CLASS__),
-        );
         $where = $query_params['cond'];
         if (!$this->ACL->turn(array('other', 'can_see_hidden'), false)) $where['available'] = '1';
 
@@ -287,6 +280,11 @@ Class LoadsModule extends Module {
         $this->Model->bindModel('attaches');
         $this->Model->bindModel('author');
         $this->Model->bindModel('category');
+        $params = array(
+            'page' => $page,
+            'limit' => Config::read('per_page', $this->module),
+            'order' => $this->Model->getOrderParam(),
+        );
         $records = $this->Model->getCollection($where, $params);
 
 
@@ -535,15 +533,13 @@ Class LoadsModule extends Module {
 		}
 
 
-		$params = array(
-			'page' => $page,
-			'limit' => $this->Register['Config']->read('per_page', $this->module),
-			'order' => getOrderParam(__CLASS__),
-		);
-
-
 		$this->Model->bindModel('author');
 		$this->Model->bindModel('category');
+        $params = array(
+            'page' => $page,
+            'limit' => $this->Register['Config']->read('per_page', $this->module),
+            'order' => $this->Model->getOrderParam(),
+        );
 		$records = $this->Model->getCollection($where, $params);
 
 
@@ -632,7 +628,7 @@ Class LoadsModule extends Module {
 
 
 		
-        $SectionsModel = $this->Register['ModManager']->getModelInstance($this->module . 'Sections');
+        $SectionsModel = $this->Register['ModManager']->getModelInstance($this->module . 'Categories');
         $sql = $SectionsModel->getCollection();
         $data['cats_selector'] = $this->_buildSelector($sql, ((!empty($data['in_cat'])) ? $data['in_cat'] : false));
 
@@ -687,7 +683,7 @@ Class LoadsModule extends Module {
             if (is_string($_addFields)) $errors .= $_addFields;
         }
 		
-		$errors .= $this->Register['Validate']->check($this->getValidateRules());
+		$errors .= $this->Register['Validate']->check($this->Register['action']);
 
 
 		$fields = array('description', 'tags', 'sourse', 'sourse_email', 'sourse_site', 'download_url', 'download_url_size');
@@ -732,7 +728,7 @@ Class LoadsModule extends Module {
 
 
 
-        $sectionModel = $this->Register['ModManager']->getModelInstance($this->module . 'Sections');
+        $sectionModel = $this->Register['ModManager']->getModelInstance($this->module . 'Categories');
         $section = $sectionModel->getById($in_cat);
         if (!$section) $errors .= '<li>' . __('Can not find category') . '</li>' . "\n";
 		
@@ -897,7 +893,7 @@ Class LoadsModule extends Module {
 
 
 		
-		$sectionsModel = $this->Register['ModManager']->getModelInstance($this->module . 'Sections');
+		$sectionsModel = $this->Register['ModManager']->getModelInstance($this->module . 'Categories');
 		$categories = $sectionsModel->getCollection();
 		$selectedCatId = ($markers->getIn_cat()) ? $markers->getIn_cat() : $markers->getCategory_id();
 		$cats_change = $this->_buildSelector($categories, $selectedCatId); 
@@ -936,7 +932,8 @@ Class LoadsModule extends Module {
 
 
         $source = $this->render('editform.html', array('context' => $markers));
-		setReferer();
+        setReferer();
+
 		return $this->_view($source);
 	}
 
@@ -975,7 +972,7 @@ Class LoadsModule extends Module {
             if (is_string($_addFields)) $errors .= $_addFields;
         }
 
-		$errors .= $this->Register['Validate']->check($this->getValidateRules());
+		$errors .= $this->Register['Validate']->check($this->Register['action']);
 		
 		
 		$valobj = $this->Register['Validate'];
@@ -1011,7 +1008,7 @@ Class LoadsModule extends Module {
 		
 
 		if (!empty($in_cat)) {
-			$sectionsModel = $this->Register['ModManager']->getModelInstance($this->module . 'Sections');
+			$sectionsModel = $this->Register['ModManager']->getModelInstance($this->module . 'Categories');
 			$category = $sectionsModel->getById($in_cat);
 			if (!$category) $errors .= '<li>' . __('Can not find category') . '</li>' . "\n";
 		}
@@ -1711,7 +1708,7 @@ Class LoadsModule extends Module {
 			),
 		);
 		
-		return array($this->module => $rules);
+		return $rules;
 	}
 }
 

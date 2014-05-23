@@ -5,9 +5,9 @@
 | @Version:      1.0                           |
 | @Project:      CMS                           |
 | @Package       AtomX CMS                     |
-| @subpackege    Stat Sections Model           |
-| @copyright     ©Andrey Brykin 2010-2012      |
-| @last mod      2012/04/25                    |
+| @subpackege    StatCategories Model          |
+| @copyright     ©Andrey Brykin 2010-2014      |
+| @last mod      2014/05/16                    |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
@@ -24,10 +24,10 @@
 /**
  *
  */
-class StatSectionsModel extends FpsModel
+class StatCategoriesModel extends FpsModel
 {
 	
-    public $Table = 'stat_sections';
+    public $Table = 'stat_categories';
 	
 
 

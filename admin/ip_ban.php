@@ -53,7 +53,7 @@ switch ( $_GET['ac'] )
 
 
 $pageNav = $pageTitle;
-$pageNavl = '';
+$pageNavr = '';
 include_once ROOT . '/admin/template/header.php';
 ?>
 

@@ -33,7 +33,7 @@ if ($this->Cache->check($cache_key)) {
 	
 	// we need to know whether to show hidden
 	$group = (!empty($_SESSION['user']['status'])) ? $_SESSION['user']['status'] : 0;
-	$sectionModel = $this->Register['ModManager']->getModelInstance($this->module . 'Sections');
+	$sectionModel = $this->Register['ModManager']->getModelInstance($this->module . 'Categories');
 	$deni_sections = $sectionModel->getCollection(array("CONCAT(',', `no_access`, ',') NOT LIKE '%,$group,%'"));
 	$ids = array();
 	if ($deni_sections) {
@@ -57,7 +57,7 @@ if ($this->Cache->check($cache_key)) {
 		$query_params, 
 		array(
 			'limit' => $this->Register['Config']->read('rss_cnt', 'rss'),
-			'order' => getOrderParam(ucfirst($this->module) . 'Module'),
+			'order' => $this->Model->getOrderParam(),
 		)
 	);
 	

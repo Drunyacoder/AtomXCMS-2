@@ -44,11 +44,6 @@ class Validate {
 	/**
 	 * @var array
 	 */
-	private $pathParams;
-	
-	/**
-	 * @var array
-	 */
 	private $disabledFields = array();
 	
 	/**
@@ -58,6 +53,7 @@ class Validate {
 	
 	const V_TITLE = '#^[A-ZА-Яа-яa-z0-9ё\s\-(),._\?!\w\d\{\}\<\>:=\+&%\$\[\]\\\/"\']+$#ui';
 	const V_INT = '#^\d+$#i';
+	const V_FLOAT = '#^\d+\.?\d*$#i';
 	const V_TEXT = '#^[\wA-ZА-Яа-яa-z0-9\s\-\(\):;\[\]\+!\.,&\?/\{\}="\']*$#uim';
 	const V_MAIL = '#^[0-9a-z_\-\.]+@[0-9a-z\-\.]+\.[a-z]{2,6}$#i';
 	const V_URL = '#^((https?|ftp):\/\/)?(www.)?([0-9a-z]+(-?[0-9a-z]+)*\.)+[a-z]{2,6}\/?([-0-9a-z_]*\/?)*([-0-9A-Za-zА-Яа-я_]+\.?[-0-9a-z_]+\/?)*$#i';
@@ -131,14 +127,6 @@ class Validate {
 	}
 	
 	
-	
-	public function setPathParams($module, $action) 
-	{
-		$this->pathParams = array($module, $action);
-	}
-	
-	
-	
 	public function setRules($rules) 
 	{
 		$this->rules = $rules;
@@ -154,9 +142,9 @@ class Validate {
 	
 	
 
-	public function check($rules = null, $wrap = false) 
+	public function check($action = null, $wrap = false)
 	{
-		$rules = $this->prepareRules($rules);
+		$rules = $this->prepareRules($action);
 
 		$Register = Register::getInstance();
 		$request = $_POST;
@@ -298,7 +286,8 @@ class Validate {
 	
 	
 	
-	public function wrapErrors($errors) {
+	public function wrapErrors($errors, $preprocess = false) {
+        if ($preprocess) $errors = $this->completeErrorMessage($errors);
 		return (is_callable($this->layoutWrapper))
 			? call_user_func($this->layoutWrapper, $errors)
 			: $errors;
@@ -353,9 +342,9 @@ class Validate {
 	/**
 	 * @param $rules array
 	 */
-	public function getFormFields($rules)
+	public function getFormFields($action)
 	{
-		$rules = $this->prepareRules($rules);
+		$rules = $this->prepareRules($action);
 		$Register = Register::getInstance();
 		$request = $_POST;
 		return array_fill_keys(array_keys($rules), null);
@@ -378,9 +367,9 @@ class Validate {
 	 * @param $rules array
 	 * @param $additional_fields array
 	 */
-	public function getAndMergeFormPost($rules = null, $additional_fields = array(), $correct = false)
+	public function getAndMergeFormPost($action = null, $additional_fields = array(), $correct = false)
 	{
-		$rules = $this->prepareRules($rules);
+		$rules = $this->prepareRules($action);
 		
 		$Register = Register::getInstance();
 		$request = $_POST;
@@ -447,15 +436,15 @@ class Validate {
 
 
 	
-	private function prepareRules($rules)
+	private function prepareRules($action)
 	{
-		if ($rules == null) $rules = $this->rules;
-		$rules = (array_key_exists($this->pathParams[1], $rules[$this->pathParams[0]])) 
-			? $rules[$this->pathParams[0]][$this->pathParams[1]]
-			: @$rules[$this->pathParams[0]][substr($this->pathParams[1], 0, -5)];
+        $rules = (!empty($this->rules) && is_array($this->rules)) ? $this->rules : array();
+		$rules = (array_key_exists($action, $rules))
+			? $rules[$action]
+			: @$rules[substr($action, 0, -5)];
 		
 		if (empty($rules) || count($rules) < 1) 
-			throw new Exception("Rules for ".$this->pathParams[0]." - ".$this->pathParams[1]."(_form) not found.");
+			throw new Exception("Rules for ".$action."(_form) not found.");
 		
 		return $rules;
 	}

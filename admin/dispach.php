@@ -32,10 +32,12 @@ $FpsDB = $Register['DB'];
 
 $pageTitle = __('Admin Panel');
 $pageNav = $pageTitle . __(' - General information');
-$pageNavl = '';
+$pageNavr = '';
 
 if (empty($_GET['url'])) throw new Exception('Can\'t dispath dinamic URL. Page not found.');
-list ($module, $action) = explode('/', $_GET['url']);
+$url_params = explode('/', $_GET['url']);
+$module = array_shift($url_params);
+$action = array_shift($url_params);
 if (empty($module) || empty($action))  throw new Exception('Can\'t dispath dinamic URL. Page not found.');
 
 $controller_path = $Register['ModManager']->getSettingsControllerPath($module);
@@ -47,18 +49,14 @@ include_once $controller_path;
 if (!class_exists($class_name)) throw new Exception("Dinamic pages controller for module \"$module\" not found.");
 
 $controller = new $class_name;
+$controller->pageTitle = &$pageTitle;
+$controller->pageNav = &$pageNav;
+$controller->pageNavr = &$pageNavr;
 if (!is_callable(array($controller, $action))) throw new Exception("Method \"$action\" not found in \"$module\" module.");
 
+
+$content = call_user_func_array(array($controller, $action), $url_params);
 include_once ROOT . '/admin/template/header.php';
-echo $controller->{$action}();
-?>
+echo $content;
 
-
-
-
-<?php
 include_once 'template/footer.php';
-?>
-
-
-

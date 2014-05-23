@@ -5,9 +5,9 @@
 | @Version:      1.0                           |
 | @Project:      CMS                           |
 | @Package       AtomX CMS                     |
-| @subpackege    Loads Sections Model          |
-| @copyright     ©Andrey Brykin 2010-2012      |
-| @last mod      2012/04/29                    |
+| @subpackege    LoadsCategories Model         |
+| @copyright     ©Andrey Brykin 2010-2014      |
+| @last mod      2014/05/16                    |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
@@ -24,10 +24,10 @@
 /**
  *
  */
-class LoadsSectionsModel extends FpsModel
+class LoadsCategoriesModel extends FpsModel
 {
 	
-    public $Table = 'loads_sections';
+    public $Table = 'loads_categories';
 	
 
 

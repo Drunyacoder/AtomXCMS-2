@@ -32,12 +32,12 @@ class NewsModel extends FpsModel
         'author' => array(
             'model' => 'Users',
             'type' => 'has_one',
-            'foreignKey' => 'author_id',
+            'internalKey' => 'author_id',
       	),
         'category' => array(
-            'model' => 'NewsSections',
+            'model' => 'NewsCategories',
             'type' => 'has_one',
-            'foreignKey' => 'category_id',
+            'internalKey' => 'category_id',
         ),
         'comments_' => array(
             'model' => 'Comments',
@@ -50,6 +50,11 @@ class NewsModel extends FpsModel
             'type' => 'has_many',
             'foreignKey' => 'entity_id',
         ),
+    );
+
+    protected $orderParams = array(
+        'allowed' => array('views', 'date', 'comments'),
+        'default' => 'date',
     );
 
 	

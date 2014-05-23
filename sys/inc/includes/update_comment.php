@@ -34,7 +34,7 @@ if (!$comment->getUser_id()) {
 	$this->Register['Validate']->disableFieldCheck('login');
 }
 
-$errors .= $this->Register['Validate']->check($this->getValidateRules());
+$errors .= $this->Register['Validate']->check($this->Register['action']);
 
 	
 /* if an error */

@@ -364,14 +364,14 @@ class PagesModel extends FpsModel
 
 		if (in_array('news', $latest_on_home)) 
 		$sql .= "(SELECT `title`, `main`, `date`, `on_home_top`, `id`, `views`, `author_id`, `category_id`, `comments`, 
-			(SELECT title FROM `" . $Register['DB']->getFullTableName('news_sections') . "` 
+			(SELECT title FROM `" . $Register['DB']->getFullTableName('news_categories') . "`
 			WHERE `id` = `news`.`category_id`) as category_title, 
 			(SELECT \"news\") AS skey  
 			FROM `" . $Register['DB']->getFullTableName('news') . "` 
 			WHERE `view_on_home` = '1' AND `available` = '1' AND `premoder` = 'confirmed') ";
 		if (in_array('loads', $latest_on_home)) {
 			if (!empty($sql)) $sql .= 'UNION ';
-			$sql .= "(SELECT `title`, `main`, `date`, `on_home_top`, `id`, `views`, `author_id`, `category_id`, `comments`, (SELECT title FROM `" . $Register['DB']->getFullTableName('loads_sections') . "` 
+			$sql .= "(SELECT `title`, `main`, `date`, `on_home_top`, `id`, `views`, `author_id`, `category_id`, `comments`, (SELECT title FROM `" . $Register['DB']->getFullTableName('loads_categories') . "`
 			WHERE `id` = `loads`.`category_id`) as category_title, 
 			(SELECT \"loads\") AS skey   
 			FROM `" . $Register['DB']->getFullTableName('loads') . "` 
@@ -380,7 +380,7 @@ class PagesModel extends FpsModel
 		if (in_array('stat', $latest_on_home)) {
 			if (!empty($sql)) $sql .= 'UNION ';
 			$sql .= "(SELECT `title`, `main`, `date`, `on_home_top`, `id`, `views`, `author_id`, `category_id`, `comments`, 
-				(SELECT title FROM `" . $Register['DB']->getFullTableName('stat_sections') . "` 
+				(SELECT title FROM `" . $Register['DB']->getFullTableName('stat_categories') . "`
 				WHERE `id` = `stat`.`category_id`) as category_title, 
 				(SELECT \"stat\") AS skey  
 				FROM `" . $Register['DB']->getFullTableName('stat') . "` 

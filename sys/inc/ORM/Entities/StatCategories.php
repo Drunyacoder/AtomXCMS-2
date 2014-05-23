@@ -5,9 +5,9 @@
 | @Version:      1.1                           |
 | @Project:      CMS                           |
 | @Package       AtomX CMS                     |
-| @subpackege    StatSections Entity           |
-| @copyright     ©Andrey Brykin 2010-2013      |
-| @last mod      2013/12/08                    |
+| @subpackege    StatCategories Entity         |
+| @copyright     ©Andrey Brykin 2010-2014      |
+| @last mod      2014/05/16                    |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
@@ -24,7 +24,7 @@
 /**
  *
  */
-class StatSectionsEntity extends FpsEntity
+class StatCategoriesEntity extends FpsEntity
 {
 	
 	protected $id;
@@ -51,7 +51,7 @@ class StatSectionsEntity extends FpsEntity
 		
 		if ($this->id) $params['id'] = intval($this->id);
 		$Register = Register::getInstance();
-		return $Register['DB']->save('stat_sections', $params);
+		return $Register['DB']->save('stat_categories', $params);
 	}
 	
 	
@@ -59,6 +59,6 @@ class StatSectionsEntity extends FpsEntity
 	public function delete()
 	{ 
 		$Register = Register::getInstance();
-		$Register['DB']->delete('stat_sections', array('id' => $this->id));
+		$Register['DB']->delete('stat_categories', array('id' => $this->id));
 	}
 }

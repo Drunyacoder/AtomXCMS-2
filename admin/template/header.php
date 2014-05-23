@@ -189,7 +189,7 @@
 					<div class="shadow">
 						<ul>
 							<?php foreach ($modData['sub'] as $url => $ankor): ?>
-							<li><a href="<?php echo $url; ?>"><?php echo $ankor; ?></a></li>
+							<li><a href="<?php echo get_url('/admin/' . $url); ?>"><?php echo $ankor; ?></a></li>
 							<?php endforeach; ?>
 						</ul>
 					</div>
@@ -311,36 +311,15 @@
 		
 		
 		<div class="center-wrapper">
-		
 			<table class="side-separator" cellpadding="0" cellspacing="0" width="100%" >
 				<tr>
 					<td id="side-menu-td" width="237" min-height="100%">
-
 					</td>
 					<td style="position:relative;">
-
-
 						<div id="content-wrapper">
-
-
-
-
-
-
-<?php /*
-<!-- navi -->
-<div class="topnav">
-<div class="left"><?php echo $pageNav; ?><div class="right"><?php echo $pageNavl; ?></div></div>
-</div>
-<!-- /navi -->
-*/ ?>
-
-
-
-
-
-
-
-
-
-
+<?php if (!empty($_SESSION['message'])): ?>
+    <div class="warning ok"><?php echo h($_SESSION['message']) ?></div>
+    <?php unset($_SESSION['message']); ?>
+<?php elseif (!empty($_SESSION['errors'])): ?>
+    <div class="warning error"><?php echo h($_SESSION['errors']) ?></div>
+<?php unset($_SESSION['errors']); endif; ?>

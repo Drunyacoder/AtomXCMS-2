@@ -32,13 +32,18 @@ class FotoModel extends FpsModel
         'author' => array(
             'model' => 'Users',
             'type' => 'has_one',
-            'foreignKey' => 'author_id',
+            'internalKey' => 'author_id',
       	),
         'category' => array(
-            'model' => 'FotoSections',
+            'model' => 'FotoCategories',
             'type' => 'has_one',
-            'foreignKey' => 'category_id',
+            'internalKey' => 'category_id',
         ),
+    );
+
+    protected $orderParams = array(
+        'allowed' => array('views', 'date', 'comments'),
+        'default' => 'date',
     );
 
 	

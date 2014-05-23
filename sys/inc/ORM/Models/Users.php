@@ -32,13 +32,18 @@ class UsersModel extends FpsModel
         'inpm' => array(
             'model' => 'Messages',
             'type' => 'has_many',
-            'foreignKey' => 'to',
+            'foreignKey' => 'to_user',
         ),
         'outpm' => array(
             'model' => 'Messages',
             'type' => 'has_many',
-            'foreignKey' => 'from',
+            'foreignKey' => 'from_user',
         ),
+    );
+
+    protected $orderParams = array(
+        'allowed' => array('puttime', 'last_visit', 'name', 'rating', 'posts', 'status', 'warnings', 'city', 'jabber', 'byear', 'pol'),
+        'default' => 'puttime',
     );
 	
 	

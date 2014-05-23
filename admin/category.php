@@ -51,11 +51,11 @@ function getCurrMod() {
 function deleteCatsCollision() 
 {
 	global $FpsDB;
-	$collision = $FpsDB->select(getCurrMod() . '_sections', DB_ALL, array(
+	$collision = $FpsDB->select(getCurrMod() . '_categories', DB_ALL, array(
 		'joins' => array(
 			array(
 				'type' => 'LEFT',
-				'table' => getCurrMod() . '_sections',
+				'table' => getCurrMod() . '_categories',
 				'alias' => 'b',
 				'cond' => '`b`.`id` = `a`.`parent_id`',
 			),
@@ -68,7 +68,7 @@ function deleteCatsCollision()
 	if (count($collision)) {
 		foreach ($collision as $key => $cat) {
 			if (!empty($cat['parent_id']) && empty($cat['cnt'])) {
-				$FpsDB->save(getCurrMod() . '_sections', 
+				$FpsDB->save(getCurrMod() . '_categories',
 				array(
 					'parent_id' => 0,
 				), 
@@ -301,32 +301,39 @@ function index(&$page_title) {
 	$page_title .= ' - ' . __('Sections editor');
 	$cat_selector = '<select name="id_sec" id="cat_secId">';
 	$cat_selector .= '<option value="0">&nbsp;</option>';
-	$all_sections = $FpsDB->select(getCurrMod() . '_sections', DB_ALL, array(
-		'joins' => array(
-			array(
-				'alias' => 'b',
-				'type' => 'LEFT',
-				'table' => getCurrMod(),
-				'cond' => 'a.`id` = b.`category_id`',
-			),
-		),
-		'fields' => array('a.*', 'COUNT(b.`id`) as cnt'),
-		'alias' => 'a',
-		'group' => 'a.`id`',
-	));
+    $query_params = array(
+        'joins' => array(),
+        'fields' => array('a.*', 'COUNT(b.`id`) as cnt'),
+        'alias' => 'a',
+        'group' => 'a.`id`',
+    );
+
+    // count a materials if such model is exists
+    try {
+        $Register['ModManager']->getModelInstance(getCurrMod());
+        $query_params['joins'][] = array(
+            'alias' => 'b',
+            'type' => 'LEFT',
+            'table' => getCurrMod(),
+            'cond' => 'a.`id` = b.`category_id`',
+        );
+    } catch (Exception $e) {
+        $query_params['joins'][] = array(
+            'alias' => 'b',
+            'type' => 'LEFT',
+            'table' => '(SELECT NULL as category_id, NULL as id)',
+            'cond' => 'a.`id` = b.`category_id`',
+        );
+    }
+
+	$all_sections = $FpsDB->select(getCurrMod() . '_categories', DB_ALL, $query_params);
 	foreach ($all_sections as $result) {
 		$cat_selector .= '<option value="' . $result['id'] . '">' . h($result['title']) . '</option>';
 	}
 	$cat_selector .= '</select>';
 	
 	$html = '';
-	if (!empty($_SESSION['errors'])) {
-		$html .= '<div class="warning error"><ul style="list-style-type:none;">' . $_SESSION['errors'] . '</ul></div>';
-		unset($_SESSION['errors']);
-	}
-	
-	
-	
+
 	$cats_tree = getTreeNode($all_sections);
 	if (count($cats_tree)) {
 		foreach ($cats_tree as $catid => $cat) {
@@ -437,7 +444,7 @@ function edit() {
 	global $FpsDB;
 	$Register = Register::getInstance();
 	$acl_groups = $Register['ACL']->get_group_info();
-	$model = $Register['ModManager']->getModelInstance(getCurrMod() . 'Sections');
+	$model = $Register['ModManager']->getModelInstance(getCurrMod() . 'Categories');
 	
 	$error = '';
 
@@ -457,7 +464,7 @@ function edit() {
 	}
 	/* if errors exists */
 	if (!empty($error)) {
-		$_SESSION['errors'] = $error;
+		$_SESSION['errors'] = $Register['Validate']->wrapErrors($error);
 		redirect('/admin/category.php?mod=' . getCurrMod());
 	}
 	
@@ -500,7 +507,7 @@ function add() {
 	
 	$Register = Register::getInstance();
 	$acl_groups = $Register['ACL']->get_group_info();
-	$model = $Register['ModManager']->getModelInstance(getCurrMod() . 'Sections');
+	$model = $Register['ModManager']->getModelInstance(getCurrMod() . 'Categories');
 	
 	
 	$error = '';
@@ -547,7 +554,7 @@ function add() {
 	);
 	if (!empty($path)) $data['path'] = $path;
 	
-	$entityName = getCurrMod() . 'SectionsEntity';
+	$entityName = getCurrMod() . 'CategoriesEntity';
 	$entity = new $entityName($data);
 	$entity->save();
 		
@@ -561,7 +568,7 @@ function delete() {
 	if ($id < 1) redirect('/admin/category.php?mod=' . getCurrMod());
 	
 	
-	$model = $Register['ModManager']->getModelInstance(getCurrMod() . 'Sections');
+	$model = $Register['ModManager']->getModelInstance(getCurrMod() . 'Categories');
 	$childrens = $model->getCollection(array('parent_id' => $id));
 
 	
@@ -583,7 +590,7 @@ function delete_category($id) {
 	global $Register, $FpsDB;
 	
 	$attachModel = $Register['ModManager']->getModelInstance(getCurrMod() . 'Attaches');
-	$sectionsModel = $Register['ModManager']->getModelInstance(getCurrMod() . 'Sections');
+	$sectionsModel = $Register['ModManager']->getModelInstance(getCurrMod() . 'Categories');
 	$model = $Register['ModManager']->getModelInstance(getCurrMod());
 	$records = $model->getCollection(array('category_id' => $id));
 	
@@ -652,14 +659,14 @@ function on_home($cid = false) {
 	}
 
 	
-	$childs = $FpsDB->select(getCurrMod() . '_sections', DB_ALL, array('cond' => array('parent_id' => $id)));
+	$childs = $FpsDB->select(getCurrMod() . '_categories', DB_ALL, array('cond' => array('parent_id' => $id)));
 	if (count($childs)) {
 		foreach ($childs as $child) {
 			on_home($child['id']);
 		}
 	} 
 	
-	$FpsDB->save(getCurrMod() . '_sections', array('id' => $id, 'view_on_home' => 1));
+	$FpsDB->save(getCurrMod() . '_categories', array('id' => $id, 'view_on_home' => 1));
 	$FpsDB->save(getCurrMod(), array('view_on_home' => 1), array('category_id' => $id));
 
 		
@@ -681,14 +688,14 @@ function off_home($cid = false) {
 	}
 
 	
-	$childs = $FpsDB->select(getCurrMod() . '_sections', DB_ALL, array('cond' => array('parent_id' => $id)));
+	$childs = $FpsDB->select(getCurrMod() . '_categories', DB_ALL, array('cond' => array('parent_id' => $id)));
 	if (count($childs)) {
 		foreach ($childs as $child) {
 			off_home($child['id']);
 		}
 	} 
 	
-	$FpsDB->save(getCurrMod() . '_sections', array('id' => $id, 'view_on_home' => 0));
+	$FpsDB->save(getCurrMod() . '_categories', array('id' => $id, 'view_on_home' => 0));
 	$FpsDB->save(getCurrMod(), array('view_on_home' => 0), array('category_id' => $id));
 
 		

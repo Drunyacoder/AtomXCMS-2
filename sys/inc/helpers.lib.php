@@ -198,7 +198,15 @@ function getOrderLink($params) {
 	$new_order = strtolower($params[0]);
 	$active = ($order === $new_order);
 	$asc = ($active && isset($_GET['asc']));
-	return '<a href="?order=' . $new_order . ($asc ? '' : '&asc=1') . '">' . $params[1] . ($active ? ' ' . ($asc ? '↑' : '↓') : '') . '</a>';
+
+
+    $url = $_SERVER['REQUEST_URI'];
+    $url = preg_replace('#(order=[^&]*[&]?)|(asc=[^&]*[&]?)#i', '', $url);
+    if (substr($url, -1) !== '&' && substr($url, -1) !== '?') {
+        $url .= (!strstr($url, '?')) ? '?' : '&';
+    }
+
+	return '<a href="' . $url . 'order=' . $new_order . ($asc ? '' : '&asc=1') . '">' . $params[1] . ($active ? ' ' . ($asc ? '↑' : '↓') : '') . '</a>';
 }
 
 
@@ -368,47 +376,6 @@ function getAge($y = 1970, $m = 1, $d = 1) {
 
 
 
-/**
- * Check and return order param
- */
-function getOrderParam($claas_name) {
-	$order = (!empty($_GET['order'])) ? trim($_GET['order']) : '';
-	
-	switch ($claas_name) {
-		case 'Comments':
-            $allowed_keys = array('user_id', 'date', 'premoder');
-            $default_key = 'date';
-            break;
-		case 'FotoModule':
-		case 'StatModule':
-		case 'NewsModule':
-			$allowed_keys = array('views', 'date', 'comments');
-			$default_key = 'date';
-			break;
-		case 'LoadsModule':
-			$allowed_keys = array('views', 'date', 'comments', 'downloads');
-			$default_key = 'date';
-			break;
-		case 'UsersModule':
-			$allowed_keys = array('puttime', 'last_visit', 'name', 'rating', 'posts', 'status', 'warnings', 'city', 'jabber', 'byear', 'pol');
-			$default_key = 'puttime';
-			break;
-	}
-	
-	if (empty($order) && empty($default_key)) return false;
-	else if (empty($order) && !empty($default_key)) $out = $default_key;
-	else {
-		if (!empty($allowed_keys) && in_array($order, $allowed_keys)) {
-			$out = $order;
-		} else {
-			$out = $default_key;
-		}
-	}
-	
-	return (!empty($_GET['asc'])) ? $out . ' ASC' : $out . ' DESC';
-}
- 
-
 
 /**
  * CRON simulyation
@@ -479,6 +446,12 @@ function __($key, $context = false) {
     if (file_exists($tpl_lang_file)) {
         $tpl_lang = include $tpl_lang_file;
         $lang = array_merge($lang, $tpl_lang);
+    }
+
+    if ($context && is_string($context)) {
+        if (array_key_exists($context, $lang) && array_key_exists($key, $lang[$context])) {
+            return $lang[$context][$key];
+        }
     }
     if (array_key_exists($key, $lang)) return $lang[$key];
     return $key;

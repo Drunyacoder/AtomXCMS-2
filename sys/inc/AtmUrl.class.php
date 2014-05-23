@@ -191,10 +191,10 @@ class AtmUrl {
 			!preg_match('#^(/?sys/.+|/image/.+|/?template/|/?admin)#', $url) &&
 			$lang !== $def_lang
 		) 
-			? '/' . WWW_ROOT . $lang . '/'
-			: '/' . WWW_ROOT;
-			
-		$url = $root . $url;
+			? '/' . trim(WWW_ROOT, '/') . '/' . $lang . '/'
+			: '/' . trim(WWW_ROOT, '/');
+
+		if (substr($url, 0, strlen($root)) !== $root) $url = $root . $url;
         $url = self::checkAndRepair($url);
         return Pather::parseRoutes($url);
     }

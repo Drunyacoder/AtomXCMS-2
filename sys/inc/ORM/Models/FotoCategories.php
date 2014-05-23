@@ -5,9 +5,9 @@
 | @Version:      1.0                           |
 | @Project:      CMS                           |
 | @Package       AtomX CMS                     |
-| @subpackege    Foto Sections Model           |
-| @copyright     ©Andrey Brykin 2010-2012      |
-| @last mod      2012/04/26                    |
+| @subpackege    FotoCategories Model          |
+| @copyright     ©Andrey Brykin 2010-2014      |
+| @last mod      2014/05/16                    |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
@@ -24,10 +24,10 @@
 /**
  *
  */
-class FotoSectionsModel extends FpsModel
+class FotoCategoriesModel extends FpsModel
 {
 	
-    public $Table = 'foto_sections';
+    public $Table = 'foto_categories';
 	
 
 

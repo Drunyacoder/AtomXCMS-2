@@ -32,7 +32,7 @@ $FpsDB = $Register['DB'];
 
 $pageTitle = __('Admin Panel');
 $pageNav = $pageTitle . __(' - General information');
-$pageNavl = '';
+$pageNavr = '';
 
 
 

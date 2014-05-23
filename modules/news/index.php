@@ -66,7 +66,7 @@ Class NewsModule extends Module {
 	
 		// we need to know whether to show hidden
 		$group = (!empty($_SESSION['user']['status'])) ? $_SESSION['user']['status'] : 0;
-		$sectionModel = $this->Register['ModManager']->getModelInstance($this->module . 'Sections');
+		$sectionModel = $this->Register['ModManager']->getModelInstance($this->module . 'Categories');
 		$deni_sections = $sectionModel->getCollection(array("CONCAT(',', `no_access`, ',') NOT LIKE '%,$group,%'"));
 		$ids = array();
 		if ($deni_sections) {
@@ -111,17 +111,16 @@ Class NewsModule extends Module {
 			$html = __('Materials not found');
 			return $this->_view($html);
 		}
-	  
-	  
-		$params = array(
-			'page' => $page,
-			'limit' => $this->Register['Config']->read('per_page', $this->module),
-			'order' => getOrderParam(__CLASS__),
-		);
+
 		
 		$this->Model->bindModel('attaches');
 		$this->Model->bindModel('author');
 		$this->Model->bindModel('category');
+        $params = array(
+            'page' => $page,
+            'limit' => $this->Register['Config']->read('per_page', $this->module),
+            'order' => $this->Model->getOrderParam(),
+        );
 		$records = $this->Model->getCollection($query_params['cond'], $params);
 
 
@@ -194,7 +193,7 @@ Class NewsModule extends Module {
 		if (empty($id) || $id < 1) redirect('/');
 
 		
-		$SectionsModel = $this->Register['ModManager']->getModelInstance($this->module . 'Sections');
+		$SectionsModel = $this->Register['ModManager']->getModelInstance($this->module . 'Categories');
 		$category = $SectionsModel->getById($id);
 		if (!$category)
 			return $this->showInfoMessage(__('Can not find category'), '/' . $this->module . '/');
@@ -221,7 +220,7 @@ Class NewsModule extends Module {
 		$childCats = implode(', ', $childCats);
 		
 		$group = (!empty($_SESSION['user']['status'])) ? $_SESSION['user']['status'] : 0;
-		$sectionModel = $this->Register['ModManager']->getModelInstance($this->module . 'Sections');
+		$sectionModel = $this->Register['ModManager']->getModelInstance($this->module . 'Categories');
 		$deni_sections = $sectionModel->getCollection(array(
 			"CONCAT(',', `no_access`, ',') NOT LIKE '%,$group,%'",
 			"`id` IN ({$childCats})",
@@ -273,12 +272,7 @@ Class NewsModule extends Module {
 			return $this->_view($html);
 		}
 	  
-	  
-		$params = array(
-			'page' => $page,
-			'limit' => Config::read('per_page', $this->module),
-			'order' => getOrderParam(__CLASS__),
-		);
+
 		$where = $query_params['cond'];
 		if (!$this->ACL->turn(array('other', 'can_see_hidden'), false)) $where['available'] = '1';
 
@@ -286,6 +280,11 @@ Class NewsModule extends Module {
 		$this->Model->bindModel('attaches');
 		$this->Model->bindModel('author');
 		$this->Model->bindModel('category');
+        $params = array(
+            'page' => $page,
+            'limit' => Config::read('per_page', $this->module),
+            'order' => $this->Model->getOrderParam(),
+        );
 		$records = $this->Model->getCollection($where, $params);
 
 
@@ -509,15 +508,13 @@ Class NewsModule extends Module {
 		}
 
 
-		$params = array(
-			'page' => $page,
-			'limit' => $this->Register['Config']->read('per_page', $this->module),
-			'order' => getOrderParam(__CLASS__),
-		);
-
-
 		$this->Model->bindModel('author');
 		$this->Model->bindModel('category');
+        $params = array(
+            'page' => $page,
+            'limit' => $this->Register['Config']->read('per_page', $this->module),
+            'order' => $this->Model->getOrderParam(),
+        );
 		$records = $this->Model->getCollection($where, $params);
 
 
@@ -595,14 +592,14 @@ Class NewsModule extends Module {
 		}
 		
 		
-		$data = $this->Register['Validate']->getAndMergeFormPost($this->getValidateRules(), $markers);
+		$data = $this->Register['Validate']->getAndMergeFormPost($this->Register['action'], $markers);
         $data['preview'] = $this->Parser->getPreview($data['main_text']);
         $data['errors'] = $this->Register['Validate']->getErrors();
         if (isset($_SESSION['viewMessage'])) unset($_SESSION['viewMessage']);
         if (isset($_SESSION['FpsForm'])) unset($_SESSION['FpsForm']);
 		
 		
-		$SectionsModel = $this->Register['ModManager']->getModelInstance($this->module . 'Sections');
+		$SectionsModel = $this->Register['ModManager']->getModelInstance($this->module . 'Categories');
 		$sql = $SectionsModel->getCollection();
 		$data['cats_selector'] = $this->_buildSelector($sql, ((!empty($data['cats_selector'])) ? $data['cats_selector'] : false));
 		
@@ -654,8 +651,8 @@ Class NewsModule extends Module {
 		}
 		
 		
-		$errors .= $this->Register['Validate']->check($this->getValidateRules());		
-		$form_fields = $this->Register['Validate']->getFormFields($this->getValidateRules());
+		$errors .= $this->Register['Validate']->check($this->Register['action']);
+		$form_fields = $this->Register['Validate']->getFormFields($this->Register['action']);
 
 		// Если пользователь хочет посмотреть на сообщение перед отправкой
 		if ( isset( $_POST['viewMessage'] ) ) {
@@ -664,7 +661,7 @@ Class NewsModule extends Module {
 		}
 		
 		if (!empty($_POST['cats_selector'])) {
-			$categoryModel = $this->Register['ModManager']->getModelInstance($this->module . 'Sections');
+			$categoryModel = $this->Register['ModManager']->getModelInstance($this->module . 'Categories');
 			$cat = $categoryModel->getById($_POST['cats_selector']);
 			if (empty($cat)) $errors .= '<li>' . __('Can not find category') . '</li>'."\n";
 		}
@@ -689,7 +686,7 @@ Class NewsModule extends Module {
 		$this->DB->cleanSqlCache();
 		
 
-		$post = $this->Register['Validate']->getAndMergeFormPost($this->getValidateRules(), array(), true);
+		$post = $this->Register['Validate']->getAndMergeFormPost($this->Register['action'], array(), true);
 		extract($post);
 		
 		
@@ -821,7 +818,7 @@ Class NewsModule extends Module {
         if (isset($_SESSION['FpsForm'])) unset($_SESSION['FpsForm']);
 
 		
-		$sectionsModel = $this->Register['ModManager']->getModelInstance($this->module . 'Sections');
+		$sectionsModel = $this->Register['ModManager']->getModelInstance($this->module . 'Categories');
 		$cats = $sectionsModel->getCollection();
 		$selectedCatId = ($markers->getIn_cat()) ? $markers->getIn_cat() : $markers->getCategory_id();
 		$cats_change = $this->_buildSelector($cats, $selectedCatId);
@@ -910,7 +907,7 @@ Class NewsModule extends Module {
 		}
 		
 		
-		$errors .= $this->Register['Validate']->check($this->getValidateRules());
+		$errors .= $this->Register['Validate']->check($this->Register['action']);
 		
 		
 		$fields = array('description', 'tags', 'sourse', 'sourse_email', 'sourse_site');
@@ -942,7 +939,7 @@ Class NewsModule extends Module {
 		
 		
 		if (!empty($in_cat)) {
-			$catModel = $this->Register['ModManager']->getModelInstance($this->module . 'Sections');
+			$catModel = $this->Register['ModManager']->getModelInstance($this->module . 'Categories');
 			$category = $catModel->getById($in_cat);
 			if (!$category) $errors = $errors . '<li>' . __('Can not find category') . '</li>' . "\n";
 		}
@@ -1476,7 +1473,7 @@ Class NewsModule extends Module {
 			),
 		);
 		
-		return array($this->module => $rules);
+		return $rules;
 	}	
 }
 

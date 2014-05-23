@@ -1648,7 +1648,7 @@ Class ForumModule extends Module {
 		// Check access to this forum. May be locked by pass or posts count
 		$this->__checkForumAccess($forum);
 		
-		$errors = $this->Register['Validate']->check($this->getValidateRules());
+		$errors = $this->Register['Validate']->check($this->Register['action']);
 		
 		
 		// cut lenght
@@ -1926,7 +1926,7 @@ Class ForumModule extends Module {
 			$this->Register['Validate']->disableFieldCheck(array('theme', 'description', 'first_top'));
 		}
 		
-		$errors = $this->Register['Validate']->check($this->getValidateRules());
+		$errors = $this->Register['Validate']->check($this->Register['action']);
 		
 		
 		// Обрезаем переменные до длины, указанной в параметре maxlength тега input
@@ -2293,7 +2293,7 @@ Class ForumModule extends Module {
 		$this->__checkForumAccess($forum);
 		
 		
-		$errors = $this->Register['Validate']->check($this->getValidateRules());
+		$errors = $this->Register['Validate']->check($this->Register['action']);
 		
 
 		// Обрезаем сообщение (пост) до длины $set['forum']['max_post_lenght']
@@ -2625,7 +2625,7 @@ Class ForumModule extends Module {
 		}
 		
 		
-		$errors = $this->Register['Validate']->check($this->getValidateRules());
+		$errors = $this->Register['Validate']->check($this->Register['action']);
 		
 		// Обрезаем сообщение до длины $set['forum']['max_post_lenght']
 		$message = trim($_POST['mainText']);
@@ -3316,7 +3316,7 @@ Class ForumModule extends Module {
         } else {
             $this->Register['Validate']->disableFieldCheck('theme');
         }
-        $errors = $this->Register['Validate']->check($this->getValidateRules());
+        $errors = $this->Register['Validate']->check($this->Register['action']);
 		
         // Errors
         if (!empty($errors)) {
@@ -3689,6 +3689,6 @@ Class ForumModule extends Module {
 			),
 		);
 		
-		return array($this->module => $rules);
+		return $rules;
 	}
 }

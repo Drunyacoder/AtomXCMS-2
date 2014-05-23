@@ -71,7 +71,7 @@ Class FotoModule extends Module {
 		
 		// we need to know whether to show hidden
 		$group = (!empty($_SESSION['user']['status'])) ? $_SESSION['user']['status'] : 0;
-		$sectionModel = $this->Register['ModManager']->getModelInstance($this->module . 'Sections');
+		$sectionModel = $this->Register['ModManager']->getModelInstance($this->module . 'Categories');
 		$deni_sections = $sectionModel->getCollection(array("CONCAT(',', `no_access`, ',') NOT LIKE '%,$group,%'"));
 		$ids = array();
 		if ($deni_sections) {
@@ -103,16 +103,15 @@ Class FotoModule extends Module {
 			$html = __('Materials not found');
 			return $this->_view($html);
 		}
-		
-		
-		$params = array(
-			'page' => $page,
-			'limit' => $this->Register['Config']->read('per_page', 'foto'),
-			'order' => getOrderParam(__CLASS__),
-		);
+
 
 		$this->Model->bindModel('author');
 		$this->Model->bindModel('category');
+        $params = array(
+            'page' => $page,
+            'limit' => $this->Register['Config']->read('per_page', 'foto'),
+            'order' => $this->Model->getOrderParam(),
+        );
 		$records = $this->Model->getCollection($query_params['cond'], $params);
 		
 		
@@ -166,7 +165,7 @@ Class FotoModule extends Module {
 		if (empty($id) || $id < 1) redirect('/');
 
 		
-		$SectionsModel = $this->Register['ModManager']->getModelInstance($this->module . 'Sections');
+		$SectionsModel = $this->Register['ModManager']->getModelInstance($this->module . 'Categories');
 		$category = $SectionsModel->getById($id);
 		if (!$category)
 			return showInfoMessage(__('Can not find category'), '/foto/');
@@ -192,7 +191,7 @@ Class FotoModule extends Module {
 		$childCats = implode(', ', $childCats);
 		
 		$group = (!empty($_SESSION['user']['status'])) ? $_SESSION['user']['status'] : 0;
-		$sectionModel = $this->Register['ModManager']->getModelInstance($this->module . 'Sections');
+		$sectionModel = $this->Register['ModManager']->getModelInstance($this->module . 'Categories');
 		$deni_sections = $sectionModel->getCollection(array(
 			"CONCAT(',', `no_access`, ',') NOT LIKE '%,$group,%'",
 			"`id` IN ({$childCats})",
@@ -233,16 +232,15 @@ Class FotoModule extends Module {
 			$html = __('Materials not found');
 			return $this->_view($html);
 		}
-	  
-	  
-		$params = array(
-			'page' => $page,
-			'limit' => $this->Register['Config']->read('per_page', 'foto'),
-			'order' => getOrderParam(__CLASS__),
-		);
+
 
 		$this->Model->bindModel('author');
 		$this->Model->bindModel('category');
+        $params = array(
+            'page' => $page,
+            'limit' => $this->Register['Config']->read('per_page', 'foto'),
+            'order' => $this->Model->getOrderParam(),
+        );
 		$records = $this->Model->getCollection($query_params['cond'], $params);
 
 
@@ -432,15 +430,13 @@ Class FotoModule extends Module {
 		}
 
 
-		$params = array(
-			'page' => $page,
-			'limit' => $this->Register['Config']->read('per_page', $this->module),
-			'order' => getOrderParam(__CLASS__),
-		);
-
-
 		$this->Model->bindModel('author');
 		$this->Model->bindModel('category');
+        $params = array(
+            'page' => $page,
+            'limit' => $this->Register['Config']->read('per_page', $this->module),
+            'order' => $this->Model->getOrderParam(),
+        );
 		$records = $this->Model->getCollection($where, $params);
 
 
@@ -515,7 +511,7 @@ Class FotoModule extends Module {
 
 		
 		//categories list
-		$className = $this->Register['ModManager']->getModelNameFromModule('fotoSections');
+		$className = $this->Register['ModManager']->getModelNameFromModule($this->module . 'Categories');
 		$catModel = new $className;
 		$sql = $catModel->getCollection();
 		$cats_change = $this->_buildSelector($sql, ((!empty($data['in_cat'])) ? $data['in_cat'] : false));
@@ -554,11 +550,11 @@ Class FotoModule extends Module {
 
 
 		// Check fields
-		$errors = $this->Register['Validate']->check($this->getValidateRules());
+		$errors = $this->Register['Validate']->check($this->Register['action']);
 		
 		
 		//categories list
-		$className = $this->Register['ModManager']->getModelNameFromModule('fotoSections');
+		$className = $this->Register['ModManager']->getModelNameFromModule($this->module . 'Categories');
 		$catModel = new $className;
 		$sql = $catModel->getCollection(array('id' => $in_cat));
 
@@ -705,7 +701,7 @@ Class FotoModule extends Module {
 	
 	
 		//categories list
-		$className = $this->Register['ModManager']->getModelNameFromModule('fotoSections');
+		$className = $this->Register['ModManager']->getModelNameFromModule($this->module . 'Categories');
 		$catModel = new $className;
 		$cats = $catModel->getCollection();
 		$selectedCatId = (!empty($in_cat)) ? $in_cat : $entity->getCategory_id();
@@ -748,7 +744,7 @@ Class FotoModule extends Module {
 		}
 		
 		
-		$errors = $this->Register['Validate']->check($this->getValidateRules());
+		$errors = $this->Register['Validate']->check($this->Register['action']);
 		
 		
 		// Обрезаем переменные до длины, указанной в параметре maxlength тега input
@@ -758,7 +754,7 @@ Class FotoModule extends Module {
 		if (empty($in_cat)) $in_cat = $foto['category_id'];
 			
 			
-		$className = $this->Register['ModManager']->getModelNameFromModule('fotoSections');
+		$className = $this->Register['ModManager']->getModelNameFromModule($this->module . 'Categories');
 		$catModel = new $className;
 		$cats = $catModel->getById($in_cat);	
 		if (!$cats) $errors .= '<li>' . __('Can not find category') .'</li>'."\n";
@@ -934,7 +930,7 @@ Class FotoModule extends Module {
 			),
 		);
 		
-		return array($this->module => $rules);
+		return $rules;
 	}	
 
 

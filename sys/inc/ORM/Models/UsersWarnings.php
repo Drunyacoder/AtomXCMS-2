@@ -32,12 +32,12 @@ class UsersWarningsModel extends FpsModel
         'user' => array(
             'model' => 'Users',
             'type' => 'has_one',
-            'foreignKey' => 'user_id',
+            'internalKey' => 'user_id',
         ),
         'admin' => array(
             'model' => 'Users',
             'type' => 'has_one',
-            'foreignKey' => 'admin_id',
+            'internalKey' => 'admin_id',
         ),
     );
 	
