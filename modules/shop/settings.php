@@ -234,9 +234,10 @@ class ShopSettingsController
                             <div class="left">
                             ' . h($attr->getLabel()) . '
                             </div>
-                            <div class="right">
-                                <input type="text" name="attributes[' . h($attr->getTitle()) . ']" value="' . h($attr_content) . '" />
-                            </div>
+                            <div class="right">'
+                                . $attr->getInputField()
+                                //. '<input type="text" name="attributes[' . h($attr->getTitle()) . ']" value="' . h($attr_content) . '" />'
+                            . '</div>
                             <div class="clear"></div>
                         </div>';
             }
