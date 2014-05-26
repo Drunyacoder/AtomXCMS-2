@@ -68,6 +68,7 @@ class Bootstrap
 			$this->inputCheck();
 			$this->initProtect();
 			$this->initUser();
+            $this->loadLanguages();
 		}
     }
 
@@ -96,6 +97,29 @@ class Bootstrap
         }
     }
 
+
+    public function loadLanguages()
+    {
+        $modules = $this->Register['ModManager']->getModulesList(true, true);
+        $permitted_langs = getPermittedLangs();
+        if (!$modules || !$permitted_langs) return array();
+
+        $result = array();
+        foreach ($modules as $module) {
+            $lang_files_paths = glob(ROOT . '/modules/' . $module . '/languages/*.php');
+            if (!$lang_files_paths) continue;
+            foreach ($lang_files_paths as $lang_file_path) {
+                $lang = basename($lang_file_path, '.php');
+
+                if (is_file($lang_file_path) && !empty($permitted_langs) && in_array($lang, $permitted_langs)) {
+                    if (!array_key_exists($module, $result))
+                        $result[$module] = array();
+                    $result[$module][$lang] = $lang_file_path;
+                }
+            }
+        }
+        $this->Register['modules_translations'] = $result;
+    }
 
 
     /**

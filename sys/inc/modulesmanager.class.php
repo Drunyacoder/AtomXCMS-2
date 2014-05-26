@@ -117,14 +117,16 @@ class ModulesManager
     }
 	
 	
-	public function getModulesList()
+	public function getModulesList($onlyInstalled = false, $onlyActivated = false)
 	{
 		$modules = array();
 		
 		$pathes = glob(ROOT . '/modules/*', GLOB_ONLYDIR);
 		if (!empty($pathes)) {
 			foreach ($pathes as $path) {
-				$modules[] = substr(strrchr($path, '/'), 1);
+				$module = substr(strrchr($path, '/'), 1);
+                if ($onlyActivated && !$this->isActivated($module)) continue;
+                $modules[] = $module;
 			}
 		}
 		
@@ -165,5 +167,11 @@ class ModulesManager
     {
         $modSettings = Config::read($module);
         return (!empty($modSettings) && is_array($modSettings));
+    }
+
+
+    public function isActivated($module)
+    {
+        return ($this->isInstall($module) && Config::read($module . '.active'));
     }
 }

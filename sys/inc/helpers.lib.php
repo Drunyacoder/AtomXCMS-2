@@ -424,6 +424,15 @@ function entryUrl($material, $module) {
 }
 
 
+function array_search_recursive($needle, $array) {
+    $result = array();
+    array_walk_recursive($array, function($v, $k) use ($needle, &$result){
+        if ($needle === $k) array_push($result, $v);
+    });
+    return $result;
+}
+
+
 
 /**
  * Work for language pack.
@@ -435,18 +444,33 @@ function entryUrl($material, $module) {
  * @return string
  */
 function __($key, $context = false) {
+    $Register = Register::getInstance();
     $language = getLang();
     if (empty($language) || !is_string($language)) $language = 'rus';
+    if (!empty($Register['translation_cache']))
+        $lang = $Register['translation_cache'];
+    else {
+        $lang_file = ROOT . '/sys/settings/languages/' . $language . '.php';
+        $tpl_lang_file = ROOT . '/template/' . getTemplateName() .'/languages/' . $language . '.php';
+        if (!file_exists($lang_file)) throw new Exception('Main language file not found');
 
-    $lang_file = ROOT . '/sys/settings/languages/' . $language . '.php';
-    $tpl_lang_file = ROOT . '/template/' . getTemplateName() .'/languages/' . $language . '.php';
-    if (!file_exists($lang_file)) throw new Exception('Main language file not found');
+        $lang = include $lang_file;
+        if (file_exists($tpl_lang_file)) {
+            $tpl_lang = include $tpl_lang_file;
+            $lang = array_merge($lang, $tpl_lang);
+        }
 
-    $lang = include $lang_file;
-    if (file_exists($tpl_lang_file)) {
-        $tpl_lang = include $tpl_lang_file;
-        $lang = array_merge($lang, $tpl_lang);
+
+        $mod_langs = array_search_recursive($language, $Register['modules_translations']);
+        if ($mod_langs) {
+            foreach ($mod_langs as $path) {
+                $mod_lang = include $path;
+                $lang = array_merge($lang, $mod_lang);
+            }
+        }
+        $Register['translation_cache'] = $lang;
     }
+
 
     if ($context && is_string($context)) {
         if (array_key_exists($context, $lang) && array_key_exists($key, $lang[$context])) {
