@@ -121,6 +121,7 @@ $FpsInstallQueries[] = "CREATE TABLE `{$db_prefix}shop_products` (
   `image` varchar(255) NOT NULL DEFAULT '',
   `price` int(11) NOT NULL,
   `discount` int(11) NOT NULL DEFAULT '0',
+  `quantity` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8";
 $FpsInstallQueries[] = "INSERT INTO `{$db_prefix}shop_products` (`id`, `attributes_group_id`, `title`, `description`, `category_id`, `vendor_id`, `user_id`, `date`, `price`) VALUES

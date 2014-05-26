@@ -129,7 +129,7 @@ include_once ROOT . '/admin/template/header.php';
 ?>
 
 
-
+<div id="chart2"></div>
 <div class="list">
 	<div class="title">
 		<table cellspacing="0" width="100%">
@@ -201,8 +201,9 @@ include_once ROOT . '/admin/template/header.php';
 		<tr>
 			<td colspan="2">
 		<link type="text/css" rel="StyleSheet" href="template/css/tcal.css" />
-		<script type="text/javascript" src="../sys/js/graphlib.js"></script>
-		<script type="text/javascript" src="../sys/js/tcal.js"></script>
+		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jqplot/graphlib.js"></script>
+		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jqplot/style.css"></script>
+		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/tcal.js"></script>
 		<script type="text/javascript">
 		$(document).ready(function(){
 			var data = '<?php echo $json_data; ?>';
@@ -271,7 +272,7 @@ include_once ROOT . '/admin/template/header.php';
 			],
 			grid: {
 				background: '#f4f2f2'
-			},
+			}
 			});
 		});
 		</script>

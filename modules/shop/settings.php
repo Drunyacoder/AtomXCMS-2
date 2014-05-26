@@ -905,6 +905,134 @@ class ShopSettingsController
     }
 
 
+    public function products_statistics()
+    {
+        $Register = Register::getInstance();
+        $this->pageTitle = __('Shop') . ' / ' . __('Products statistics');
+        $this->pageNav = __('Shop') . ' / ' . __('Products statistics');
+        $content = '';
+        $productsModel = $Register['ModManager']->getModelInstance('shopProducts');
+        $ordersModel = $Register['ModManager']->getModelInstance('shopOrders');
+        /*
+        SELECT a.date, COUNT( b.id ) AS process_cnt, COUNT( c.id ) AS complete_cnt, COUNT( d.id ) AS delivery_cnt
+        FROM `shop_orders` a
+        LEFT JOIN shop_orders_products b ON a.id = b.order_id
+        AND a.status = 'process'
+        LEFT JOIN shop_orders_products c ON a.id = c.order_id
+        AND a.status = 'complete'
+        LEFT JOIN shop_orders_products d ON a.id = d.order_id
+        AND a.status = 'delivery'
+        GROUP BY a.date
+        */
+        $data = $ordersModel->getCollection(array(), array(
+            'joins' => array(
+                array(
+                    'table' => 'shop_orders_products',
+                    'alias' => 'b',
+                    'cond' => array("a.id = b.order_id", "a.status = 'process'"),
+                    'type' => 'LEFT',
+                ),
+                array(
+                    'table' => 'shop_orders_products',
+                    'alias' => 'c',
+                    'cond' => array("a.id = c.order_id", "a.status = 'complete'"),
+                    'type' => 'LEFT',
+                ),
+                array(
+                    'table' => 'shop_orders_products',
+                    'alias' => 'd',
+                    'cond' => array("a.id = d.order_id", "a.status = 'delivery'"),
+                    'type' => 'LEFT',
+                ),
+            ),
+            'fields' => array(
+                'a.date',
+                'COUNT( b.id ) AS process_cnt',
+                'COUNT( c.id ) AS complete_cnt',
+                'COUNT( d.id ) AS delivery_cnt',
+            ),
+            'alias' => 'a',
+            'group' => 'a.date',
+        ));
+        if (!empty($data)) {
+            $output = array('process' => array(), 'delivery' => array(), 'complete' => array());
+            foreach ($data as $k => $row) {
+
+                $row = $row->asArray();
+                $output['process'][$k] = $row['process_cnt'];
+                $output['delivery'][$k] = $row['delivery_cnt'];
+                $output['complete'][$k] = $row['complete_cnt'];
+            }
+            /*
+            foreach ($data as $k => $row) {
+                $output['process'][$k] = $row->getProcess_cnt();
+                $output['delivery'][$k] = $row->getDelivery_cnt();
+                $output['complete'][$k] = $row->getComplete_cnt();
+            }
+            */
+        }
+        //pr($output); die();
+        ob_start();
+        ?>
+        <div style="height:200px;width:400px;" id="chart3"></div>
+        <div style="height:100px;width:70px;" id="info3"></div>
+            <script type="text/javascript" src="/sys/js/jqplot/graphlib.js"></script>
+            <script type="text/javascript" src="/sys/js/jqplot/plugins/jqplot.barRenderer.min.js"></script>
+            <script type="text/javascript" src="/sys/js/jqplot/plugins/jqplot.categoryAxisRenderer.min.js"></script>
+            <script type="text/javascript" src="/sys/js/jqplot/plugins/jqplot.pointLabels.min.js"></script>
+            <link href="/sys/js/jqplot/style.css" type="text/css" rel="stylesheet">
+            <!--<script type="text/javascript" src="/sys/js/jqplot_plugins/jqplot.bubbleRenderer.min.js"></script>-->
+            <script type="text/javascript">
+                    $(document).ready(function(){
+                      plot3 = $.jqplot('chart3', [[1,10,20,30],[2,20,40,60],[4,40,80,120]], {
+                        // Tell the plot to stack the bars.
+                        stackSeries: true,
+                        captureRightClick: true,
+                        seriesDefaults:{
+                          renderer:$.jqplot.BarRenderer,
+                          rendererOptions: {
+                              // Put a 30 pixel margin between bars.
+                              barMargin: 30,
+                              // Highlight bars when mouse button pressed.
+                              // Disables default highlighting on mouse over.
+                              highlightMouseDown: true
+                          },
+                          pointLabels: {show: true}
+                        },
+                        axes: {
+                          xaxis: {
+                              renderer: $.jqplot.CategoryAxisRenderer
+                          },
+                          yaxis: {
+                            // Don\'t pad out the bottom of the data range.  By default,
+                            // axes scaled as if data extended 10% above and below the
+                            // actual range to prevent data points right on grid boundaries.
+                            // Don\'t want to do that here.
+                            padMin: 0
+                          }
+                        },
+                        legend: {
+                            show: true,
+                            location: 'e',
+                            placement: 'outside'
+                        }
+                      });
+                        // Bind a listener to the "jqplotDataClick" event.  Here, simply change
+                        // the text of the info3 element to show what series and ponit were
+                        // clicked along with the data for that point.
+                        $('#chart3').bind('jqplotDataClick',
+                            function (ev, seriesIndex, pointIndex, data) {
+                                $('#info3').html('series: '+seriesIndex+', point: '+pointIndex+', data: '+data);
+                            }
+                        );
+                    });
+            </script>
+<?php
+        $content .= ob_get_clean();
+        return $content;
+    }
+
+
     private function __getProductsFilters()
     {
         // Categories

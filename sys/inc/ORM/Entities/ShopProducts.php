@@ -47,6 +47,7 @@ class ShopProductsEntity extends FpsEntity
 	protected $image;
 	protected $price;
 	protected $discount;
+	protected $quantity;
 
 	
 	public function save($full = false)
@@ -72,6 +73,7 @@ class ShopProductsEntity extends FpsEntity
             'image' => (string)$this->image,
 			'price' => floatval($this->price),
 			'discount' => intval($this->discount),
+			'quantity' => intval($this->quantity),
 		);
 		if ($this->id) $params['id'] = $this->id;
 		$Register = Register::getInstance();
