@@ -562,7 +562,7 @@ class FpsPDO {
 				}
 			}
 
-            if ($this->__limit($params['limit'], $params['offset'])) {
+            if ($this->__limit($params['limit'], $params['offset']) && false) {
                 $cond = array();
                 if (!empty($params['cond']) && is_array($params['cond'])) {
                     foreach ($params['cond'] as $k => $v) {
@@ -707,7 +707,9 @@ class FpsPDO {
 	private function __order($order, $alias = null) {
 		if (empty($order)) return null;
 		return ' ORDER BY '
-            . ((!empty($alias) && !strstr($order, '.')) ? $this->__name($alias) . '.' : '')
+            . ((!empty($alias) && !strstr($order, '.') && !strstr($order, '`')) 
+				? $this->__name($alias) . '.' 
+				: '')
             . $order;
 	}
 	

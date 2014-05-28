@@ -911,122 +911,278 @@ class ShopSettingsController
         $this->pageTitle = __('Shop') . ' / ' . __('Products statistics');
         $this->pageNav = __('Shop') . ' / ' . __('Products statistics');
         $content = '';
-        $productsModel = $Register['ModManager']->getModelInstance('shopProducts');
+        $ordersProductsModel = $Register['ModManager']->getModelInstance('shopOrdersProducts');
         $ordersModel = $Register['ModManager']->getModelInstance('shopOrders');
-        /*
-        SELECT a.date, COUNT( b.id ) AS process_cnt, COUNT( c.id ) AS complete_cnt, COUNT( d.id ) AS delivery_cnt
-        FROM `shop_orders` a
-        LEFT JOIN shop_orders_products b ON a.id = b.order_id
-        AND a.status = 'process'
-        LEFT JOIN shop_orders_products c ON a.id = c.order_id
-        AND a.status = 'complete'
-        LEFT JOIN shop_orders_products d ON a.id = d.order_id
-        AND a.status = 'delivery'
-        GROUP BY a.date
-        */
         $data = $ordersModel->getCollection(array(), array(
             'joins' => array(
                 array(
-                    'table' => 'shop_orders_products',
+                    'table' => 'shop_orders',
                     'alias' => 'b',
-                    'cond' => array("a.id = b.order_id", "a.status = 'process'"),
+                    'cond' => array("a.id = b.id", "a.status = 'process'"),
                     'type' => 'LEFT',
                 ),
                 array(
-                    'table' => 'shop_orders_products',
+                    'table' => 'shop_orders',
                     'alias' => 'c',
-                    'cond' => array("a.id = c.order_id", "a.status = 'complete'"),
+                    'cond' => array("a.id = c.id", "a.status = 'complete'"),
                     'type' => 'LEFT',
                 ),
                 array(
-                    'table' => 'shop_orders_products',
+                    'table' => 'shop_orders',
                     'alias' => 'd',
-                    'cond' => array("a.id = d.order_id", "a.status = 'delivery'"),
+                    'cond' => array("a.id = d.id", "a.status = 'delivery'"),
                     'type' => 'LEFT',
                 ),
             ),
             'fields' => array(
                 'a.date',
+                'COUNT( a.id ) AS all_cnt',
                 'COUNT( b.id ) AS process_cnt',
                 'COUNT( c.id ) AS complete_cnt',
                 'COUNT( d.id ) AS delivery_cnt',
             ),
             'alias' => 'a',
             'group' => 'a.date',
+			'order' => 'a.date DESC',
+			'limit' => 20,
         ));
+		$orders_st_date = array(0 => array(), 1 => array(), 2 => array(), 3 => array());
+		$orders_st_date_ticks = array();
         if (!empty($data)) {
-            $output = array('process' => array(), 'delivery' => array(), 'complete' => array());
             foreach ($data as $k => $row) {
-
                 $row = $row->asArray();
-                $output['process'][$k] = $row['process_cnt'];
-                $output['delivery'][$k] = $row['delivery_cnt'];
-                $output['complete'][$k] = $row['complete_cnt'];
+                $orders_st_date[0][$k] = intval($row['all_cnt']); // all
+                $orders_st_date[1][$k] = intval($row['process_cnt']); // process
+                $orders_st_date[2][$k] = intval($row['delivery_cnt']); // delivery
+                $orders_st_date[3][$k] = intval($row['complete_cnt']); // complete
+				$orders_st_date_ticks[$k] = AtmDateTime::getDate($row['date'], "Y/m/d");
             }
-            /*
-            foreach ($data as $k => $row) {
-                $output['process'][$k] = $row->getProcess_cnt();
-                $output['delivery'][$k] = $row->getDelivery_cnt();
-                $output['complete'][$k] = $row->getComplete_cnt();
-            }
-            */
         }
-        //pr($output); die();
+
+		$date1 = '2014-05-01';
+		$date2 = '2014-05-26';
+        $data = $ordersProductsModel->getCollection(array(
+			"a.order_id IN (SELECT id FROM shop_orders WHERE date BETWEEN '{$date1}' AND '{$date2}')",
+		), array(
+            'joins' => array(
+                array(
+                    'table' => 'shop_products',
+                    'alias' => 'b',
+                    'cond' => array("a.product_id = b.id"),
+                    'type' => '',
+                ),
+            ),
+            'fields' => array(
+                'a.product_id',
+                'b.title',
+                'COUNT(a.id) as cnt',
+            ),
+            'alias' => 'a',
+            'group' => 'a.product_id',
+			'order' => '`cnt` DESC',
+			'limit' => 30,
+        ));
+		$top_products = array();
+		$top_products_ticks = array();
+        if (!empty($data)) {
+            foreach ($data as $k => $row) {
+                $row = $row->asArray();
+                $top_products[$k] = intval($row['cnt']);
+                $top_products_ticks[$k] = h($row['title']);
+            }
+        }
+		
+		/*SELECT a.date, COUNT( c.id ) AS cnt
+		FROM shop_orders a
+		LEFT JOIN shop_orders_products b ON a.id = b.order_id
+		JOIN shop_products c ON c.id = b.product_id
+		WHERE c.id =1
+		GROUP BY a.date*/
+		$date1 = '2014-05-01';
+		$date2 = '2014-05-26';
+		$id = 1;
+        $data = $ordersModel->getCollection(array(
+			"c.id = $id",
+			"a.date BETWEEN '{$date1}' AND '{$date2}'",
+		), array(
+            'joins' => array(
+                array(
+                    'table' => 'shop_orders_products',
+                    'alias' => 'b',
+                    'cond' => array("a.id = b.order_id"),
+                    'type' => 'LEFT',
+                ),
+                array(
+                    'table' => 'shop_products',
+                    'alias' => 'c',
+                    'cond' => array("c.id = b.product_id"),
+                    'type' => '',
+                ),
+            ),
+            'fields' => array(
+                "DATE_FORMAT(a.date, '%Y-%m-%d') as date",
+                'COUNT(c.id) AS cnt',
+            ),
+            'alias' => 'a',
+            'group' => 'a.date',
+			'order' => 'a.date ASC',
+        ));
+		$product_history = array();
+		$product_history_ticks = array();
+		$dateObj = new DateTime($date1);
+		$prev_date = (string)$dateObj->modify('-1 day')->format('Y-m-d');
+        if (!empty($data)) {
+            foreach ($data as $k => $row) {
+                $row = $row->asArray();
+				$check_date = (string)$dateObj->modify('+1 day')->format('Y-m-d');
+				
+				while ($check_date < $row['date']) {
+					$product_history[] = array($check_date, 0);
+					$product_history_ticks[] = $check_date;
+					$check_date = (string)$dateObj->modify('+1 day')->format('Y-m-d');
+				}
+
+                $product_history[] = array($row['date'], intval($row['cnt']));
+                $product_history_ticks[] = $row['date'];
+				$check_date = $row['date'];
+            }
+        }
+		//pr($product_history); pr($product_history_ticks); die();
         ob_start();
         ?>
-        <div style="height:200px;width:400px;" id="chart3"></div>
-        <div style="height:100px;width:70px;" id="info3"></div>
-            <script type="text/javascript" src="/sys/js/jqplot/graphlib.js"></script>
-            <script type="text/javascript" src="/sys/js/jqplot/plugins/jqplot.barRenderer.min.js"></script>
-            <script type="text/javascript" src="/sys/js/jqplot/plugins/jqplot.categoryAxisRenderer.min.js"></script>
-            <script type="text/javascript" src="/sys/js/jqplot/plugins/jqplot.pointLabels.min.js"></script>
-            <link href="/sys/js/jqplot/style.css" type="text/css" rel="stylesheet">
-            <!--<script type="text/javascript" src="/sys/js/jqplot_plugins/jqplot.bubbleRenderer.min.js"></script>-->
-            <script type="text/javascript">
-                    $(document).ready(function(){
-                      plot3 = $.jqplot('chart3', [[1,10,20,30],[2,20,40,60],[4,40,80,120]], {
-                        // Tell the plot to stack the bars.
-                        stackSeries: true,
-                        captureRightClick: true,
-                        seriesDefaults:{
-                          renderer:$.jqplot.BarRenderer,
-                          rendererOptions: {
-                              // Put a 30 pixel margin between bars.
-                              barMargin: 30,
-                              // Highlight bars when mouse button pressed.
-                              // Disables default highlighting on mouse over.
-                              highlightMouseDown: true
-                          },
-                          pointLabels: {show: true}
-                        },
-                        axes: {
-                          xaxis: {
-                              renderer: $.jqplot.CategoryAxisRenderer
-                          },
-                          yaxis: {
-                            // Don\'t pad out the bottom of the data range.  By default,
-                            // axes scaled as if data extended 10% above and below the
-                            // actual range to prevent data points right on grid boundaries.
-                            // Don\'t want to do that here.
-                            padMin: 0
-                          }
-                        },
-                        legend: {
-                            show: true,
-                            location: 'e',
-                            placement: 'outside'
-                        }
-                      });
-                        // Bind a listener to the "jqplotDataClick" event.  Here, simply change
-                        // the text of the info3 element to show what series and ponit were
-                        // clicked along with the data for that point.
-                        $('#chart3').bind('jqplotDataClick',
-                            function (ev, seriesIndex, pointIndex, data) {
-                                $('#info3').html('series: '+seriesIndex+', point: '+pointIndex+', data: '+data);
-                            }
-                        );
-                    });
-            </script>
+		<div class="list">
+			<div class="title"><?php echo __('Orders') ?></div>
+			<div class="level1">
+				<div class="head"><div class="title"><?php echo __('Orders by dates') ?></div></div>
+				<div class="graph-wrapper"><div  class="graph-container" id="chart1"></div></div>
+				<div class="title"><?php echo __('Orders statuses') ?>
+				<div class="descr"><?php echo __('Orders statuses by dates') ?></div></div>
+				<div class="graph-wrapper"><div  class="graph-container" id="chart2"></div></div>
+				<div class="title"><?php echo __('Product orders') ?>
+				<div class="descr"><?php echo sprintf(__('Orders for "%s"'), 'Razor Game PC ') ?></div></div>
+				<div class="graph-wrapper"><div  class="graph-container" id="chart3"></div></div>
+			</div>
+		</div>
+		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jqplot/graphlib.js"></script>
+		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jqplot/plugins/jqplot.canvasTextRenderer.min.js"></script>
+		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jqplot/plugins/jqplot.canvasAxisTickRenderer.min.js"></script>
+		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jqplot/plugins/jqplot.barRenderer.min.js"></script>
+		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jqplot/plugins/jqplot.categoryAxisRenderer.min.js"></script>
+		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jqplot/plugins/jqplot.dateAxisRenderer.min.js"></script>
+		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jqplot/plugins/jqplot.pointLabels.min.js"></script>
+		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jqplot/plugins/jqplot.highlighter.min.js"></script>
+		
+		<link href="/sys/js/jqplot/style.css" type="text/css" rel="stylesheet">
+		<!--<script type="text/javascript" src="/sys/js/jqplot_plugins/jqplot.bubbleRenderer.min.js"></script>-->
+		<script type="text/javascript">
+				$(document).ready(function(){
+				  plot1 = $.jqplot('chart1', <?php echo json_encode($orders_st_date) ?>, {
+					// Tell the plot to stack the bars.
+					stackSeries: false,
+					captureRightClick: true,
+					seriesDefaults:{
+					  renderer:$.jqplot.BarRenderer,
+					  rendererOptions: {
+						  // Put a 30 pixel margin between bars.
+						  barMargin: 20,
+						  // Highlight bars when mouse button pressed.
+						  // Disables default highlighting on mouse over.
+						  highlightMouseDown: true
+					  },
+					  pointLabels: {show: true, stackedValue: false}
+					},
+					axes: {
+					  xaxis: {
+						  renderer: $.jqplot.CategoryAxisRenderer,
+						  ticks: <?php echo json_encode($orders_st_date_ticks) ?>
+					  },
+					  yaxis: {
+						// Don\'t pad out the bottom of the data range.  By default,
+						// axes scaled as if data extended 10% above and below the
+						// actual range to prevent data points right on grid boundaries.
+						// Don\'t want to do that here.
+						padMin: 0,
+						tickOptions: {formatString: '%d'}
+					  }
+					},
+					legend: {
+						show: true,
+						location: 'e',
+						placement: 'inside',
+						labels: ['total', 'process', 'delivery', 'complete']
+					}
+				  });
+				  plot2 = $.jqplot('chart2', [<?php echo json_encode($top_products) ?>], {
+					// Tell the plot to stack the bars.
+					stackSeries: false,
+					captureRightClick: true,
+					seriesDefaults:{
+					  renderer:$.jqplot.BarRenderer,
+					  rendererOptions: {
+						  // Put a 30 pixel margin between bars.
+						  barMargin: 20,
+						  varyBarColor: true,
+						  // Highlight bars when mouse button pressed.
+						  // Disables default highlighting on mouse over.
+						  highlightMouseDown: true
+					  },
+					  pointLabels: {show: true, stackedValue: false}
+					},
+					axes: {
+					  xaxis: {
+						  renderer: $.jqplot.CategoryAxisRenderer,
+						  ticks: <?php echo json_encode($top_products_ticks) ?>
+					  },
+					  yaxis: {
+						// Don\'t pad out the bottom of the data range.  By default,
+						// axes scaled as if data extended 10% above and below the
+						// actual range to prevent data points right on grid boundaries.
+						// Don\'t want to do that here.
+						padMin: 0,
+						min: 0,
+						tickOptions: {formatString: '%d'}
+					  }
+					}
+				  });
+				  plot3 = $.jqplot('chart3', [<?php echo json_encode($product_history) ?>], {
+					seriesDefaults:{
+					  pointLabels: {show: true, stackedValue: false}
+					},
+					axes: {
+					  xaxis: {
+						  renderer: $.jqplot.DateAxisRenderer,
+						  tickRenderer: $.jqplot.CanvasAxisTickRenderer ,
+						   tickOptions: {angle: 30, fontSize: '10px'},
+						  autoscale:true,
+						  ticks: <?php echo json_encode($product_history_ticks) ?>
+					  },
+					  yaxis: {
+						autoscale:true,
+						padMin: 0,
+						min: 0,
+						tickOptions: {formatString: '%d'}
+					  }
+					},
+					highlighter: {
+						show: true,
+						sizeAdjust: 7.5,
+						formatString: 'On %s was ordered %s these products %s'
+					},
+					series: [
+						{
+							lineWidth:2,
+							fill: true,
+							fillAndStroke: true,
+							color:'#96c703',
+							fillColor: '#b6e723',
+							fillAlpha: 0.5,
+							label:'Orders',
+							markerOptions: { style:'circle'}
+						}
+					]
+				  });
+				});
+		</script>
 <?php
         $content .= ob_get_clean();
         return $content;
@@ -1366,3 +1522,11 @@ class ShopSettingsController
         return $rules;
     }
 }
+
+/* Поиск материалов в ассортименте
+LEFT JOIN shop_attributes_content aattrs ON aattrs.product_id = a.id
+LEFT JOIN shop_attributes_content battrs ON battrs.product_id = b.id
+JOIN shop_attributes atr ON aattrs.attribute_id = atr.id
+WHERE a.stock_id IS NOT NULL AND a.stock_id != 0 AND (aattrs.attribute_id = battrs.attribute_id AND aattrs.content != battrs.content)
+GROUP BY a.id
+*/

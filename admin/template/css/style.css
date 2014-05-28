@@ -5,6 +5,7 @@ body {background:url('../img/body-bg.png') repeat !important; min-height:100%; m
 .clear {clear:both;}
 a {color:#96C703;}
 .comment {display:block; color:#939393; padding:5px 0px; font-size:11px; font-style:italic; -moz-text-shadow:none; -webkit-text-shadow:none; text-shadow:none; max-width:500px;}
+h1, h2, h3, h4 {color:#555;}
 
 /* general */
 .green {color:#96c71e;}
@@ -13,6 +14,10 @@ a {color:#96C703;}
 /* pagination */
 .pagination {color:#fff;}
 .pagination a.pages, .pagination strong {margin-right:5px;}
+
+/* graphs */
+.graph-wrapper {width:98%; padding:1%;}
+.graph-container {height:300px;width:100%;}
 
 /* Head menu */
 #wrapper {min-height:100%; position:relative; min-width:1150px; padding:106px 3% 30px 3%;}
@@ -97,6 +102,8 @@ table.side-separator, table.side-separator tr td {vertical-align:top; min-height
 
 .list {position:relative; margin:10px 0px; background:#fff; -moz-border-radius:3px; -webkit-border-radius:3px; border-radius:3px; overflow: hidden;}
 .list > .title {height:17px; padding:12px 20px; color:#96c703; font-size:15px; font-weight:bold; background:url('../img/list-title-bg.png') repeat-x; border-bottom:1px solid #8e8e8e; -moz-border-radius: 4px 4px 0 0; -webkit-border-radius: 4px 4px 0 0; border-radius: 4px 4px 0 0;}
+.list > .title ~ .title, .list .level1 > .title {height:47px; padding:20px 20px 20px 100px; background:#f1f1f1; color:#3a3a3a; font-size:17px; border:none; font-weight:normal;}
+.list > .title ~ .title > .descr, .list .level1 > .title > .descr {padding:5px 0px; color:#939393; font-size:12px;}
 .list .add-cat-butt {width:165px; height:22px; position:absolute; top:8px; right:0px; color:#c7c6c6; text-decoration:underline; -moz-text-shadow:0px 0px 1px #888; -webkit-text-shadow:0px 0px 1px #888; text-shadow:0px 0px 1px #888; cursor:pointer;}
 .list div.add {display:inline-block; width:22px; height:22px; background:url('../img/icons-sprite.png') 0px center no-repeat; margin-bottom: -6px; margin-right:5px;}
 .list .add-cat-butt + .add-cat-butt {right:175px;}
@@ -209,7 +216,7 @@ a.edit-list {background-position:-275px 0px;}
 /* .list2 */
 .list2 {background:#fff; -moz-border-radius:5px; -webkit-border-radius:5px; border-radius:5px; overflow:hidden;}
 .list2 .item {width:50%; float:left;}
-.list2 .item .title {height:47px; padding:20px 20px 20px 100px; background:#f4f2f2; color:#3a3a3a; font-size:17px;}
+.list2 .item .title {height:47px; padding:20px 20px 20px 100px; background:#f1f1f1; color:#3a3a3a; font-size:17px;}
 .list2 .item .title .descr {padding:5px 0px; color:#939393; font-size:12px;}
 .list2 .item .body {padding:20px 0px 20px 100px;}
 .list2 .item .body ul, .list2 .item .body li {list-style-type:none;}

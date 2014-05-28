@@ -426,6 +426,7 @@ function entryUrl($material, $module) {
 
 function array_search_recursive($needle, $array) {
     $result = array();
+	if (!is_array($array)) return $result;
     array_walk_recursive($array, function($v, $k) use ($needle, &$result){
         if ($needle === $k) array_push($result, $v);
     });

@@ -202,7 +202,11 @@ include_once ROOT . '/admin/template/header.php';
 			<td colspan="2">
 		<link type="text/css" rel="StyleSheet" href="template/css/tcal.css" />
 		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jqplot/graphlib.js"></script>
-		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jqplot/style.css"></script>
+		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jqplot/plugins/jqplot.canvasTextRenderer.min.js"></script>
+		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jqplot/plugins/jqplot.canvasAxisLabelRenderer.min.js"></script>
+		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jqplot/plugins/jqplot.dateAxisRenderer.min.js"></script>
+		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jqplot/plugins/jqplot.highlighter.min.js"></script>
+		<link href="<?php echo WWW_ROOT ?>/sys/js/jqplot/style.css" type="text/css" rel="stylesheet">
 		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/tcal.js"></script>
 		<script type="text/javascript">
 		$(document).ready(function(){
@@ -238,7 +242,8 @@ include_once ROOT . '/admin/template/header.php';
 				  }
 				},
 				yaxis: {
-				  label: "Y Axis"
+				  label: "Quantity",
+				  labelRenderer: $.jqplot.CanvasAxisLabelRenderer
 				}
 			  },
 			  highlighter: {
@@ -276,7 +281,7 @@ include_once ROOT . '/admin/template/header.php';
 			});
 		});
 		</script>
-		<div style="width:90%; height:350px; margin:0px auto;" id="graph"></div>
+		<div style="graph-wrapper"><div style="graph-container" id="graph"></div></div>
 			</td>
 		</tr>
 		<?php endif; ?>
