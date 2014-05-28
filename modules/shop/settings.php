@@ -1071,22 +1071,17 @@ class ShopSettingsController
 		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jqplot/plugins/jqplot.dateAxisRenderer.min.js"></script>
 		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jqplot/plugins/jqplot.pointLabels.min.js"></script>
 		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jqplot/plugins/jqplot.highlighter.min.js"></script>
-		
-		<link href="/sys/js/jqplot/style.css" type="text/css" rel="stylesheet">
 		<!--<script type="text/javascript" src="/sys/js/jqplot_plugins/jqplot.bubbleRenderer.min.js"></script>-->
+		<link href="/sys/js/jqplot/style.css" type="text/css" rel="stylesheet">
 		<script type="text/javascript">
 				$(document).ready(function(){
 				  plot1 = $.jqplot('chart1', <?php echo json_encode($orders_st_date) ?>, {
-					// Tell the plot to stack the bars.
 					stackSeries: false,
 					captureRightClick: true,
 					seriesDefaults:{
 					  renderer:$.jqplot.BarRenderer,
 					  rendererOptions: {
-						  // Put a 30 pixel margin between bars.
 						  barMargin: 20,
-						  // Highlight bars when mouse button pressed.
-						  // Disables default highlighting on mouse over.
 						  highlightMouseDown: true
 					  },
 					  pointLabels: {show: true, stackedValue: false}
@@ -1097,10 +1092,6 @@ class ShopSettingsController
 						  ticks: <?php echo json_encode($orders_st_date_ticks) ?>
 					  },
 					  yaxis: {
-						// Don\'t pad out the bottom of the data range.  By default,
-						// axes scaled as if data extended 10% above and below the
-						// actual range to prevent data points right on grid boundaries.
-						// Don\'t want to do that here.
 						padMin: 0,
 						tickOptions: {formatString: '%d'}
 					  }
@@ -1113,17 +1104,13 @@ class ShopSettingsController
 					}
 				  });
 				  plot2 = $.jqplot('chart2', [<?php echo json_encode($top_products) ?>], {
-					// Tell the plot to stack the bars.
 					stackSeries: false,
 					captureRightClick: true,
 					seriesDefaults:{
 					  renderer:$.jqplot.BarRenderer,
 					  rendererOptions: {
-						  // Put a 30 pixel margin between bars.
 						  barMargin: 20,
 						  varyBarColor: true,
-						  // Highlight bars when mouse button pressed.
-						  // Disables default highlighting on mouse over.
 						  highlightMouseDown: true
 					  },
 					  pointLabels: {show: true, stackedValue: false}
@@ -1134,10 +1121,6 @@ class ShopSettingsController
 						  ticks: <?php echo json_encode($top_products_ticks) ?>
 					  },
 					  yaxis: {
-						// Don\'t pad out the bottom of the data range.  By default,
-						// axes scaled as if data extended 10% above and below the
-						// actual range to prevent data points right on grid boundaries.
-						// Don\'t want to do that here.
 						padMin: 0,
 						min: 0,
 						tickOptions: {formatString: '%d'}
