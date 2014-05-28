@@ -57,9 +57,9 @@ AddOutputFilterByType DEFLATE application/x-javascript
 
 
 #Error pages
-ErrorDocument 500 "server is temporarily not available. <br /> Сервер временно не доступен."
+ErrorDocument 500 "server is temporarily not available. <br /> РЎРµСЂРІРµСЂ РІСЂРµРјРµРЅРЅРѕ РЅРµ РґРѕСЃС‚СѓРїРµРЅ."
 ErrorDocument 404 /error.php?ac=404
 ErrorDocument 402 /error.php?ac=402
 ErrorDocument 403 /error.php?ac=403
-ErrorDocument 408 "server is temporarily not available. <br /> Возможно сервер перегружен, попробуйте еще раз или зайдите поже."
-ErrorDocument 500 "server is temporarily not available. <br /> Сервер временно не доступен."
+ErrorDocument 408 "server is temporarily not available. <br /> Р’РѕР·РјРѕР¶РЅРѕ СЃРµСЂРІРµСЂ РїРµСЂРµРіСЂСѓР¶РµРЅ, РїРѕРїСЂРѕР±СѓР№С‚Рµ РµС‰Рµ СЂР°Р· РёР»Рё Р·Р°Р№РґРёС‚Рµ РїРѕР·Р¶Рµ."
+ErrorDocument 500 "server is temporarily not available. <br /> РЎРµСЂРІРµСЂ РІСЂРµРјРµРЅРЅРѕ РЅРµ РґРѕСЃС‚СѓРїРµРЅ."
