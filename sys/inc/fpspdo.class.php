@@ -562,17 +562,19 @@ class FpsPDO {
 				}
 			}
 
-            if ($this->__limit($params['limit'], $params['offset']) && false) {
+            if ($this->__limit($params['limit'], $params['offset'])/* && false*/) {
                 $cond = array();
                 if (!empty($params['cond']) && is_array($params['cond'])) {
                     foreach ($params['cond'] as $k => $v) {
                         if (is_numeric($k) || !strstr($k, '.')) {
-                            $cond[$k] = $v;
+                            if (!empty($params['alias']) && preg_match('#^' . $params['alias'] . '\.\w+#', $v))
+								$v = str_replace($params['alias'] . '.', '', $v);
+							$cond[$k] = $v;
                             unset($params['cond'][$k]);
                         }
                     }
                 }
-
+				
                 $params_ = array(
                     'table' => $this->__name($this->getFullTableName($table)),
                     'limit' => $params['limit'],

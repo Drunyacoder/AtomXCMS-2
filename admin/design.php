@@ -144,13 +144,13 @@ if (!empty($_GET['ac']) && $_GET['ac'] === 'add_template') {
 	$path2 = ROOT . '/template/' . $Register['Config']->read('template') . '/html/' . $title . '/main.html';
 	
 	if (file_exists($path) && is_dir($path)) {
-		$_SESSION['info_message'] = __('Same template already exists');
+		$_SESSION['errors'] = __('Same template already exists');
 	
 	} else {
 		mkdir($path, 0777);
 	
 		file_put_contents($path2, $code);
-		$_SESSION['info_message'] = __('Template is created');
+		$_SESSION['message'] = __('Template is created');
 	}	
 }
 
@@ -271,19 +271,8 @@ echo '<form action="' . $_SERVER['REQUEST_URI'] . '" method="POST">';
 ?>
 
 
-<?php if (!empty($_SESSION['message'])): ?>
-<div class="warning ok"><?php echo $_SESSION['message'] ?></div>
-<?php unset($_SESSION['message']); ?>
-<?php elseif (!empty($_SESSION['errors'])): ?>
-<div class="warning error"><?php echo $_SESSION['errors'] ?></div>
-<?php unset($_SESSION['errors']); ?>
-<?php else: ?>
+
 <div class="warning"><?php echo __('Change template and save') ?></div>
-<?php endif; ?>
-
-
-
-
 
 <div class="white">
 	<div class="pages-tree">
@@ -343,7 +332,7 @@ echo '<form action="' . $_SERVER['REQUEST_URI'] . '" method="POST">';
 			<div class="items">
 				<div class="setting-item">
 					<div class="center">
-						<textarea title="Код шаблона" style="width:99%;height:380px;" wrap="off" name="templ" id="tmpl"><?php print h($template); ?></textarea>
+						<textarea title="Код шаблона" style="width:100%; height:380px;" wrap="off" name="templ" id="tmpl"><?php print h($template); ?></textarea>
 					</div>
 					<div class="clear"></div>
 				</div>
@@ -408,18 +397,16 @@ echo '<form action="' . $_SERVER['REQUEST_URI'] . '" method="POST">';
 <script type="text/javascript" src="js/codemirror/mode/xml/xml.js"></script>
 -->
 <link rel="StyleSheet" type="text/css" href="js/codemirror/codemirror.css" />
-<link rel="StyleSheet" type="text/css" href="js/codemirror/theme/eclipse.css" />
+<link rel="StyleSheet" type="text/css" href="js/codemirror/theme/solarized.css" />
 <script type="text/javascript">
 $(document).ready(function(){
-	var wd = parseInt($('.list.pages-form').css('width'), 10) - 20;
-
-	
+	var wd = parseInt($('.list.pages-form').css('width'), 10);
     var editor = CodeMirror.fromTextArea(document.getElementById("tmpl"), {
-		theme: "eclipse", 
+		theme: "solarized", 
 		mode: "<?php echo ($type === 'css') ? 'css' : 'vbscript'; ?>"
 	});
 	
-
+	
 	editor.setSize(wd, 450);
 	$('.CodeMirror').css({
 		'margin-top': '-20px',
@@ -470,18 +457,6 @@ function(){
 	<li><div class="global-marks">{{ comments }}</div> - Комментарии к материалу и форма добавления комментариев <b>(если предусмотренно)</b></li>
 	<li><div class="global-marks">{{ personal_page_link }}</div> - URL на свою персональную страницу или на страницу регистрации, если не авторизован</li>
 </ul>
-
-
-
-
-<?php
-if (!empty($_SESSION['info_message'])):
-?>
-<script type="text/javascript">showHelpWin('<?php echo h($_SESSION['info_message']) ?>', '<?php echo __('Message') ?>');</script>
-<?php
-	unset($_SESSION['info_message']);
-endif;
-?>
 
 <?php include_once 'template/footer.php'; ?>
 

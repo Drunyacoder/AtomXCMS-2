@@ -24,6 +24,8 @@ class ShopSettingsController
     public $pageNavr;
 
     public $currentUrl;
+	
+	public $allowed_filetypes = array('image/jpeg', 'image/png', 'image/gif');
 
 
     public function __construct()
@@ -101,7 +103,7 @@ class ShopSettingsController
 			<th width=\"5%\">" . getOrderLink(array('comments_cnt', __('Comments'))) . "</th>
 			<th width=\"5%\">" . getOrderLink(array('price', __('Price'))) . "</th>
 			<th width=\"5%\">" . getOrderLink(array('discount', __('Discount'))) . "</th>
-			<th width=\"85px\" colspan=\"\">" . __('Action') . "</th></tr>";
+			<th width=\"110px\" colspan=\"\">" . __('Action') . "</th></tr>";
 
 
         foreach ($entities as $entity) {
@@ -122,6 +124,7 @@ class ShopSettingsController
 						<td colspan=\"\">
 						<a class=\"edit\" title=\"" . __('Edit') . "\" href='" . $this->getUrl('edit_product/' . $entity->getId()) . "'></a>
 						<a class=\"delete\" title=\"" . __('Delete') . "\" href='" . $this->getUrl('delete_product/' . $entity->getId()) . "'></a>
+						<a class=\"statistics\" title=\"" . __('Statistics') . "\" href='" . $this->getUrl('statistics/product/' . $entity->getId()) . "'></a>
 						</td>
 						</tr>";
         }
@@ -160,7 +163,6 @@ class ShopSettingsController
 
 		if (!empty($_POST)) {
             $errors = $Register['Validate']->check(__FUNCTION__);
-
             if (!empty($errors)) {
                 $_SESSION['errors'] = $Register['Validate']->wrapErrors($errors);
                 redirect($this->getUrl('edit_product/' . $id));
@@ -195,6 +197,8 @@ class ShopSettingsController
 				$entity->setVendor_id($_POST['vendor_id']);
 			if ($entity->getAttributes_group_id() != $_POST['attributes_group_id'])
 				$entity->setAttributes_group_id($_POST['attributes_group_id']);
+			if (isset($_POST['quantity'])) 
+				$entity->setQuantity(intval($_POST['quantity']));
 			$entity->setCommented((!empty($_POST['commented']) ? '1' : '0'));
 			$entity->setAvailable((!empty($_POST['available']) ? '1' : '0'));
 			$entity->setView_on_home((!empty($_POST['view_on_home']) ? '1' : '0'));
@@ -244,7 +248,7 @@ class ShopSettingsController
         }
 
         // product fields
-        $attrs = array('title', 'description', 'article', 'price', 'discount', 'commented', 'available', 'view_on_home', 'hide_not_exists');
+        $attrs = array('title', 'description', 'article', 'price', 'discount', 'commented', 'available', 'view_on_home', 'hide_not_exists', 'quantity');
         $checkboxes = array('commented', 'available', 'view_on_home', 'hide_not_exists');
         foreach ($attrs as $attr) {
             $getter = 'get' . ucfirst($attr);
@@ -448,24 +452,6 @@ class ShopSettingsController
 			</div>
 			</form>
 		</div>';
-
-        $content .= '<div class="list">
-		<div class="title">' . __('Categories management') . '</div>
-		<div class="add-cat-butt" onClick="openPopup(\'addCat\');"><div class="add"></div>' . __('Add section') . '</div>
-		<div class="level1">
-			<div class="head">
-				<div class="title">' . __('Category') . '</div>
-				<div class="buttons">
-				</div>
-				<div class="clear"></div>
-			</div>
-			<div class="items">';
-        if (count($all_categories) > 0) {
-            $content .= $this->buildCatsList($cats_tree, $all_categories);
-        } else {
-            $content .= __('Sections not found');
-        }
-        $content .= '</div></div></div>';
 
         return $popups . $content;
     }
@@ -905,101 +891,1196 @@ class ShopSettingsController
     }
 
 
-    public function products_statistics()
-    {
+	public function delivery($id = null)
+	{
+		$id = intval($id);
         $Register = Register::getInstance();
-        $this->pageTitle = __('Shop') . ' / ' . __('Products statistics');
-        $this->pageNav = __('Shop') . ' / ' . __('Products statistics');
+        $this->pageTitle = __('Shop') . ' / ' . __('Delivery types management');
+        $this->pageNav = __('Shop') . ' / ' . __('Delivery types management');
         $content = '';
-        $ordersProductsModel = $Register['ModManager']->getModelInstance('shopOrdersProducts');
-        $ordersModel = $Register['ModManager']->getModelInstance('shopOrders');
-        $data = $ordersModel->getCollection(array(), array(
-            'joins' => array(
-                array(
-                    'table' => 'shop_orders',
-                    'alias' => 'b',
-                    'cond' => array("a.id = b.id", "a.status = 'process'"),
-                    'type' => 'LEFT',
-                ),
-                array(
-                    'table' => 'shop_orders',
-                    'alias' => 'c',
-                    'cond' => array("a.id = c.id", "a.status = 'complete'"),
-                    'type' => 'LEFT',
-                ),
-                array(
-                    'table' => 'shop_orders',
-                    'alias' => 'd',
-                    'cond' => array("a.id = d.id", "a.status = 'delivery'"),
-                    'type' => 'LEFT',
-                ),
-            ),
-            'fields' => array(
-                'a.date',
-                'COUNT( a.id ) AS all_cnt',
-                'COUNT( b.id ) AS process_cnt',
-                'COUNT( c.id ) AS complete_cnt',
-                'COUNT( d.id ) AS delivery_cnt',
-            ),
-            'alias' => 'a',
-            'group' => 'a.date',
-			'order' => 'a.date DESC',
-			'limit' => 20,
-        ));
-		$orders_st_date = array(0 => array(), 1 => array(), 2 => array(), 3 => array());
-		$orders_st_date_ticks = array();
-        if (!empty($data)) {
-            foreach ($data as $k => $row) {
-                $row = $row->asArray();
-                $orders_st_date[0][$k] = intval($row['all_cnt']); // all
-                $orders_st_date[1][$k] = intval($row['process_cnt']); // process
-                $orders_st_date[2][$k] = intval($row['delivery_cnt']); // delivery
-                $orders_st_date[3][$k] = intval($row['complete_cnt']); // complete
-				$orders_st_date_ticks[$k] = AtmDateTime::getDate($row['date'], "Y/m/d");
+        $popups = '';
+        $model = $Register['ModManager']->getModelInstance('shopDeliveryTypes');
+		
+		
+		if (!empty($_POST)) {
+            $errors = $Register['Validate']->check(__FUNCTION__);
+            if (!empty($errors)) {
+                $_SESSION['errors'] = $Register['Validate']->wrapErrors($errors);
+                redirect($this->getUrl('delivery'));
             }
+			
+			// edit or create
+			if (!empty($id)) {
+				$entity = $model->getById($id);
+				if (!$entity) {
+					$_SESSION['errors'] = $Register['Validate']->wrapErrors(__('Record not found'), true);
+					redirect($this->getUrl('delivery'));
+				}
+			} else {
+				$entity = $Register['ModManager']->getEntityInstance('shopDeliveryTypes');
+			}
+			
+			$entity->setTitle(trim($_POST['title']));
+			$entity->setPrice((!empty($_POST['price']) ? floatval($_POST['price']) : 0));
+			$entity->setTotal_for_free((!empty($_POST['total_for_free']) ? intval($_POST['total_for_free']) : 0));
+			
+			if ($entity->save()) {
+				$_SESSION['message'] = __('Operation is successful');
+				redirect($this->getUrl('delivery'));
+			}
+			$_SESSION['errors'] = __('Some error occurred');
+			redirect($this->getUrl('delivery'));
+		}
+		
+		
+		$deliveries = $model->getCollection();
+        $popups .= '<div id="addCat" class="popup">
+			<div class="top">
+				<div class="title">' . __('Adding delivery type') . '</div>
+				<div onClick="closePopup(\'addCat\');" class="close"></div>
+			</div>
+			<form action="' . $this->getUrl('delivery') . '" method="POST">
+			<div class="items">
+				<div class="item">
+					<div class="left">
+						' . __('Title') . ':
+					</div>
+					<div class="right"><input type="text" name="title" value="" /></div>
+					<div class="clear"></div>
+				</div>
+				<div class="item">
+					<div class="left">
+						' . __('Price') . ':
+					</div>
+					<div class="right">
+						<input type="text" name="price" value="0" /></div>
+					<div class="clear"></div>
+				</div>
+				<div class="item">
+					<div class="left">
+						' . __('Total price for free delivery') . ':
+					</div>
+					<div class="right">
+						<input type="text" name="total_for_free" value="0" /></div>
+					<div class="clear"></div>
+				</div>
+				<div class="item submit">
+					<div class="left"></div>
+					<div class="right" style="float:left;">
+						<input type="submit" value="' . __('Save') . '" name="send" class="save-button" />
+					</div>
+					<div class="clear"></div>
+				</div>
+			</div>
+			</form>
+		</div>';
+
+        $content .= '<div class="list">
+		<div class="title">' . __('Delivery types management') . '</div>
+		<div class="add-cat-butt" onClick="openPopup(\'addCat\');"><div class="add"></div>' . __('Add delivery type') . '</div>
+		<div class="level1">
+			<div class="head">
+				<div class="title">' . __('Delivery type') . '</div>
+				<div class="buttons">
+				</div>
+				<div class="clear"></div>
+			</div>
+			<div class="items">';
+        if (count($deliveries) > 0) {
+            foreach ($deliveries as $row) {
+				$popups .= '<div id="' . $row->getId() . '_edit" class="popup">
+					<div class="top">
+						<div class="title">' . __('Editing delivery type') . '</div>
+						<div onClick="closePopup(\'' . $row->getId() . '_edit\');" class="close"></div>
+					</div>
+					<form action="' . $this->getUrl('delivery/' . $row->getId()) . '" method="POST">
+					<div class="items">
+						<div class="item">
+							<div class="left">
+								' . __('Title') . ':
+							</div>
+							<div class="right"><input type="text" name="title" value="' . h($row->getTitle()) . '" /></div>
+							<div class="clear"></div>
+						</div>
+						<div class="item">
+							<div class="left">
+								' . __('Price') . ':
+							</div>
+							<div class="right">
+								<input type="text" name="price" value="' . floatval($row->getPrice()) . '" /></div>
+							<div class="clear"></div>
+						</div>
+						<div class="item">
+							<div class="left">
+								' . __('Total for free delivery') . ':
+							</div>
+							<div class="right">
+								<input type="text" name="total_for_free" value="' . intval($row->getTotal_for_free()) . '" /></div>
+							<div class="clear"></div>
+						</div>
+						<div class="item submit">
+							<div class="left"></div>
+							<div class="right" style="float:left;">
+								<input type="submit" value="' . __('Save') . '" name="send" class="save-button" />
+							</div>
+							<div class="clear"></div>
+						</div>
+					</div>
+					</form>
+				</div>';
+				
+				$content .= '<div class="level2">
+						<div class="number">' . $row->getId() . '</div>
+						<div class="title">' . h($row->getTitle()) . '</div>
+						<div class="buttons">';
+				$content .= '<a href="javascript://" class="edit" title="Edit" onClick="openPopup(\'' . $row->getId() . '_edit\');"></a>
+					 <a title="Delete" href="' . $this->getUrl('delivery_delete/' . $row->getId())
+					. '" class="delete" onClick="return _confirm();"></a>
+					</div>
+				</div>';
+			}
+        }
+        $content .= '</div></div></div>';
+		return $popups . $content;
+	}
+	
+	
+	public function delivery_delete($id = null)
+	{
+        $id = intval($id);
+        $Register = Register::getInstance();
+        if ($Register['ACL']->turn(array($this->module, 'delete_delivery_types'), false)) {
+            $_SESSION['errors'] = __('Permission denied');
+            redirect($this->getUrl('delivery'));
         }
 
-		$date1 = '2014-05-01';
-		$date2 = '2014-05-26';
-        $data = $ordersProductsModel->getCollection(array(
-			"a.order_id IN (SELECT id FROM shop_orders WHERE date BETWEEN '{$date1}' AND '{$date2}')",
-		), array(
-            'joins' => array(
-                array(
-                    'table' => 'shop_products',
-                    'alias' => 'b',
-                    'cond' => array("a.product_id = b.id"),
-                    'type' => '',
-                ),
-            ),
-            'fields' => array(
-                'a.product_id',
-                'b.title',
-                'COUNT(a.id) as cnt',
-            ),
-            'alias' => 'a',
-            'group' => 'a.product_id',
-			'order' => '`cnt` DESC',
-			'limit' => 30,
-        ));
-		$top_products = array();
-		$top_products_ticks = array();
-        if (!empty($data)) {
-            foreach ($data as $k => $row) {
-                $row = $row->asArray();
-                $top_products[$k] = intval($row['cnt']);
-                $top_products_ticks[$k] = h($row['title']);
+        $model = $Register['ModManager']->getModelInstance('shopDeliveryTypes');
+        $entity = $model->getById($id);
+        if (!$entity) {
+            $_SESSION['errors'] = __('Record not found');
+            redirect($this->getUrl('delivery'));
+        }
+        $entity->delete();
+
+        $_SESSION['message'] = __('Operation is successful');
+        redirect($this->getUrl('delivery'));
+	}
+
+
+	public function vendors($id = null)
+	{
+		$id = intval($id);
+        $Register = Register::getInstance();
+        $this->pageTitle = __('Shop') . ' / ' . __('Vendors management');
+        $this->pageNav = __('Shop') . ' / ' . __('Vendors management');
+        $content = '';
+        $popups = '';
+        $model = $Register['ModManager']->getModelInstance('shopVendors');
+		$model->bindModel('products');
+		
+		
+		if (!empty($_POST)) {
+            $errors = $Register['Validate']->check(__FUNCTION__);
+            if (!empty($errors)) {
+                $_SESSION['errors'] = $Register['Validate']->wrapErrors($errors);
+                redirect($this->getUrl('vendors'));
+            }
+			
+			// edit or create
+			if (!empty($id)) {
+				$entity = $model->getById($id);
+				if (!$entity) {
+					$_SESSION['errors'] = $Register['Validate']->wrapErrors(__('Record not found'), true);
+					redirect($this->getUrl('vendors'));
+				}
+			} else {
+				$entity = $Register['ModManager']->getEntityInstance('shopVendors');
+			}
+			
+			$entity->setTitle(trim($_POST['title']));
+			$entity->setDescription((!empty($_POST['description']) ? trim($_POST['description']) : ''));
+			$entity->setDiscount((!empty($_POST['discount']) ? intval($_POST['discount']) : 0));
+			$entity->setView_on_home((!empty($_POST['view_on_home']) ? '1' : '0'));
+			$entity->setHide_not_exists((!empty($_POST['hide_not_exists']) ? '1' : '0'));
+			if (!empty($_POST['logo_image_delete']) && $entity->getLogo_image()) {
+				if (file_exists(ROOT . '/sys/files/' . $this->module . '/vendors/' . $entity->getLogo_image()))
+					@unlink(ROOT . '/sys/files/' . $this->module . '/vendors/' . $entity->getLogo_image());
+				$entity->setLogo_image();
+			}
+			if (!empty($_FILES['logo_image'])) {
+				$dest_path = ROOT . '/sys/files/' . $this->module . '/vendors/' . $_FILES['logo_image']['name'];
+				if (@move_uploaded_file($_FILES['logo_image']['tmp_name'], $dest_path)) {
+					@chmod($dest_path, 0777);
+					$entity->setLogo_image($_FILES['logo_image']['name']);
+				}
+			}
+
+			
+			if ($entity->save()) {
+				$_SESSION['message'] = __('Operation is successful');
+				redirect($this->getUrl('vendors'));
+			}
+			$_SESSION['errors'] = __('Some error occurred');
+			redirect($this->getUrl('vendors'));
+		}
+		
+		
+		$vendors = $model->getCollection();
+        $popups .= '<div id="addCat" class="popup">
+			<div class="top">
+				<div class="title">' . __('Adding vendor') . '</div>
+				<div onClick="closePopup(\'addCat\');" class="close"></div>
+			</div>
+			<form action="' . $this->getUrl('vendors') . '" method="POST" enctype="multipart/form-data">
+			<div class="items">
+				<div class="item">
+					<div class="left">
+						' . __('Title') . ':
+					</div>
+					<div class="right"><input type="text" name="title" value="" /></div>
+					<div class="clear"></div>
+				</div>
+				<div class="item">
+					<div class="left">
+						' . __('Description') . ':
+					</div>
+					<div class="right"><textarea name="description"></textarea></div>
+					<div class="clear"></div>
+				</div>
+				<div class="item">
+					<div class="left">
+						' . __('Discount') . ' (%):
+					</div>
+					<div class="right">
+						<input type="text" name="discount" value="0" /></div>
+					<div class="clear"></div>
+				</div>
+				<div class="item">
+					<div class="left">
+						' . __('View on home') . ':
+					</div>
+					<div class="right">
+						<input type="checkbox" name="view_on_home" value="1" checked="checked" id="add-voh" />
+						<label for="add-voh"></label>
+					</div>
+					<div class="clear"></div>
+				</div>
+				<div class="item">
+					<div class="left">
+						' . __('Hide not exists') . ':
+					</div>
+					<div class="right">
+						<input type="checkbox" name="hide_not_exists" value="1" id="add-hne" />
+						<label for="add-hne"></label>
+					</div>
+					<div class="clear"></div>
+				</div>
+				<div class="item">
+					<div class="left">
+						' . __('Logo') . ':
+					</div>
+					<div class="right">
+						<input type="file" name="logo_image"/>
+					</div>
+					<div class="clear"></div>
+				</div>
+				<div class="item submit">
+					<div class="left"></div>
+					<div class="right" style="float:left;">
+						<input type="submit" value="' . __('Save') . '" name="send" class="save-button" />
+					</div>
+					<div class="clear"></div>
+				</div>
+			</div>
+			</form>
+		</div>';
+
+        $content .= "<div class=\"list\">
+			<div class=\"title\">" . __('Vendors management') . "</div>
+			<div class=\"add-cat-butt\" onClick=\"openPopup('addCat');\"><div class=\"add\"></div>" . __('Add vendor') . "</div>
+			<table cellspacing=\"0\" style=\"width:100%;\" class=\"grid\"><tr>
+			<th width=\"\">" . getOrderLink(array('title', __('Title'))) . "</th>
+			<th width=\"30%\">" . getOrderLink(array('description', __('Description'))) . "</th>
+			<th width=\"20%\">" . __('Logo') . "</th>
+			<th width=\"10%\">" . getOrderLink(array('discount', __('Discount'))) . "</th>
+			<th width=\"15%\">" . getOrderLink(array('view_on_home', __('View on home'))) . "</th>
+			<th width=\"10%\">" . getOrderLink(array('hide_not_exists', __('Hide not exists'))) . "</th>
+			<th width=\"85px\" colspan=\"\">" . __('Action') . "</th></tr>";
+        if (count($vendors) > 0) {
+            foreach ($vendors as $row) {
+				$popups .= '<div id="' . $row->getId() . '_edit" class="popup">
+					<div class="top">
+						<div class="title">' . __('Editing vendor') . '</div>
+						<div onClick="closePopup(\'' . $row->getId() . '_edit\');" class="close"></div>
+					</div>
+					<form action="' . $this->getUrl('vendors/' . $row->getId()) . '" method="POST" enctype="multipart/form-data">
+					<div class="items">
+						<div class="item">
+							<div class="left">
+								' . __('Title') . ':
+							</div>
+							<div class="right"><input type="text" name="title" value="' . h($row->getTitle()) . '" /></div>
+							<div class="clear"></div>
+						</div>
+						<div class="item">
+							<div class="left">
+								' . __('Description') . ':
+							</div>
+							<div class="right">
+								<textarea name="description">' . h($row->getDescription()) . '</textarea></div>
+							<div class="clear"></div>
+						</div>
+						<div class="item">
+							<div class="left">
+								' . __('Discount') . ' (%):
+							</div>
+							<div class="right">
+								<input type="text" name="discount" value="' . intval($row->getDiscount()) . '" /></div>
+							<div class="clear"></div>
+						</div>
+						<div class="item">
+							<div class="left">
+								' . __('View on home') . ':
+							</div>
+							<div class="right">
+								<input type="checkbox" name="view_on_home" value="1"' 
+								. (($row->getView_on_home()) ? ' checked="checked"' : '') 
+								. ' id="add-voh-' . $row->getId() . '"/>
+								<label for="add-voh-' . $row->getId() . '"></label>
+							</div>
+							<div class="clear"></div>
+						</div>
+						<div class="item">
+							<div class="left">
+								' . __('Hide not exists') . ':
+							</div>
+							<div class="right">
+								<input type="checkbox" name="hide_not_exists" value="1"' 
+								. (($row->getHide_not_exists()) ? ' checked="checked"' : '') 
+								. '  id="add-hne-' . $row->getId() . '"/>
+								<label for="add-hne-' . $row->getId() . '"></label>
+							</div>
+							<div class="clear"></div>
+						</div>
+						<div class="item">
+							<div class="left">
+								' . __('Logo') . ':
+							</div>
+							<div class="right">
+								<input type="file" name="logo_image"/>'
+								. (($row->getLogo_image()) 
+									? '<input type="checkbox" name="logo_image_delete" value="1"'  
+										. ' id="del-logo-' . $row->getId() . '"/>
+										<label for="del-logo-' . $row->getId() . '">'.__('Delete file').'</label>' 
+									: '')
+							. '</div>
+							<div class="clear"></div>
+						</div>
+						<div class="item submit">
+							<div class="left"></div>
+							<div class="right" style="float:left;">
+								<input type="submit" value="' . __('Save') . '" name="send" class="save-button" />
+							</div>
+							<div class="clear"></div>
+						</div>
+					</div>
+					</form>
+				</div>';
+				
+				$content .= "<tr>
+							<td>" . h($row->getTitle()) . "</td>
+							<td>" . h($row->getDescription()) . "</td>
+							<td align=\"center\">" . (($row->getLogo_image())
+								? '<a class="gallery" href="' . WWW_ROOT . '/sys/files/shop/' . $row->getLogo_image() . '">
+									<img src="' . WWW_ROOT . '/image/shop+vendors/' . $row->getLogo_image() . '/100/" /></a>'
+								: ' - ') . "</td>
+							<td>" . intval($row->getDiscount()) . "</td>
+							<td>" . ($row->getView_on_home() ? __('Yes') : __('No')) . "</td>
+							<td>" . ($row->getHide_not_exists() ? __('Yes') : __('No')) . "</td>
+							<td colspan=\"\">
+							<a class=\"edit\" title=\"" . __('Edit') . "\" href=\"javascript:void(0);\" onClick=\"openPopup('" . $row->getId() . "_edit');\"></a>
+							<a class=\"delete\" title=\"" . __('Delete') . "\" href='" . $this->getUrl('vendor_delete/' . $row->getId()) . "'></a>
+							</td>
+							</tr>";
+			}
+        }
+        $content .= '</table></div>';
+		return $popups . $content;
+	}
+	
+	
+	public function vendor_delete($id = null)
+	{
+        $id = intval($id);
+        $Register = Register::getInstance();
+        if ($Register['ACL']->turn(array($this->module, 'delete_vendors'), false)) {
+            $_SESSION['errors'] = __('Permission denied');
+            redirect($this->getUrl('vendors'));
+        }
+
+        $model = $Register['ModManager']->getModelInstance('shopVendors');
+        $entity = $model->getById($id);
+        if (!$entity) {
+            $_SESSION['errors'] = __('Record not found');
+            redirect($this->getUrl('vendors'));
+        }
+		if ($entity->getLogo_image() 
+		&& file_exists(ROOT . '/sys/files/' . $this->module . '/vendor/' . $entity->getLogo_image()))
+			@unlink(ROOT . '/sys/files/' . $this->module . '/vendor/' . $entity->getLogo_image());
+        $entity->delete();
+
+        $_SESSION['message'] = __('Operation is successful');
+        redirect($this->getUrl('vendors'));
+	}
+
+
+	public function orders($id = null)
+	{
+		$id = intval($id);
+		$per_page = 50;
+        $Register = Register::getInstance();
+        $this->pageTitle = __('Shop') . ' / ' . __('Orders management');
+        $this->pageNav = __('Shop') . ' / ' . __('Orders management');
+        $content = '';
+        $popups = '';
+        $model = $Register['ModManager']->getModelInstance('shopOrders');
+		
+		
+        $total = $model->getTotal();
+        list ($pages, $page) = pagination($total, Config::read($per_page, $this->module), $this->getCurrentUrl('page'));
+        $filters = $this->__getOrdersFilters();
+        $where = array();
+        if (!empty($_GET['filters']) && is_array($_GET['filters'])) {
+            foreach ($_GET['filters'] as $k => $v) {
+                $where[$k] = $v;
             }
         }
 		
-		/*SELECT a.date, COUNT( c.id ) AS cnt
-		FROM shop_orders a
-		LEFT JOIN shop_orders_products b ON a.id = b.order_id
-		JOIN shop_products c ON c.id = b.product_id
-		WHERE c.id =1
-		GROUP BY a.date*/
-		$date1 = '2014-05-01';
-		$date2 = '2014-05-26';
+		
+		$model->bindModel('author');
+		$model->bindModel('delivery_type');
+		$model->bindModel('products');
+        $params = array(
+            'page' => $page,
+            'limit' => $per_page,
+            'order' => $model->getOrderParam(),
+        );
+		$orders = $model->getCollection();
+		
+		
+        $content .= "<div class=\"list\">
+			<div class=\"title\">" . __('Orders management') . "</div>
+			<div class=\"add-cat-butt\" onClick=\"openPopup('addCat');\"><div class=\"add\"></div>" . __('Add vendor') . "</div>
+			<table cellspacing=\"0\" style=\"width:100%;\" class=\"grid\"><tr>
+			<th width=\"13%\">" . getOrderLink(array('date', __('Date'))) . "</th>
+			<th width=\"7%\">" . getOrderLink(array('user', __('User'))) . "</th>
+			<th width=\"5%\">" . getOrderLink(array('status', __('Status'))) . "</th>
+			<th width=\"7%\">" . getOrderLink(array('total', __('Total'))) . "</th>
+			<th width=\"15%\">" . getOrderLink(array('delivery_type', __('Delivery type'))) . "</th>
+			<th width=\"\">" . __('Products') . "</th>
+			<th width=\"7%\">" . getOrderLink(array('first_name', __('First name'))) . "</th>
+			<th width=\"7%\">" . getOrderLink(array('last_name', __('Last name'))) . "</th>
+			<th width=\"110px\" colspan=\"\">" . __('Action') . "</th></tr>";
+        if (count($orders) > 0) {
+            foreach ($orders as $row) {
+				$popups .= '<div id="' . $row->getId() . '_edit" class="popup">
+					<div class="top">
+						<div class="title">' . __('View order') . '</div>
+						<div onClick="closePopup(\'' . $row->getId() . '_edit\');" class="close"></div>
+					</div>
+					<form action="' . $this->getUrl('orders/' . $row->getId()) . '" method="POST" enctype="multipart/form-data">
+					<div class="items">
+						<div class="item">
+							<div class="left">
+								' . __('Date') . ':
+							</div>
+							<div class="right">' . AtmDateTime::getDate($row->getDate(), 'Y-m-d H:i:s') . '</div>
+							<div class="clear"></div>
+						</div>
+						<div class="item">
+							<div class="left">
+								' . __('User') . ':
+							</div>
+							<div class="right">' . h(($row->getAuthor()) ? $row->getAuthor()->getName() : '-') . '</div>
+							<div class="clear"></div>
+						</div>
+						<div class="item">
+							<div class="left">
+								' . __('Status') . ':
+							</div>
+							<div class="right">' . $row->getStatus() . '</div>
+							<div class="clear"></div>
+						</div>
+						<div class="item">
+							<div class="left">
+								' . __('Total') . ':
+							</div>
+							<div class="right">' . number_format($row->getTotal(), 2, ',', ' ') . '</div>
+							<div class="clear"></div>
+						</div>
+						<div class="item">
+							<div class="left">
+								' . __('Delivery type') . ':
+							</div>
+							<div class="right">' . h(($row->getDelivery_type()) ? $row->getDelivery_type()->getTitle() : '-') . '</div>
+							<div class="clear"></div>
+						</div>
+						<div class="item">
+							<div class="left">
+								' . __('First name') . ':
+							</div>
+							<div class="right">' . h($row->getFirst_name()) . '</div>
+							<div class="clear"></div>
+						</div>
+						<div class="item">
+							<div class="left">
+								' . __('Last name') . ':
+							</div>
+							<div class="right">' . h($row->getLast_name()) . '</div>
+							<div class="clear"></div>
+						</div>
+						<div class="item">
+							<div class="left">
+								' . __('Telephone') . ':
+							</div>
+							<div class="right">' . h($row->getTelephone()) . '</div>
+							<div class="clear"></div>
+						</div>
+						<div class="item">
+							<div class="left">
+								' . __('Delivery address') . ':
+							</div>
+							<div class="right">' . h($row->getDelivery_address()) . '</div>
+							<div class="clear"></div>
+						</div>
+						<div class="item">
+							<div class="left">
+								' . __('Comment') . ':
+							</div>
+							<div class="right"><textarea disabled="disabled">' . h($row->getComment()) . '</textarea></div>
+							<div class="clear"></div>
+						</div>
+						<div class="item submit">
+							<div class="left"></div>
+							<div class="right" style="float:left;">
+								<input type="submit" value="' . __('Save') . '" name="send" class="save-button" />
+							</div>
+							<div class="clear"></div>
+						</div>
+					</div>
+					</form>
+				</div>';
+				
+				$content .= "<tr>
+							<td>" . AtmDateTime::getDate($row->getDate(), 'Y-m-d H:i:s') . "</td>
+							<td>" . h(($row->getAuthor()) ? $row->getAuthor()->getName() : '-') . "</td>
+							<td align=\"center\">" . $row->getStatus() . "</td>
+							<td align=\"center\">" . number_format($row->getTotal(), 2, ',', ' ') . "</td>
+							<td>" . h(($row->getDelivery_type()) ? $row->getDelivery_type()->getTitle() : '-') . "</td>
+							<td>"; 
+				if ($row->getProducts()) {
+					$randColor = function(){
+						$colors = array('d60100', 'd85700', 'cda902', 'd6d700', '8cd304', '00d402', '23579d', '5b84ba');
+						return $colors[array_rand($colors)];
+					};
+					foreach ($row->getProducts() as $product) {
+						$content .= '<a href="' . $this->getUrl('edit_product/' . $product->getId()) 
+							. '" style="text-shadow:none; color:#' . $randColor() . '">' 
+							. h($product->getTitle()) . '</a><br>';
+					}
+					$content = substr($content, 0, -4);
+				} else {
+					$content .= '-';
+				}
+				$content .= "</td>
+							<td>" . h($row->getFirst_name()) . "</td>
+							<td>" . h($row->getLast_name()) . "</td>
+							<td colspan=\"\">
+							<a class=\"view\" title=\"" . __('View') . "\" href=\"javascript:void(0);\" onClick=\"openPopup('" . $row->getId() . "_edit');\"></a>
+							<a class=\"edit\" title=\"" . __('Edit') . "\" href=\"" . $this->getUrl('order_edit/' . $row->getId()) . "\"></a>
+							<a class=\"delete\" title=\"" . __('Delete') . "\" href='" . $this->getUrl('order_delete/' . $row->getId()) . "'></a>
+							</td>
+							</tr>";
+			}
+        }
+        $content .= '</table></div>';
+		return $popups . $content;
+	}
+	
+	
+	public function order_edit($id = null)
+	{
+		$id = intval($id);
+        $Register = Register::getInstance();
+        $this->pageTitle = __('Shop') . ' / ' . __('Editing order');
+        $this->pageNav = __('Shop') . ' / ' . __('Editing order');
+        $content = '';
+        $popups = '';
+        $model = $Register['ModManager']->getModelInstance('shopOrders');
+		$model->bindModel('author');
+		$model->bindModel('delivery_type');
+		$model->bindModel('products');
+		if ($id > 0) {
+			$entity = $model->getById($id);
+            if (!$entity) {
+                $_SESSION['errors'] = $Register['Validate']->wrapErrors(__('Record not found'), true);
+                redirect($this->getUrl('orders'));
+            }
+		} else {
+			$entity = $Register['ModManager']->getEntityInstance('shopOrders');
+		}	
+		
+		$popups .= '<div id="product_add" class="popup">
+			<div class="top">
+				<div class="title">' . __('Adding product to order') . '</div>
+				<div onClick="closePopup(\'product_add\');" class="close"></div>
+			</div>
+			<form action="' . $this->getUrl('order_edit/' . $id) . '" method="POST" enctype="multipart/form-data">
+			<div class="items">
+				<div class="item">
+					<div class="left">
+						' . __('Title') . ':
+					</div>
+					<div class="right"><input type="text" name="product_id" value="" /></div>
+					<div class="clear"></div>
+				</div>
+				<div class="item">
+					<div class="left">
+						' . __('Quantity') . ':
+					</div>
+					<div class="right"><input type="text" name="quantity" value="1" /></div>
+					<div class="clear"></div>
+				</div>
+				<div class="item submit">
+					<div class="left"></div>
+					<div class="right" style="float:left;">
+						<input type="submit" value="' . __('Save') . '" name="send" class="save-button" />
+					</div>
+					<div class="clear"></div>
+				</div>
+			</div>
+			</form>
+		</div>';
+		
+        $content .= '<script type="text/javascript" src="' . WWW_ROOT . '/sys/js/tcal.js"></script>
+			<link type="text/css" rel="StyleSheet" href="' . WWW_ROOT . '/admin/template/css/tcal.css" />
+			<script>$(document).ready(function(){A_TCALCONF.format = "Y-m-d H:i:s";});</script>
+			<form action="' . $this->getUrl('order_edit/' . $id) . '" method="POST" enctype="multipart/form-data">
+			<div class="list">
+			<div class="title">' . __('Editing order') . '</div>
+			<div class="add-cat-butt" onClick="openPopup(\'addCat\');"><div class="add"></div>' . __('Add product') . '</div>
+			<div class="level1">
+				<div class="items">
+					<div class="setting-item">
+						<div class="left">' . __('Date') . '</div>
+						<div class="right">
+							<input class="tcal" type="text" name="date" value="' 
+							. (($entity->getDate()) ? AtmDateTime::getDate($entity->getDate(), 'Y-m-d H:i:s') : date('Y-m-d H:i:s')) . '" />
+						</div>
+						<div class="clear"></div>
+					</div>
+					<div class="setting-item">
+						<div class="left">' . __('Status') . '</div>
+						<div class="right">
+							<select name="status">';
+		foreach (array('process', 'delivery', 'complete') as $r) {
+			$content .= '<option value="' . $r . '"' 
+			. (($entity->getStatus() && $entity->getStatus() === $r) ? ' selected="selected"' : '') 
+			. '>' . ucfirst($r) . '</option>';
+		}		
+		$content .= '</select>
+						</div>
+						<div class="clear"></div>
+					</div>
+					<div class="setting-item">
+						<div class="left">' . __('Total') . '</div>
+						<div class="right">
+							<input type="text" name="total" value="' . number_format($entity->getTotal(), 2, '.', '') . '" />
+						</div>
+						<div class="clear"></div>
+					</div>
+					<div class="setting-item">
+						<div class="left">' . __('Delivery type') . '</div>
+						<div class="right">
+							' . $this->getModelFilter('shopDeliveryTypes', 'delivery_type_id', $entity->getDelivery_type_id()) . '
+						</div>
+						<div class="clear"></div>
+					</div>
+					<div class="setting-item">
+						<div class="left">' . __('Delivery address') . '</div>
+						<div class="right">
+							<input type="text" name="delivery_address" value="' . h($entity->getDelivery_address()) . '" />
+						</div>
+						<div class="clear"></div>
+					</div>
+					<div class="setting-item">
+						<div class="left">' . __('Telephone') . '</div>
+						<div class="right">
+							<input type="text" name="telephone" value="' . intval($entity->getTelephone()) . '" />
+						</div>
+						<div class="clear"></div>
+					</div>
+					<div class="setting-item">
+						<div class="left">' . __('First name') . '</div>
+						<div class="right">
+							<input type="text" name="first_name" value="' . h($entity->getFirst_name()) . '" />
+						</div>
+						<div class="clear"></div>
+					</div>
+					<div class="setting-item">
+						<div class="left">' . __('Last name') . '</div>
+						<div class="right">
+							<input type="text" name="last_name" value="' . h($entity->getLast_name()) . '" />
+						</div>
+						<div class="clear"></div>
+					</div>
+					<div class="setting-item">
+						<div class="left">' . __('Comment') . '</div>
+						<div class="right">
+							<input type="text" name="comment" value="' . h($entity->getComment()) . '" />
+						</div>
+						<div class="clear"></div>
+					</div>
+					<div class="setting-item">
+						<div class="left">' . __('Products') . '</div>
+						<div class="right">';
+		if ($entity->getProducts()) {
+			$randColor = function(){
+				$colors = array('d60100', 'd85700', 'cda902', 'd6d700', '8cd304', '00d402', '23579d', '5b84ba');
+				return $colors[array_rand($colors)];
+			};
+			foreach ($entity->getProducts() as $product) {
+				$content .= '<a href="' . $this->getUrl('edit_product/' . $product->getId()) 
+					. '" style="text-shadow:none; color:#' . $randColor() . '">' 
+					. h($product->getTitle()) . '</a><br>';
+			}
+			$content = substr($content, 0, -4);
+		}		
+		$content .= '</div>
+						<div class="clear"></div>
+					</div>
+				</div></div></div></form>';
+        
+		return $popups . $content;
+	}
+	
+	
+	public function order_delete($id = null)
+	{
+        $id = intval($id);
+        $Register = Register::getInstance();
+        if ($Register['ACL']->turn(array($this->module, 'delete_orders'), false)) {
+            $_SESSION['errors'] = __('Permission denied');
+            redirect($this->getUrl('orders'));
+        }
+
+        $model = $Register['ModManager']->getModelInstance('shopOrders');
+        $ordersProductsModel = $Register['ModManager']->getModelInstance('shopOrdersProducts');
+        $entity = $model->getById($id);
+        if (!$entity) {
+            $_SESSION['errors'] = __('Record not found');
+            redirect($this->getUrl('orders'));
+        }
+		
+		$products = $ordersProductsModel->getCollection(array('order_id' => $id));
+		if ($products) {
+			foreach ($products as $row) {
+				$row->delete();
+			}
+		}
+        $entity->delete();
+
+        $_SESSION['message'] = __('Operation is successful');
+        redirect($this->getUrl('orders'));
+	}
+	
+	
+    public function statistics($type = false, $id = false)
+    {
+		if ($type && !$id) $type = false;
+		$Register = Register::getInstance();
+		$this->pageTitle = __('Shop') . ' / ' . __('Products statistics');
+		$this->pageNav = __('Shop') . ' / ' . __('Products statistics');
+		$content = '';
+		
+		if (!$type) {
+			$deliveryModel = $Register['ModManager']->getModelInstance('shopDeliveryTypes');
+			$ordersProductsModel = $Register['ModManager']->getModelInstance('shopOrdersProducts');
+			$ordersModel = $Register['ModManager']->getModelInstance('shopOrders');
+		   
+			list ($date1, $date2) = $this->getDateRange('orders-by-dates');
+			$data = $ordersModel->getCollection(array(
+				"a.date BETWEEN '{$date1}' AND '{$date2}'",
+			), array(
+				'joins' => array(
+					array(
+						'table' => 'shop_orders',
+						'alias' => 'b',
+						'cond' => array("a.id = b.id", "a.status = 'process'"),
+						'type' => 'LEFT',
+					),
+					array(
+						'table' => 'shop_orders',
+						'alias' => 'c',
+						'cond' => array("a.id = c.id", "a.status = 'complete'"),
+						'type' => 'LEFT',
+					),
+					array(
+						'table' => 'shop_orders',
+						'alias' => 'd',
+						'cond' => array("a.id = d.id", "a.status = 'delivery'"),
+						'type' => 'LEFT',
+					),
+				),
+				'fields' => array(
+					'a.date',
+					'COUNT( a.id ) AS all_cnt',
+					'COUNT( b.id ) AS process_cnt',
+					'COUNT( c.id ) AS complete_cnt',
+					'COUNT( d.id ) AS delivery_cnt',
+				),
+				'alias' => 'a',
+				'group' => 'a.date',
+				'order' => 'a.date DESC',
+				/*'limit' => 20,*/
+			));
+			$orders_st_date = array(0 => array(), 1 => array(), 2 => array(), 3 => array());
+			$orders_st_date_ticks = array();
+			if (!empty($data)) {
+				foreach ($data as $k => $row) {
+					$row = $row->asArray();
+					$orders_st_date[0][$k] = intval($row['all_cnt']); // all
+					$orders_st_date[1][$k] = intval($row['process_cnt']); // process
+					$orders_st_date[2][$k] = intval($row['delivery_cnt']); // delivery
+					$orders_st_date[3][$k] = intval($row['complete_cnt']); // complete
+					$orders_st_date_ticks[$k] = AtmDateTime::getDate($row['date'], "Y/m/d");
+				}
+			}
+
+			list ($date1, $date2) = $this->getDateRange('top-products');
+			$data = $ordersProductsModel->getCollection(array(
+				"a.order_id IN (SELECT id FROM shop_orders WHERE date BETWEEN '{$date1}' AND '{$date2}')",
+			), array(
+				'joins' => array(
+					array(
+						'table' => 'shop_products',
+						'alias' => 'b',
+						'cond' => array("a.product_id = b.id"),
+						'type' => '',
+					),
+				),
+				'fields' => array(
+					'a.product_id',
+					'b.title',
+					'COUNT(a.id) as cnt',
+				),
+				'alias' => 'a',
+				'group' => 'a.product_id',
+				'order' => '`cnt` DESC',
+				'limit' => 30,
+			));
+			$top_products = array();
+			$top_products_ticks = array();
+			if (!empty($data)) {
+				foreach ($data as $k => $row) {
+					$row = $row->asArray();
+					$top_products[$k] = intval($row['cnt']);
+					$top_products_ticks[$k] = h($row['title']);
+				}
+			}
+			
+
+			list ($date1, $date2) = $this->getDateRange('orders-total');
+			$data = $ordersModel->getCollection(array(
+				"date BETWEEN '{$date1}' AND '{$date2}'",
+			), array(
+				'fields' => array(
+					"DATE_FORMAT(date, '%Y-%m-%d') AS date",
+					'SUM(total) AS total',
+				),
+				'group' => 'date',
+				'order' => 'date ASC',
+			));
+			$orders_total = array();
+			$orders_total_ticks = array();
+			$dateObj = new DateTime($date1);
+			$prev_date = (string)$dateObj->modify('-1 day')->format('Y-m-d');
+			if (!empty($data)) {
+				foreach ($data as $k => $row) {
+					$row = $row->asArray();
+					$check_date = (string)$dateObj->modify('+1 day')->format('Y-m-d');
+					
+					while ($check_date < $row['date']) {
+						$orders_total[] = array($check_date, 0);
+						$orders_total_ticks[] = $check_date;
+						$check_date = (string)$dateObj->modify('+1 day')->format('Y-m-d');
+					}
+
+					$orders_total[] = array($row['date'], intval($row['total']));
+					$orders_total_ticks[] = $row['date'];
+					$check_date = $row['date'];
+				}
+			}
+
+			$delivery_types = array();
+			$d_data = $deliveryModel->getCollection(array(), array('fileds' => array('id', 'title')));
+			if ($d_data) {
+				foreach ($d_data as $r) {
+					$r = $r->asArray();
+					$delivery_types[] = h($r['title']);
+				}
+			}
+			list ($date1, $date2) = $this->getDateRange('delivery-types');
+			$data = $ordersModel->getCollection(array(
+				"date BETWEEN '{$date1}' AND '{$date2}'",
+			), array(
+				'joins' => array(
+					array(
+						'table' => 'shop_delivery_types',
+						'type' => 'LEFT',
+						'alias' => 'b',
+						'cond' => array('a.delivery_type_id = b.id'),
+					),
+				),
+				'fields' => array(
+					"DATE_FORMAT(a.date, '%Y-%m-%d') AS date",
+					'COUNT(a.delivery_type_id) as cnt',
+					'b.title',
+				),
+				'alias' => 'a',
+				'group' => 'a.date, a.delivery_type_id',
+				'order' => 'a.date ASC',
+			));
+			$deliveries = array_fill(0, count($delivery_types), array());
+			$deliveries_ticks = array();
+			$dateObj = new DateTime($date1);
+			$prev_date = (string)$dateObj->modify('-1 day')->format('Y-m-d');
+			if (!empty($data)) {
+				foreach ($data as $k => $row) {
+					$row = $row->asArray();
+					$d_type_key = array_search(h($row['title']), $delivery_types);
+					if ($d_type_key === false) $delivery_types[] = 'Unknown';
+				}
+				foreach ($data as $k => $row) {
+					$row = $row->asArray();
+					if (empty($row['title'])) $row['title'] = 'Unknown';
+					$d_type_key = array_search(h($row['title']), $delivery_types);
+					$check_date = (string)$dateObj->modify('+1 day')->format('Y-m-d');
+					
+
+					
+					while ($check_date < $row['date']) {
+						$deliveries = array_map(function($n) use ($deliveries_ticks){
+							if (!array_key_exists(count($deliveries_ticks), $n)) $n[count($deliveries_ticks)] = 0;
+							return $n;
+						}, $deliveries);
+						$deliveries[$d_type_key][count($deliveries_ticks)] = 0;
+						$deliveries_ticks[] = $check_date;
+						$check_date = (string)$dateObj->modify('+1 day')->format('Y-m-d');
+					}
+					
+					$date_key = array_search($row['date'], $deliveries_ticks);
+					if ($date_key === false) $date_key = count($deliveries_ticks);
+					
+					$deliveries = array_map(function($n) use ($deliveries_ticks){
+						if (!array_key_exists(count($deliveries_ticks), $n)) $n[count($deliveries_ticks)] = 0;
+						return $n;
+					}, $deliveries);
+					$deliveries[$d_type_key][$date_key] = intval($row['cnt']);
+					if (!in_array($row['date'], $deliveries_ticks)) 
+						$deliveries_ticks[] = $row['date'];
+					$check_date = $row['date'];
+				}
+			}
+		}
+		//pr($deliveries_ticks); pr($deliveries); die();
+        ob_start();
+        ?>
+		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jqplot/graphlib.js"></script>
+		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jqplot/plugins/jqplot.canvasTextRenderer.min.js"></script>
+		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jqplot/plugins/jqplot.canvasAxisTickRenderer.min.js"></script>
+		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jqplot/plugins/jqplot.barRenderer.min.js"></script>
+		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jqplot/plugins/jqplot.categoryAxisRenderer.min.js"></script>
+		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jqplot/plugins/jqplot.dateAxisRenderer.min.js"></script>
+		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jqplot/plugins/jqplot.pointLabels.min.js"></script>
+		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jqplot/plugins/jqplot.highlighter.min.js"></script>
+		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/tcal.js"></script>
+		<link type="text/css" rel="StyleSheet" href="<?php echo WWW_ROOT ?>/admin/template/css/tcal.css" />
+		<!--<script type="text/javascript" src="/sys/js/jqplot_plugins/jqplot.bubbleRenderer.min.js"></script>-->
+		<link href="/sys/js/jqplot/style.css" type="text/css" rel="stylesheet">
+		<?php
+        $content .= ob_get_clean();
+		
+		if ($type === 'product') {
+			$content .= $this->getProductStatistics($id);
+		}
+		
+		if (!$type):
+			ob_start();
+			?>
+			<div class="list">
+				<div class="title"><?php echo __('Orders') ?></div>
+				<div class="level1">
+					<div class="head">
+						<div class="title"><?php echo __('Orders by dates') ?></div>
+						<?php echo $this->getDateRangeSelector('orders-by-dates') ?>
+					</div>
+					<div class="graph-wrapper"><div  class="graph-container" id="chart1"></div></div>
+					<div class="title"><?php echo __('Top products') ?>
+						<?php echo $this->getDateRangeSelector('top-products') ?>
+						<div class="descr"><?php echo __('Top products by period') ?></div>
+					</div>
+					<div class="graph-wrapper"><div  class="graph-container" id="chart2"></div></div>
+					<div class="title"><?php echo __('Orders total summ') ?>
+						<?php echo $this->getDateRangeSelector('orders-total') ?>
+						<div class="descr"><?php echo __('Orders total summ per day') ?></div>
+					</div>
+					<div class="graph-wrapper"><div  class="graph-container" id="chart4"></div></div>
+					<div class="title"><?php echo __('Delivery') ?>
+						<?php echo $this->getDateRangeSelector('delivery-types') ?>
+						<div class="descr"><?php echo __('Deivery types by dates') ?></div>
+					</div>
+					<div class="graph-wrapper"><div  class="graph-container" id="chart5"></div></div>
+				</div>
+			</div>
+			<script type="text/javascript">
+					$(document).ready(function(){
+					  plot1 = $.jqplot('chart1', <?php echo json_encode($orders_st_date) ?>, {
+						stackSeries: false,
+						captureRightClick: true,
+						seriesDefaults:{
+						  renderer:$.jqplot.BarRenderer,
+						  rendererOptions: {
+							  /*barMargin: 20,*/
+							  highlightMouseDown: true
+						  },
+						  pointLabels: {show: true, stackedValue: false}
+						},
+						axes: {
+						  xaxis: {
+							  renderer: $.jqplot.CategoryAxisRenderer,
+							  ticks: <?php echo json_encode($orders_st_date_ticks) ?>
+						  },
+						  yaxis: {
+							padMin: 0,
+							tickOptions: {formatString: '%d'}
+						  }
+						},
+						legend: {
+							show: true,
+							location: 'e',
+							placement: 'inside',
+							labels: ['total', 'process', 'delivery', 'complete']
+						}
+					  });
+					  plot2 = $.jqplot('chart2', [<?php echo json_encode($top_products) ?>], {
+						stackSeries: false,
+						captureRightClick: true,
+						seriesDefaults:{
+						  renderer:$.jqplot.BarRenderer,
+						  rendererOptions: {
+							  barMargin: 20,
+							  varyBarColor: true,
+							  highlightMouseDown: true
+						  },
+						  pointLabels: {show: true, stackedValue: false}
+						},
+						axes: {
+						  xaxis: {
+							  renderer: $.jqplot.CategoryAxisRenderer,
+							  ticks: <?php echo json_encode($top_products_ticks) ?>
+						  },
+						  yaxis: {
+							padMin: 0,
+							min: 0,
+							tickOptions: {formatString: '%d'}
+						  }
+						}
+					  });
+					  plot4 = $.jqplot('chart4', [<?php echo json_encode($orders_total) ?>], {
+						seriesDefaults:{
+						  pointLabels: {show: true, stackedValue: false}
+						},
+						axes: {
+						  xaxis: {
+							  renderer: $.jqplot.DateAxisRenderer,
+							  tickRenderer: $.jqplot.CanvasAxisTickRenderer ,
+							   tickOptions: {angle: 30, fontSize: '10px'},
+							  autoscale:true,
+							  ticks: <?php echo json_encode($orders_total_ticks) ?>
+						  },
+						  yaxis: {
+							autoscale:true,
+							padMin: 0,
+							min: 0,
+							tickOptions: {formatString: '%d'}
+						  }
+						},
+						highlighter: {
+							show: true,
+							sizeAdjust: 7.5,
+							formatString: 'On %s was made orders for %s total'
+						},
+						series: [
+							{
+								lineWidth:2,
+								fill: true,
+								fillAndStroke: true,
+								color:'#4bb2c5',
+								fillColor: '#4bb2c5',
+								fillAlpha: 0.3,
+								label:'Orders total',
+								markerOptions: { style:'circle'}
+							}
+						]
+					  });
+					  plot5 = $.jqplot('chart5', <?php echo json_encode($deliveries) ?>, {
+						stackSeries: false,
+						captureRightClick: true,
+						seriesDefaults:{
+						  renderer:$.jqplot.BarRenderer,
+						  rendererOptions: {
+							  highlightMouseDown: true
+						  },
+						  pointLabels: {show: true, stackedValue: false}
+						},
+						axes: {
+						  xaxis: {
+							  renderer: $.jqplot.CategoryAxisRenderer,
+							  tickRenderer: $.jqplot.CanvasAxisTickRenderer ,
+							  tickOptions: {angle: 30, fontSize: '10px'},
+							  ticks: <?php echo json_encode($deliveries_ticks) ?>
+						  },
+						  yaxis: {
+							padMin: 0,
+							tickOptions: {formatString: '%d'}
+						  }
+						},
+						legend: {
+							show: true,
+							location: 'e',
+							placement: 'inside',
+							labels: <?php echo json_encode($delivery_types) ?>
+						}
+					  });
+					});
+			</script>
+			<?php
+			$content .= ob_get_clean();
+		endif;
+        return $content;
+    }
+	
+	
+	private function getProductStatistics($id = null)
+	{
+        $Register = Register::getInstance();
+        $this->pageTitle = __('Shop') . ' / ' . __('Product statistics');
+        $this->pageNav = __('Shop') . ' / ' . __('Product statistics');
+		$content = '';
+		$ordersModel = $Register['ModManager']->getModelInstance('shopOrders');
+		
+		list ($date1, $date2) = $this->getDateRange('product-history');
 		$id = 1;
         $data = $ordersModel->getCollection(array(
 			"c.id = $id",
@@ -1047,86 +2128,21 @@ class ShopSettingsController
 				$check_date = $row['date'];
             }
         }
-		//pr($product_history); pr($product_history_ticks); die();
         ob_start();
         ?>
 		<div class="list">
-			<div class="title"><?php echo __('Orders') ?></div>
+			<div class="title"><?php echo __('Product orders') ?></div>
 			<div class="level1">
-				<div class="head"><div class="title"><?php echo __('Orders by dates') ?></div></div>
-				<div class="graph-wrapper"><div  class="graph-container" id="chart1"></div></div>
-				<div class="title"><?php echo __('Orders statuses') ?>
-				<div class="descr"><?php echo __('Orders statuses by dates') ?></div></div>
-				<div class="graph-wrapper"><div  class="graph-container" id="chart2"></div></div>
-				<div class="title"><?php echo __('Product orders') ?>
-				<div class="descr"><?php echo sprintf(__('Orders for "%s"'), 'Razor Game PC ') ?></div></div>
+				<div class="head">
+					<div class="title"><?php echo sprintf(__('Orders for "%s"'), 'Razor Game PC ') ?></div>
+					<?php echo $this->getDateRangeSelector('product-history') ?>
+				</div>
 				<div class="graph-wrapper"><div  class="graph-container" id="chart3"></div></div>
+				
 			</div>
 		</div>
-		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jqplot/graphlib.js"></script>
-		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jqplot/plugins/jqplot.canvasTextRenderer.min.js"></script>
-		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jqplot/plugins/jqplot.canvasAxisTickRenderer.min.js"></script>
-		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jqplot/plugins/jqplot.barRenderer.min.js"></script>
-		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jqplot/plugins/jqplot.categoryAxisRenderer.min.js"></script>
-		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jqplot/plugins/jqplot.dateAxisRenderer.min.js"></script>
-		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jqplot/plugins/jqplot.pointLabels.min.js"></script>
-		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jqplot/plugins/jqplot.highlighter.min.js"></script>
-		<!--<script type="text/javascript" src="/sys/js/jqplot_plugins/jqplot.bubbleRenderer.min.js"></script>-->
-		<link href="/sys/js/jqplot/style.css" type="text/css" rel="stylesheet">
 		<script type="text/javascript">
 				$(document).ready(function(){
-				  plot1 = $.jqplot('chart1', <?php echo json_encode($orders_st_date) ?>, {
-					stackSeries: false,
-					captureRightClick: true,
-					seriesDefaults:{
-					  renderer:$.jqplot.BarRenderer,
-					  rendererOptions: {
-						  barMargin: 20,
-						  highlightMouseDown: true
-					  },
-					  pointLabels: {show: true, stackedValue: false}
-					},
-					axes: {
-					  xaxis: {
-						  renderer: $.jqplot.CategoryAxisRenderer,
-						  ticks: <?php echo json_encode($orders_st_date_ticks) ?>
-					  },
-					  yaxis: {
-						padMin: 0,
-						tickOptions: {formatString: '%d'}
-					  }
-					},
-					legend: {
-						show: true,
-						location: 'e',
-						placement: 'inside',
-						labels: ['total', 'process', 'delivery', 'complete']
-					}
-				  });
-				  plot2 = $.jqplot('chart2', [<?php echo json_encode($top_products) ?>], {
-					stackSeries: false,
-					captureRightClick: true,
-					seriesDefaults:{
-					  renderer:$.jqplot.BarRenderer,
-					  rendererOptions: {
-						  barMargin: 20,
-						  varyBarColor: true,
-						  highlightMouseDown: true
-					  },
-					  pointLabels: {show: true, stackedValue: false}
-					},
-					axes: {
-					  xaxis: {
-						  renderer: $.jqplot.CategoryAxisRenderer,
-						  ticks: <?php echo json_encode($top_products_ticks) ?>
-					  },
-					  yaxis: {
-						padMin: 0,
-						min: 0,
-						tickOptions: {formatString: '%d'}
-					  }
-					}
-				  });
 				  plot3 = $.jqplot('chart3', [<?php echo json_encode($product_history) ?>], {
 					seriesDefaults:{
 					  pointLabels: {show: true, stackedValue: false}
@@ -1149,7 +2165,7 @@ class ShopSettingsController
 					highlighter: {
 						show: true,
 						sizeAdjust: 7.5,
-						formatString: 'On %s was ordered %s these products %s'
+						formatString: 'On %s was ordered %s these products'
 					},
 					series: [
 						{
@@ -1166,10 +2182,41 @@ class ShopSettingsController
 				  });
 				});
 		</script>
-<?php
+		<?php
         $content .= ob_get_clean();
         return $content;
-    }
+	}
+	
+	
+	private function getDateRange($id = null)
+	{
+		$id = (!empty($id)) ? '-' . $id : '';
+		$from = (!empty($_POST['dr_from' . $id])) 
+			? date('Y-m-d', strtotime($_POST['dr_from' . $id])) 
+			: date('Y-m-d', time() - (86400 * 20));
+		$to = (!empty($_POST['dr_to' . $id])) 
+			? date('Y-m-d', strtotime($_POST['dr_to' . $id])) 
+			: date('Y-m-d');
+		return array($from, $to);
+	}
+	
+	
+	private function getDateRangeSelector($id = null)
+	{
+		$id = (!empty($id)) ? '-' . $id : '';
+		$from = (!empty($_POST['dr_from' . $id])) ? h(trim($_POST['dr_from' . $id])) : date('Y/m/d', time() - (86400 * 20));
+		$to = (!empty($_POST['dr_to' . $id])) ? h(trim($_POST['dr_to' . $id])) : date('Y/m/d');
+		$content = '<div class="buttons long">
+						<form id="date_range' . $id . '" action="" method="POST">
+						<label>From: </label> 
+						<input class="tcal" id="dr_from' . $id . '" type="text" name="dr_from' . $id . '" value="' . $from . '" />
+						<label>To: </label> 
+						<input class="tcal" id="dr_to' . $id . '" type="text" name="dr_to' . $id . '" value="' . $to . '" />
+						<input type="submit" name="send" class="save-button" value="' . __('Apply') . '" />
+						</form>
+					</div><div class="clear"></div>';
+		return $content;
+	}
 
 
     private function __getProductsFilters()
@@ -1182,7 +2229,7 @@ class ShopSettingsController
         $attr_group_filter = $this->getModelFilter('shopAttributesGroups', 'attributes_group_id');
 
         $content = '<div class="warning clean"><form action="'
-            . $this->getCurrentUrl(array('category_id', 'vendor_id', 'attributes_group_id')) . '" type="GET">' . "\n"
+            . $this->getCurrentUrl(array('category_id', 'vendor_id', 'attributes_group_id', 'filters')) . '" type="GET">' . "\n"
             . '<div class="float-block"><h3>' . __('Category') . '</h3>' . $category_filter . "</div>\n"
             . '<div class="float-block"><h3>' . __('Vendor') . '</h3>' . $vendor_filter . "</div>\n"
             . '<div class="float-block"><h3>' . __('Attributes group') . '</h3>' . $attr_group_filter . "</div>\n"
@@ -1193,7 +2240,30 @@ class ShopSettingsController
     }
 
 
-    private function getModelFilter($model_name, $field_name)
+    private function __getOrdersFilters()
+    {
+        // Categories
+        $delivery_type_filter = $this->getModelFilter('shopDeliveryTypes', 'delivery_type_id');
+        // Vendors
+        $status_filter = '<select name="filters[status]">' 
+			. '<option value="process">Process</option>'
+			. '<option value="delivery">Delivery</option>'
+			. '<option value="complete">Complete</option>'
+			. '</select>';
+
+
+        $content = '<div class="warning clean"><form action="'
+            . $this->getCurrentUrl(array('delivery_type_id', 'status', 'filters')) . '" type="GET">' . "\n"
+            . '<div class="float-block"><h3>' . __('Delivery type') . '</h3>' . $delivery_type_filter . "</div>\n"
+            . '<div class="float-block"><h3>' . __('Status') . '</h3>' . $status_filter . "</div>\n"
+            . '<input type="hidden" name="order" value="' . @$_GET['order'] . '" />' . "\n"
+            . '<input class="save-button" type="submit" value="' . __('Apply') . '" /></form><div class="clear"></div></div>' . "\n";
+
+        return $content;
+    }
+	
+
+    private function getModelFilter($model_name, $field_name, $selected = false)
     {
         $Register = Register::getInstance();
         $model = $Register['ModManager']->getModelInstance($model_name);
@@ -1201,7 +2271,9 @@ class ShopSettingsController
         $filter = '';
         if ($entities) {
             foreach ($entities as $entity) {
-                $filter .= '<option value="' . $entity->getId() . '">' . h($entity->getTitle()) . '</option>';
+                $filter .= '<option value="' . $entity->getId() . '"' 
+					. (($selected && $selected === $entity->getId()) ? ' selected="selected"' : '') 
+					. '>' . h($entity->getTitle()) . '</option>';
             }
         }
         if (!empty($filter))
@@ -1415,52 +2487,44 @@ class ShopSettingsController
                     'title' => __('Title'),
 				),
 			),
-            'update' => array(
+            'delivery' => array(
                 'title' => array(
                     'required' => true,
                     'max_lenght' => 250,
-                    'title' => 'Title',
+                    'title' => __('Title'),
                 ),
-                'main_text' => array(
-                    'required' => true,
-                    'max_lenght' => Config::read('max_lenght', $this->module),
-                    'title' => 'Text',
-                ),
-                'cats_selector' => array(
-                    'required' => true,
+                'price' => array(
+                    'required' => false,
                     'pattern' => V_INT,
-                    'max_lenght' => 11,
-                    'title' => 'Category',
+                    'title' => __('Price'),
+                ),
+                'total_for_free' => array(
+                    'required' => false,
+                    'pattern' => V_INT,
+                    'title' => __('Total for free delivery'),
+                ),
+            ),
+            'vendors' => array(
+                'title' => array(
+                    'required' => true,
+                    'max_lenght' => 250,
+                    'title' => __('Title'),
                 ),
                 'description' => array(
-                    'required' => 'editable',
+                    'required' => false,
+                    'title' => __('Description'),
                 ),
-                'tags' => array(
-                    'required' => 'editable',
-                    'pattern' => V_TITLE,
+                'discount' => array(
+                    'required' => false,
+                    'pattern' => V_INT,
+                    'title' => __('Discount'),
                 ),
-                'sourse' => array(
-                    'required' => 'editable',
-                    'pattern' => V_TITLE,
-                ),
-                'sourse_email' => array(
-                    'required' => 'editable',
-                    'pattern' => V_MAIL,
-                ),
-                'sourse_site' => array(
-                    'required' => 'editable',
-                    'pattern' => V_URL,
-                ),
-                'files__attach' => array(
-                    'for' => array(
-                        'from' => 1,
-                        'to' => $max_attach,
-                    ),
+                'view_on_home' => array(),
+                'hide_not_exists' => array(),
+                'files__logo_image' => array(
                     'type' => 'image',
                     'max_size' => Config::read('max_attaches_size', $this->module),
-                ),
-                'commented' => array(),
-                'available' => array(),
+				),
             ),
             'add_comment' => array(
                 'login' => array(

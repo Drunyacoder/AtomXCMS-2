@@ -289,12 +289,14 @@ Class ForumModule extends Module {
 		
 		
 		$who_is_here = '';
-		foreach ($who as $key => $val) {
-			if ($val['expire'] < time()) {
-				unset($who[$key]);
-				continue;
+		if (!empty($who)) {
+			foreach ($who as $key => $val) {
+				if ($val['expire'] < time()) {
+					unset($who[$key]);
+					continue;
+				}
+				$who_is_here .= $val['profile_link'] . ', ';
 			}
-			$who_is_here .= $val['profile_link'] . ', ';
 		}
 		file_put_contents($forumFile, serialize($who));
 		//$context = array('who_is_here', substr($who_is_here, 0, -2));

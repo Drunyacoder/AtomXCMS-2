@@ -164,8 +164,9 @@ class Module {
         $this->Register['action'] = $params[1];
         $this->Register['params'] = $params;
 		
-		
-		$this->Register['Validate']->setRules($this->getValidateRules());
+		if (is_callable(array($this, 'getValidateRules')))
+			$this->Register['Validate']->setRules($this->getValidateRules());
+		$this->Register['Validate']->setModule($this->module);
         $this->setModel();
 
         //init needed objects. Core...
@@ -798,15 +799,17 @@ class Module {
 		
 		if (!empty($attachment)) $entity->setAttachment($attachment);
 		
-		if (preg_match_all('#\{ATTACH(\d+)(\|(\d+))?\}#', $announce, $matches)) {
+		if (preg_match_all('#\{ATTACH(\d+)(\|(\d+))?(\|(left|right))?\}#i', $announce, $matches)) {
 			$ids = array();
 			$sizes = array();
+			$floats = array();
 			foreach ($matches[1] as $key => $id) {
 				$ids[] = $id;
 				$sizes[$id] = (!empty($matches[3][$key])) ? intval($matches[3][$key]) : false;
+				$floats[$id] = (!empty($matches[5][$key])) ? 'float:' . $matches[5][$key] . ';' : false;
 			}
 			$ids = implode(', ', $ids);
-			
+
 			//$attachesModel = $this->Register['ModManager']->getModelInstance($module . 'Attaches');
 			//$attaches = $attachesModel->getCollection(array("`id` IN ($ids)"));
 			$attaches = $entity->getAttaches();
@@ -814,7 +817,7 @@ class Module {
 				foreach ($attaches as $attach) {
 					if ($attach->getIs_image() == 1) {
 						$style_ = (array_key_exists($attach->getId(), $sizes) && !empty($sizes[$attach->getId()])) 
-							? ' style="width:' . $sizes[$attach->getId()] . 'px;"'
+							? ' style="width:' . $sizes[$attach->getId()] . 'px;' . $floats[$attach->getId()] . '"'
 							: $style;
 						$size = (array_key_exists($attach->getId(), $sizes) && !empty($sizes[$attach->getId()]))
 							? '/' . $sizes[$attach->getId()]
