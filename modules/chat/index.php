@@ -75,6 +75,10 @@ class ChatModule extends Module {
 				foreach ($data as $key => &$record) {
 				
 					$record['message'] = $this->Register['PrintText']->smile(h($record['message']));
+					$record['message'] = $this->Register['PrintText']->parseUrlBb(h($record['message']));
+					$record['message'] = $this->Register['PrintText']->parseBBb(h($record['message']));
+					$record['message'] = $this->Register['PrintText']->parseUBb(h($record['message']));
+					$record['message'] = $this->Register['PrintText']->parseSBb(h($record['message']));
 				
 					/* view ip adres if admin */
 					if ($this->ACL->turn(array('chat', 'delete_materials'), false)) {
@@ -112,9 +116,9 @@ class ChatModule extends Module {
 		
 		/* cut and trim values */
 		$name    = (!empty($_SESSION['user'])) ? h($_SESSION['user']['name']) : __('Guest');
-		$message = mb_substr( $_POST['message'], 0, $this->Register['Config']->read('max_lenght', 'chat'));
-		$name    = trim( $name );
-		$message = trim( $message );
+		$message = trim($_POST['message']);
+		$name    = trim($name);
+		$message = trim($message);
 		$ip      = (!empty($_SERVER['REMOTE_ADDR'])) ? $_SERVER['REMOTE_ADDR'] : '';
 		$keystring = (isset($_POST['keystring'])) ? trim($_POST['keystring']) : '';
 		
@@ -128,19 +132,14 @@ class ChatModule extends Module {
 			$errors .= '<li>' . __('Wrong chars in field "login"') . '</li>' . "\n";
 			
 			
-			
 		// Check captcha if need exists	 
 		if (!$ACL->turn(array('other', 'no_captcha'), false)) {
-
-				
 			// Проверяем поле "код"
 			if (!empty($keystring)) {				
 				if (!$this->Register['Protector']->checkCaptcha('chatsend', $keystring))
 					$errors .= '<li>' . __('Wrong protection code') . '</li>' . "\n";
 			}
 			$this->Register['Protector']->cleanCaptcha('chatsend');
-			
-			
 		} else {
 			$this->Register['Validate']->disableFieldCheck('keystring');
 		}
@@ -253,6 +252,7 @@ class ChatModule extends Module {
 			'add' => array(
 				'message' => array(
 					'required' => true,
+					'max_lenght' => Config::read('max_lenght', 'chat'),
 				),
 				'keystring' => array(
 					'required' => true,
