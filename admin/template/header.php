@@ -32,8 +32,8 @@
 		//setTimeout(function(){
 		//	$('#overlay').height($('#wrapper').height());
 		//}, 2000);
-		
-		$('#wrapper').css('min-height', ($('body').height() - 136));
+		$('#wrapper').css('min-height', ($('body').height() - 136)); // 136 - top+bottom wrapper padding
+		$('body').height($('#wrapper').outerHeight() - 55); // 55 - side menu top indent
 		
 		
 		
@@ -317,8 +317,8 @@
 					<td style="position:relative;">
 						<div id="content-wrapper">
 <?php if (!empty($_SESSION['message'])): ?>
-    <div class="warning ok"><?php echo h($_SESSION['message']) ?></div>
+    <div class="warning ok"><?php echo $_SESSION['message'] ?></div>
     <?php unset($_SESSION['message']); ?>
 <?php elseif (!empty($_SESSION['errors'])): ?>
-    <div class="warning error"><?php echo h($_SESSION['errors']) ?></div>
+    <div class="warning error"><?php echo $_SESSION['errors'] ?></div>
 <?php unset($_SESSION['errors']); endif; ?>

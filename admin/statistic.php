@@ -36,10 +36,9 @@ if ($_date == date("Y-m-d")) {
 }
 
 
-if (!empty($_POST['grfrom'])) $_POST['grfrom'] = preg_replace('#^(\d{1,2})/(\d{1,2})/(\d{4})$#', '$3-$1-$2', $_POST['grfrom']);
-if (!empty($_POST['grto'])) $_POST['grto'] = preg_replace('#^(\d{1,2})/(\d{1,2})/(\d{4})$#', '$3-$1-$2', $_POST['grto']);
-$graph_from = (!empty($_POST['grfrom']) && preg_match('#^\d{4}-\d{2}-\d{2}$#', $_POST['grfrom'])) ? $_POST['grfrom'] : date("Y-m-d", time() - 2592000);
-$graph_to = (!empty($_POST['grto']) && preg_match('#^\d{4}-\d{2}-\d{2}$#', $_POST['grto'])) ? $_POST['grto'] : date("Y-m-d");
+
+$graph_from = (!empty($_POST['grfrom'])) ? date("Y-m-d", strtotime($_POST['grfrom'])) : date("Y-m-d", time() - 2592000);
+$graph_to = (!empty($_POST['grto'])) ? date("Y-m-d", strtotime($_POST['grto'])) : date("Y-m-d");
 
 
 $UsersModel = $Register['ModManager']->getModelInstance('Users');
@@ -200,16 +199,22 @@ include_once ROOT . '/admin/template/header.php';
 		<?php if(!empty($json_data)): ?>
 		<tr>
 			<td colspan="2">
-		<link type="text/css" rel="StyleSheet" href="template/css/tcal.css" />
+		
 		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jqplot/graphlib.js"></script>
 		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jqplot/plugins/jqplot.canvasTextRenderer.min.js"></script>
 		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jqplot/plugins/jqplot.canvasAxisLabelRenderer.min.js"></script>
 		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jqplot/plugins/jqplot.dateAxisRenderer.min.js"></script>
 		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jqplot/plugins/jqplot.highlighter.min.js"></script>
 		<link href="<?php echo WWW_ROOT ?>/sys/js/jqplot/style.css" type="text/css" rel="stylesheet">
-		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/tcal.js"></script>
+		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/datepicker/datepicker.js"></script>
+		<link type="text/css" rel="StyleSheet" href="<?php echo WWW_ROOT ?>/sys/js/datepicker/datepicker.css" />
 		<script type="text/javascript">
 		$(document).ready(function(){
+			$('.tcal').datetimepicker({
+				timepicker:false,
+				format:'Y/m/d',
+				closeOnDateSelect: true
+			});
 			var data = '<?php echo $json_data; ?>';
 			data = eval(data);
 			if (!data[0].length || !data[1].length) {
@@ -298,10 +303,10 @@ include_once ROOT . '/admin/template/header.php';
 				<table class="lines"  cellspacing="0px">
 					<tr>
 						<td>
-							&nbsp;От&nbsp;:&nbsp;&nbsp;<input class="tcal" id="ffrom" type="text" name="grfrom" />
-							&nbsp;До&nbsp;:&nbsp;&nbsp;<input class="tcal" id="fto" type="text" name="grto" />
+							&nbsp;<?php echo __('From') ?>&nbsp;:&nbsp;&nbsp;<input class="tcal" id="ffrom" type="text" name="grfrom" value="<?php echo (!empty($_POST['grfrom'])) ? date("Y/m/d", strtotime($_POST['grfrom'])) : date("Y/m/d", time() - 2592000); ?>"/>
+							&nbsp;<?php echo __('To') ?>&nbsp;:&nbsp;&nbsp;<input class="tcal" id="fto" type="text" name="grto" value="<?php echo (!empty($_POST['grto'])) ? date("Y/m/d", strtotime($_POST['grto'])) : date("Y/m/d"); ?>"/>
 						</td>
-						<td><input type="submit" name="send" class="save-button" value="Отправить" /></td>
+						<td><input type="submit" name="send" class="save-button" value="<?php echo __('Apply') ?>" /></td>
 					</tr>
 				</table>
 				</form>

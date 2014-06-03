@@ -182,7 +182,7 @@ table.side-separator, table.side-separator tr td {vertical-align:top; min-height
 
 
 /* Action icons */
-.list a.edit, .list a.delete, .list a.add, .list a.off-home, .list a.on-home, .list a.move, a.off, a.on, a.undo, a.edit-list, a.statistics, a.view {display:inline-block; width:22px; height:22px; background:url('../img/icons-sprite.png') no-repeat; margin-left:7px;}
+.list a.edit, .list a.delete, .list a.add, .list a.off-home, .list a.on-home, .list a.move, a.off, a.on, a.undo, a.edit-list, a.statistics, a.view {display:inline-block; width:22px; height:22px; background:url('../img/icons-sprite.png') no-repeat; margin-left:7px; cursor:pointer;}
 .list a.edit {background-position:-40px 0px;}
 .list a.delete {background-position:-76px 0px;}
 .list a.add {background-position:0px 0px;}

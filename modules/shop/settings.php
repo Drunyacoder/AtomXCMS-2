@@ -139,7 +139,7 @@ class ShopSettingsController
     {
         $id = intval($id);
         $Register = Register::getInstance();
-        if ($Register['ACL']->turn(array($this->module, 'edit_products'), false)) {
+        if (!$Register['ACL']->turn(array($this->module, 'edit_products'), false)) {
             $_SESSION['errors'] = __('Permission denied');
             redirect($this->getUrl('catalog'));
         }
@@ -335,7 +335,7 @@ class ShopSettingsController
     {
         $id = intval($id);
         $Register = Register::getInstance();
-        if ($Register['ACL']->turn(array($this->module, 'delete_products'), false)) {
+        if (!$Register['ACL']->turn(array($this->module, 'delete_products'), false)) {
             $_SESSION['errors'] = __('Permission denied');
             redirect($this->getUrl('catalog'));
         }
@@ -369,8 +369,8 @@ class ShopSettingsController
         $categoriesModel = $Register['ModManager']->getModelInstance('shopCategories');
         $acl_groups = $Register['ACL']->get_group_info();
 
-        $this->pageTitle = __('Shop') . ' / ' . __('Sections editor');
-        $this->pageNav = __('Shop') . ' / ' . __('Sections editor');
+        $this->pageTitle = __('Shop') . ' / ' . __('Categories management');
+        $this->pageNav = __('Shop') . ' / ' . __('Categories management');
 
 
         $all_categories = $categoriesModel->getCollection(array(), array(
@@ -527,11 +527,16 @@ class ShopSettingsController
         $content = '';
         $Register = Register::getInstance();
         $model = $Register['ModManager']->getModelInstance('shopAttributesGroups');
-        $this->pageTitle = __('Shop') . ' / ' . __('Attributes groups editing');
-        $this->pageNav = __('Shop') . ' / ' . __('Attributes groups editing');
+        $this->pageTitle = __('Shop') . ' / ' . __('Attributes groups management');
+        $this->pageNav = __('Shop') . ' / ' . __('Attributes groups management');
 		
 		
 		if (!empty($_POST)) {
+			if (!$Register['ACL']->turn(array($this->module, 'attributes_groups_management'), false)) {
+				$_SESSION['errors'] = __('Permission denied');
+				redirect($this->getUrl('attributes_groups'));
+			}
+			
 			$errors = $Register['Validate']->check(__FUNCTION__);
             if (!empty($errors)) {
                 $_SESSION['errors'] = $Register['Validate']->wrapErrors($errors);
@@ -662,8 +667,8 @@ class ShopSettingsController
         $popups = '';
         $content = '';
         $Register = Register::getInstance();
-        $this->pageTitle = __('Shop') . ' / ' . __('Attributes groups editing');
-        $this->pageNav = __('Shop') . ' / ' . __('Attributes groups editing');
+        $this->pageTitle = __('Shop') . ' / ' . __('Attributes group editing');
+        $this->pageNav = __('Shop') . ' / ' . __('Attributes group editing');
         $attributesModel = $Register['ModManager']->getModelInstance('shopAttributes');
         $model = $Register['ModManager']->getModelInstance('shopAttributesGroups');
         $model->bindModel('attributes');
@@ -675,18 +680,49 @@ class ShopSettingsController
             redirect($this->getUrl('attributes_groups'));
         }
 		
+		// Adding or edit an attribute
 		if (!empty($_POST)) {
-			if ($Register['ACL']->turn(array($this->module, 'add_attributes'), false)) {
+			if (!$Register['ACL']->turn(array($this->module, 'attributes_groups_management'), false)) {
 				$_SESSION['errors'] = __('Permission denied');
 				redirect($this->getUrl('attributes_group_edit/' . $id));
 			}
-			$entity->delete();
-			$_SESSION['message'] = __('Operation is successful');
+				
+			$errors = $Register['Validate']->check(__FUNCTION__);
+			if (!empty($errors)) {
+				$_SESSION['errors'] = $Register['Validate']->wrapErrors($errors);
+				redirect($this->getUrl('attributes_group_edit/' . $id));
+			}
+			
+			$attr_id = (!empty($_POST['attribute_id'])) ? intval($_POST['attribute_id']) : 0;
+			if (!empty($attr_id)) {
+				$add_attr = $model->getById($attr_id);
+				if (!$add_attr) {
+					$_SESSION['errors'] = $Register['Validate']->wrapErrors(__('Record not found'), true);
+					redirect($this->getUrl('attributes_group_edit/' . $id));
+				}
+			} else {
+				$add_attr = $Register['ModManager']->getEntityInstance('shopAttributes');
+			}
+			
+			
+			$add_attr->setTitle($_POST['title']);
+			$add_attr->setLabel((!empty($_POST['label'])) ? $_POST['label'] : $_POST['title']);
+			$add_attr->setType($_POST['type']);
+			$add_attr->setGroup_id($id);
+			$add_attr->setIs_filterable((!empty($_POST['is_filterable'])) ? '1' : '0');
+			$add_attr->setParams((!empty($_POST['params'])) ? $_POST['params'] : '');
+				
+			if ($add_attr->save()) {
+				$_SESSION['message'] = __('Operation is successful');
+				redirect($this->getUrl('attributes_group_edit/' . $id));
+			}
+			$_SESSION['errors'] = __('Some error occurred');
 			redirect($this->getUrl('attributes_group_edit/' . $id));
 		}
 		
+		// Deleting an attribute
 		if (isset($_GET['del_attr']) && !empty($_GET['attr_id'])) {
-			if ($Register['ACL']->turn(array($this->module, 'delete_attributes'), false)) {
+			if (!$Register['ACL']->turn(array($this->module, 'attributes_groups_management'), false)) {
 				$_SESSION['errors'] = __('Permission denied');
 				redirect($this->getUrl('attributes_group_edit/' . $id));
 			}
@@ -861,7 +897,7 @@ class ShopSettingsController
     {
         $id = intval($id);
         $Register = Register::getInstance();
-        if ($Register['ACL']->turn(array($this->module, 'delete_attributes_groups'), false)) {
+        if (!$Register['ACL']->turn(array($this->module, 'attributes_groups_management'), false)) {
             $_SESSION['errors'] = __('Permission denied');
             redirect($this->getUrl('attributes_groups'));
         }
@@ -903,6 +939,11 @@ class ShopSettingsController
 		
 		
 		if (!empty($_POST)) {
+			if (!$Register['ACL']->turn(array($this->module, 'delivery_types_management'), false)) {
+				$_SESSION['errors'] = __('Permission denied');
+				redirect($this->getUrl('delivery'));
+			}
+			
             $errors = $Register['Validate']->check(__FUNCTION__);
             if (!empty($errors)) {
                 $_SESSION['errors'] = $Register['Validate']->wrapErrors($errors);
@@ -936,7 +977,7 @@ class ShopSettingsController
 		$deliveries = $model->getCollection();
         $popups .= '<div id="addCat" class="popup">
 			<div class="top">
-				<div class="title">' . __('Adding delivery type') . '</div>
+				<div class="title">' . __('Delivery type adding') . '</div>
 				<div onClick="closePopup(\'addCat\');" class="close"></div>
 			</div>
 			<form action="' . $this->getUrl('delivery') . '" method="POST">
@@ -990,7 +1031,7 @@ class ShopSettingsController
             foreach ($deliveries as $row) {
 				$popups .= '<div id="' . $row->getId() . '_edit" class="popup">
 					<div class="top">
-						<div class="title">' . __('Editing delivery type') . '</div>
+						<div class="title">' . __('Delivery type editing') . '</div>
 						<div onClick="closePopup(\'' . $row->getId() . '_edit\');" class="close"></div>
 					</div>
 					<form action="' . $this->getUrl('delivery/' . $row->getId()) . '" method="POST">
@@ -1049,7 +1090,7 @@ class ShopSettingsController
 	{
         $id = intval($id);
         $Register = Register::getInstance();
-        if ($Register['ACL']->turn(array($this->module, 'delete_delivery_types'), false)) {
+        if (!$Register['ACL']->turn(array($this->module, 'delivery_types_management'), false)) {
             $_SESSION['errors'] = __('Permission denied');
             redirect($this->getUrl('delivery'));
         }
@@ -1080,6 +1121,11 @@ class ShopSettingsController
 		
 		
 		if (!empty($_POST)) {
+			if (!$Register['ACL']->turn(array($this->module, 'vendors_management'), false)) {
+				$_SESSION['errors'] = __('Permission denied');
+				redirect($this->getUrl('vendors'));
+			}
+			
             $errors = $Register['Validate']->check(__FUNCTION__);
             if (!empty($errors)) {
                 $_SESSION['errors'] = $Register['Validate']->wrapErrors($errors);
@@ -1128,7 +1174,7 @@ class ShopSettingsController
 		$vendors = $model->getCollection();
         $popups .= '<div id="addCat" class="popup">
 			<div class="top">
-				<div class="title">' . __('Adding vendor') . '</div>
+				<div class="title">' . __('Vendor adding') . '</div>
 				<div onClick="closePopup(\'addCat\');" class="close"></div>
 			</div>
 			<form action="' . $this->getUrl('vendors') . '" method="POST" enctype="multipart/form-data">
@@ -1210,7 +1256,7 @@ class ShopSettingsController
             foreach ($vendors as $row) {
 				$popups .= '<div id="' . $row->getId() . '_edit" class="popup">
 					<div class="top">
-						<div class="title">' . __('Editing vendor') . '</div>
+						<div class="title">' . __('Vendor editing') . '</div>
 						<div onClick="closePopup(\'' . $row->getId() . '_edit\');" class="close"></div>
 					</div>
 					<form action="' . $this->getUrl('vendors/' . $row->getId()) . '" method="POST" enctype="multipart/form-data">
@@ -1313,7 +1359,7 @@ class ShopSettingsController
 	{
         $id = intval($id);
         $Register = Register::getInstance();
-        if ($Register['ACL']->turn(array($this->module, 'delete_vendors'), false)) {
+        if (!$Register['ACL']->turn(array($this->module, 'vendors_management'), false)) {
             $_SESSION['errors'] = __('Permission denied');
             redirect($this->getUrl('vendors'));
         }
@@ -1370,7 +1416,8 @@ class ShopSettingsController
 		
         $content .= "<div class=\"list\">
 			<div class=\"title\">" . __('Orders management') . "</div>
-			<div class=\"add-cat-butt\" onClick=\"openPopup('addCat');\"><div class=\"add\"></div>" . __('Add vendor') . "</div>
+			<div class=\"add-cat-butt\" onClick=\"window.location.href='" .  
+			$this->getUrl('order_edit') . "';\"><div class=\"add\"></div>" . __('Add order') . "</div>
 			<table cellspacing=\"0\" style=\"width:100%;\" class=\"grid\"><tr>
 			<th width=\"13%\">" . getOrderLink(array('date', __('Date'))) . "</th>
 			<th width=\"7%\">" . getOrderLink(array('user', __('User'))) . "</th>
@@ -1512,8 +1559,8 @@ class ShopSettingsController
 	{
 		$id = intval($id);
         $Register = Register::getInstance();
-        $this->pageTitle = __('Shop') . ' / ' . __('Editing order');
-        $this->pageNav = __('Shop') . ' / ' . __('Editing order');
+        $this->pageTitle = __('Shop') . ' / ' . __('Order editing');
+        $this->pageNav = __('Shop') . ' / ' . __('Order editing');
         $content = '';
         $popups = '';
         $model = $Register['ModManager']->getModelInstance('shopOrders');
@@ -1528,22 +1575,201 @@ class ShopSettingsController
             }
 		} else {
 			$entity = $Register['ModManager']->getEntityInstance('shopOrders');
-		}	
+		}
+
+
+		if (!empty($_POST)) {
+			if (!$Register['ACL']->turn(array($this->module, 'edit_orders'), false)) {
+				$_SESSION['errors'] = __('Permission denied');
+				redirect($this->getUrl('order_edit/' . $id));
+			}
+			
+			$errors = $Register['Validate']->check(__FUNCTION__);
+			if (!empty($errors)) {
+				$_SESSION['errors'] = $Register['Validate']->wrapErrors($errors);
+				redirect($this->getUrl('order_edit/' . $id));
+			}
+			
+			$entity->setDate(AtmDateTime::getDate($_POST['date'], 'Y-m-d H:i:s'));
+			$entity->setStatus($_POST['status']);
+			$entity->setTotal(floatval($_POST['total']));
+			$entity->setDelivery_type_id(intval($_POST['delivery_type_id']));
+			$entity->setDelivery_address(trim($_POST['delivery_address']));
+			$entity->setTelephone(intval($_POST['telephone']));
+			$entity->setFirst_name(trim($_POST['first_name']));
+			$entity->setLast_name(trim($_POST['last_name']));
+			$products = $entity->getProducts();
+			$deleted_products = array();
+			if ($products) {
+				foreach ($products as $k => $pr) {
+					if (!empty($_POST['products']) && in_array($pr->getId(), $_POST['products'])) {
+						unset($_POST['products'][array_search($pr->getId(), $_POST['products'])]);
+						continue;
+					}
+					
+					if (count($products) == 1) {
+						$_SESSION['errors'] = $Register['Validate']->wrapErrors(__('You can\'t remove the last product in order'), true);
+						redirect($this->getUrl('order_edit/' . $id));
+					}
+					$deleted_products[] = $pr;
+					unset($products[$k]);
+				}
+			}
+			if (empty($products) && empty($_POST['products'])) {
+				$_SESSION['errors'] = $Register['Validate']->wrapErrors(__('You can\'t seve an order without products'), true);
+				redirect($this->getUrl('order_edit/' . $id));
+			}
+			
+			if ($entity->save()) {
+				if (!empty($deleted_products)) {
+					foreach ($deleted_products as $pr) {
+						$pr->delete();
+					}
+				}
+				if (!empty($_POST['products'])) {
+					foreach ($_POST['products'] as $pr) {
+						$pr_ = $Register['ModManager']->getEntityInstance('shopOrdersProducts');
+						$pr_->setOrder_id($entity->getId());
+						$pr_->setProduct_id(intval($pr));
+						$pr_->save();
+					}
+				}
+				
+				$_SESSION['message'] = __('Operation is successful');
+				redirect($this->getUrl('order_edit/' . $id));
+			}
+			$_SESSION['errors'] = __('Some error occurred');
+			redirect($this->getUrl('order_edit/' . $id));
+		}
+		
 		
 		$popups .= '<div id="product_add" class="popup">
 			<div class="top">
 				<div class="title">' . __('Adding product to order') . '</div>
 				<div onClick="closePopup(\'product_add\');" class="close"></div>
 			</div>
-			<form action="' . $this->getUrl('order_edit/' . $id) . '" method="POST" enctype="multipart/form-data">
+			<form action="" method="POST">
 			<div class="items">
 				<div class="item">
 					<div class="left">
 						' . __('Title') . ':
 					</div>
-					<div class="right"><input type="text" name="product_id" value="" /></div>
+					<div class="right">
+						<input id="autocomplete_inp" type="text" name="add_product_title" value=""/>
+						<input type="hidden" name="add_product_id" value=""/>
+						<input type="hidden" name="add_product_price" value=""/>
+					</div>
+				<script>
+				$(\'#autocomplete_inp\').keypress(function(e){
+					var inp = $(this);
+					if (inp.val().length < 2) return;
+					setTimeout(function(){
+						
+						$.get(\'' . $this->getUrl('find_product/') . '\'+inp.val(), {}, function(response){
+						
+							var prs = $.parseJSON(response);
+							$(prs).each(function(k, pr){
+								var json = JSON.stringify(pr);
+								console.log(pr);
+								console.log(json);
+								$(\'#add_product_list\').html(
+									$(\'#add_product_list\').html() 
+									+ \'<li onClick=\\\'addProductToOrderForm(\'+ json +\')\\\'><a>\' + pr.title + \'</a></li>\');
+									if (k >= (prs.length - 1)) {
+										$(\'#add_product_list\').html(\'<ul>\'+$(\'#add_product_list\').html() + \'</ul>\');
+									}
+							});
+							
+						});
+						
+					}, 500);
+
+				});
+				function addProductToOrderForm(product) {
+					$(\'input[name="add_product_title"]\').val(product.title);
+					$(\'input[name="add_product_id"]\').val(product.id);
+					$(\'input[name="add_product_price"]\').val(product.price);
+					$(\'#add_product_list\').html(\'\');
+					
+				}
+				function addProductToOrder(e) {
+					var evt = e ? e:window.event;
+					if (evt.preventDefault) evt.preventDefault();
+					evt.returnValue = false;
+				
+					if (!$(\'input[name="add_product_title"]\').val().length || 
+					!$(\'input[name="add_product_id"]\').val().length ||
+					!$(\'input[name="add_product_price"]\').val().length) {
+						alert(\'' . __('Choose product') . '\');
+						return false;
+					}
+					var title = $(\'input[name="add_product_title"]\').val(),
+						id = $(\'input[name="add_product_id"]\').val(),
+						price = $(\'input[name="add_product_price"]\').val(),
+						quantity = ($(\'input[name="quantity"]\').val() > 0) ? parseInt($(\'input[name="quantity"]\').val()) : 1;
+					
+					for (var i = 0; i < quantity; i++) {
+						var uniqid = id + \'-\' + Math.floor(Math.random() * 1000);
+						$(\'#order_products\').html($(\'#order_products\').html()
+							+ \'<div data-price="\' + price + \'" id="product_\' + uniqid + \'">'
+							. '<a href="' . $this->getUrl('edit_product/') 
+							. '\' + id + \'" style="text-shadow:none; color:#aaa">' 
+							. '\' + title + \'</a><input type="hidden" name="products[]" value="\' + id + \'">' 
+							. '<a class="delete" style="margin-bottom:-7px;" onClick="deleteProduct(\\\'\' + uniqid + \'\\\')"></a></div>\');
+						
+							var new_total = parseInt($(\'input[name="int_total"]\').val()) + parseInt(price);
+							$(\'input[name="total"]\').val(number_format(new_total, 2, ".", ""));
+							$(\'input[name="int_total"]\').val(new_total);
+						
+					}
+					setTimeout(function(){
+						closePopup(\'product_add\');
+						$(\'#autocomplete_inp\').val(\'\');
+					}, 1);
+					return false;
+				}
+				function deleteProduct(id) {
+					$(\'#product_\'+id).hide(1000, function(){
+						$(\'input[name="total"]\').val(
+							number_format(
+								parseInt($(\'input[name="int_total"]\').val()) - parseInt($(\'#product_\'+id).data(\'price\'))
+							, 2, ".", "")
+						);
+						setTimeout(function(){
+							$(\'input[name="int_total"]\').val(parseInt($(\'input[name="int_total"]\').val()) - parseInt($(\'#product_\'+id).data(\'price\')));
+						}, 0);
+					});
+				}
+				function number_format( number, decimals, dec_point, thousands_sep ) {	// Format a number with grouped thousands
+					var i, j, kw, kd, km;
+					// input sanitation & defaults
+					if( isNaN(decimals = Math.abs(decimals)) ){
+						decimals = 2;
+					}
+					if( dec_point == undefined ){
+						dec_point = ",";
+					}
+					if( thousands_sep == undefined ){
+						thousands_sep = ".";
+					}
+
+					i = parseInt(number = (+number || 0).toFixed(decimals)) + "";
+
+					if( (j = i.length) > 3 ){
+						j = j % 3;
+					} else{
+						j = 0;
+					}
+
+					km = (j ? i.substr(0, j) + thousands_sep : "");
+					kw = i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thousands_sep);
+					//kd = (decimals ? dec_point + Math.abs(number - i).toFixed(decimals).slice(2) : "");
+					kd = (decimals ? dec_point + Math.abs(number - i).toFixed(decimals).replace(/-/, 0).slice(2) : "");
+					return km + kw + kd;
+				}
+				</script>
 					<div class="clear"></div>
-				</div>
+				</div><div  id="add_product_list"></div>
 				<div class="item">
 					<div class="left">
 						' . __('Quantity') . ':
@@ -1554,7 +1780,7 @@ class ShopSettingsController
 				<div class="item submit">
 					<div class="left"></div>
 					<div class="right" style="float:left;">
-						<input type="submit" value="' . __('Save') . '" name="send" class="save-button" />
+						<input type="submit" onClick="addProductToOrder(event)" value="' . __('Save') . '" name="send" class="save-button" />
 					</div>
 					<div class="clear"></div>
 				</div>
@@ -1562,13 +1788,22 @@ class ShopSettingsController
 			</form>
 		</div>';
 		
-        $content .= '<script type="text/javascript" src="' . WWW_ROOT . '/sys/js/tcal.js"></script>
-			<link type="text/css" rel="StyleSheet" href="' . WWW_ROOT . '/admin/template/css/tcal.css" />
-			<script>$(document).ready(function(){A_TCALCONF.format = "Y-m-d H:i:s";});</script>
+        $content .= '<script type="text/javascript" src="' . WWW_ROOT . '/sys/js/datepicker/datepicker.js"></script>
+			<link type="text/css" rel="StyleSheet" href="' . WWW_ROOT . '/sys/js/datepicker/datepicker.css" />
+			<script type="text/javascript">
+			$(document).ready(function(){
+				$(\'.tcal\').datetimepicker({
+					timepicker:true,
+					format:\'Y-m-d H:i:s\',
+					closeOnDateSelect: false,
+					timepickerScrollbar: true
+				});
+			});
+			</script>
 			<form action="' . $this->getUrl('order_edit/' . $id) . '" method="POST" enctype="multipart/form-data">
 			<div class="list">
-			<div class="title">' . __('Editing order') . '</div>
-			<div class="add-cat-butt" onClick="openPopup(\'addCat\');"><div class="add"></div>' . __('Add product') . '</div>
+			<div class="title">' . __('Order editing') . '</div>
+			<div class="add-cat-butt" onClick="openPopup(\'product_add\');"><div class="add"></div>' . __('Add product') . '</div>
 			<div class="level1">
 				<div class="items">
 					<div class="setting-item">
@@ -1596,13 +1831,14 @@ class ShopSettingsController
 						<div class="left">' . __('Total') . '</div>
 						<div class="right">
 							<input type="text" name="total" value="' . number_format($entity->getTotal(), 2, '.', '') . '" />
+							<input type="hidden" name="int_total" value="' . floatval($entity->getTotal()) . '" />
 						</div>
 						<div class="clear"></div>
 					</div>
 					<div class="setting-item">
 						<div class="left">' . __('Delivery type') . '</div>
 						<div class="right">
-							' . $this->getModelFilter('shopDeliveryTypes', 'delivery_type_id', $entity->getDelivery_type_id()) . '
+							' . $this->getModelFilter('shopDeliveryTypes', 'delivery_type_id', $entity->getDelivery_type_id(), true) . '
 						</div>
 						<div class="clear"></div>
 					</div>
@@ -1643,20 +1879,30 @@ class ShopSettingsController
 					</div>
 					<div class="setting-item">
 						<div class="left">' . __('Products') . '</div>
-						<div class="right">';
+						<div class="right" id="order_products">';
 		if ($entity->getProducts()) {
 			$randColor = function(){
 				$colors = array('d60100', 'd85700', 'cda902', 'd6d700', '8cd304', '00d402', '23579d', '5b84ba');
 				return $colors[array_rand($colors)];
 			};
 			foreach ($entity->getProducts() as $product) {
-				$content .= '<a href="' . $this->getUrl('edit_product/' . $product->getId()) 
+				$uniqid = $product->getId() . '-' . rand();
+				$content .= '<div data-price="' . $product->getPrice() . '" id="product_' . $uniqid . '"><a href="' 
+					. $this->getUrl('edit_product/' . $product->getId()) 
 					. '" style="text-shadow:none; color:#' . $randColor() . '">' 
-					. h($product->getTitle()) . '</a><br>';
+					. h($product->getTitle()) . '</a><input type="hidden" name="products[]" value="' 
+					. $product->getId() . '"/>
+					<a class="delete" style="margin-bottom:-7px;" onClick="deleteProduct(\'' . $uniqid . '\')"></a></div>';
 			}
-			$content = substr($content, 0, -4);
 		}		
 		$content .= '</div>
+						<div class="clear"></div>
+					</div>
+					<div class="setting-item">
+						<div class="left"></div>
+						<div class="right">
+							<input class="save-button" type="submit" name="send" value="' . __('Save') . '" />
+						</div>
 						<div class="clear"></div>
 					</div>
 				</div></div></div></form>';
@@ -1669,7 +1915,7 @@ class ShopSettingsController
 	{
         $id = intval($id);
         $Register = Register::getInstance();
-        if ($Register['ACL']->turn(array($this->module, 'delete_orders'), false)) {
+        if (!$Register['ACL']->turn(array($this->module, 'delete_orders'), false)) {
             $_SESSION['errors'] = __('Permission denied');
             redirect($this->getUrl('orders'));
         }
@@ -1695,12 +1941,35 @@ class ShopSettingsController
 	}
 	
 	
+	public function find_product($title)
+	{
+		$title = trim($title);
+		if (empty($title)) die('');
+		
+
+		$Register = Register::getInstance();
+		$model = $Register['ModManager']->getModelInstance('shopProducts');
+		$entities = $model->getCollection(array(
+			"title LIKE '$title%'"
+		), array(
+			'limit' => 100,
+		));
+
+		if (!empty($entities)) {
+			foreach ($entities as  &$entity) $entity = $entity->asArray();
+			
+			die(json_encode($entities));
+		}
+		die('');
+	}
+	
+	
     public function statistics($type = false, $id = false)
     {
 		if ($type && !$id) $type = false;
 		$Register = Register::getInstance();
-		$this->pageTitle = __('Shop') . ' / ' . __('Products statistics');
-		$this->pageNav = __('Shop') . ' / ' . __('Products statistics');
+		$this->pageTitle = __('Shop') . ' / ' . __('Statistics');
+		$this->pageNav = __('Shop') . ' / ' . __('Statistics');
 		$content = '';
 		
 		if (!$type) {
@@ -1904,10 +2173,19 @@ class ShopSettingsController
 		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jqplot/plugins/jqplot.dateAxisRenderer.min.js"></script>
 		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jqplot/plugins/jqplot.pointLabels.min.js"></script>
 		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jqplot/plugins/jqplot.highlighter.min.js"></script>
-		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/tcal.js"></script>
-		<link type="text/css" rel="StyleSheet" href="<?php echo WWW_ROOT ?>/admin/template/css/tcal.css" />
 		<!--<script type="text/javascript" src="/sys/js/jqplot_plugins/jqplot.bubbleRenderer.min.js"></script>-->
 		<link href="/sys/js/jqplot/style.css" type="text/css" rel="stylesheet">
+		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/datepicker/datepicker.js"></script>
+		<link type="text/css" rel="StyleSheet" href="<?php echo WWW_ROOT ?>/sys/js/datepicker/datepicker.css" />
+		<script type="text/javascript">
+		$(document).ready(function(){
+			$('.tcal').datetimepicker({
+				timepicker:false,
+				format:'Y/m/d',
+				closeOnDateSelect: true
+			});
+		});
+		</script>
 		<?php
         $content .= ob_get_clean();
 		
@@ -1938,7 +2216,7 @@ class ShopSettingsController
 					<div class="graph-wrapper"><div  class="graph-container" id="chart4"></div></div>
 					<div class="title"><?php echo __('Delivery') ?>
 						<?php echo $this->getDateRangeSelector('delivery-types') ?>
-						<div class="descr"><?php echo __('Deivery types by dates') ?></div>
+						<div class="descr"><?php echo __('Deivery types by days') ?></div>
 					</div>
 					<div class="graph-wrapper"><div  class="graph-container" id="chart5"></div></div>
 				</div>
@@ -2263,12 +2541,13 @@ class ShopSettingsController
     }
 	
 
-    private function getModelFilter($model_name, $field_name, $selected = false)
+    private function getModelFilter($model_name, $field_name, $selected = false, $as_single_field = false)
     {
         $Register = Register::getInstance();
         $model = $Register['ModManager']->getModelInstance($model_name);
         $entities = $model->getCollection();
         $filter = '';
+		$name = ($as_single_field === true) ? $field_name : 'filters[' . $field_name . ']';
         if ($entities) {
             foreach ($entities as $entity) {
                 $filter .= '<option value="' . $entity->getId() . '"' 
@@ -2277,7 +2556,7 @@ class ShopSettingsController
             }
         }
         if (!empty($filter))
-            $filter = '<select name="filters[' . $field_name . ']">' . $filter . '</select>';
+            $filter = '<select name="' . $name . '">' . $filter . '</select>';
         return $filter;
     }
 
@@ -2477,7 +2756,7 @@ class ShopSettingsController
                     'title' => __('View on home'),
                 ),
                 'hide_not_exists' => array(
-                    'title' => __('Hide which not exists'),
+                    'title' => __('Hide not exists'),
                 ),
             ),
 			'attributes_groups' => array(
@@ -2495,12 +2774,12 @@ class ShopSettingsController
                 ),
                 'price' => array(
                     'required' => false,
-                    'pattern' => V_INT,
+                    'pattern' => $Register['Validate']::V_INT,
                     'title' => __('Price'),
                 ),
                 'total_for_free' => array(
                     'required' => false,
-                    'pattern' => V_INT,
+                    'pattern' => $Register['Validate']::V_INT,
                     'title' => __('Total for free delivery'),
                 ),
             ),
@@ -2516,7 +2795,7 @@ class ShopSettingsController
                 ),
                 'discount' => array(
                     'required' => false,
-                    'pattern' => V_INT,
+                    'pattern' => $Register['Validate']::V_INT,
                     'title' => __('Discount'),
                 ),
                 'view_on_home' => array(),
@@ -2526,43 +2805,44 @@ class ShopSettingsController
                     'max_size' => Config::read('max_attaches_size', $this->module),
 				),
             ),
-            'add_comment' => array(
-                'login' => array(
+            'order_edit' => array(
+                'date' => array(
                     'required' => true,
-                    'pattern' => V_TITLE,
-                    'max_lenght' => 40,
+                    'pattern' => $Register['Validate']::V_DATETIME,
                 ),
-                'message' => array(
+                'status' => array(
+                    'required' => false,
+                    'title' => __('Status'),
+                ),
+                'total' => array(
+                    'required' => false,
+                    'pattern' => $Register['Validate']::V_FLOAT,
+                    'title' => __('Total'),
+                ),
+                'delivery_type_id' => array(
                     'required' => true,
-                ),
-                'captcha_keystring' => array(
-                    'pattern' => V_CAPTCHA,
-                    'title' => 'Kaptcha',
-                ),
-            ),
-            'update_comment' => array(
-                'login' => array(
+                    'pattern' => $Register['Validate']::V_INT,
+                    'title' => __('Delivery type'),
+				),
+                'delivery_address' => array(
+                    'required' => false,
+                    'title' => __('Delivery address'),
+				),
+                'telephone' => array(
                     'required' => true,
-                    'pattern' => V_TITLE,
-                    'max_lenght' => 40,
-                ),
-                'message' => array(
+					'pattern' => $Register['Validate']::V_INT,
+                    'title' => __('Telephone'),
+				),
+                'first_name' => array(
                     'required' => true,
-                ),
-                'captcha_keystring' => array(
-                    'pattern' => V_CAPTCHA,
-                    'title' => 'Kaptcha',
-                ),
-            ),
-            'upload_attaches' => array(
-                'files__attach' => array(
-                    'for' => array(
-                        'from' => 1,
-                        'to' => $max_attach,
-                    ),
-                    'type' => 'image',
-                    'max_size' => Config::read('max_attaches_size', $this->module),
-                ),
+					'pattern' => $Register['Validate']::V_TITLE,
+                    'title' => __('First name'),
+				),
+                'last_name' => array(
+                    'required' => true,
+					'pattern' => $Register['Validate']::V_TITLE,
+                    'title' => __('Last name'),
+				),
             ),
         );
 

@@ -88,7 +88,7 @@ class ShopAttributesEntity extends FpsEntity
                 $out = '<input type="text" name="attributes[' . h($this->title) . ']" value="' . h($attr_content) . '" />';
                 break;
             case 'textarea':
-                $out = '<textarea name="attributes[' . h($this->title) . ']">' . h($attr_content) . '</textarea>';
+                $out = '<textarea style="height:100px;" name="attributes[' . h($this->title) . ']">' . h($attr_content) . '</textarea>';
                 break;
             case 'checkbox':
                 $id = md5($this->id . rand() . rand());
@@ -109,7 +109,8 @@ class ShopAttributesEntity extends FpsEntity
                 break;
             case 'image':
                 $image_url = (!empty($attr_content))
-                    ? get_url(WWW_ROOT . '/sys/files/shop/' . $attr_content)
+                    ? get_url(WWW_ROOT . '/image/shop/' . $attr_content . '/200/')
+                    //? get_url(WWW_ROOT . '/sys/files/shop/' . $attr_content)
                     : false;
                 $out = '<input type="file" name="attributes_' . h($this->title) . '" value="" />';
                 if ($image_url)

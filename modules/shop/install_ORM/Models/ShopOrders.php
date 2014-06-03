@@ -34,7 +34,20 @@ class ShopOrdersModel extends FpsModel
             'type' => 'many_to_many',
             'foreignKey' => array('order_id', 'product_id'),
       	),
+        'author' => array(
+            'model' => 'Users',
+            'type' => 'has_one',
+            'internalKey' => 'user_id',
+      	),
+        'delivery_type' => array(
+            'model' => 'shopDeliveryTypes',
+            'type' => 'has_one',
+            'internalKey' => 'delivery_type_id',
+      	),
     );
 	
-
+    protected $orderParams = array(
+        'allowed' => array('date', 'author.name', 'status', 'total', 'delivery_type.title', 'first_name', 'first_name', 'price'),
+        'default' => 'date',
+    );
 }

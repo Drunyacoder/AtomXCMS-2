@@ -46,7 +46,7 @@ class ShopOrdersEntity extends FpsEntity
 			'user_id' => intval($this->user_id),
 			'date' => $this->date,
 			'status' => (string)$this->status,
-			'total' => intval($this->total),
+			'total' => floatval($this->total),
 			'comment' => (string)$this->comment,
 			'delivery_address' => (string)$this->delivery_address,
 			'delivery_type_id' => intval($this->delivery_type_id),
@@ -60,11 +60,15 @@ class ShopOrdersEntity extends FpsEntity
 	}
 	
 	
-	
 	public function delete()
 	{ 
 		$Register = Register::getInstance();
 		$Register['DB']->delete('shop_orders', array('id' => $this->id));
 	}
 
+	
+    public function setTotal($total)
+    {
+        $this->total = floatval($total);
+    }
 }

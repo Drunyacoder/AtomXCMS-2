@@ -128,7 +128,7 @@ Class NewsModule extends Module {
 			$records = $this->AddFields->mergeRecords($records);
 		}
 
-
+		
 		// create markers
 		foreach ($records as $result) {
 			$this->Register['current_vars'] = $result;

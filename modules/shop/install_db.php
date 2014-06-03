@@ -79,7 +79,7 @@ $FpsInstallQueries[] = "CREATE TABLE `{$db_prefix}shop_orders` (
   `user_id` int(11) NOT NULL DEFAULT '0',
   `date` datetime NOT NULL,
   `status` enum('process','delivery','complete') NOT NULL DEFAULT 'process',
-  `total` int(11) NOT NULL DEFAULT '0',
+  `total` decimal(11,2) NOT NULL DEFAULT '0',
   `comment` text NOT NULL,
   `delivery_address` text NOT NULL,
   `delivery_type_id` int(11) NOT NULL DEFAULT '0',

@@ -42,6 +42,11 @@ class Validate {
 	private $rules;
 	
 	/**
+	 * @var string
+	 */
+	private $module;
+	
+	/**
 	 * @var array
 	 */
 	private $disabledFields = array();
@@ -54,6 +59,7 @@ class Validate {
 	const V_TITLE = '#^[A-ZА-Яа-яa-z0-9ё\s\-(),._\?!\w\d\{\}\<\>:=\+&%\$\[\]\\\/"\']+$#ui';
 	const V_INT = '#^\d+$#i';
 	const V_FLOAT = '#^\d+\.?\d*$#i';
+	const V_DATETIME = '#^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$#i';
 	const V_TEXT = '#^[\wA-ZА-Яа-яa-z0-9\s\-\(\):;\[\]\+!\.,&\?/\{\}="\']*$#uim';
 	const V_MAIL = '#^[0-9a-z_\-\.]+@[0-9a-z\-\.]+\.[a-z]{2,6}$#i';
 	const V_URL = '#^((https?|ftp):\/\/)?(www.)?([0-9a-z]+(-?[0-9a-z]+)*\.)+[a-z]{2,6}\/?([-0-9a-z_]*\/?)*([-0-9A-Za-zА-Яа-я_]+\.?[-0-9a-z_]+\/?)*$#i';
@@ -133,6 +139,11 @@ class Validate {
 	}
 	
 	
+	public function setModule($module) 
+	{
+		$this->module = $module;
+	}
+	
 	
 	public function disableFieldCheck($key) 
 	{
@@ -181,7 +192,7 @@ class Validate {
 						
 						
 					} else if (!empty($params['required']) && $params['required'] === 'editable') {
-						$fields_settings = $Register['Config']->read('fields', $this->pathParams[0]);
+						$fields_settings = $Register['Config']->read('fields', $this->module);
 						
 						if (empty($_POST[$title]) && in_array($title, $fields_settings)) { 
 							$errors .= $this->getErrorMessage('required', $params, $title);
@@ -230,7 +241,7 @@ class Validate {
 						
 						
 					} else if (!empty($params['required']) && $params['required'] === 'editable') {
-						$fields_settings = $Register['Config']->read('fields', $this->pathParams[0]);
+						$fields_settings = $Register['Config']->read('fields', $this->module);
 						
 						if ((empty($_FILES[$title]) || empty($_FILES[$title]['name'])) && in_array($title, $fields_settings)) 
 							$errors .= $this->getErrorMessage('required', $params, $title);
