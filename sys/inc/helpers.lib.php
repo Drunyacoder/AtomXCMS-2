@@ -662,7 +662,7 @@ function getOnlineUsers() {
 		$users = $data['users'];
 	}
 	
-	return $users;
+	return (!empty($users)) ? $users : array();
 }
 
 

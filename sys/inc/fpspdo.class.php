@@ -239,7 +239,7 @@ class FpsPDO {
 				return $this->getSqlCache($data);
 			}
 		}
-
+	
 		
 		$result = '';
 		$start = getMicroTime();
@@ -347,7 +347,7 @@ class FpsPDO {
 
         if (empty($affected_rows)) return array();
         $affected_rows = array_values($affected_rows);
-        //pr($affected_rows); die();
+        
         return $affected_rows;
     }
 
@@ -900,12 +900,15 @@ class FpsPDO {
 	private function __value($value, $key = null) 
 	{
         if (!empty($key) && strstr($key, '.')) $key = strtr($key, array('.' => '_'));
+		// if query params contains `id` => 1,
+		// finaly params must contains :id => 1 (without "`").
+        if (!empty($key) && strstr($key, '`')) $key = strtr($key, array('`' => ''));
 
 		if (empty($value) && is_int($value)) $this->queryParams[":$key"] = '0';
-		if (empty($value)) $this->queryParams[":$key"] = "''";
+		else if (empty($value)) $this->queryParams[":$key"] = "''";
 
 		
-		if (is_array($value) && !empty($value)) {
+		else if (is_array($value) && !empty($value)) {
 			foreach ($value as $k => $v) {
 				$value[$k] = $this->__value($v, $key);
 			}
