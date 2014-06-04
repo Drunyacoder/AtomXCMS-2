@@ -23,6 +23,24 @@
 
 class Protect
 {
+	private $phpErrorsLogMaxSize = 10500000;
+
+	public function __construct()
+	{
+		if (rand() % 100 == 0) $this->cleanPHPErrorsLog();
+	}
+	
+	
+	public function cleanPHPErrorsLog()
+	{
+		$path = ROOT . '/sys/logs/php_errors.log';
+		if (is_readable($path) && is_writeable($path)) {
+			if (filesize($path) >= $this->phpErrorsLogMaxSize) {
+				file_put_contents($path, '');
+			}
+		}
+	}
+	
 	
 	public function getCaptcha($key = null)
 	{
