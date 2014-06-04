@@ -49,8 +49,6 @@ $set = array (
   'new_pm_mail' => 1,
   'latest_on_home' => 
   array (
-    0 => 'news',
-    1 => 'stat',
     'news' => 'news',
     'stat' => 'stat',
   ),
@@ -241,5 +239,5 @@ $set = array (
   'auto_sitemap' => 1,
   'allow_smiles' => 1,
   'smiles_set' => 'fapos',
-)
+);
 ?>

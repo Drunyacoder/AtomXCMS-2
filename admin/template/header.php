@@ -229,19 +229,16 @@
 		  'sep',
 		  '<span><?php echo __('Version of Fapos'); ?> [ <b><?php echo FPS_VERSION ?></b> ]</span>',
 		  <?php if ($new_ver): ?>
-		  'sep',
 		  '<span><?php echo __('New version of Fapos'); ?> [ <?php echo $new_ver; ?> ]</span>',
 		  <?php endif; ?>
 		  'sep',
 		  '<a href="/admin/settings.php?m=sys"><?php echo __('Common settings'); ?></a>',
-		  'sep',
 		  '<a href="/admin/clean_cache.php"><?php echo __('Clean cache'); ?></a>'
 		  ]],
 
 		['<?php echo __('Plugins'); ?>',
 		  [
 		  '<a href="/admin/plugins.php"><?php echo __('List'); ?></a>',
-		  'sep',
 		  '<a href="/admin/get_plugins.php?a=ed">Установка</a>'
 		  ]],
 
@@ -250,7 +247,6 @@
 		['<?php echo __('Snippets'); ?>',
 		  [
 		  '<a href="/admin/snippets.php"><?php echo __('Create'); ?></a>',
-		  'sep',
 		  '<a href="/admin/snippets.php?a=ed"><?php echo __('Edit'); ?></a>'
 		  ]],
 
@@ -259,7 +255,6 @@
 		['<?php echo __('Design'); ?>',
 		  [
 		  '<a href="design.php?d=default&t=main"><?php echo __('General design and css'); ?></a>',
-		  'sep',
 		  '<a href="menu_editor.php"><?php echo __('Menu editor'); ?></a>'
 		  ]],
 		  
@@ -267,7 +262,6 @@
 		['<?php echo __('Statistic'); ?>',
 		  [
 		  '<a href="/admin/statistic.php"><?php echo __('View'); ?></a>',
-		  'sep',
 		  '<a href="/admin/settings.php?m=statistics"><?php echo __('Settings of module'); ?></a>'
 		  ]],
 
@@ -276,12 +270,11 @@
 		['<?php echo __('Security'); ?>',
 		  [
 		  '<a href="settings.php?m=secure"><?php echo __('Security settings'); ?></a>',
+		  '<a href="ip_ban.php"><?php echo __('Bans by IP'); ?></a>',
+		  '<a href="dump.php"><?php echo __('Backup control'); ?></a>',
 		  'sep',
 		  '<a href="system_log.php"><?php echo __('Action log'); ?></a>',
-		  'sep',
-		  '<a href="ip_ban.php"><?php echo __('Bans by IP'); ?></a>',
-		  'sep',
-		  '<a href="dump.php"><?php echo __('Backup control'); ?></a>'
+		  '<a href="errors_log.php"><?php echo __('Errors log'); ?></a>'
 		  ]],
 		  
 		  

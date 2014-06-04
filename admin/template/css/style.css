@@ -37,6 +37,7 @@ h1, h2, h3, h4 {color:#555;}
 .headmenu .menu ul li .sub li a {color:#96C703; text-decoration:underline;}
 .headmenu .menu ul li .sub li a:hover {text-decoration:none;}
 .headmenu .menu ul li .sub li span {color:#8E8E8E;}
+.headmenu .menu ul li .sub li.top-menu-sep {height:0px; border-bottom:1px solid #555; padding:0px; margin:7px 0px 7px -20px; }
 
 
 .headmenu .userbar {width:175px; float:right;}
