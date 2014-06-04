@@ -455,17 +455,12 @@ Class UsersModule extends Module {
     public function new_password_form()
     {
         $markers = array();
-        if ( isset( $_SESSION['FpsForm']['error'] ) ) {
-            $context = array(
-                'info_message' =>  $_SESSION['FpsForm']['error'],
-            );
-            $markers['errors'] = $this->render('infomessage.html', $context);
-            unset($_SESSION['FpsForm']);
-        }
+        $markers['errors'] = $this->Register['Validate']->getErrors();
+        if (isset($_SESSION['FpsForm'])) unset($_SESSION['FpsForm']);
 
 
         $markers['action'] = get_url('/users/send_new_password/');
-        $source = $this->render('newpasswordform.html', $markers);
+        $source = $this->render('newpasswordform.html', array('context' => $markers));
 
 
         // Navigation PAnel
@@ -494,85 +489,78 @@ Class UsersModule extends Module {
         } else if (!empty($email)) {
             $this->Register['Validate']->disableFieldCheck('username');
         }
-		// Проверяем, заполнены ли обязательные поля
+		
 		$errors = $this->Register['Validate']->check($this->Register['action']);
-		
-
-		if ( empty( $errors ) ) {
-			touchDir(ROOT . '/sys/tmp/activate/');
-
-            if (!empty($name)) {
-                $res = $this->Model->getCollection(array('name' => $name));
-            } else if (!empty($email)) {
-                $res = $this->Model->getCollection(array('email' => $email));
-            }
-
-			// Если пользователь с таким логином и e-mail существует
-			if (is_array($res) && count($res) > 0) {
-				// Небольшой код, который читает содержимое директории activate
-				// и удаляет старые файлы для активации пароля (были созданы более суток назад)
-				if ($dir = opendir( ROOT . '/sys/tmp/activate')) {
-					$tmp = 24*60*60;
-					while (false !== ($file = readdir($dir))) {
-						if (is_file($file))
-							if ((time() - filemtime($file)) > $tmp) unlink($file);
-					}
-					closedir($dir);
-				}
-
-
-				// Как происходит процедура восстановления пароля? Пользователь ввел свой логин
-				// и e-mail, мы проверяем существование такого пользователя в таблице БД. Потом
-				// генерируем с помощью функции getNewPassword() новый пароль, создаем файл с именем
-				// md5( $newPassword ) в директории activate. Файл содержит ID пользователя.
-				// В качестве кода активации выступает хэш пароля - md5( $newPassword ).
-				// Когда пользователь перейдет по ссылке в письме для активации своего нового пароля,
-				// мы проверяем наличие в директории activatePassword файла с именем кода активации,
-				// и если он существует, активируем новый пароль.
-				$user = $res[0];
-                $id = $user->getId();
-				$newPassword = $this->_getNewPassword();
-				$code = md5($newPassword);
-				// file_put_contents(ROOT . '/sys/tmp/activate/'.$code, $id );
-				$fp = fopen( ROOT . '/sys/tmp/activate/' . $code, "w" );
-				fwrite($fp, $id);
-				fclose($fp);
-
-
-                $context = array(
-                    'activation_link' => 'http://'.$_SERVER['SERVER_NAME'] . '/users/activate_password/'.$code,
-                    'new_password' => $newPassword,
-                    'user_name' => $name,
-                );
-				
-				$subject = 'Активация пароля на форуме '.$_SERVER['SERVER_NAME'];
-				$mailer = new AtmMail(ROOT . '/sys/settings/email_templates/');
-				$mailer->prepare('new_password');
-				$mailer->sendMail($user->getEmail(), $subject, $context);
-
-
-				$msg = __('We send mail to your e-mail');
-                $source = $this->render('infomessage.html', array('info_message' => $msg));
-
-
-                if ($this->Log) $this->Log->write('send new passw', 'name(' . $name . '), mail(' . $email . ')');
-				return $this->_view($source);
-			} else {
-				$errors .= '<li>' . __('Wrong login or email') . '</li>'."\n";
-			}
-		}
-		
-		// Если были допущены ошибки при заполнении формы - перенаправляем посетителя
 		if (!empty($errors)) {
 			$_SESSION['FpsForm'] = array();
-			$_SESSION['FpsForm']['error'] = '<p class="errorMsg">' . __('Some error in form') . '</p>'."\n"
-                . '<ul class="errorMsg">' . "\n" . $errors . '</ul>' . "\n";
+			$_SESSION['FpsForm']['errors'] = $this->Register['Validate']->wrapErrors($errors);
 			redirect('/users/new_password_form/');
 		}
 		
+
+		if (!empty($name)) {
+			$res = $this->Model->getCollection(array('name' => $name));
+		} else if (!empty($email)) {
+			$res = $this->Model->getCollection(array('email' => $email));
+		}
+		
+		if (empty($res)) {
+			$_SESSION['FpsForm'] = array();
+			$_SESSION['FpsForm']['errors'] = $this->Register['Validate']->wrapErrors('<li>' . __('Wrong login or email') . '</li>');
+			redirect('/users/new_password_form/');
+		}
+
+
+		// Небольшой код, который читает содержимое директории activate
+		// и удаляет старые файлы для активации пароля (были созданы более суток назад)
+		touchDir(ROOT . '/sys/tmp/activate/');
+		if ($dir = opendir( ROOT . '/sys/tmp/activate')) {
+			$tmp = 24*60*60;
+			while (false !== ($file = readdir($dir))) {
+				if (is_file($file))
+					if ((time() - filemtime($file)) > $tmp) unlink($file);
+			}
+			closedir($dir);
+		}
+
+		
+		// Как происходит процедура восстановления пароля? Пользователь ввел свой логин
+		// и e-mail, мы проверяем существование такого пользователя в таблице БД. Потом
+		// генерируем с помощью функции getNewPassword() новый пароль, создаем файл с именем
+		// md5( $newPassword ) в директории activate. Файл содержит ID пользователя.
+		// В качестве кода активации выступает хэш пароля - md5( $newPassword ).
+		// Когда пользователь перейдет по ссылке в письме для активации своего нового пароля,
+		// мы проверяем наличие в директории activatePassword файла с именем кода активации,
+		// и если он существует, активируем новый пароль.
+		$user = $res[0];
+		$id = $user->getId();
+		$newPassword = $this->_getNewPassword();
+		$code = md5($newPassword);
+		// file_put_contents(ROOT . '/sys/tmp/activate/'.$code, $id );
+		$fp = fopen( ROOT . '/sys/tmp/activate/' . $code, "w" );
+		fwrite($fp, $id);
+		fclose($fp);
+
+
+		$context = array(
+			'activation_link' => 'http://'.$_SERVER['SERVER_NAME'] . '/users/activate_password/'.$code,
+			'new_password' => $newPassword,
+			'user_name' => $name,
+		);
+		
+		$subject = 'Активация пароля на форуме '.$_SERVER['SERVER_NAME'];
+		$mailer = new AtmMail(ROOT . '/sys/settings/email_templates/');
+		$mailer->prepare('new_password');
+		$mailer->sendMail($user->getEmail(), $subject, $context);
+
+
+		$msg = __('We send mail to your e-mail');
+		$source = $this->render('infomessage.html', array('info_message' => $msg));
+
 		/* clean DB cache */
 		$this->Register['DB']->cleanSqlCache();
-		if ($this->Log) $this->Log->write('wrong send new passw', 'name(' . $name . '), mail(' . $user->getEmail() . ')');
+		if ($this->Log) $this->Log->write('send new passw', 'name(' . $name . '), mail(' . $email . ')');
+		return $this->_view($source);
 	}
 
 
