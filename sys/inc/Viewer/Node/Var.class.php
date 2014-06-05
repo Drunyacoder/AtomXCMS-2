@@ -96,6 +96,12 @@ class Fps_Viewer_Node_Var extends Fps_Viewer_Node_Expresion
 	{
 		$this->attr[] = $key;
 	}
+
+
+    public function getAttrs()
+    {
+        return (count($this->attr) > 0) ? (array)$this->attr : array();
+    }
 	
 	
 	

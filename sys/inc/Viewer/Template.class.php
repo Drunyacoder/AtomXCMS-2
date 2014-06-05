@@ -3,14 +3,18 @@
 abstract class Fps_Viewer_Template
 {
 	protected $context;
-	
+
+
+
+    abstract public function display();
+
 
 	public function __construct($context)
 	{
 		$this->context = $context;
 	}
-	
-	
+
+
 	public function getContext() {
 		return $this->context;
 	}
@@ -40,12 +44,42 @@ abstract class Fps_Viewer_Template
 			//if (null !== $var = $context->$getter()) return $var;
             return $context->$getter();
 		}
-		
-
-		//return '{{ ' . $need . ' }}';
 		return '';
 	}
 
-	abstract public function display();
 
+    public function setValue($variable_params, $value, $context = null)
+    {
+        if (!$context) $context = &$this->context;
+
+        $param = array_shift($variable_params);
+        $getter = 'get' . ucfirst($param);
+        $setter = 'set' . ucfirst($param);
+
+        if (is_array($context) &&
+            !array_key_exists($param, $context) &&
+            count($variable_params) > 0) {
+            return false;
+        }
+        if (count($variable_params) === 0) {
+            if ($param === '[]') {
+                if (is_array($context))
+                    $context[] = $value;
+            } else {
+                if (is_object($context)) {
+                    $context->{$setter}($value);
+                } else {
+                    $context[$param] = $value;
+                }
+            }
+        } else {
+            if (is_object($context)) {
+                $context->{$setter}($this->setValue($variable_params, $value, $context->{$getter}()));
+            } else if (is_array($context)) {
+                $context[$param] = $this->setValue($variable_params, $value, $context[$param]);
+            }
+        }
+
+        return $context;
+    }
 }
