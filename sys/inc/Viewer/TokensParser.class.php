@@ -29,7 +29,7 @@ class Fps_Viewer_TokensParser
     const STATE_COMMENT         = 5;
 
     const REGEX_NAME            = '/[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*/uA';
-    const REGEX_NUMBER          = '/[0-9]+(?:\.[0-9]+)?/uA';
+    const REGEX_NUMBER          = '/\-?[0-9]+(?:\.[0-9]+)?/uA';
     const REGEX_STRING          = '/"([^#"\\\\]*(?:\\\\.[^#"\\\\]*)*)"|\'([^\'\\\\]*(?:\\\\.[^\'\\\\]*)*)\'/uAs';
     const REGEX_DQ_STRING_DELIM = '/"/uA';
     const REGEX_DQ_STRING_PART  = '/[^#"\\\\]*(?:(?:\\\\.|#(?!\{))[^#"\\\\]*)*/uAs';
@@ -54,7 +54,7 @@ class Fps_Viewer_TokensParser
 			'lex_comment' => '#\s+' . preg_quote($this->delimiters['tag_comment'][1], '#') . '#uA',
 			'lex_block' => '#\s+(?:' . preg_quote($this->delimiters['tag_block'][1]) . '|' . preg_quote($this->delimiters['tag_block'][1]) . ')#uA',
 			'lex_start' => '#(' . preg_quote($this->delimiters['tag_var'][0]) . '|' . preg_quote($this->delimiters['tag_block'][0]) . '|' . preg_quote($this->delimiters['tag_url'][0]) . '|' . preg_quote($this->delimiters['tag_comment'][0], '#') . ')\s#us',
-			'operators' => '#not in(?=[\s()])|and(?=[\s()])|not(?=[\s()])|in(?=[\s()])|\<\=|\>\=|\=\=|or(?=[\s()])|\!\=|%|\>|\+|-|\<|/{1,2}|\=|\*{1,2}#uA',
+			'operators' => '#not in(?=[\s()])|and(?=[\s()])|not(?=[\s()])|in(?=[\s()])|\<\=|\>\=|\=\=|or(?=[\s()])|\!\=|%|\>|\+|(?<!\(|,\s)-|\<|/{1,2}|\=|\*{1,2}#uA',
 		);
 	}
 	
