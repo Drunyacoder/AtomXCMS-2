@@ -102,6 +102,7 @@ class StatEntity extends FpsEntity
 		
 
 		$Register['DB']->delete('stat', array('id' => $this->id));
+        $Register['URL']->removeOldTmpFiles($this, 'stat');
 	}
 
 
@@ -111,6 +112,9 @@ class StatEntity extends FpsEntity
     public function setTitle($title)
     {
         $Register = Register::getInstance();
+        if (!empty($this->title) && $this->title !== $title) {
+            $Register['URL']->saveOldEntryUrl($this, 'stat', $title);
+        }
         $this->title = $title;
         $this->clean_url_title = $Register['URL']->getUrlByTitle($title, false);
     }

@@ -118,6 +118,7 @@ class LoadsEntity extends FpsEntity
         }
 
 		$Register['DB']->delete('loads', array('id' => $this->id));
+        $Register['URL']->removeOldTmpFiles($this, 'loads');
 	}
 
 
@@ -127,6 +128,9 @@ class LoadsEntity extends FpsEntity
     public function setTitle($title)
     {
         $Register = Register::getInstance();
+        if (!empty($this->title) && $this->title !== $title) {
+            $Register['URL']->saveOldEntryUrl($this, 'loads', $title);
+        }
         $this->title = $title;
         $this->clean_url_title = $Register['URL']->getUrlByTitle($title, false);
     }

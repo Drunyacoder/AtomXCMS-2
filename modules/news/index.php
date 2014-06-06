@@ -970,8 +970,7 @@ Class NewsModule extends Module {
 			$tags = (!empty($tags) && is_array($tags)) ? implode(',', array_keys($tags)) : '';
 		}
 		
-		
-		$old_title = $target->getTitle();
+
         $max_lenght = $this->Register['Config']->read('max_lenght', $this->module);
 		$edit = mb_substr($edit, 0, $max_lenght);
 		$data = array(
@@ -991,10 +990,7 @@ Class NewsModule extends Module {
 		if (is_object($this->AddFields)) {
 			$this->AddFields->save($id, $_addFields);
 		}
-		
-        if ($old_title !== $target->getTitle()) {
-            $this->Register['URL']->saveOldEntryUrl($target, $this->module, $old_title);
-        }
+
 
 		if ($this->Log) $this->Log->write('editing ' . $this->module, $this->module . ' id(' . $id . ')');
 		return $this->showInfoMessage(__('Operation is successful'), getReferer());

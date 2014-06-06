@@ -1051,7 +1051,6 @@ Class LoadsModule extends Module {
 		}
 
 
-        $old_title = $target->getTitle();
 		$max_lenght = Config::read('max_lenght', $this->module);
 		$editLoad = mb_substr($editLoad, 0, $max_lenght);
 		// Запрос на обновление новости
@@ -1077,10 +1076,6 @@ Class LoadsModule extends Module {
 		if (is_object($this->AddFields)) {
 			$this->AddFields->save($id, $_addFields);
 		}
-
-        if ($old_title !== $target->getTitle()) {
-            $this->Register['URL']->saveOldEntryUrl($target, $this->module, $old_title);
-        }
 		
 		
 		//clear cache

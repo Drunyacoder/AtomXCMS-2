@@ -28,14 +28,15 @@
  */
 class AtmUrl {
 
-    public function saveOldEntryUrl($entity, $module, $old_title, $removeTmpFile = false)
+    public function saveOldEntryUrl($entity, $module, $new_title = null, $removeTmpFile = true)
     {
         if ($removeTmpFile === true) {
             $this->removeOldTmpFile($entity, $module);
             return true;
         }
+        $old_title = $entity->getTitle();
         $matId = $entity->getId();
-        $matTitle = $entity->getTitle();
+        $matTitle = $new_title;
 
 
         if (empty($matId))
@@ -88,6 +89,22 @@ class AtmUrl {
     {
         $tmp_file_title = $this->getTmpFilePath($entity->getTitle(), $module);
         if (file_exists($tmp_file_title)) @unlink($tmp_file_title);
+    }
+
+
+    public function removeOldTmpFiles($entity, $module)
+    {
+        $tmp_file = $this->getTmpFilePath($entity->getId(), $module);
+        if (file_exists($tmp_file)) {
+            $data = json_decode(file_get_contents($tmp_file), true);
+            if (!empty($data) && is_array($data)) {
+                foreach ($data as $path) {
+                    clearstatcache();
+                    if (file_exists($path)) @unlink($path);
+                }
+            }
+            @unlink($tmp_file);
+        }
     }
 
 
