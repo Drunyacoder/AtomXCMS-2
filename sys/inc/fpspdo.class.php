@@ -1027,13 +1027,15 @@ class FpsPDO {
 			return $matches[1] . '(' . $this->__name($matches[2]) . ')';
 		}
 		if (preg_match('/^([\w-]+(\.[\w-]+|\(.*\))*)\s+' . preg_quote($this->alias) 
-		. '\s*([\w-]+)$/', $data, $matches)) {
+		. '\s*([\w-]+)$/iu', $data, $matches)) {
 			return preg_replace('/\s{2,}/', ' ', $this->__name($matches[1]) . ' '
 			. $this->alias . ' ' . $this->__name($matches[3]));
 		}
+        /*
 		if (preg_match('/^[\w-_\s]*[\w-_]+/', $data)) {
 			return $this->startQuote . $data . $this->endQuote;
 		}
+        */
 		return $data;
 	}
 	
