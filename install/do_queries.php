@@ -113,6 +113,7 @@ $array[] = "DROP TABLE IF EXISTS `{$set['db']['prefix']}loads`";
 $array[] = "CREATE TABLE `{$set['db']['prefix']}loads` (
   `id` int(11) NOT NULL auto_increment,
   `title` varchar(255) NOT NULL,
+  `clean_url_title` varchar(255) DEFAULT '' NOT NULL,
   `main` text NOT NULL,
   `author_id` int(11) NOT NULL,
   `category_id` int(11) NOT NULL,
@@ -183,6 +184,7 @@ $array[] = "DROP TABLE IF EXISTS `{$set['db']['prefix']}news`";
 $array[] = "CREATE TABLE `{$set['db']['prefix']}news` (
   `id` int(11) NOT NULL auto_increment,
   `title` varchar(255) collate utf8_general_ci NOT NULL,
+  `clean_url_title` varchar(255) DEFAULT '' NOT NULL,
   `main` text collate utf8_general_ci NOT NULL,
   `views` int(11) default '0',
   `date` datetime default NULL,
@@ -259,6 +261,7 @@ $array[] = "DROP TABLE IF EXISTS `{$set['db']['prefix']}stat`";
 $array[] = "CREATE TABLE `{$set['db']['prefix']}stat` (
   `id` int(11) NOT NULL auto_increment,
   `title` varchar(255) NOT NULL,
+  `clean_url_title` varchar(255) DEFAULT '' NOT NULL,
   `main` longtext NOT NULL,
   `author_id` int(11) NOT NULL,
   `category_id` int(11) NOT NULL,

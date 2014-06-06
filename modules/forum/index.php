@@ -658,6 +658,7 @@ Class ForumModule extends Module {
 		$themeModel->bindModel('forum');
 		$themeModel->bindModel('poll');
 		$theme = $themeModel->getById($id_theme);
+
 		
 		if (!$theme->getForum())  return $this->showInfoMessage(__('Can not find forum'), '/forum/' );
 		
@@ -668,7 +669,7 @@ Class ForumModule extends Module {
 		// Check access to this forum. May be locked by pass or posts count
 		$this->__checkForumAccess($theme->getForum());
 		$id_forum = $theme->getId_forum();
-		
+
 		$this->__checkThemeAccess($theme);
 		
 		

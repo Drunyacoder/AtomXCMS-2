@@ -29,6 +29,7 @@ class LoadsEntity extends FpsEntity
 	
 	protected $id;
 	protected $title;
+    protected $clean_url_title;
 	protected $main;
 	protected $views;
 	protected $downloads;
@@ -62,8 +63,10 @@ class LoadsEntity extends FpsEntity
 	
 	public function save()
 	{
+        $Register = Register::getInstance();
 		$params = array(
 			'title' => $this->title,
+            'clean_url_title' => $this->clean_url_title,
 			'main' => $this->main,
 			'views' => intval($this->views),
 			'downloads' => intval($this->downloads),
@@ -90,7 +93,6 @@ class LoadsEntity extends FpsEntity
 		
 		
 		if ($this->id) $params['id'] = $this->id;
-		$Register = Register::getInstance();
 		return $Register['DB']->save('loads', $params);
 	}
 	
@@ -119,15 +121,15 @@ class LoadsEntity extends FpsEntity
 	}
 
 
-
     /**
-     * @param $comments
+     * @param string $title
      */
-	public function setComments_($comments)
+    public function setTitle($title)
     {
-        $this->comments_ = $comments;
+        $Register = Register::getInstance();
+        $this->title = $title;
+        $this->clean_url_title = $Register['URL']->getUrlByTitle($title, false);
     }
-
 
 
     /**

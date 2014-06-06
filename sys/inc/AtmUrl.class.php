@@ -28,71 +28,74 @@
  */
 class AtmUrl {
 
-	public function getEntryUrl($material, $module){
-		$matId = $material->getId();
-		$matTitle = $material->getTitle();
-		
-		
-		if (empty($matId)) 
-			trigger_error('Empty material ID', E_USER_ERROR);
-			
-		if (Config::read('hlu') != 1 || empty($matTitle)) {
-			$url = $module . '/view/' . $matId;
-			return $url;
-		}
-		
-		// extention
-		$extention = '';
-		$hlu_extention = Config::read('hlu_extention');
-		if (!empty($hlu_extention)) {
-			$extention = $hlu_extention;
-		}
-		
-		// URL pattern
-		$pattern = '/' . $module . '/%s' . $extention;
-		
-		
-		// Check tmp file with assocciations and build human like URL
-		clearstatcache();
-		$tmp_file = $this->getTmpFilePath($matId, $module);
-		
-		
-		if (file_exists($tmp_file) && is_readable($tmp_file)) {
-			$title = file_get_contents($tmp_file);
-			if (!empty($title)) {			
-			
-				$tmp_file_2 = $this->getTmpFilePath($title, $module);
-				if (!file_exists($tmp_file_2)) {
-					file_put_contents($tmp_file_2, $matId);
-				}
-				return h(sprintf($pattern, $title));
-			}
-		}
-		
-		
-		$title = $this->translit($matTitle);
-		$title = strtolower(preg_replace('#[^a-z0-9]#i', '_', $title));
-		
-		
-		// Colission protect
-		$tmp_file_title = $this->getTmpFilePath($title, $module);
-		while (file_exists($tmp_file_title)) {
-			$collision = file_get_contents($tmp_file_title);
-			if (!empty($collision) && $collision != $matId) {
-				$title .= '_';
-				$tmp_file_title = $this->getTmpFilePath($title, $module);
-			
-			} else {
-				$tmp_file_title_flag = true;
-				break;
-			}
-		}
+    public function saveOldEntryUrl($entity, $module, $old_title, $removeTmpFile = false)
+    {
+        if ($removeTmpFile === true) {
+            $this->removeOldTmpFile($entity, $module);
+            return true;
+        }
+        $matId = $entity->getId();
+        $matTitle = $entity->getTitle();
 
-		
-		file_put_contents($tmp_file, $title);
-		if (empty($tmp_file_title_flag)) 
-			file_put_contents($this->getTmpFilePath($title, $module), $matId);
-		return h(sprintf($pattern, $title));
+
+        if (empty($matId))
+            throw new Exception('Empty material ID');
+
+        // Check tmp file with assocciations and build human like URL
+        clearstatcache();
+        $old_title = $this->getUrlByTitle($old_title);
+        $tmp_file_id = $this->getTmpFilePath($matId, $module);
+        $tmp_file_title = $this->getTmpFilePath($old_title, $module);
+        $title = $this->getUrlByTitle($matTitle);
+        $params = array(
+            'id' => $matId,
+            'title' => $title,
+        );
+
+
+        // Colission protect
+        while (file_exists($tmp_file_title)) {
+            $collision = json_decode(file_get_contents($tmp_file_title), true);
+            if (is_array($collision) && isset($collision['id']) && $collision['id'] != $matId) {
+                $old_title .= '_';
+                $tmp_file_title = $this->getTmpFilePath($old_title, $module);
+            } else break;
+        }
+
+        // check the old URLs (by the old title(s))
+        if (file_exists($tmp_file_id)) {
+            $path_to_tmp_file_title = json_decode(file_get_contents($tmp_file_id), true);
+            if (count($path_to_tmp_file_title) && is_array($path_to_tmp_file_title)) {
+                foreach ($path_to_tmp_file_title as $path) {
+                    if (file_exists($path)) {
+                        file_put_contents($path, json_encode($params));
+                    }
+                }
+            }
+        }
+        if (empty($path_to_tmp_file_title) || !is_array($path_to_tmp_file_title))
+            $path_to_tmp_file_title = array();
+        if (!in_array($tmp_file_title, $path_to_tmp_file_title)) $path_to_tmp_file_title[] = $tmp_file_title;
+        file_put_contents($tmp_file_id, json_encode($path_to_tmp_file_title));
+
+
+        file_put_contents($tmp_file_title, json_encode($params));
+        return true;
+    }
+
+
+    public function removeOldTmpFile($entity, $module)
+    {
+        $tmp_file_title = $this->getTmpFilePath($entity->getTitle(), $module);
+        if (file_exists($tmp_file_title)) @unlink($tmp_file_title);
+    }
+
+
+	public function getEntryUrl($material, $module){
+        $pattern = '/' . $module . '/%s';
+        $title = $this->getUrlByTitle($material->getTitle());
+
+        return h(sprintf($pattern, $title));
 	}
 	
 	
@@ -102,11 +105,11 @@ class AtmUrl {
 	 * @param stirng title
 	 * @return string
 	 */
-	public function getUrlByTitle($title) {
-		$title = $this->translit($title);
-		$title = strtolower(preg_replace('#[^a-z0-9]#i', '_', $title));
+	public function getUrlByTitle($title, $use_extention = true) {
+		//$title = $this->translit($title);
+		$title = strtolower(preg_replace('#[^0-9a-zА-Я]#ui', '_', $title));
 		$hlu_extention = Config::read('hlu_extention');
-		return $title . $hlu_extention;
+		return ($use_extention === true) ? $title . $hlu_extention : $title;
 	}
 	
 	

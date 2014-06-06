@@ -131,22 +131,7 @@ Class Pather {
 		}, $pathParams);
 
 
-		// Redirect from not HLU to HLU
-		if (count($pathParams) >= 3 &&  $pathParams[1] == 'view' && $this->Register['Config']->read('hlu') == 1) {
-			$hlufile = $Register['URL']->getTmpFilePath($pathParams[2], $pathParams[0]);
-
-			if (file_exists($hlufile) && is_readable($hlufile)) {
-				$hlustr = file_get_contents($hlufile);
-				if (!empty($hlustr)) {
-					$hlustr .= $this->Register['Config']->read('hlu_extention');
-					header('HTTP/1.0 301 Moved Permanently');
-					redirect('/' . $pathParams[0] . '/' . $hlustr);
-				}
-			}
-			
-		
-		// inserted URL for Pages module
-		} else if (count($pathParams) >= 1 && !file_exists(ROOT . '/modules/' . $pathParams[0])) {
+		if (count($pathParams) >= 1 && !file_exists(ROOT . '/modules/' . $pathParams[0])) {
 			$pathParams = array(
 				0 => 'pages',
 				1 => 'index',
@@ -192,20 +177,11 @@ Class Pather {
     {
 		// if we have one argument, we get page if it exists or error
 		if (!is_file(ROOT . '/modules/' . strtolower($params[0]) . '/index.php')) {
-			$mat_id = $this->getHluId($params[0], 'pages');
-			if ($mat_id && $this->Register['Config']->read('hlu') == 1) {
-				$params = array(
-					0 => 'pages',
-					1 => 'index',
-					2 => $mat_id,
-				);
-			} else {
-				$params = array(
-					0 => 'pages',
-					1 => 'index',
-					2 => $params[0],
-				);
-			}
+            $params = array(
+                0 => 'pages',
+                1 => 'index',
+                2 => $params[0],
+            );
 		}
 
 		
@@ -214,19 +190,20 @@ Class Pather {
 		if (!class_exists($module))  {
 			$_GET['ac'] = 404;
 			include_once ROOT . '/error.php';
-			//die("Not found class " . h($module));
 		}
 
-	
+
 		// Parse two and more arguments
 		if (count($params) > 1) {
 			// Human Like URL
 			if ($this->Register['Config']->read('hlu_understanding') || $this->Register['Config']->read('hlu')) {
-				$mat_id = $this->getHluId($params[1], $params[0]);
-				if ($mat_id) {
-					$params[1] = 'view';
-					$params[2] = $mat_id;
-				}
+				if ($params[1] !== 'view' && (empty($params[2]) || !is_numeric($params[2]))) {
+                    $mat_id = $this->getHluId($params[1], $params[0]);
+                    if ($mat_id) {
+                        // redirect to old ID (e.g. which did before we changed the title)
+                        redirect($params[0] . '/' . $mat_id, 301);
+                    }
+                }
 			}
 		}
 
@@ -241,12 +218,15 @@ Class Pather {
 			if (preg_match('#^_+#', $params[1])) {
 				$_GET['ac'] = 404;
 				include_once ROOT . '/error.php';
-				//die('Access to action ' . h($params[1]) . ' is denied');
 			}
 			if (!method_exists($this->module, $params[1])) {
-				$_GET['ac'] = 404;
-				include_once ROOT . '/error.php';
-				//die('Action ' . h($params[1]) . ' not found in ' . h($module) . ' Class.');
+                if (method_exists($this->module, 'view')) {
+                    $params[2] = $this->module->getEntryId($params[1]);
+                    $params[1] = 'view';
+                } else {
+                    $_GET['ac'] = 404;
+                    include_once ROOT . '/error.php';
+                }
 			}
 		}
 
@@ -265,14 +245,18 @@ Class Pather {
 	 */
 	private function getHluId($string, $module) {
 		$Register = Register::getInstance();
-		$clean_str = substr($string, 0, strpos($string, '.'));
-		
+		//$clean_str = substr($string, 0, strpos($string, '.'));
+		$clean_str = $string;
 		$tmp_file = $Register['URL']->getTmpFilePath($clean_str, $module);
 		if (!file_exists($tmp_file) || !is_readable($tmp_file)) return false;
 
+        $params = json_decode(file_get_contents($tmp_file), true);
+        return $params['title'];
+        /*
 		$id = file_get_contents($tmp_file);
 		$id = (int)$id;
 		return (is_int($id)) ? $id : false;
+        */
 	}
 
 }

@@ -886,4 +886,15 @@ class Module {
 		$ids = (count($ids)) ? implode(', ', $ids) : 'NULL';
 		return "`category_id` IN ({$ids})";
 	}
+
+
+    public function getEntryId($id)
+    {
+        // HLU title of the entity
+        if (!is_numeric($id)) {
+            $clean_url_extention = Config::read('hlu_extention');
+            $id = $this->Model->getIdByHluTitle(str_replace($clean_url_extention, '', $id));
+        }
+        return intval($id);
+    }
 }

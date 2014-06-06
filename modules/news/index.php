@@ -350,6 +350,8 @@ Class NewsModule extends Module {
      */
 	public function view ($id = null)
     {
+
+        pr($id); die();
 		//turn access
 		$this->ACL->turn(array($this->module, 'view_materials'));
 		$id = intval($id);
@@ -875,13 +877,6 @@ Class NewsModule extends Module {
 	 */
 	public function update($id = null)
     {
-		// Если не переданы данные формы - функция вызвана по ошибке
-		if (!isset($id) 
-		|| !isset($_POST['title']) 
-		|| !isset($_POST['main_text']) 
-		|| !isset($_POST['cats_selector'])) {
-			redirect('/');
-		}
 		$id = (int)$id;
 		if ($id < 1) redirect('/' . $this->module . '/');
 		$errors = '';
@@ -976,7 +971,8 @@ Class NewsModule extends Module {
 		}
 		
 		
-		$max_lenght = $this->Register['Config']->read('max_lenght', $this->module);
+		$old_title = $target->getTitle();
+        $max_lenght = $this->Register['Config']->read('max_lenght', $this->module);
 		$edit = mb_substr($edit, 0, $max_lenght);
 		$data = array(
 			'title' 	   => $title,
@@ -990,13 +986,16 @@ Class NewsModule extends Module {
 			'commented'    => $commented,
 			'available'    => $available,
 		);
-		$target->__construct($data);
+		$target($data);
 		$target->save();
 		if (is_object($this->AddFields)) {
 			$this->AddFields->save($id, $_addFields);
 		}
 		
-		
+        if ($old_title !== $target->getTitle()) {
+            $this->Register['URL']->saveOldEntryUrl($target, $this->module, $old_title);
+        }
+
 		if ($this->Log) $this->Log->write('editing ' . $this->module, $this->module . ' id(' . $id . ')');
 		return $this->showInfoMessage(__('Operation is successful'), getReferer());
 	}

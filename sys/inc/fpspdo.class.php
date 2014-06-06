@@ -38,6 +38,7 @@ class FpsPDO {
 	 * @var string
 	 */
 	public $alias = 'AS ';
+
 	/**
 	 * The starting character that this DataSource uses for quoted identifiers.
 	 *
@@ -66,6 +67,8 @@ class FpsPDO {
 	 *
 	 */
 	private $dbh;
+
+    private $table_alias;
 	
 	private $queryParams = array();
 
@@ -106,7 +109,9 @@ class FpsPDO {
 		$this->queryParams = array();
 		if (in_array($type, array('DB_FIRST', 'DB_ALL', 'DB_COUNT'))) $this->DB_TYPE = $type;
 
+        if (!empty($params['alias'])) $this->table_alias = $this->__name($params['alias']);
 		$query = $this->__buildQuery($params, $table);
+        $this->table_alias = null;
 
 		// trying cache querys 
 		if (Config::read('cache_querys') == 1) {
@@ -304,6 +309,10 @@ class FpsPDO {
         $this->relationsMap = array();
         $meta = array();
         $affected_rows = array();
+
+        if (@!$query->columnCount()) {
+            pr($query); die();
+        }
 
         foreach(range(0, $query->columnCount() - 1) as $column_index){
             $meta[$column_index] = $query->getColumnMeta($column_index);
@@ -589,9 +598,10 @@ class FpsPDO {
             }
 		}
 
+
 		return $this->__renderQuery('select', array(
 			'conditions' => $this->__conditions($params['cond'], true, true),
-			'fields' => $this->__fields($params['fields']),
+			'fields' => $this->__fields($params['fields'], true),
 			'table' => (!empty($sub_query))
                     ? '(' . $sub_query . ')'
                     : $this->__name($this->getFullTableName($table)),
@@ -637,7 +647,6 @@ class FpsPDO {
 	 * @return string Rendered SQL expression to be run.
 	 */
 	private function __renderQuery($type, $data) {
-		
 		extract($data);
 		$aliases = null;
 		
@@ -689,7 +698,7 @@ class FpsPDO {
 		if (is_array($fields)) {
 			if ($quote === true) {
 				foreach ($fields as $key => $field) {
-					$fields[$key] = $this->__name($field);
+					$fields[$key] = $this->__name($field, true);
 				}
 			} 
 			$out = implode(', ', $fields);
@@ -708,11 +717,27 @@ class FpsPDO {
 	 */
 	private function __order($order, $alias = null) {
 		if (empty($order)) return null;
-		return ' ORDER BY '
-            . ((!empty($alias) && !strstr($order, '.') && !strstr($order, '`')) 
-				? $this->__name($alias) . '.' 
-				: '')
-            . $order;
+        $addAlias = function($v) use ($alias) {
+            return ((!empty($alias) && !strstr($v, '.') && !strstr($v, '`'))
+                    ? $this->__name($alias) . '.'
+                    : '')
+                . $v;
+        };
+        if (false !== strpos($order, ',')) {
+            $order = explode(',', $order);
+            foreach ($order as $k => &$v) {
+                $v = trim($v);
+                if (empty($v)) {
+                    unset($order[$k]);
+                    continue;
+                }
+                $v = $addAlias($v);
+            }
+            $order = implode(', ', $order);
+        } else {
+            $order = $addAlias($order);
+        }
+		return ' ORDER BY ' . $order;
 	}
 	
 	
@@ -876,6 +901,7 @@ class FpsPDO {
 				}
 			}
 		}
+
 		return $out;
 	}
 
@@ -887,7 +913,7 @@ class FpsPDO {
 	 */
 	private function __parseKey($key, $value) {
 		$value = $this->__value($value, $key);
-		$key = $this->__name($key);
+		$key = $this->__name($key, true);
 		return  $key . ' = ' . $value;
 	}
 	
@@ -905,7 +931,7 @@ class FpsPDO {
         if (!empty($key) && strstr($key, '`')) $key = strtr($key, array('`' => ''));
 
 		if (empty($value) && is_int($value)) $this->queryParams[":$key"] = '0';
-		else if (empty($value)) $this->queryParams[":$key"] = "''";
+		else if (empty($value)) $this->queryParams[":$key"] = "";
 
 		
 		else if (is_array($value) && !empty($value)) {
@@ -964,7 +990,7 @@ class FpsPDO {
 		if (is_numeric($match[0])) {
 			return $match[0];
 		}
-		return $this->__name($match[0]);
+		return $this->__name($match[0], true);
 	}
 	
 	
@@ -972,13 +998,13 @@ class FpsPDO {
 	 * @param mixed $data Either a string with a column to quote. An array of columns to quote
 	 * @return string SQL field
 	 */
-	private function __name($data) {
+	private function __name($data, $use_alias = false) {
 		if ($data === '*') {
 			return '*';
 		}
 		if (is_array($data)) {
 			foreach ($data as $i => $dataItem) {
-				$data[$i] = $this->__name($dataItem);
+				$data[$i] = $this->__name($dataItem, $alias);
 			}
 			return $data;
 		}
@@ -990,18 +1016,20 @@ class FpsPDO {
 				return $this->startQuote . implode($this->endQuote . '.' . $this->startQuote, $items) 
 				. $this->endQuote;
 			}
-			return $this->startQuote . $data . $this->endQuote;
+			return ((!empty($this->table_alias) && $use_alias === true)
+                    ? $this->table_alias . '.' : '')
+                . $this->startQuote . $data . $this->endQuote;
 		}
 		if (preg_match('/^[\w-]+\.\*$/', $data)) { // string.*
 			return $this->startQuote . str_replace('.*', $this->endQuote . '.*', $data);
 		}
 		if (preg_match('/^([\w-]+)\((.*)\)$/', $data, $matches)) { // Functions
-			return $matches[1] . '(' . $this->name($matches[2]) . ')';
+			return $matches[1] . '(' . $this->__name($matches[2]) . ')';
 		}
 		if (preg_match('/^([\w-]+(\.[\w-]+|\(.*\))*)\s+' . preg_quote($this->alias) 
 		. '\s*([\w-]+)$/', $data, $matches)) {
-			return preg_replace('/\s{2,}/', ' ', $this->name($matches[1]) . ' ' 
-			. $this->alias . ' ' . $this->name($matches[3]));
+			return preg_replace('/\s{2,}/', ' ', $this->__name($matches[1]) . ' '
+			. $this->alias . ' ' . $this->__name($matches[3]));
 		}
 		if (preg_match('/^[\w-_\s]*[\w-_]+/', $data)) {
 			return $this->startQuote . $data . $this->endQuote;

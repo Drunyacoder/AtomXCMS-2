@@ -1049,8 +1049,9 @@ Class LoadsModule extends Module {
 			$tags = $TagGen->getTags($editLoad);
 			$tags = (!empty($tags) && is_array($tags)) ? implode(',', array_keys($tags)) : '';
 		}
-		
-		
+
+
+        $old_title = $target->getTitle();
 		$max_lenght = Config::read('max_lenght', $this->module);
 		$editLoad = mb_substr($editLoad, 0, $max_lenght);
 		// Запрос на обновление новости
@@ -1070,13 +1071,16 @@ Class LoadsModule extends Module {
 			'available'    => $available,
 		);
 		if (!empty($file)) $data['download'] = $file;
-        $target->__construct($data);
+        $target($data);
         $target->save();
-
 		// Save additional fields if they is active
 		if (is_object($this->AddFields)) {
 			$this->AddFields->save($id, $_addFields);
 		}
+
+        if ($old_title !== $target->getTitle()) {
+            $this->Register['URL']->saveOldEntryUrl($target, $this->module, $old_title);
+        }
 		
 		
 		//clear cache

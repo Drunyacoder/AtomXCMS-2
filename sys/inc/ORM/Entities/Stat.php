@@ -29,6 +29,7 @@ class StatEntity extends FpsEntity
 	
 	protected $id;
 	protected $title;
+    protected $clean_url_title;
 	protected $main;
 	protected $views;
 	protected $date;
@@ -56,8 +57,10 @@ class StatEntity extends FpsEntity
 	
 	public function save()
 	{
+        $Register = Register::getInstance();
 		$params = array(
 			'title' => $this->title,
+            'clean_url_title' => $this->clean_url_title,
 			'main' => $this->main,
 			'views' => intval($this->views),
 			'date' => $this->date,
@@ -77,7 +80,6 @@ class StatEntity extends FpsEntity
 			'rating' => intval($this->rating),
 		);
 		if ($this->id) $params['id'] = $this->id;
-		$Register = Register::getInstance();
 		return $Register['DB']->save('stat', $params);
 	}
 	
@@ -103,15 +105,15 @@ class StatEntity extends FpsEntity
 	}
 
 
-
     /**
-     * @param $comments
+     * @param string $title
      */
-	public function setComments_($comments)
+    public function setTitle($title)
     {
-        $this->comments_ = $comments;
+        $Register = Register::getInstance();
+        $this->title = $title;
+        $this->clean_url_title = $Register['URL']->getUrlByTitle($title, false);
     }
-
 
 
     /**

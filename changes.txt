@@ -52,7 +52,11 @@ v2.6 RC3            	 *☢☠
 17. Добавлена поддерка синтаксиса {% set entities[] = 'test' %}.
 18. Добавлен фильтр substr(int[, int]).
 19. добавлена поддержка отрицательных чисел(Например {{ 'string'|substr(0, -4) }}).
-
+20. Переделана работа ЧПУ, добавленна поддержка старых УРЛ(например после изменения заголовка материала, меняется его УРЛ, раньше бы старые ссылки перестали работать, теперь будет происходить редирект(301).)
+	ALTER TABLE news ADD clean_url_title VARCHAR(255) DEFAULT '' NOT NULL;
+	ALTER TABLE stat ADD clean_url_title VARCHAR(255) DEFAULT '' NOT NULL;
+	ALTER TABLE loads ADD clean_url_title VARCHAR(255) DEFAULT '' NOT NULL;
+21. Добавлен фильтр append.
 
 
 
