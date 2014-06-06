@@ -67,7 +67,7 @@ $FpsInstallQueries[] = "DROP TABLE IF EXISTS `{$db_prefix}shop_delivery_types`";
 $FpsInstallQueries[] = "CREATE TABLE `{$db_prefix}shop_delivery_types` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL DEFAULT '',
-  `price` int(11) NOT NULL DEFAULT '0',
+  `price` decimal(11,2) NOT NULL DEFAULT '0',
   `total_for_free` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8";
@@ -119,7 +119,7 @@ $FpsInstallQueries[] = "CREATE TABLE `{$db_prefix}shop_products` (
   `hide_not_exists` enum('0','1') NOT NULL DEFAULT '0',
   `article` varchar(50) NOT NULL DEFAULT '',
   `image` varchar(255) NOT NULL DEFAULT '',
-  `price` int(11) NOT NULL,
+  `price` decimal(11,2) NOT NULL DEFAULT '0',
   `discount` int(11) NOT NULL DEFAULT '0',
   `quantity` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
