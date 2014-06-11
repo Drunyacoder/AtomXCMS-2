@@ -44,7 +44,6 @@ Class PagesModule extends Module {
 	* default action
 	*/
 	function index($id = null, $s =null, $x = null) {
-		
 		// if isset ID - we need load page with this ID
 		if (!empty($id)) {
 			if (is_int($id)) {
@@ -57,16 +56,16 @@ Class PagesModule extends Module {
 				
 				
 			} else {
+
 				if (!preg_match('#^[\dа-яa-z_\-./]+$#ui', $id))  redirect('/pages/');
-			
 				$page = $this->Model->getByUrl($id);
 				if (empty($page)) return $this->showInfoMessage(__('Can not find this page'), '/');
 			}
 			
 			$this->Register['active_page_id'] = $page->getId();
-			
-			
-			$this->page_title = $page->getMeta_title();
+
+
+            $this->addToPageTitleContext('entity_title', h($page->getMeta_title()));
 			$this->page_meta_keywords = $page->getMeta_keywords();
 			$this->page_meta_description = $page->getMeta_description();
 			$this->template = ($page->getTemplate()) ? $page->getTemplate() : 'default';
@@ -76,8 +75,9 @@ Class PagesModule extends Module {
 		
 			// Tree line
 			$navi['navigation'] = get_link(__('Home'), '/');
-			$cnots = explode('.', $page->getPath());
+			$cnots = array_filter(explode('.', $page->getPath()));
 			if (false !== ($res = array_search(1, $cnots))) unset($cnots[$res]);
+
 			if (!empty($cnots)) {
 				$ids = "'" . implode("', '", $cnots) . "'";
 				$pages = $this->Model->getCollection(array(

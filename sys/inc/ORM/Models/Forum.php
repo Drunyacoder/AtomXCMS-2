@@ -37,7 +37,7 @@ class ForumModel extends FpsModel
         'category' => array(
             'model' => 'ForumCat',
             'type' => 'has_one',
-            'internalKey' => 'id_cat',
+            'internalKey' => 'in_cat',
         ),
         'last_theme' => array(
             'model' => 'Themes',
@@ -55,8 +55,18 @@ class ForumModel extends FpsModel
             'foreignKey' => 'parent_forum_id',
         ),
     );
-	
-	
+
+
+
+    public function getIdByHluTitle($hlu_id)
+    {
+        $Register = Register::getInstance();
+        $model = $Register['ModManager']->getModelInstance('themes');
+        $entities = $model->getCollection(array('clean_url_title' => $hlu_id), array('limit' => 1, 'fields' => array('id')));
+        return (!empty($entities[0])) ? $entities[0]->getId() : false;
+    }
+
+
 	public function getStats()
 	{
 		$result = $this->getDbDriver()->query("

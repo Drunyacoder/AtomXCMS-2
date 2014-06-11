@@ -147,9 +147,8 @@ class SearchModule extends Module {
 		$this->_globalize($nav);
 
 
-		$this->page_title = $this->module_title;
-		if (!empty($_POST['search']))
-			$this->page_title .= ' - ' . h($_POST['search']);
+		if (!empty($str))
+            $this->addToPageTitleContext('entity_title', $str);
 
 
 		$this->returnForm = false;

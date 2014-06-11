@@ -56,8 +56,8 @@ Class ForumModule extends Module {
 	{
 		//turn access
 		$this->ACL->turn(array('forum', 'view_forums_list'));
-		$this->page_title = h($this->Register['Config']->read('title', 'forum')) . __('Forums list');
-		
+
+        $this->addToPageTitleContext('entity_title', __('Forums list'));
 		
 		// navigation block
 		$markers = array();
@@ -99,7 +99,10 @@ Class ForumModule extends Module {
 		
 		
 		$conditions = (!empty($conditions)) ? array('in_cat' => $cat_id) : array();
-		$conditions[] = array("`parent_forum_id` IS NULL OR `parent_forum_id` = '0'");
+		//$conditions[] = array("`parent_forum_id` IS NULL OR `parent_forum_id` = '0'");
+		$conditions[] = array(
+            'or' => array("`parent_forum_id` IS NULL", 'parent_forum_id' => 0),
+        );
 		$this->Model->bindModel('last_theme');
 		$this->Model->bindModel('subforums');
 		$_forums = $this->Model->getCollection($conditions, array(
@@ -320,7 +323,7 @@ Class ForumModule extends Module {
 			
 			// Check access to this forum. May be locked by pass or posts count
 			$this->__checkForumAccess($forum);
-			$this->page_title = h($forum->getTitle()) . ' - ' . $this->page_title;
+            $this->addToPageTitleContext('entity_title', h($forum->getTitle()));
 			$forum_moderators = $this->ACL->getForumModerators($id_forum);
 			if (!empty($forum_moderators) && is_array($forum_moderators))
 				$forum->setModerators($forum_moderators);
@@ -350,7 +353,7 @@ Class ForumModule extends Module {
 				$this->Register['Config']->read('themes_per_page', 'forum'), 
 				'/forum/view_forum/' . $id_forum
 			);
-			$this->page_title .= ' (' . $page . ')';
+            $this->addToPageTitleContext('page', $page);
 			
 			
 			$themes = $themesClass->getCollection(
@@ -648,7 +651,8 @@ Class ForumModule extends Module {
 	 * Return posts list
 	 */
 	public function view_theme($id_theme = null) 
-	{	
+	{
+        pr($id_theme); die();
 		$id_theme = (int)$id_theme;
 		if (empty($id_theme) || $id_theme < 1) redirect('/forum/');
 
@@ -684,10 +688,9 @@ Class ForumModule extends Module {
 
 
 			// Заголовок страницы (содержимое тега title)
-			$this->page_title = h($theme->getTitle()) . ' - ' . $this->page_title;
-			
-			
-			
+            $this->addToPageTitleContext('entity_title', h($theme->getTitle()));
+            $this->addToPageTitleContext('category_title', h($theme->getForum()->getTitle()));
+
 			$markers = array();
 			$markers['navigation'] = get_link(__('Forums list'), '/forum/') . __('Separator') . get_link($theme->getForum()->getTitle(), 
 			'/forum/view_forum/' .  $id_forum) . __('Separator') . get_link($theme->getTitle(), '/forum/view_theme/' . $id_theme);
@@ -707,8 +710,7 @@ Class ForumModule extends Module {
 			}
             list($pages, $page) = pagination($total, $this->Register['Config']->read('posts_per_page', 'forum'), '/forum/view_theme/' . $id_theme );
             $markers['pagination'] = $pages;
-            $this->page_title .= ' (' . $page . ')';
-			
+            $this->addToPageTitleContext('page', $page);
 			
 			
 			// SELECT posts
@@ -1203,10 +1205,9 @@ Class ForumModule extends Module {
 	 *
 	 * @return string html content
 	 */
-	public function last_posts() {
-	
-		$this->page_title .= ' - ' . __('Last update');
-
+	public function last_posts()
+    {
+        $this->addToPageTitleContext('entity_title', __('Last update'));
     
 		if ($this->cached && $this->Cache->check($this->cacheKey)) {
 			$html = $this->Cache->read($this->cacheKey);
@@ -1222,7 +1223,7 @@ Class ForumModule extends Module {
 		$perPage = $this->Register['Config']->read('themes_per_page', 'forum');
         list($pages, $page) = pagination($total, $perPage, '/forum/last_posts/');
         $nav['pagination'] = $pages;
-     	$this->page_title .= ' (' . $page . ')';
+        $this->addToPageTitleContext('page', $page);
 
 		
 		$cntPages = ceil($total / $perPage);
@@ -2919,7 +2920,7 @@ Class ForumModule extends Module {
 	 */
 	public function user_posts($user_id) 
 	{
-		$this->page_title .= ' - ' . __('User messages');
+        $this->addToPageTitleContext('entity_title', __('User messages'));
 		$html = '';
     
 		if ($this->cached && $this->Cache->check($this->cacheKey)) {
@@ -2938,8 +2939,7 @@ Class ForumModule extends Module {
 		// Page nav
 		$nav = array();
         $nav['pagination'] = $pages;
-        $this->page_title .= ' (' . $page . ')';
-
+        $this->addToPageTitleContext('page', $page);
 
 		
 		$recOnPage = ($page == $this->Register['pagecnt']) ? ($total % $perPage) : $perPage;
@@ -3424,13 +3424,14 @@ Class ForumModule extends Module {
 
 	
     public function move_posts_form($id_theme = null) {
+
         $id_theme = intval($id_theme);
         if ($id_theme < 1 || empty($_POST['ids'])) redirect('/' . $this->module . '/');
         $ids = array_filter($_POST['ids'], function(&$r){
             return ($r = intval($r)) > 0;
         });
 
-		
+
         $themeModel = $this->Register['ModManager']->getModelInstance('Themes');
         $themeModel->bindModel('forum');
         $theme = $themeModel->getById($id_theme);
@@ -3480,7 +3481,7 @@ Class ForumModule extends Module {
 
 
         // Page nav
-        $this->page_title = __('Move posts') . ' - ' . h($theme->getTitle()) . ' - ' . $this->page_title;
+        $this->addToPageTitleContext('entity_title', __('Move posts') . ' - ' . h($theme->getTitle()));
         $markers = array();
         $markers['navigation'] = get_link(__('Home'), '/') . __('Separator')
             . get_link(__('Forums list'), '/' . $this->module . '/') . __('Separator')

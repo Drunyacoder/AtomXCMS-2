@@ -68,7 +68,6 @@ Class LoadsModule extends Module {
 	 */
 	public function index($tag = null)
     {
-		
 		//turn access
 		$this->ACL->turn(array($this->module, 'view_list'));
 		
@@ -109,7 +108,7 @@ Class LoadsModule extends Module {
         list ($pages, $page) = pagination( $total, Config::read('per_page', $this->module), '/' . $this->module . '/');
         $this->Register['pages'] = $pages;
         $this->Register['page'] = $page;
-        $this->page_title .= ' (' . $page . ')';
+        $this->addToPageTitleContext('page', $page);
 
 
         $navi = array();
@@ -209,9 +208,6 @@ Class LoadsModule extends Module {
             return showInfoMessage(__('Permission denied'), '/' . $this->module . '/');
 
 
-        $this->page_title = h($category->getTitle()) . ' - ' . $this->page_title;
-
-
         //формируем блок со списком  разделов
         $this->_getCatsTree($id);
 
@@ -253,7 +249,8 @@ Class LoadsModule extends Module {
         list ($pages, $page) = pagination( $total, $this->Register['Config']->read('per_page', $this->module), '/' . $this->module . '/category/' . $id);
         $this->Register['pages'] = $pages;
         $this->Register['page'] = $page;
-        $this->page_title .= ' (' . $page . ')';
+        $this->addToPageTitleContext('page', $page);
+        $this->addToPageTitleContext('category_title', h($category->getTitle()));
 
 
 
@@ -394,11 +391,11 @@ Class LoadsModule extends Module {
             $this->comments = $this->_get_comments($entity);
         }
         $this->Register['current_vars'] = $entity;
-		
 
 
-        //производим замену соответствующих участков в html шаблоне нужной информацией
-        $this->page_title = h($entity->getTitle()) . ' - ' . $this->page_title;
+
+        $this->addToPageTitleContext('category_title', h($entity->getCategory()->getTitle()));
+        $this->addToPageTitleContext('entity_title', h($entity->getTitle()));
         $tags = $entity->getTags();
         $description = $entity->getDescription();
         if (!empty($tags)) $this->page_meta_keywords = h($tags);
@@ -490,9 +487,6 @@ Class LoadsModule extends Module {
 			return $this->showInfoMessage(__('Permission denied'), $this->getModuleURL());
 
 
-		$this->page_title = sprintf(__('User materials'), h($user->getName())) . ' - ' . $this->page_title;
-
-
 		//формируем блок со списком разделов
 		$this->_getCatsTree();
 
@@ -513,7 +507,8 @@ Class LoadsModule extends Module {
 		list ($pages, $page) = pagination($total, $this->Register['Config']->read('per_page', $this->module), $this->getModuleURL('user/' . $id));
 		$this->Register['pages'] = $pages;
 		$this->Register['page'] = $page;
-		$this->page_title .= ' (' . $page . ')';
+        $this->addToPageTitleContext('page', $page);
+        $this->addToPageTitleContext('entity_title', sprintf(__('User materials'), h($user->getName())));
 
 
 

@@ -731,11 +731,13 @@ class FpsPDO {
                     unset($order[$k]);
                     continue;
                 }
-                $v = $addAlias($v);
+                //$v = $addAlias($v);
+                $v = $this->__name($v, true);
             }
             $order = implode(', ', $order);
         } else {
-            $order = $addAlias($order);
+            //$order = $addAlias($order);
+            $order = $this->__name($order, true);
         }
 		return ' ORDER BY ' . $order;
 	}
@@ -772,7 +774,7 @@ class FpsPDO {
 	 */
 	private function __group($group) {
 		if (empty($group)) return null;
-		return ' GROUP BY ' . $group;
+		return ' GROUP BY ' . $this->__name($group, true);
 	}
 	
 	
@@ -833,7 +835,7 @@ class FpsPDO {
 		$out = array();
 		$data = $columnType = null;
 		$bool = array('and', 'or', 'not', 'and not', 'or not', 'xor', '||', '&&');
-		
+
 		foreach ($conditions as $key => $value) {
 			$join = ' AND ';
 			$not = null;
@@ -969,8 +971,8 @@ class FpsPDO {
 		}
 
 		$conditions = str_replace(array($start, $end), '', $conditions);
-		$conditions = preg_replace_callback('/(?:[\'\"][^\'\"\\\]*(?:\\\.[^\'\"\\\]*)*[\'\"])|([a-z0-9_' 
-					  . $start . $end . ']*\\.[a-z0-9_' . $start . $end . ']*)/i', 
+		$conditions = preg_replace_callback('/(?:[\'\"][^\'\"\\\]*(?:\\\.[^\'\"\\\]*)*[\'\"])|([a-z0-9_'
+					  . $start . $end . ']*(\.[a-z0-9_' . $start . $end . ']*)?)(.*)/i',
 					  array(&$this, '__quoteMatchedField'), $conditions);
 
 		if ($conditions !== null) {
@@ -1002,6 +1004,7 @@ class FpsPDO {
 		if ($data === '*') {
 			return '*';
 		}
+
 		if (is_array($data)) {
 			foreach ($data as $i => $dataItem) {
 				$data[$i] = $this->__name($dataItem, $alias);
@@ -1031,11 +1034,10 @@ class FpsPDO {
 			return preg_replace('/\s{2,}/', ' ', $this->__name($matches[1]) . ' '
 			. $this->alias . ' ' . $this->__name($matches[3]));
 		}
-        /*
-		if (preg_match('/^[\w-_\s]*[\w-_]+/', $data)) {
-			return $this->startQuote . $data . $this->endQuote;
+
+		if (preg_match('/^([\w_-]+(\.[\w_-]+)?)(\s((\(.*\))|[\s\w_-]+)+)/i', $data, $matches)) { // id DESC, id in (1, 2...)
+			return $this->__name($matches[1], true) . $matches[3];
 		}
-        */
 		return $data;
 	}
 	

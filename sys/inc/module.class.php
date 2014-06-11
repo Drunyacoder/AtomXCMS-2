@@ -130,6 +130,16 @@ class Module {
 	 * @var object
 	 */
 	public $Model;
+
+    /**
+     * @var array
+     */
+    private $pageTitleContext = array(
+        'module' => '',
+        'category_title' => '',
+        'entity_title' => '',
+        'page' => '',
+    );
 	 
 	
 	
@@ -157,7 +167,7 @@ class Module {
 	 *
 	 * Initialize needed objects adn set needed variables
 	 */
-	function __construct($params)
+    public function __construct($params)
     {
         $this->Register = Register::getInstance();
         $this->Register['module'] = $params[0];
@@ -198,7 +208,7 @@ class Module {
 		}
 		
 		$this->page_title = ($this->Register['Config']->read('title', $this->module))
-            ? h($this->Register['Config']->read('title', $this->module)) : h($this->module);
+            ? h(Config::read('title', $this->module)) : h(Config::read('title'));
 		$this->params = $params;
 		
 		//cache
@@ -242,6 +252,8 @@ class Module {
 	 */
 	protected function beforeRender()
     {
+        $this->addToPageTitleContext('module', ucfirst($this->module));
+
 		if (isset($_SESSION['page'])) unset($_SESSION['page']);
 		if (isset($_SESSION['pagecnt'])) unset($_SESSION['pagecnt']);
 	}
@@ -352,8 +364,8 @@ class Module {
             'module' => $this->module,
             'action' => $Register['action'],
             'params' => $Register['params'],
-            'title' => $this->page_title,
-            'meta_title' => $this->page_title,
+            'title' => $this->getPageTitle(),
+            'meta_title' => $this->getPageTitle(),
             'meta_description' => $this->page_meta_description,
             'meta_keywords' => $this->page_meta_keywords,
             'module_title' => $this->module_title,
@@ -366,6 +378,7 @@ class Module {
 			'is_home_page' => $Register['is_home_page'] ? true : false,
         );
 		$markers = array_merge($markers1, $markers2);
+
         return $markers;
     }
 
@@ -618,9 +631,9 @@ class Module {
 		
 		return $out;
 	}
-	
-	
-	function showInfoMessage($message, $queryString = null, $requestIsOk = false) 
+
+
+    public function showInfoMessage($message, $queryString = null, $requestIsOk = false)
 	{
 		// AJAX request
 		if (isset($_GET['ajax'])) {
@@ -846,7 +859,7 @@ class Module {
 	
 	
 	// Функция возвращает путь к модулю
-	function getModuleURL($page = null)
+    public function getModuleURL($page = null)
 	{
 		$url = '/' . $this->module . '/' . $page;
 		$url = str_replace('//', '/', $url);
@@ -856,7 +869,7 @@ class Module {
 	
 	
 	// get path to tmp files of current module
-	function getTmpPath($file = null)
+	public function getTmpPath($file = null)
 	{
 		$path = '/sys/tmp/' . $this->module . '/' . (!empty($file) ? $file : '');
 		return $path;
@@ -896,5 +909,20 @@ class Module {
             $id = $this->Model->getIdByHluTitle(str_replace($clean_url_extention, '', $id));
         }
         return intval($id);
+    }
+
+
+    protected function addToPageTitleContext($key, $value)
+    {
+        if (array_key_exists($key, $this->pageTitleContext))
+            $this->pageTitleContext[$key] = $value;
+    }
+
+
+    protected function getPageTitle()
+    {
+        //$title = Config::read($this->module . '.title');
+        $title = $this->View->parseTemplate($this->page_title, $this->pageTitleContext);
+        return $title;
     }
 }

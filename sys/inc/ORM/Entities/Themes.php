@@ -29,6 +29,7 @@ class ThemesEntity extends FpsEntity
 	
 	protected $id;
 	protected $title;
+	protected $clean_url_title;
 	protected $id_author;
 	protected $time;
 	protected $id_last_author;
@@ -49,6 +50,7 @@ class ThemesEntity extends FpsEntity
 	{
 		$params = array(
 			'title' 			=> $this->title,
+			'clean_url_title' 	=> $this->clean_url_title,
 			'id_author' 		=> intval($this->id_author),
 			'time' 				=> $this->time,
 			'id_last_author' 	=> intval($this->id_last_author),
@@ -82,6 +84,20 @@ class ThemesEntity extends FpsEntity
 	{ 
 		$Register = Register::getInstance();
 		$Register['DB']->delete('themes', array('id' => $this->id));
+        $Register['URL']->removeOldTmpFiles($this, 'forum');
 	}
 
+
+    /**
+     * @param string $title
+     */
+    public function setTitle($title)
+    {
+        $Register = Register::getInstance();
+        if (!empty($this->title) && $this->title !== $title) {
+            $Register['URL']->saveOldEntryUrl($this, 'forum', $title);
+        }
+        $this->title = $title;
+        $this->clean_url_title = $Register['URL']->getUrlByTitle($title, false);
+    }
 }

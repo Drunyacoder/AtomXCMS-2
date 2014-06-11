@@ -220,9 +220,9 @@ Class Pather {
 				include_once ROOT . '/error.php';
 			}
 			if (!method_exists($this->module, $params[1])) {
-                if (method_exists($this->module, 'view')) {
+                if (method_exists($this->module, ($params[0] === 'forum') ? 'view_theme' : 'view')) {
                     $params[2] = $this->module->getEntryId($params[1]);
-                    $params[1] = 'view';
+                    $params[1] = ($params[0] === 'forum') ? 'view_theme' : 'view';
                 } else {
                     $_GET['ac'] = 404;
                     include_once ROOT . '/error.php';

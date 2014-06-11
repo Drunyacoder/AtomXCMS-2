@@ -52,7 +52,7 @@ Class UsersModule extends Module {
     {
         //turn access
         $this->ACL->turn(array('users', 'view_list'));
-		$this->page_title .= ' - ' . __('Users list');
+        $this->addToPageTitleContext('entity_title', __('Users list'));
         // Выбираем из БД количество пользователей - это нужно для
         // построения постраничной навигации
         $total = $this->Model->getTotal(array());
@@ -2655,7 +2655,7 @@ Class UsersModule extends Module {
 			if ($user)
 				$title = __('User comments') . ' "' . h($user->getName()) . '"';
 		}
-		$this->page_title = $title . ' - ' . $this->page_title;
+        $this->addToPageTitleContext('entity_title', $title);
 
 		$navi = array();
 		$navi['add_link'] = ($this->ACL->turn(array($this->module, 'add_materials'), false)) ? get_link(__('Add material'), $this->getModuleURL('add_form/')) : '';

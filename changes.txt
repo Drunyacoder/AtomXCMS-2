@@ -58,8 +58,10 @@ v2.6 RC3            	 *☢☠
 	ALTER TABLE news ADD clean_url_title VARCHAR(255) DEFAULT '' NOT NULL;
 	ALTER TABLE stat ADD clean_url_title VARCHAR(255) DEFAULT '' NOT NULL;
 	ALTER TABLE loads ADD clean_url_title VARCHAR(255) DEFAULT '' NOT NULL;
+	ALTER TABLE themes ADD clean_url_title VARCHAR(255) DEFAULT '' NOT NULL;
 21. Добавлен фильтр append.
-
+22. Добавлена возможность настройки мета-тега title, испульзуя набор параметров(entity_title, category_title, module, page). Есть поддерка условных операторов IF.
+23. Добавлены ЧПУ для форума. Теперь ссылка на просмотр темы будет выглядеть так же как ссылка на новость, например(при включенной поддержке ЧПУ).
 
 
 

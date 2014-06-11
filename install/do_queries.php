@@ -315,6 +315,7 @@ $array[] = "DROP TABLE IF EXISTS `{$set['db']['prefix']}themes`";
 $array[] = "CREATE TABLE `{$set['db']['prefix']}themes` (
   `id` int(11) NOT NULL auto_increment,
   `title` varchar(120) default NULL,
+  `clean_url_title` varchar(255) DEFAULT '' NOT NULL,
   `id_author` int(6) NOT NULL default '0',
   `time` datetime NOT NULL default '0000-00-00 00:00:00',
   `id_last_author` int(6) NOT NULL default '0',

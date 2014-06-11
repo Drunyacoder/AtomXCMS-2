@@ -94,7 +94,7 @@ Class NewsModule extends Module {
 		list ($pages, $page) = pagination($total, Config::read('per_page', $this->module), '/' . $this->module . '/');
 		$this->Register['pages'] = $pages;
 		$this->Register['page'] = $page;
-		$this->page_title .= ' (' . $page . ')';
+		$this->addToPageTitleContext('page', $page);
 
 
 		
@@ -202,7 +202,7 @@ Class NewsModule extends Module {
 		
 
         Plugins::intercept('view_category', $category);
-		$this->page_title = h($category->getTitle()) . ' - ' . $this->page_title;
+        $this->addToPageTitleContext('category_title', h($category->getTitle()));
 		
 		
 		//формируем блок со списком  разделов
@@ -253,7 +253,7 @@ Class NewsModule extends Module {
 		);
 		$this->Register['pages'] = $pages;
 		$this->Register['page'] = $page;
-		$this->page_title .= ' (' . $page . ')';
+        $this->addToPageTitleContext('page', $page);
 
 
 		
@@ -350,8 +350,6 @@ Class NewsModule extends Module {
      */
 	public function view ($id = null)
     {
-
-        pr($id); die();
 		//turn access
 		$this->ACL->turn(array($this->module, 'view_materials'));
 		$id = intval($id);
@@ -362,7 +360,7 @@ Class NewsModule extends Module {
 		$this->Model->bindModel('author');
 		$this->Model->bindModel('category');
 		$entity = $this->Model->getById($id);
-		
+
 		
 		if (empty($entity)) redirect('/error.php?ac=404');
 		if ($entity->getAvailable() == 0 && !$this->ACL->turn(array('other', 'can_see_hidden'), false)) 
@@ -376,7 +374,7 @@ Class NewsModule extends Module {
 		}
 
         Plugins::intercept('view_category', $entity->getCategory());
-			
+
 		
 		// Some gemor with add fields
 		if (is_object($this->AddFields)) {
@@ -400,10 +398,10 @@ Class NewsModule extends Module {
 				$this->comments_form  = $this->_add_comment_form($id);
 			$this->comments  = $this->_get_comments($entity);
 		}
-		$this->Register['current_vars'] = $entity;
-		
 
-		$this->page_title = h($entity->getTitle()) . ' - ' . $this->page_title;
+
+        $this->addToPageTitleContext('category_title', h($entity->getCategory()->getTitle()));
+        $this->addToPageTitleContext('entity_title', h($entity->getTitle()));
 		$tags = $entity->getTags();
 		$description = $entity->getDescription();
 		if (!empty($tags)) $this->page_meta_keywords = h($tags);
@@ -466,10 +464,6 @@ Class NewsModule extends Module {
 		if (!$this->ACL->checkCategoryAccess($user->getNo_access()))
 			return $this->showInfoMessage(__('Permission denied'), $this->getModuleURL());
 
-
-		$this->page_title = sprintf(__('User materials'), h($user->getName())) . ' - ' . $this->page_title;
-
-
 		//формируем блок со списком разделов
 		$this->_getCatsTree();
 
@@ -490,7 +484,8 @@ Class NewsModule extends Module {
 		list ($pages, $page) = pagination($total, $this->Register['Config']->read('per_page', $this->module), $this->getModuleURL('user/' . $id));
 		$this->Register['pages'] = $pages;
 		$this->Register['page'] = $page;
-		$this->page_title .= ' (' . $page . ')';
+        $this->addToPageTitleContext('page', $page);
+        $this->addToPageTitleContext('entity_title', sprintf(__('User materials'), h($user->getName())));
 
 
 

@@ -103,7 +103,7 @@ Class BlogModule extends Module {
 		list ($pages, $page) = pagination($total, Config::read('per_page', $this->module), '/' . $this->module . '/');
 		$this->Register['pages'] = $pages;
 		$this->Register['page'] = $page;
-		$this->page_title .= ' (' . $page . ')';
+        $this->addToPageTitleContext('page', $page);
 
 
 		
@@ -210,7 +210,6 @@ Class BlogModule extends Module {
 		
 
         Plugins::intercept('view_category', $category);
-		$this->page_title = h($category->getTitle()) . ' - ' . $this->page_title;
 		
 		
 		//формируем блок со списком  разделов
@@ -263,7 +262,8 @@ Class BlogModule extends Module {
 		list ($pages, $page) = pagination( $total, Config::read('per_page', $this->module), '/' . $this->module . '/');
 		$this->Register['pages'] = $pages;
 		$this->Register['page'] = $page;
-		$this->page_title .= ' (' . $page . ')';
+        $this->addToPageTitleContext('page', $page);
+        $this->addToPageTitleContext('category_title', h($category->getTitle()));
 
 
 		
@@ -407,9 +407,10 @@ Class BlogModule extends Module {
 				$this->comments_form  = $this->_add_comment_form($id);
 			$this->comments  = $this->_get_comments($entity);
 		}
-		
 
-		$this->page_title = h($entity->getTitle()) . ' - ' . $this->page_title;
+
+        $this->addToPageTitleContext('category_title', h($entity->getCategory()->getTitle()));
+        $this->addToPageTitleContext('entity_title', h($entity->getTitle()));
 		$tags = $entity->getTags();
 		$description = $entity->getDescription();
 		if (!empty($tags)) $this->page_meta_keywords = h($tags);
@@ -473,9 +474,6 @@ Class BlogModule extends Module {
 			return $this->showInfoMessage(__('Permission denied'), $this->getModuleURL());
 
 
-		$this->page_title = sprintf(__('User materials'), h($user->getName())) . ' - ' . $this->page_title;
-
-
 		//формируем блок со списком разделов
 		$this->_getCatsTree(false, '/' . $id);
 
@@ -496,7 +494,8 @@ Class BlogModule extends Module {
 		list ($pages, $page) = pagination($total, $this->Register['Config']->read('per_page', $this->module), $this->getModuleURL('user/' . $id));
 		$this->Register['pages'] = $pages;
 		$this->Register['page'] = $page;
-		$this->page_title .= ' (' . $page . ')';
+        $this->addToPageTitleContext('page', $page);
+        $this->addToPageTitleContext('entity_title', sprintf(__('User materials'), h($user->getName())));
 
 
 
