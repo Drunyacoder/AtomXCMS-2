@@ -134,7 +134,7 @@ class Module {
     /**
      * @var array
      */
-    private $pageTitleContext = array(
+    private $pageMetaContext = array(
         'module' => '',
         'category_title' => '',
         'entity_title' => '',
@@ -252,7 +252,7 @@ class Module {
 	 */
 	protected function beforeRender()
     {
-        $this->addToPageTitleContext('module', ucfirst($this->module));
+        $this->addToPageMetaContext('module', ucfirst($this->module));
 
 		if (isset($_SESSION['page'])) unset($_SESSION['page']);
 		if (isset($_SESSION['pagecnt'])) unset($_SESSION['pagecnt']);
@@ -364,10 +364,10 @@ class Module {
             'module' => $this->module,
             'action' => $Register['action'],
             'params' => $Register['params'],
-            'title' => $this->getPageTitle(),
-            'meta_title' => $this->getPageTitle(),
-            'meta_description' => $this->page_meta_description,
-            'meta_keywords' => $this->page_meta_keywords,
+            'title' => $this->getCompleteMetaTag($this->page_title),
+            'meta_title' => $this->getCompleteMetaTag($this->page_title),
+            'meta_description' => $this->getCompleteMetaTag($this->page_meta_description),
+            'meta_keywords' => $this->getCompleteMetaTag($this->page_meta_keywords),
             'module_title' => $this->module_title,
             'categories' => $this->categories,
             'comments' => $this->comments,
@@ -378,7 +378,7 @@ class Module {
 			'is_home_page' => $Register['is_home_page'] ? true : false,
         );
 		$markers = array_merge($markers1, $markers2);
-
+        pr($markers);
         return $markers;
     }
 
@@ -912,17 +912,20 @@ class Module {
     }
 
 
-    protected function addToPageTitleContext($key, $value)
+    protected function addToPageMetaContext($key, $value)
     {
-        if (array_key_exists($key, $this->pageTitleContext))
-            $this->pageTitleContext[$key] = $value;
+        if (array_key_exists($key, $this->pageMetaContext))
+            $this->pageMetaContext[$key] = $value;
     }
 
 
-    protected function getPageTitle()
+    protected function getCompleteMetaTag($tag)
     {
-        //$title = Config::read($this->module . '.title');
-        $title = $this->View->parseTemplate($this->page_title, $this->pageTitleContext);
-        return $title;
+        try {
+            $tag = $this->View->parseTemplate($tag, $this->pageMetaContext);
+        } catch (Exception $e) {
+            $tag = preg_replace('#(\{.*\})#i', '', $tag);
+        }
+        return $tag;
     }
 }

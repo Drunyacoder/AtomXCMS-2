@@ -55,17 +55,17 @@ $settingsInfo = array(
 			'description' => sprintf(__('Used in the template as %s'), '{{ site_title }}'),
 		),
 		'title' => array(
-			'type' => 'text',
+			'type' => 'textarea',
 			'title' => __('Site title'),
 			'description' => sprintf(__('Used in the template as %s'), '{{ meta_title }} | {{ title }}'),
 		),
 		'meta_keywords' => array(
-			'type' => 'text',
+			'type' => 'textarea',
 			'title' => __('Site keywords'),
 			'description' => sprintf(__('Used in the template as %s'), '{{ meta_keywords }}'),
 		),
 		'meta_description' => array(
-			'type' => 'text',
+			'type' => 'textarea',
 			'title' => __('Site description'),
 			'description' => sprintf(__('Used in the template as %s'), '{{ meta_description }}'),
 		),
@@ -545,12 +545,12 @@ $settingsInfo = array(
 			'checked' => '1',
       	),
         'autotags_exception' => array(
-            'type' => 'text',
+            'type' => 'textarea',
             'title' => __('Exceptions'),
             'description' => __('Words that should not be counted'),
       	),
         'autotags_priority' => array(
-            'type' => 'text',
+            'type' => 'textarea',
             'title' => __('Priority'),
             'description' => __('Words that have priority'),
        	),

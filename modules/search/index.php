@@ -148,7 +148,7 @@ class SearchModule extends Module {
 
 
 		if (!empty($str))
-            $this->addToPageTitleContext('entity_title', $str);
+            $this->addToPageMetaContext('entity_title', $str);
 
 
 		$this->returnForm = false;

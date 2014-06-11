@@ -94,7 +94,7 @@ Class NewsModule extends Module {
 		list ($pages, $page) = pagination($total, Config::read('per_page', $this->module), '/' . $this->module . '/');
 		$this->Register['pages'] = $pages;
 		$this->Register['page'] = $page;
-		$this->addToPageTitleContext('page', $page);
+		$this->addToPageMetaContext('page', $page);
 
 
 		
@@ -202,7 +202,7 @@ Class NewsModule extends Module {
 		
 
         Plugins::intercept('view_category', $category);
-        $this->addToPageTitleContext('category_title', h($category->getTitle()));
+        $this->addToPageMetaContext('category_title', h($category->getTitle()));
 		
 		
 		//формируем блок со списком  разделов
@@ -253,7 +253,7 @@ Class NewsModule extends Module {
 		);
 		$this->Register['pages'] = $pages;
 		$this->Register['page'] = $page;
-        $this->addToPageTitleContext('page', $page);
+        $this->addToPageMetaContext('page', $page);
 
 
 		
@@ -400,8 +400,8 @@ Class NewsModule extends Module {
 		}
 
 
-        $this->addToPageTitleContext('category_title', h($entity->getCategory()->getTitle()));
-        $this->addToPageTitleContext('entity_title', h($entity->getTitle()));
+        $this->addToPageMetaContext('category_title', h($entity->getCategory()->getTitle()));
+        $this->addToPageMetaContext('entity_title', h($entity->getTitle()));
 		$tags = $entity->getTags();
 		$description = $entity->getDescription();
 		if (!empty($tags)) $this->page_meta_keywords = h($tags);
@@ -484,8 +484,8 @@ Class NewsModule extends Module {
 		list ($pages, $page) = pagination($total, $this->Register['Config']->read('per_page', $this->module), $this->getModuleURL('user/' . $id));
 		$this->Register['pages'] = $pages;
 		$this->Register['page'] = $page;
-        $this->addToPageTitleContext('page', $page);
-        $this->addToPageTitleContext('entity_title', sprintf(__('User materials'), h($user->getName())));
+        $this->addToPageMetaContext('page', $page);
+        $this->addToPageMetaContext('entity_title', sprintf(__('User materials'), h($user->getName())));
 
 
 

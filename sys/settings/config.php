@@ -73,7 +73,7 @@ $set = array (
   'news' => 
   array (
     'title' => '{% if entity_title %}{{ entity_title }} / {% endif %}{% if category_title %}{{ category_title }} / {% endif %}Новости{% if page %} ({{ page }}){% endif %}',
-    'description' => 'Самые свежие новости',
+    'description' => '{% if entity_title %}{{ entity_title }} / {% endif %}{% if category_title %}{{ category_title }} / {% endif %}Самые свежие новости',
     'max_lenght' => '15000',
     'announce_lenght' => '700',
     'per_page' => '10',
@@ -214,7 +214,7 @@ $set = array (
   ),
   'news_on_home' => 1,
   'site_title' => 'CMS AtomX',
-  'meta_keywords' => 'создание сайта, шаблоны',
+  'meta_keywords' => '{% if entity_title %}{{ entity_title }} / {% endif %}{% if category_title %}{{ category_title }} / {% endif %}создание сайта, шаблоны',
   'meta_description' => 'Что такое и как пользоваться AtomX CMS. Документация и шаблоны',
   'title' => '{% if entity_title %}{{ entity_title }} / {% endif %}{% if category_title %}{{ category_title }} / {% endif %}Atomx.net - простота и легкость создания сайтов',
   'search' => 

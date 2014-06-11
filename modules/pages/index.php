@@ -65,7 +65,7 @@ Class PagesModule extends Module {
 			$this->Register['active_page_id'] = $page->getId();
 
 
-            $this->addToPageTitleContext('entity_title', h($page->getMeta_title()));
+            $this->addToPageMetaContext('entity_title', h($page->getMeta_title()));
 			$this->page_meta_keywords = $page->getMeta_keywords();
 			$this->page_meta_description = $page->getMeta_description();
 			$this->template = ($page->getTemplate()) ? $page->getTemplate() : 'default';

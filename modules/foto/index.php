@@ -87,7 +87,7 @@ Class FotoModule extends Module {
 		list ($pages, $page) = pagination( $total, $this->Register['Config']->read('per_page', 'foto'), '/foto/');
 		$this->Register['pages'] = $pages;
 		$this->Register['page'] = $page;
-        $this->addToPageTitleContext('page', $page);
+        $this->addToPageMetaContext('page', $page);
 
 		
 		$navi = array();
@@ -173,7 +173,7 @@ Class FotoModule extends Module {
 			return showInfoMessage(__('Permission denied'), '/foto/');
 
 
-        $this->addToPageTitleContext('category_title', h($category->getTitle()));
+        $this->addToPageMetaContext('category_title', h($category->getTitle()));
 		
 		
 		//формируем блок со списком  разделов
@@ -214,7 +214,7 @@ Class FotoModule extends Module {
 		list ($pages, $page) = pagination( $total, Config::read('per_page', 'foto'), '/foto/');
 		$this->Register['pages'] = $pages;
 		$this->Register['page'] = $page;
-        $this->addToPageTitleContext('page', $page);
+        $this->addToPageMetaContext('page', $page);
 
 
 		
@@ -316,8 +316,8 @@ Class FotoModule extends Module {
 		
 		
 		//производим замену соответствующих участков в html шаблоне нужной информацией
-        $this->addToPageTitleContext('category_title', h($entity->getCategory()->getTitle()));
-        $this->addToPageTitleContext('entity_title', h($entity->getTitle()));
+        $this->addToPageMetaContext('category_title', h($entity->getCategory()->getTitle()));
+        $this->addToPageMetaContext('entity_title', h($entity->getTitle()));
 
 		
 		$navi = array();
@@ -408,8 +408,8 @@ Class FotoModule extends Module {
 		list ($pages, $page) = pagination($total, $this->Register['Config']->read('per_page', $this->module), '/' . $this->module . '/user/' . $id);
 		$this->Register['pages'] = $pages;
 		$this->Register['page'] = $page;
-        $this->addToPageTitleContext('page', $page);
-        $this->addToPageTitleContext('entity_title', sprintf(__('User materials'), h($user->getName())));
+        $this->addToPageMetaContext('page', $page);
+        $this->addToPageMetaContext('entity_title', sprintf(__('User materials'), h($user->getName())));
 
 
 

@@ -285,9 +285,12 @@ if (count($settingsInfo)) {
 			case 'text':
 				$output_ = '<input type="text" name="' . h($fname) . '" value="' . $currValue . '"' . $attr . ' />';
 				break;
+
+            case 'textarea':
+                $output_ = '<textarea name="' . h($fname) . '"' . $attr . '>' . $currValue . 'sds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas d' . '</textarea>';
+                break;
 				
 			case 'checkbox':
-			
 				$id = md5(rand(0, 99999) + rand(0, 99999));
 			
 				$state = (!empty($params['checked']) && 

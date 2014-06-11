@@ -144,6 +144,7 @@ table.side-separator, table.side-separator tr td {vertical-align:top; min-height
 .list > .level1 > .items .comment2 {color:#939393; padding:0px 5px; font-size:11px; font-style:italic; -moz-text-shadow:none; -webkit-text-shadow:none; text-shadow:none;}
 .list > .level1 > .items > .setting-item .right {float:left; border-left:1px solid #e1e1e1; margin-left:-1px; vertical-align:center;}
 .list > .level1 > .items > .setting-item .right input[type="text"], select, textarea, .collection {width:390px;}
+.list > .level1 > .items > .setting-item .right textarea {height:auto; min-height:100px;}
 .list > .level1 > .items > .setting-item .center {padding:20px 0px;}
 .list > .level1 > .items > .setting-item .center h3 {-moz-text-shadow:none; -webkit-text-shadow:none; text-shadow:none; color:#96C703;}
 .yes {width:23px; height:23px; background:url('../img/icons-sprite2.png') no-repeat;}
@@ -269,7 +270,7 @@ a.view {background-position:-320px 0px;}
 
 
 /* inputs */
-input[type="text"], select, textarea, .collection {height:17px; padding:5px; font-size:12px; color:#939393; font-style:italic; background:#fff; border:1px solid #ededed; -moz-border-radius:5px; -webkit-border-radius:5px; border-radius:5px; box-shadow:inset 0px 1px 1px #707070;}
+input[type="text"], select, textarea, .collection {height:17px; padding:5px; font-size:12px; color:#939393; font-style:italic; background:#fff; border:1px solid #ededed; -moz-border-radius:5px; -webkit-border-radius:5px; border-radius:5px; box-shadow:inset 0px 1px 1px #707070; outline:none;}
 select {height:27px;}
 .collection {height:auto; min-height:17px; display:inline; float:left;}
 .collection .item {display:inline-block; padding:7px !important; background:#f4f2f2; margin:4px; color:#939393; font-style:italic; -moz-border-radius:5px; -webkit-border-radius:5px; border-radius:5px;}

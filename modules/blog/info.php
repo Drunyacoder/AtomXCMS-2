@@ -20,12 +20,12 @@ $menuInfo = array(
 
 $settingsInfo = array(
 	'title' => array(
-		'type' => 'text',
+		'type' => 'textarea',
         'title' => __('Title'),
 		'description' => sprintf(__('Used in the template as %s'), '{{ meta_title }} | {{ title }}'),
 	),
 	'description' => array(
-		'type' => 'text',
+		'type' => 'textarea',
 		'title' => __('Description'),
 		'description' => sprintf(__('Used in the template as %s'), '{{ meta_description }}'),
 	),

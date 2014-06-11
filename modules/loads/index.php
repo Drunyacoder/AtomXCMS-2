@@ -108,7 +108,7 @@ Class LoadsModule extends Module {
         list ($pages, $page) = pagination( $total, Config::read('per_page', $this->module), '/' . $this->module . '/');
         $this->Register['pages'] = $pages;
         $this->Register['page'] = $page;
-        $this->addToPageTitleContext('page', $page);
+        $this->addToPageMetaContext('page', $page);
 
 
         $navi = array();
@@ -249,8 +249,8 @@ Class LoadsModule extends Module {
         list ($pages, $page) = pagination( $total, $this->Register['Config']->read('per_page', $this->module), '/' . $this->module . '/category/' . $id);
         $this->Register['pages'] = $pages;
         $this->Register['page'] = $page;
-        $this->addToPageTitleContext('page', $page);
-        $this->addToPageTitleContext('category_title', h($category->getTitle()));
+        $this->addToPageMetaContext('page', $page);
+        $this->addToPageMetaContext('category_title', h($category->getTitle()));
 
 
 
@@ -394,8 +394,8 @@ Class LoadsModule extends Module {
 
 
 
-        $this->addToPageTitleContext('category_title', h($entity->getCategory()->getTitle()));
-        $this->addToPageTitleContext('entity_title', h($entity->getTitle()));
+        $this->addToPageMetaContext('category_title', h($entity->getCategory()->getTitle()));
+        $this->addToPageMetaContext('entity_title', h($entity->getTitle()));
         $tags = $entity->getTags();
         $description = $entity->getDescription();
         if (!empty($tags)) $this->page_meta_keywords = h($tags);
@@ -507,8 +507,8 @@ Class LoadsModule extends Module {
 		list ($pages, $page) = pagination($total, $this->Register['Config']->read('per_page', $this->module), $this->getModuleURL('user/' . $id));
 		$this->Register['pages'] = $pages;
 		$this->Register['page'] = $page;
-        $this->addToPageTitleContext('page', $page);
-        $this->addToPageTitleContext('entity_title', sprintf(__('User materials'), h($user->getName())));
+        $this->addToPageMetaContext('page', $page);
+        $this->addToPageMetaContext('entity_title', sprintf(__('User materials'), h($user->getName())));
 
 
 
