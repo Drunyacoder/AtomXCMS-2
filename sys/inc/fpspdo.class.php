@@ -344,11 +344,11 @@ class FpsPDO {
             unset($rows[$k]);
         }
 
-
+$st = getMicroTime();
         foreach ($model_conf as $table1 => $params) break;
         $rows = &$affected_rows[$table1];
         $this->prepareTableOutput($table1, $affected_rows, $rows, $model_conf);
-
+$_SESSION['testtime'] += getMicroTime($st);
 
 
         if (empty($affected_rows)) return array();
@@ -363,110 +363,117 @@ class FpsPDO {
 
     private function prepareTableOutput($table1, $affected_rows, &$rows, &$model_conf, $root_record_id = null)
     {
-        $mergeRows = function($row1, $row2, $table1, $table2, $root_record_id) use (&$model_conf, $affected_rows) {
+	//pr(AtmDebug::getBody()); die();
+        $mergeRows = function($row1, $table1, $table2, $root_record_id) use (&$model_conf, &$affected_rows) {
             $params = $model_conf[$table1][$table2];
-            switch ($params['type']) {
-                case 'has_one':
-                    if (!empty($params['foreignKey']))
-                        if ($row2[$params['foreignKey']] !== $row1['id']) continue;
-                    if (!empty($params['internalKey']))
-                        if ($row1[$params['internalKey']] !== $row2['id']) continue;
-                    if (!empty($params['rootForeignKey'])) {
-                        if (!empty($root_record_id) && $row2[$params['rootForeignKey']] === $root_record_id)
-                            $row1[$table2] = $row2;
-                        continue;
-                    }
-                    $row1[$table2] = $row2;
-                    break;
-                case 'has_many':
-                    if (!array_key_exists($table2, $row1) || !is_array($row1[$table2])) $row1[$table2] = array();
-                    if (!empty($params['foreignKey']))
-                        if ($row2[$params['foreignKey']] !== $row1['id']) continue;
-                    if (!empty($params['internalKey']))
-                        if ($row1[$params['internalKey']] !== $row2['id']) continue;
+            foreach ($affected_rows[$table2] as $row2) {
+				switch ($params['type']) {
+					case 'has_one':
+						if (!empty($params['foreignKey']))
+							if ($row2[$params['foreignKey']] !== $row1['id']) continue;
+						if (!empty($params['internalKey']))
+							if ($row1[$params['internalKey']] !== $row2['id']) continue;
+						if (!empty($params['rootForeignKey'])) {
+							if (!empty($root_record_id) && $row2[$params['rootForeignKey']] === $root_record_id)
+								$row1[$table2] = $row2;
+							continue;
+						}
+						$row1[$table2] = $row2;
+						break;
+					case 'has_many':
+						if (!array_key_exists($table2, $row1) || !is_array($row1[$table2])) $row1[$table2] = array();
+						if (!empty($params['foreignKey']))
+							if ($row2[$params['foreignKey']] !== $row1['id']) continue;
+						if (!empty($params['internalKey']))
+							if ($row1[$params['internalKey']] !== $row2['id']) continue;
 
-                    $row1[$table2][$row2['id']] = $row2;
+						$row1[$table2][$row2['id']] = $row2;
+						unset($affected_rows[$table2][$row2['id']]);
 
-                    break;
-                case 'many_to_many':
-                    if (array_key_exists($table2, $model_conf)) {
-                        reset($model_conf[$table2]);
-                        $t2 = key($model_conf[$table2]);
-                    }
+						break;
+					case 'many_to_many':
+						if (array_key_exists($table2, $model_conf)) {
+							reset($model_conf[$table2]);
+							$t2 = key($model_conf[$table2]);
+						}
 
-                    if (empty($t2) || $model_conf[$table2][$t2]['type'] !== 'many_to_many') {
-                        $foreignKey2 = (!empty($model_conf[$table1][$table2]['foreignKey']))
-                            ? $model_conf[$table1][$table2]['foreignKey'] : '';
+						if (empty($t2) || $model_conf[$table2][$t2]['type'] !== 'many_to_many') {
+							$foreignKey2 = (!empty($model_conf[$table1][$table2]['foreignKey']))
+								? $model_conf[$table1][$table2]['foreignKey'] : '';
 
-                        if (!empty($foreignKey2)) {
-                            if ($row1[$foreignKey2] === $row2['id']) {
-                                $row1 = array_merge($row1, $row2);
-                            }
-                        }
-                        break;
-                    }
+							if (!empty($foreignKey2)) {
+								if ($row1[$foreignKey2] === $row2['id']) {
+									$row1 = array_merge($row1, $row2);
+								}
+							}
+							break;
+						}
 
-                    if (!array_key_exists($table2, $row1) || !is_array($row1[$table2])) $row1[$table2] = array();
-                    if (!empty($params['foreignKey'])) {
-                        if ($row1['id'] === $row2[$params['foreignKey']]) {
-                            $row1[$table2][$row2['id']] = $row2;
-                        }
-                    }
-                    break;
-                case 'has_many_through':
-                    $t2 = null;
-                    $lefter_table = false;
-                    if (array_key_exists($table2, $model_conf)) {
-                        reset($model_conf[$table2]);
-                        $t2 = key($model_conf[$table2]);
-                        if ($model_conf[$table2][$t2]['type'] === 'has_many_through') $lefter_table = true;
-                    }
+						if (!array_key_exists($table2, $row1) || !is_array($row1[$table2])) $row1[$table2] = array();
+						if (!empty($params['foreignKey'])) {
+							if ($row1['id'] === $row2[$params['foreignKey']]) {
+								$row1[$table2][$row2['id']] = $row2;
+							}
+						}
+						break;
+					case 'has_many_through':
+						$t2 = null;
+						$lefter_table = false;
+						if (array_key_exists($table2, $model_conf)) {
+							reset($model_conf[$table2]);
+							$t2 = key($model_conf[$table2]);
+							if ($model_conf[$table2][$t2]['type'] === 'has_many_through') $lefter_table = true;
+						}
 
-                    if ($lefter_table) {
-                        $rows = array(&$row2);
-                        $this->prepareTableOutput($table2, $affected_rows, $rows, $model_conf, $root_record_id);
-                        if ($row1[$params['foreignKey']] === $row2['id']) {
-                            if (empty($row1[$table2])) $row1[$table2] = array();
-                            $row1[$table2] = $row2[$t2];
-                        }
-                    } else {
-                        if ($row1['id'] === $row2[$params['foreignKey']] &&
-                        !array_key_exists($params['foreignKey'], $row1)) {
-                            if (empty($row1[$table2])) $row1[$table2] = array();
-                            $row1[$table2][] = $row2;
-                        }
-                    }
-                    break;
-            }
-
+						if ($lefter_table) {
+							$rows = array(&$row2);
+							$this->prepareTableOutput($table2, $affected_rows, $rows, $model_conf, $root_record_id);
+							if ($row1[$params['foreignKey']] === $row2['id']) {
+								if (empty($row1[$table2])) $row1[$table2] = array();
+								$row1[$table2] = $row2[$t2];
+							}
+						} else {
+							if ($row1['id'] === $row2[$params['foreignKey']] &&
+							!array_key_exists($params['foreignKey'], $row1)) {
+								if (empty($row1[$table2])) $row1[$table2] = array();
+								$row1[$table2][] = $row2;
+							}
+						}
+						break;
+				}
+			}
+			
             return $row1;
         };
 
-
+		
+		
+		if (empty($rows)) return;
         foreach ($model_conf[$table1] as $table2 => $params) {
-			if (empty($rows)) break;
+			if (empty($affected_rows[$table2])) continue;
             foreach ($rows as $id => $row) {
                 $root_id = (empty($root_record_id)) ? $row['id'] : $root_record_id;
-                if (empty($affected_rows[$table2])) {
-                    $rows[$id] = array();
-                    continue;
-                }
-                foreach ($affected_rows[$table2] as $row2) {
-                    $row = $mergeRows($row, $row2, $table1, $table2, $root_id);
-                    if (array_key_exists($table2, $model_conf) && array_key_exists($table2, $row)) {
-                        foreach ($row[$table2] as $key => $value) {
-                            if (!is_numeric($key))
-                                $rows2 = array(&$row[$table2]);
-                            else
-                                $rows2 = &$row[$table2];
-                            break;
-                        }
-                        $this->prepareTableOutput($table2, $affected_rows, $rows2, $model_conf, $root_id);
-                    }
-                    $rows[$id] = $row;
-                }
+				$row = $mergeRows($row, $table1, $table2, $root_id);
+				
+				if (array_key_exists($table2, $model_conf) && 
+					array_key_exists($table2, $row) &&
+					is_array($row[$table2]) &&
+					count($row[$table2])
+				) {
+					foreach ($row[$table2] as $key => $value) {
+						if (!is_numeric($key)) 
+							$rows2 = array(&$row[$table2]);
+						else 
+							$rows2 = &$row[$table2];
+						break;
+					}
+					
+					$this->prepareTableOutput($table2, $affected_rows, $rows2, $model_conf, $root_id);
+				}
+				$rows[$id] = $row;
             }
         }
+		
     }
 
 

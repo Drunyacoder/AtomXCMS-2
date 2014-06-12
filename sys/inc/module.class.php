@@ -378,7 +378,7 @@ class Module {
 			'is_home_page' => $Register['is_home_page'] ? true : false,
         );
 		$markers = array_merge($markers1, $markers2);
-        pr($markers);
+        //pr($markers);
         return $markers;
     }
 
