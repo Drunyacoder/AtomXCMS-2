@@ -45,10 +45,13 @@ class Fps_Viewer_Parser_If
 					break;
 				
 				case 'elseif':
+                    $this->parser->setEnv('if');
 					$expr = $this->parser->getExpression()->parseExpression();
+                    $this->parser->setEnv(false);
 					$this->parser->getStream()->expect(Fps_Viewer_Token::BLOCK_END_TYPE);
 					$tests[] = $expr;
 					$tests[] = $this->parser->parse($this->parser->getStream(), array($this, 'continueWork'));
+
 					break;
 				
 				case 'endif':
