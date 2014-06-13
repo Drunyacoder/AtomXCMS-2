@@ -84,6 +84,7 @@ v2.6 RC3            	 *☢☠
 	ALTER TABLE `news_attaches` ADD INDEX (`user_id`);
 	ALTER TABLE `stat_attaches` ADD INDEX (`user_id`);
 	ALTER TABLE `forum_attaches` ADD INDEX (`post_id`, `user_id`);
+27. Добавлено автоопределение подкаталога, в который происходит установка(если она, конечно, происходит в подкаталоге).
 
 
 

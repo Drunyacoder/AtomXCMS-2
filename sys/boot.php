@@ -21,7 +21,12 @@ define ('R', dirname(dirname(__FILE__)) . DS);
  * we must set this variable, because Fapos
  * must know this for good work.
  */
-define ('WWW_ROOT', '');
+$diff = array_diff_assoc(
+	explode(DS, dirname(dirname(__FILE__))),
+	explode('/', $_SERVER['DOCUMENT_ROOT'])
+);
+define ('WWW_ROOT', ((!empty($diff)) ? '/' . implode('/', $diff) : ''));
+
 /**
  * If set to 1, check referer in admin panel
  * and if he dont match current host redirect to

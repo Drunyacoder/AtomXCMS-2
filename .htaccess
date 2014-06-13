@@ -41,14 +41,17 @@ AddOutputFilterByType DEFLATE application/x-javascript
 
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteBase /
+    #RewriteBase /
+	
+	RewriteCond %{REQUEST_URI}::$1 ^(.*?/)(.*)::\2$
+	RewriteRule ^(.*)$ - [E=BASE:%1]
 
-    #RewriteRule ^sys/files/([news|loads|stat]+/.*)$ downloads.php?url=$1 [QSA,L]
-    RewriteRule ^image/([a-z\+]+/.*)$ img.php?url=$1 [QSA,L]
+    #RewriteRule ^sys/files/([news|loads|stat]+/.*)$ %{ENV:BASE}/downloads.php?url=$1 [QSA,L]
+    RewriteRule ^image/([a-z\+]+/.*)$ %{ENV:BASE}/img.php?url=$1 [QSA,L]
 	
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
+    RewriteRule ^(.*)$ %{ENV:BASE}/index.php?url=$1 [QSA,L]
 
 </IfModule>
 
