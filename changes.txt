@@ -64,6 +64,26 @@ v2.6 RC3            	 *☢☠
 23. Добавлены ЧПУ для форума. Теперь ссылка на просмотр темы будет выглядеть так же как ссылка на новость, например(при включенной поддержке ЧПУ).
 24. Добавлена защита от ошибок синтаксиса в мета тегах. Если парсер не может разобрать синтаксис, просто вырезаются все управляющие конструкции и тег показывается без них. В противном случае это приводило бы к падению скрипта.
 25. Добавлен тип поля texarea в на страницах настроек в админке. Теперь такие настройки как title, description и некоторые другие имеют этот тип поля.
+26. Добавлены индексы в таблицы БД. Значительный прирост скорости при средних и больших размерах базы.
+	ALTER TABLE `forums` ADD INDEX (`in_cat`);
+	ALTER TABLE `loads` ADD INDEX (`category_id`, `author_id`);
+	ALTER TABLE `foto` ADD INDEX (`category_id`, `author_id`);
+	ALTER TABLE `news` ADD INDEX (`category_id`, `author_id`);
+	ALTER TABLE `stat` ADD INDEX (`category_id`, `author_id`);
+	ALTER TABLE `comments` ADD INDEX (`entity_id`, `user_id`);
+	ALTER TABLE `messages` ADD INDEX (`to_user`, `from_user`);
+	ALTER TABLE `posts` ADD INDEX (`id_theme`);
+	ALTER TABLE `themes` ADD INDEX (`id_forum`);
+	ALTER TABLE `users_votes` ADD INDEX (`from_user`, `to_user`);
+	ALTER TABLE `loads_add_content` ADD INDEX (`field_id`, `entity_id`);
+	ALTER TABLE `news_add_content` ADD INDEX (`field_id`, `entity_id`);
+	ALTER TABLE `stat_add_content` ADD INDEX (`field_id`, `entity_id`);
+	ALTER TABLE `users_add_content` ADD INDEX (`field_id`, `entity_id`);
+	ALTER TABLE `users_warnings` ADD INDEX (`user_id`, `admin_id`);
+	ALTER TABLE `loads_attaches` ADD INDEX (`user_id`);
+	ALTER TABLE `news_attaches` ADD INDEX (`user_id`);
+	ALTER TABLE `stat_attaches` ADD INDEX (`user_id`);
+	ALTER TABLE `forum_attaches` ADD INDEX (`post_id`, `user_id`);
 
 
 
