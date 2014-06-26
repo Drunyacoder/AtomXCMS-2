@@ -2696,7 +2696,7 @@ Class UsersModule extends Module {
 
 	
 	
-	public function getValidateRules() 
+	protected function _getValidateRules()
 	{
         $Register = Register::getInstance();
 		$rules = array(

@@ -174,11 +174,11 @@ class Module {
         $this->Register['action'] = $params[1];
         $this->Register['params'] = $params;
 		
-		if (is_callable(array($this, 'getValidateRules')))
-			$this->Register['Validate']->setRules($this->getValidateRules());
+		if (is_callable(array($this, '_getValidateRules')))
+			$this->Register['Validate']->setRules($this->_getValidateRules());
 		$this->Register['Validate']->setModule($this->module);
         $this->setModel();
-
+		
         //init needed objects. Core...
 		// Use for templater (layout)
 		$this->template = $this->module;
@@ -200,7 +200,7 @@ class Module {
 		
 		//init Access Control List
 		$this->ACL = $this->Register['ACL'];
-		$this->beforeRender();
+		$this->_beforeRender();
 		
 		if ($this->Register['Config']->read('active', $params[0]) == 0) {
 			if ('chat' === $params[0]) die('Этот модуль отключен');
@@ -239,7 +239,7 @@ class Module {
 	protected function setModel()
 	{
 		$class = ucfirst($this->module) . 'Model';
-		$this->Model = new $class();
+		if (class_exists($class)) $this->Model = new $class();
 	}
 	
 	
@@ -250,7 +250,7 @@ class Module {
 	 *
 	 * @return none
 	 */
-	protected function beforeRender()
+	protected function _beforeRender()
     {
         $this->addToPageMetaContext('module', ucfirst($this->module));
 
@@ -266,7 +266,7 @@ class Module {
 	 *
 	 * @return none
 	 */
-	protected function afterRender()
+	protected function _afterRender()
     {
 		// Cron
 		if (Config::read('auto_sitemap')) {
@@ -329,7 +329,7 @@ class Module {
             $output = $content;
 		}
 
-		$this->afterRender();
+		$this->_afterRender();
 		echo $output;
 
 		if (Config::read('debug_mode') == 1) {
@@ -882,23 +882,6 @@ class Module {
         header('Content-type: application/json');
 		echo json_encode($array); die();
 	}
-	
-	
-	
-	public function getDeniSectionsCond($group = null)
-	{
-		$group = (!empty($_SESSION['user']['status'])) ? $_SESSION['user']['status'] : 0;
-		$sectionModel = $this->Register['ModManager']->getModelInstance($this->module . 'Categories');
-		$deni_sections = $sectionModel->getCollection(array("CONCAT(',', `no_access`, ',') NOT LIKE '%,$group,%'"));
-		$ids = array();
-		if ($deni_sections) {
-			foreach ($deni_sections as $deni_section) {
-				$ids[] = $deni_section->getId();
-			}
-		}
-		$ids = (count($ids)) ? implode(', ', $ids) : 'NULL';
-		return "`category_id` IN ({$ids})";
-	}
 
 
     public function getEntryId($id)
@@ -910,7 +893,33 @@ class Module {
         }
         return intval($id);
     }
+	
+	
+	protected function _getDeniSectionsCond($categoryId = null, $group = null)
+	{
+		$group = (!$group && !empty($_SESSION['user']['status'])) ? $_SESSION['user']['status'] : 0;
+		$sectionModel = $this->Register['ModManager']->getModelInstance($this->module . 'Categories');
+		
+		$where = array("CONCAT(',', `no_access`, ',') NOT LIKE '%,$group,%'");
+		if (intval($categoryId) > 0) {
+			$where['OR'] = array(
+				"CONCAT('.', `path`) LIKE '%." . intval($categoryId) . ".%'",
+				'id' => intval($categoryId),
+			);
+		}
+		
+		$deni_sections = $sectionModel->getCollection($where);
 
+		$ids = array();
+		if ($deni_sections) {
+			foreach ($deni_sections as $deni_section) {
+				$ids[] = $deni_section->getId();
+			}
+		}
+		$ids = (count($ids)) ? implode(', ', $ids) : 'NULL';
+		return "`category_id` IN ({$ids})";
+	}
+	
 
     protected function addToPageMetaContext($key, $value)
     {

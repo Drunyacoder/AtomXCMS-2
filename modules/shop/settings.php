@@ -32,7 +32,7 @@ class ShopSettingsController
     {
         $this->currentUrl = $_SERVER['REQUEST_URI'];
         $Register = Register::getInstance();
-        $Register['Validate']->setRules($this->getValidateRules());
+        $Register['Validate']->setRules($this->_getValidateRules());
     }
 
 
@@ -390,6 +390,7 @@ class ShopSettingsController
 
 
         $cats_tree = $this->getTreeNode($all_categories);
+		$content .= $this->buildCatsList($cats_tree, $all_categories);
         $popups .='<div id="addCat" class="popup">
 			<div class="top">
 				<div class="title">' . __('Adding category') . '</div>
@@ -520,6 +521,94 @@ class ShopSettingsController
         redirect($this->getUrl('categories'));
     }
 
+	
+    public function category_delete($id = null)
+    {
+        $id = intval($id);
+        $Register = Register::getInstance();
+        if (!$Register['ACL']->turn(array($this->module, 'categories_management'), false)) {
+            $_SESSION['errors'] = __('Permission denied');
+            redirect($this->getUrl('categories'));
+        }
+
+        $model = $Register['ModManager']->getModelInstance('shopCategories');
+        $entity = $model->getById($id);
+        if (!$entity) {
+            $_SESSION['errors'] = __('Record not found');
+            redirect($this->getUrl('categories'));
+        }
+
+		$total = $model->getTotal();
+		if ($total <= 1) {
+			$_SESSION['errors'] = $Register['Validate']->wrapErrors(__('You can\'t remove the last category'), true);
+			redirect($this->getUrl('categories'));
+		}
+		
+		
+		$deleteCategory = function($catObj) use ($Register) {
+			$model = $Register['ModManager']->getModelInstance('shopProducts');
+			$products = $model->getCollection(array('category_id' => $catObj->getId()));
+			if ($products) {
+				foreach ($products as $r) {
+					$r->delete();
+				}
+			}
+			$catObj->delete();
+		};
+		
+		$childrens = $model->getCollection(array("CONCAT('.', path) LIKE '%.{$id}.%'"));
+		if ($childrens) {
+			foreach ($childrens as $row) {
+				$deleteCategory($row);
+			}
+		}
+
+        $deleteCategory($entity);
+
+        $_SESSION['message'] = __('Operation is successful');
+        redirect($this->getUrl('categories'));
+    }
+
+	
+    public function category_on_home($id = null, $flag = 1)
+    {
+        $id = intval($id);
+		$flag = ($flag) ? '1' : '0';
+        $Register = Register::getInstance();
+        if (!$Register['ACL']->turn(array($this->module, 'categories_management'), false)) {
+            $_SESSION['errors'] = __('Permission denied');
+            redirect($this->getUrl('categories'));
+        }
+
+        $model = $Register['ModManager']->getModelInstance('shopCategories');
+        $entity = $model->getById($id);
+        if (!$entity) {
+            $_SESSION['errors'] = __('Record not found');
+            redirect($this->getUrl('categories'));
+        }
+		
+		
+		$setCategory = function($catObj) use ($Register, $flag) {
+			$Register['DB']->save('shop_products', 
+							array('view_on_home' => $flag), 
+							array('category_id' => $catObj->getId()));
+			$catObj->setView_on_home($flag);
+			$catObj->save();
+		};
+		
+		$childrens = $model->getCollection(array("CONCAT('.', path) LIKE '%.{$id}.%'"));
+		if ($childrens) {
+			foreach ($childrens as $row) {
+				$setCategory($row);
+			}
+		}
+
+        $setCategory($entity);
+
+        $_SESSION['message'] = __('Operation is successful');
+        redirect($this->getUrl('categories'));
+    }
+	
 
     public function attributes_groups()
     {
@@ -1579,7 +1668,7 @@ class ShopSettingsController
 
 
 		if (!empty($_POST)) {
-			if (!$Register['ACL']->turn(array($this->module, 'edit_orders'), false)) {
+			if (!$Register['ACL']->turn(array($this->module, 'orders_management'), false)) {
 				$_SESSION['errors'] = __('Permission denied');
 				redirect($this->getUrl('order_edit/' . $id));
 			}
@@ -1915,7 +2004,7 @@ class ShopSettingsController
 	{
         $id = intval($id);
         $Register = Register::getInstance();
-        if (!$Register['ACL']->turn(array($this->module, 'delete_orders'), false)) {
+        if (!$Register['ACL']->turn(array($this->module, 'orders_management'), false)) {
             $_SESSION['errors'] = __('Permission denied');
             redirect($this->getUrl('orders'));
         }
@@ -2686,7 +2775,7 @@ class ShopSettingsController
 
 
             if (count($node['subcategories'])) {
-                $content .= buildCatsList($node['subcategories'], $catsList, $indent . '<div class="cat-indent">&nbsp;</div>');
+                $content .= $this->buildCatsList($node['subcategories'], $catsList, $indent . '<div class="cat-indent">&nbsp;</div>');
             }
         }
 
@@ -2694,7 +2783,7 @@ class ShopSettingsController
     }
 
 
-    private function getValidateRules()
+    protected function _getValidateRules()
     {
         $Register = Register::getInstance();
         $max_attach = Config::read('max_attaches', $this->module);

@@ -759,6 +759,7 @@ return array(
     'Ordering'				        => 'Ordering',
     'Module "%s" has been installed' => 'Module "%s" has been installed',
     'Module "%s" has been not installed (Reason: %s)' => 'Module "%s" has been not installed (Reason: %s)',
+	'You can\'t remove the last category' => 'You can\'t remove the last category',
 
 	// Templates name
 	'Add form'  					=> 'Add form',

@@ -792,6 +792,7 @@ return array(
 	'Ordering'				        => 'Сортировка',
 	'Module "%s" has been installed' => 'Модуль "%s" был успешно установлен',
 	'Module "%s" has been not installed (Reason: %s)' => 'Модуль "%s" не удалось установить (Причина: %s)',
+	'You can\'t remove the last category' => 'Нельзя удалять последнюю категорию',
 
 	// Templates name
 	'Add form'  					=> 'Форма добавления',

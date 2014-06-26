@@ -569,6 +569,12 @@ function delete() {
 	
 	
 	$model = $Register['ModManager']->getModelInstance(getCurrMod() . 'Categories');
+	$total = $model->getTotal();
+	if ($total <= 1) {
+		$_SESSION['errors'] = $Register['Validate']->wrapErrors(__('You can\'t remove the last category'), true);
+		redirect('/admin/category.php?mod=' . getCurrMod());
+	}
+	
 	$childrens = $model->getCollection(array('parent_id' => $id));
 
 	
@@ -598,42 +604,7 @@ function delete_category($id) {
 	// delete materials and attaches
 	if (is_array($records) && count($records) > 0) {
 		foreach ($records as $record) {
-			
 			$record->delete();
-		
-			
-			
-			$hlufile = ROOT . '/sys/tmp/hlu_' . getCurrMod() . '/' . $record->getId() . '.dat';
-			if (file_exists($hlufile)) {
-				$fname = file_get_contents($hlufile);
-				_unlink($hlufile);
-				_unlink(ROOT . '/sys/tmp/hlu_' . getCurrMod() . '/' . $fname . '.dat');
-			}
-			
-			
-			
-			if (getCurrMod() == 'foto') {
-				if (file_exists(ROOT . '/sys/files/foto/full/' . $record->getFilename())) 
-					_unlink(ROOT . '/sys/files/foto/full/' . $record->getFilename());
-				if (file_exists(ROOT . '/sys/files/foto/preview/' . $record->getFilename())) 
-					_unlink(ROOT . '/sys/files/foto/preview/' . $record->getFilename());
-
-					
-			} else {
-				$attaches = $attachModel->getCollection(array('entity_id' => $record->getId()));
-				if ($attaches) {
-					foreach ($attaches as $attach) {
-						$attach->delete();
-						if (file_exists(ROOT . '/sys/files/' . getCurrMod() . '/' . $attach->getFilename()))
-							_unlink(ROOT . '/sys/files/' . getCurrMod() . '/' . $attach->getFilename());
-					}
-				}
-				
-				if (getCurrMod() == 'loads') {
-					if (file_exists(ROOT . '/sys/files/loads/' . $record->getDownload())) 
-						_unlink(ROOT . '/sys/files/loads/' . $record->getDownload());
-				}
-			} 
 		}
 	}
 	

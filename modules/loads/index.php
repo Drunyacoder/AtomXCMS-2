@@ -4,12 +4,12 @@
 | @Author:       Andrey Brykin (Drunya)        |
 | @Email:        drunyacoder@gmail.com         |
 | @Site:         http://atomx.net              |
-| @Version:      2.1.0                         |
+| @Version:      2.2.0                         |
 | @Project:      CMS                           |
 | @Package       AtomX CMS                     |
 | @subpackege    Loads Module                  |
 | @copyright     ©Andrey Brykin 		       |
-| @last mod.     2014/04/14                    |
+| @last mod.     2014/06/26                    |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
@@ -82,29 +82,22 @@ Class LoadsModule extends Module {
         }
 
 
-        // we need to know whether to show hidden
-		$group = (!empty($_SESSION['user']['status'])) ? $_SESSION['user']['status'] : 0;
-		$sectionModel = $this->Register['ModManager']->getModelInstance($this->module . 'Categories');
-		$deni_sections = $sectionModel->getCollection(array("CONCAT(',', `no_access`, ',') NOT LIKE '%,$group,%'"));
-		$ids = array();
-		if ($deni_sections) {
-			foreach ($deni_sections as $deni_section) {
-				$ids[] = $deni_section->getId();
-			}
-		}
-		$ids = (count($ids)) ? implode(', ', $ids) : 'NULL';
-		
-		$query_params = array('cond' => array("`category_id` IN ({$ids})"));
+		$where = array();
+		// we need to know whether to show hidden
+		$where[] = $this->_getDeniSectionsCond();
         if (!$this->ACL->turn(array('other', 'can_see_hidden'), false)) {
-            $query_params['cond']['available'] = 1;
+            $where['available'] = '1';
         }
+		if (!$this->ACL->turn(array('other', 'can_premoder'), false)) {
+			$where['premoder'] = 'confirmed';
+		}
 		if (!empty($tag)) {
 			$tag = $this->Register['DB']->escape($tag);
-			$query_params['cond'][] = "CONCAT(',', `tags`, ',') LIKE '%,{$tag},%'";
+			$where[] = "CONCAT(',', `tags`, ',') LIKE '%,{$tag},%'";
 		}
 
 
-        $total = $this->Model->getTotal($query_params);
+        $total = $this->Model->getTotal(array('cond' => $where));
         list ($pages, $page) = pagination( $total, Config::read('per_page', $this->module), '/' . $this->module . '/');
         $this->Register['pages'] = $pages;
         $this->Register['page'] = $page;
@@ -134,7 +127,7 @@ Class LoadsModule extends Module {
             'limit' => $this->Register['Config']->read('per_page', $this->module),
             'order' => $this->Model->getOrderParam(),
         );
-        $records = $this->Model->getCollection($query_params['cond'], $params);
+        $records = $this->Model->getCollection($where, $params);
 
         if (is_object($this->AddFields) && count($records) > 0) {
             $records = $this->AddFields->mergeRecords($records);
@@ -217,35 +210,18 @@ Class LoadsModule extends Module {
             return $this->_view($source);
         }
 
-        // we need to know whether to show hidden
-        $childCats = $SectionsModel->getOneField('id', array('parent_id' => $id));
-        $childCats[] = $id;
-        $childCats = implode(', ', $childCats);
 		
-		$group = (!empty($_SESSION['user']['status'])) ? $_SESSION['user']['status'] : 0;
-		$sectionModel = $this->Register['ModManager']->getModelInstance($this->module . 'Categories');
-		$deni_sections = $sectionModel->getCollection(array(
-			"CONCAT(',', `no_access`, ',') NOT LIKE '%,$group,%'",
-			"`id` IN ({$childCats})",
-		));
-		$ids = array();
-		if ($deni_sections) {
-			foreach ($deni_sections as $deni_section) {
-				$ids[] = $deni_section->getId();
-			}
-		}
-		$ids = (count($ids)) ? implode(', ', $ids) : 'NULL';
-		
-        $query_params = array('cond' => array(
-			"`category_id` IN ({$childCats})",
-			"`category_id` IN ({$ids})",
-        ));
+		$where = array();
+		$where[] = $this->_getDeniSectionsCond($id);
         if (!$this->ACL->turn(array('other', 'can_see_hidden'), false)) {
-            $query_params['cond']['available'] = 1;
+            $where['available'] = '1';
         }
+		if (!$this->ACL->turn(array('other', 'can_premoder'), false)) {
+			$where['premoder'] = 'confirmed';
+		}
 
 
-        $total = $this->Model->getTotal($query_params);
+        $total = $this->Model->getTotal(array('cond' => $where));
         list ($pages, $page) = pagination( $total, $this->Register['Config']->read('per_page', $this->module), '/' . $this->module . '/category/' . $id);
         $this->Register['pages'] = $pages;
         $this->Register['page'] = $page;
@@ -268,10 +244,6 @@ Class LoadsModule extends Module {
             $html = __('Materials not found');
             return $this->_view($html);
         }
-
-
-        $where = $query_params['cond'];
-        if (!$this->ACL->turn(array('other', 'can_see_hidden'), false)) $where['available'] = '1';
 
 
         $this->Model->bindModel('attaches');
@@ -483,8 +455,6 @@ Class LoadsModule extends Module {
 		$user = $usersModel->getById($id);
 		if (!$user)
 			return $this->showInfoMessage(__('Can not find user'), $this->getModuleURL());
-		if (!$this->ACL->checkCategoryAccess($user->getNo_access()))
-			return $this->showInfoMessage(__('Permission denied'), $this->getModuleURL());
 
 
 		//формируем блок со списком разделов
@@ -498,8 +468,13 @@ Class LoadsModule extends Module {
 
 		// we need to know whether to show hidden
 		$where = array('author_id' => $id);
+		// we need to know whether to show hidden
+		$where[] = $this->_getDeniSectionsCond();
 		if (!$this->ACL->turn(array('other', 'can_see_hidden'), false)) {
-			$where['available'] = 1;
+			$where['available'] = '1';
+		}
+		if (!$this->ACL->turn(array('other', 'can_premoder'), false)) {
+			$where['premoder'] = 'confirmed';
 		}
 
 
@@ -1536,7 +1511,7 @@ Class LoadsModule extends Module {
 	
 	
 	
-	public function getValidateRules() 
+	protected function _getValidateRules()
 	{
 		$max_attach = $this->Register['Config']->read('max_attaches', $this->module);
 		if (empty($max_attach) || !is_numeric($max_attach)) $max_attach = 5;

@@ -3591,7 +3591,7 @@ Class ForumModule extends Module {
 	
 	
 	
-	public function getValidateRules() 
+	protected function _getValidateRules()
 	{
 		$max_attach = Config::read('max_attaches', $this->module);
 		if (empty($max_attach) || !is_numeric($max_attach)) $max_attach = 5;

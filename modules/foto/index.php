@@ -4,12 +4,12 @@
 | @Author:       Andrey Brykin (Drunya)          |
 | @Email:        drunyacoder@gmail.com           |
 | @Site:         http://fapos.net                |
-| @Version:      1.6.7                           |
+| @Version:      1.7.7                           |
 | @Project:      CMS                             |
 | @package       CMS Fapos                       |
 | @subpackege    Foto Module  			 		 |
-| @copyright     ©Andrey Brykin 2010-2013        |
-| @last  mod     2013/11/01                      |
+| @copyright     ©Andrey Brykin 2010-2014        |
+| @last  mod     2014/06/26                      |
 \-----------------------------------------------*/
 
 /*-----------------------------------------------\
@@ -69,21 +69,12 @@ Class FotoModule extends Module {
 		}
 		
 		
+		$where = array();
 		// we need to know whether to show hidden
-		$group = (!empty($_SESSION['user']['status'])) ? $_SESSION['user']['status'] : 0;
-		$sectionModel = $this->Register['ModManager']->getModelInstance($this->module . 'Categories');
-		$deni_sections = $sectionModel->getCollection(array("CONCAT(',', `no_access`, ',') NOT LIKE '%,$group,%'"));
-		$ids = array();
-		if ($deni_sections) {
-			foreach ($deni_sections as $deni_section) {
-				$ids[] = $deni_section->getId();
-			}
-		}
-		$ids = (count($ids)) ? implode(', ', $ids) : 'NULL';
-		$query_params = array('cond' => array("`category_id` IN ({$ids})"));
+		$where[] = $this->_getDeniSectionsCond();
 		
 		//Узнаем кол-во материалов в БД
-		$total = $this->Model->getTotal($query_params);
+		$total = $this->Model->getTotal(array('cond' => $where));
 		list ($pages, $page) = pagination( $total, $this->Register['Config']->read('per_page', 'foto'), '/foto/');
 		$this->Register['pages'] = $pages;
 		$this->Register['page'] = $page;
@@ -112,7 +103,7 @@ Class FotoModule extends Module {
             'limit' => $this->Register['Config']->read('per_page', 'foto'),
             'order' => $this->Model->getOrderParam(),
         );
-		$records = $this->Model->getCollection($query_params['cond'], $params);
+		$records = $this->Model->getCollection($where, $params);
 		
 		
 		// create markers
@@ -185,32 +176,12 @@ Class FotoModule extends Module {
 			return $this->_view($source);
 		}
 	
+		$where = array();
 		// we need to know whether to show hidden
-		$childCats = $SectionsModel->getOneField('id', array('parent_id' => $id));
-		$childCats[] = $id;
-		$childCats = implode(', ', $childCats);
-		
-		$group = (!empty($_SESSION['user']['status'])) ? $_SESSION['user']['status'] : 0;
-		$sectionModel = $this->Register['ModManager']->getModelInstance($this->module . 'Categories');
-		$deni_sections = $sectionModel->getCollection(array(
-			"CONCAT(',', `no_access`, ',') NOT LIKE '%,$group,%'",
-			"`id` IN ({$childCats})",
-		));
-		$ids = array();
-		if ($deni_sections) {
-			foreach ($deni_sections as $deni_section) {
-				$ids[] = $deni_section->getId();
-			}
-		}
-		$ids = (count($ids)) ? implode(', ', $ids) : 'NULL';
-		
-		$query_params = array('cond' => array(
-			"`category_id` IN ({$childCats})",
-			"`category_id` IN ({$ids})",
-		));
+		$where[] = $this->_getDeniSectionsCond($id);
 		
 
-		$total = $this->Model->getTotal($query_params);
+		$total = $this->Model->getTotal(array('cond' => $where));
 		list ($pages, $page) = pagination( $total, Config::read('per_page', 'foto'), '/foto/');
 		$this->Register['pages'] = $pages;
 		$this->Register['page'] = $page;
@@ -241,7 +212,7 @@ Class FotoModule extends Module {
             'limit' => $this->Register['Config']->read('per_page', 'foto'),
             'order' => $this->Model->getOrderParam(),
         );
-		$records = $this->Model->getCollection($query_params['cond'], $params);
+		$records = $this->Model->getCollection($where, $params);
 
 
 		// create markers
@@ -401,7 +372,7 @@ Class FotoModule extends Module {
 
 		// we need to know whether to show hidden
 		$where = array('author_id' => $id);
-		$where[] = $this->getDeniSectionsCond();
+		$where[] = $this->_getDeniSectionsCond();
 
 
 		$total = $this->Model->getTotal(array('cond' => $where));
@@ -414,9 +385,13 @@ Class FotoModule extends Module {
 
 
 		$navi = array();
-		$navi['add_link'] = ($this->ACL->turn(array($this->module, 'add_materials'), false)) ? get_link(__('Add material'), '/' . $this->module . '/add_form/') : '';
+		$navi['add_link'] = ($this->ACL->turn(array($this->module, 'add_materials'), false)) 
+			? get_link(__('Add material'), '/' . $this->module . '/add_form/') 
+			: '';
 		$navi['navigation'] = get_link(__('Home'), '/') . __('Separator')
-		. get_link(h($this->module_title), '/' . $this->module . '/') . __('Separator') . sprintf(__('User materials'), h($user->getName())) . '"';
+			. get_link(h($this->module_title), '/' . $this->module . '/') 
+			. __('Separator') 
+			. sprintf(__('User materials'), h($user->getName())) . '"';
 		$navi['pagination'] = $pages;
 		$navi['meta'] = __('Total materials') . $total;
 		$navi['category_name'] = sprintf(__('User materials'), h($user->getName()));
@@ -868,7 +843,7 @@ Class FotoModule extends Module {
 	
 
 	
-	public function getValidateRules() 
+	protected function _getValidateRules()
 	{
 		$max_attach = Config::read('max_attaches', $this->module);
 		if (empty($max_attach) || !is_numeric($max_attach)) $max_attach = 5;

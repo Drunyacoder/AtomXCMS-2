@@ -392,11 +392,27 @@ class FpsPDO {
 
     private function prepareTableOutput($table1, $affected_rows, &$rows, &$model_conf, $root_record_id = null)
     {
-        $mergeRows = function($rows1, $table1, $table2, $root_record_id = null) use (&$model_conf, &$affected_rows) {
+        $mergeRows = function($rows1, $table1, $table2, $root_record_id_ = null) use (&$model_conf, &$affected_rows) {
             $params = $model_conf[$table1][$table2];
-
+			
+			if (array_key_exists($table2, $model_conf)) {
+				reset($model_conf[$table2]);
+				$t2 = key($model_conf[$table2]);
+				// left table
+				if ((
+					$params['type'] === 'has_many_through' && 
+					$model_conf[$table2][$t2]['type'] === 'has_many_through'
+				) || (
+					$params['type'] === 'many_to_many' && 
+					$model_conf[$table2][$t2]['type'] === 'many_to_many'
+				)) {
+					$lefter_table = true;
+				}
+			}
+			
             foreach ($rows1 as $id1 => &$row1) {
-                $root_record_id = (empty($root_record_id)) ? $row1['id'] : $root_record_id;
+                $root_record_id = (empty($root_record_id_)) ? $row1['id'] : $root_record_id_;
+				
 
                 if ($params['type'] === 'has_many') {
                     if (array_key_exists($id1, $affected_rows[$table2])) {
@@ -406,11 +422,10 @@ class FpsPDO {
                     }
 				} else if ($params['type'] === 'has_many_through') {
 					$t2 = null;
-					$lefter_table = false;
 					if (array_key_exists($table2, $model_conf)) {
 						reset($model_conf[$table2]);
 						$t2 = key($model_conf[$table2]);
-						// right table (centeral table will be skipped)
+						// left table (centeral table will be skipped)
 						if ($model_conf[$table2][$t2]['type'] === 'has_many_through') {
 							if (array_key_exists($row1[$params['foreignKey']], $affected_rows[$t2])) {
 								if (empty($row1[$table2])) $row1[$table2] = array();
@@ -419,8 +434,8 @@ class FpsPDO {
 						}
 					}
                 } else {
-
                     foreach ($affected_rows[$table2] as $id2 => $row2) {
+
                         if ($params['type'] === 'has_one') {
                             if (!empty($params['foreignKey']))
                                 if ($row2[$params['foreignKey']] !== $row1['id']) continue;
@@ -461,36 +476,33 @@ class FpsPDO {
                         }
                     }
                 }
-
-                if (array_key_exists($table2, $model_conf) &&
-                    array_key_exists($table2, $row1) &&
-                    is_array($row1[$table2]) &&
-                    count($row1[$table2])
-                ) {
-                    foreach ($row1[$table2] as $key => $value) {
-                        if (!is_numeric($key))
-                            $rows2 = array(&$row1[$table2]);
-                        else
-                            $rows2 = &$row1[$table2];
-                        break;
-                    }
-
-                    $this->prepareTableOutput($table2, $affected_rows, $rows2, $model_conf, $root_record_id);
-                }
-
+				
+				
+				if (array_key_exists($table2, $model_conf) &&
+					array_key_exists($table2, $row1) &&
+					is_array($row1[$table2]) &&
+					count($row1[$table2])
+				) {
+					foreach ($row1[$table2] as $key => $value) {
+						if (!is_numeric($key))
+							$rows2 = array(&$row1[$table2]);
+						else
+							$rows2 = &$row1[$table2];
+						break;
+					}
+					
+					$next_table = (!empty($lefter_table)) ? $t2 : $table2;
+					$this->prepareTableOutput($next_table, $affected_rows, $rows2, $model_conf, $root_record_id);
+				}
             }
             return $rows1;
         };
-
-        // Before: 76.4255979
-        // After(without getMicroTime()): 9.5
-		// Min. on the Ulutura: 5.6 (forumCat.forums.themeslist.postslist)
 
 		
 		if (empty($rows)) return;
         foreach ($model_conf[$table1] as $table2 => $params) {
 			if (empty($affected_rows[$table2])) continue;
-            $rows = $mergeRows($rows, $table1, $table2);
+            $rows = $mergeRows($rows, $table1, $table2, $root_record_id);
         }
     }
 

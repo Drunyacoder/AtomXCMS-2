@@ -9,7 +9,7 @@
 | @Package       AtomX CMS                     |
 | @Subpackege    Shop Module                   |
 | @Copyright     ©Andrey Brykin                |
-| @Last mod      2014/05/15                    |
+| @Last mod      2014/06/25                    |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
@@ -51,7 +51,7 @@ Class ShopModule extends Module {
 	public function index($tag = null)
     {
 		//turn access
-		$this->ACL->turn(array($this->module, 'view_list'));
+		$this->ACL->turn(array($this->module, 'view_catalog'));
 		
 		
 		if ($this->cached && $this->Cache->check($this->cacheKey)) {
@@ -59,62 +59,37 @@ Class ShopModule extends Module {
 			return $this->_view($source);
 		}
 	
-	
-		// we need to know whether to show hidden
-		$group = (!empty($_SESSION['user']['status'])) ? $_SESSION['user']['status'] : 0;
-		$sectionModel = $this->Register['ModManager']->getModelInstance($this->module . 'Categories');
-		$deni_sections = $sectionModel->getCollection(array("CONCAT(',', `no_access`, ',') NOT LIKE '%,$group,%'"));
-		$ids = array();
-		if ($deni_sections) {
-			foreach ($deni_sections as $deni_section) {
-				$ids[] = $deni_section->getId();
-			}
-		}
-		$ids = (count($ids)) ? implode(', ', $ids) : 'NULL';
 		
-		$query_params = array('cond' => array("`category_id` IN ({$ids})"));
+		$where = array("(quantity > 0 || hide_not_exists = '0')");
+		
+		// get products only from allowed categories (.no_access field)
+		$where[] = $this->_getDeniSectionsCond();
 		if (!$this->ACL->turn(array('other', 'can_see_hidden'), false)) {
-			$query_params['cond']['available'] = 1;
-		}
-		if (!$this->ACL->turn(array('other', 'can_premoder'), false)) {
-			$query_params['cond']['premoder'] = 'confirmed';
+			$where['available'] = 1;
 		}
 		if (!empty($tag)) {
 			$tag = $this->Register['DB']->escape($tag);
-			$query_params['cond'][] = "CONCAT(',', `tags`, ',') LIKE '%,{$tag},%'";
+			$where[] = "CONCAT(',', `tags`, ',') LIKE '%,{$tag},%'";
 		}
-        if (Config::read($this->module . '.main_user')) {
-            $main_user_id = intval(Config::read($this->module . '.main_user'));
-            if ($main_user_id > 0) {
-                $usersModel = $this->Register['ModManager']->getModelInstance('users');
-                $main_user = $usersModel->getById($main_user_id);
-                if ($main_user) {
-                    $query_params['cond']['author_id'] = $main_user_id;
-                }
-            }
-        }
 
 
         //формируем блок со списком  разделов
-        $this->_getCatsTree(false, $main_user ? '/' . $main_user->getId() : '');
+        $this->_getCatsTree(false);
 
 
-		$total = $this->Model->getTotal($query_params);
+		$total = $this->Model->getTotal(array('cond' => $where));
 		list ($pages, $page) = pagination($total, Config::read('per_page', $this->module), '/' . $this->module . '/');
 		$this->Register['pages'] = $pages;
 		$this->Register['page'] = $page;
-		$this->page_title .= ' (' . $page . ')';
-
+		$this->addToPageMetaContext('page', $page);
 
 		
 		$navi = array();
-		$navi['add_link'] = ($this->ACL->turn(array($this->module, 'add_materials'), false)) 
-			? get_link(__('Add material'), '/' . $this->module . '/add_form/') : '';
+		$navi['add_link'] = '';
 		$navi['navigation'] = $this->_buildBreadCrumbs();
 		$navi['pagination'] = $pages;
 		$navi['meta'] = __('Total materials') . $total;
 		$this->_globalize($navi);
-
 
 		if($total <= 0) {
 			$html = __('Materials not found');
@@ -122,30 +97,28 @@ Class ShopModule extends Module {
 		}
 
 		
-		$this->Model->bindModel('attaches');
-		$this->Model->bindModel('author');
+		$this->Model->bindModel('attributes_group');
+		$this->Model->bindModel('attributes.content');
+		$this->Model->bindModel('vendor');
 		$this->Model->bindModel('category');
         $params = array(
             'page' => $page,
             'limit' => $this->Register['Config']->read('per_page', $this->module),
             'order' => $this->Model->getOrderParam(),
         );
-		$records = $this->Model->getCollection($query_params['cond'], $params);
-
+		$records = $this->Model->getCollection($where, $params);
+		
 
 		if (is_object($this->AddFields) && count($records) > 0) {
 			$records = $this->AddFields->mergeRecords($records);
 		}
-
+		pr($records); die();
 
 		// create markers
 		foreach ($records as $result) {
-			$markers = array();
-			
-			
-			$markers['moder_panel'] = $this->_getAdminBar($result);
+			$result->setModer_panel($this->_getAdminBar($result));
 			$entry_url = get_url(entryUrl($result, $this->module));
-			$markers['entry_url'] = $entry_url;
+			$markers->setEntry_url($entry_url);
 			
 
 			// Cut announce
@@ -157,13 +130,9 @@ Class ShopModule extends Module {
 			);
 			$announce = $this->insertImageAttach($result, $announce);
 			
-
-			$markers['announce'] = $announce;
-			
-			
-			$markers['category_url'] = get_url('/' . $this->module . '/category/' . $result->getCategory_id());
-			$markers['profile_url'] = getProfileUrl($result->getAuthor()->getId());
-			if ($result->getTags()) $result->setTags(explode(',', $result->getTags()));
+			$result->setAnnounce($announce);
+			$result->setCategory_url(get_url('/' . $this->module . '/category/' . $result->getCategory_id()));
+			$result->setProfile_url(getProfileUrl($result->getAuthor()->getId()));
 
 
 			//set users_id that are on this page
@@ -171,11 +140,7 @@ Class ShopModule extends Module {
 				'user_id_' . $result->getAuthor()->getId(),
 				'record_id_' . $result->getId(),
 			));
-		
-
-			$result->setAdd_markers($markers);
 		}
-		
 		
 		$source = $this->render('list.html', array('entities' => $records));
 		
@@ -184,7 +149,6 @@ Class ShopModule extends Module {
 		if ($this->cached)
 			$this->Cache->write($source, $this->cacheKey, $this->cacheTags);
 		
-	
 		return $this->_view($source);
 	}
 
@@ -1338,8 +1302,21 @@ Class ShopModule extends Module {
     }
 	
 	
+	/**
+	 * Uses for before render
+	 * All code in this function will be worked before
+	 * begin render page and launch controller(module)
+	 *
+	 * @return none
+	 */
+	protected function _beforeRender()
+    {
+        $this->Model = $this->Register['ModManager']->getModelInstance('shopProducts');
+		parent::_beforeRender();
+	}
 	
-	public function getValidateRules() 
+	
+	protected function _getValidateRules() 
 	{
 		$max_attach = Config::read('max_attaches', $this->module);
 		if (empty($max_attach) || !is_numeric($max_attach)) $max_attach = 5;

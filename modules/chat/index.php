@@ -246,7 +246,7 @@ class ChatModule extends Module {
 	
 	
 	
-	public function getValidateRules() 
+	protected function _getValidateRules()
 	{
 		$rules = array(
 			'add' => array(
