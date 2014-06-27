@@ -95,7 +95,7 @@ class Plugins {
 		$plugin_path = ROOT . '/sys/plugins/' . $plugin_basename;
 			
 		
-		copyr($dest, ROOT . '/sys/plugins/');
+		copyr($dest, ROOT . '/sys/plugins/', 0755);
 		$this->files = getDirFiles($plugin_path);
 		
 		

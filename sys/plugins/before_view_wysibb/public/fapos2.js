@@ -6,8 +6,8 @@ WBBPRESET = {
         link: {
             transform: {
                 '<a href="{SELTEXT}">{SELTEXT}</a>':'[url]{SELTEXT}[/url]',
-                '<a href="{URL}">{SELTEXT}</a>':'[url={URL}]{SELTEXT}[/url]',
-                '<a href="{URL}">{SELTEXT}</a>':'[url="{URL}"]{SELTEXT}[/url]'
+                '<a href="{URL}">{SELTEXT}</a>':'[url="{URL}"]{SELTEXT}[/url]',
+                '<a href="{URL}">{SELTEXT}</a>':'[url={URL}]{SELTEXT}[/url]'
             }
         },
 		spoiler : {

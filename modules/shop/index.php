@@ -61,7 +61,6 @@ Class ShopModule extends Module {
 	
 		
 		$where = array("(quantity > 0 || hide_not_exists = '0')");
-		
 		// get products only from allowed categories (.no_access field)
 		$where[] = $this->_getDeniSectionsCond();
 		if (!$this->ACL->turn(array('other', 'can_see_hidden'), false)) {

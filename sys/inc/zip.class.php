@@ -68,7 +68,7 @@ class Zip
         {
             foreach ($src as $item)
                 if (file_exists($item))
-                    $this->addZipItem($zip, realpath(dirname($item)).'/', realpath($item).'/');
+                    $this->addZipItem($zip, realpath(dirname($item)).'/', realpath($item));
             $zip->close();
             return true;
         }
@@ -83,7 +83,7 @@ class Zip
                 array_shift($lst);
                 array_shift($lst);
             foreach ($lst as $item)
-                $this->addZipItem($zip, $racine, $dir.$item.(is_dir($dir.$item)?'/':''));
+                $this->addZipItem($zip, $racine, $dir . '/' . $item.(is_dir($dir . '/' . $item)?'/':''));
         }
         elseif (is_file($dir))
             $zip->addFile($dir, str_replace($racine, '', $dir));

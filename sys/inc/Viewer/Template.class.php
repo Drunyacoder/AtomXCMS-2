@@ -50,7 +50,7 @@ abstract class Fps_Viewer_Template
 
     public function setValue($variable_params, $value, $context = null)
     {
-        if (!$context) $context = &$this->context;
+        if ($context === null) $context = &$this->context;
 
         $param = array_shift($variable_params);
         $getter = 'get' . ucfirst($param);

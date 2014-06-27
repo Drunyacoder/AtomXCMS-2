@@ -97,7 +97,7 @@ table.side-separator, table.side-separator tr td {vertical-align:top; min-height
 
 #content-wrapper {padding:15px 15px 70px 15px; position:relative;}
 .warning {padding:15px 15px 15px 70px; background:#f4f2f2 url('../img/warning-icon.png') 14px center no-repeat; position:relative; -moz-border-radius:3px; -webkit-border-radius:3px; border-radius:3px; color:#a1a1a1; font-size:12px; margin-bottom:10px;}
-.warning.ok {background:#ccf4cc url('../img/warning-icon.png') 14px center no-repeat; color:#777;}
+.warning.ok {background:#cbff81 url('../img/warning-icon.png') 14px center no-repeat; color:#777;}
 .warning.error {background:#f4cccc url('../img/warning-icon.png') 14px center no-repeat; color:#777;}
 .warning.clean {background-image:none; padding:15px;}
 
