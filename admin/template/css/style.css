@@ -10,6 +10,7 @@ h1, h2, h3, h4 {color:#555;}
 /* general */
 .green {color:#96c71e;}
 .red {color:#f10000;}
+.top-index {font-size:11px; position:relative; top:-6px; margin-left:2px;}
 
 /* pagination */
 .pagination {color:#fff;}

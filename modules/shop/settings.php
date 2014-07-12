@@ -58,7 +58,6 @@ class ShopSettingsController
     }
 
 
-    // atomx.loc/admin/shop/catalog/?filters[category_id]=2&order=date
     public function catalog()
     {
         $Register = Register::getInstance();
@@ -94,6 +93,8 @@ class ShopSettingsController
         $pages = '<div class="pages">' . $pages . '</div>';
         $content .= "<div class=\"list\">
 			<div class=\"title\">{$pages}</div>
+			<div class=\"add-cat-butt\" onClick=\"window.location.href='" . $this->getUrl('edit_product') . "'\">
+			<div class=\"add\"></div>" . __('Add product') . "</div>
 			<table cellspacing=\"0\" class=\"grid\"><tr>
 			<th width=\"\">" . getOrderLink(array('title', __('Title'))) . "</th>
 			<th width=\"15%\">" . getOrderLink(array('category.title', __('Category'))) . "</th>
@@ -119,7 +120,10 @@ class ShopSettingsController
 						<td>" . h($entity->getVendor()->getTitle()) . "</td>
 						<td>" . h($entity->getOrders_cnt()) . "</td>
 						<td>" . h($entity->getComments_cnt()) . "</td>
-						<td>" . h($entity->getPrice()) . "</td>
+						<td style=\"white-space:nowrap;\">" . number_format($entity->getPrice(), 2, ',', ' ') 
+							. (($entity->getFinal_price() != $entity->getPrice()) 
+							? '<span class="top-index red">' . number_format($entity->getFinal_price(), 2, ',', ' ') . '</span>' : '') 
+							. "</td>
 						<td>" . h($entity->getDiscount()) . "</td>
 						<td colspan=\"\">
 						<a class=\"edit\" title=\"" . __('Edit') . "\" href='" . $this->getUrl('edit_product/' . $entity->getId()) . "'></a>
@@ -134,7 +138,6 @@ class ShopSettingsController
     }
 
 
-    // atomx.loc/admin/shop/edit_product/1/
     public function edit_product($id = null)
     {
         $id = intval($id);
@@ -154,11 +157,35 @@ class ShopSettingsController
         $attrsGroupsModel = $Register['ModManager']->getModelInstance('shopAttributesGroups');
         $productsModel = $Register['ModManager']->getModelInstance('shopProducts');
         $productsModel->bindModel('attributes.content');
-        $entity = $productsModel->getById($id);
-        if (!$entity) {
-            $_SESSION['errors'] = __('Record not found');
-            redirect($this->getUrl('catalog'));
-        }
+        
+		if ($id) {
+			$entity = $productsModel->getById($id);
+			if (!$entity) {
+				$_SESSION['errors'] = __('Record not found');
+				redirect($this->getUrl('catalog'));
+			}
+		} else {
+			$entity = $Register['ModManager']->getEntityInstance('shopProducts');
+		}
+		
+		
+		// Change attributes group
+		if (!empty($_GET['attr_group_id'])) {
+			$curr_group_id = $entity->getAttributesGroupId();
+			if (empty($curr_group_id) || $curr_group_id != intval($_GET['attr_group_id'])) {
+				$attrsModel = $Register['ModManager']->getModelInstance('shopAttributes');
+				$attrs = $attrsModel->getCollection(array('group_id' => intval($_GET['attr_group_id'])));
+				if ($id) {
+					$attrsModel->delete(array('product_id' => $id));
+					$entity->setAttributesGroupId(intval($_GET['attr_group_id']));
+					$entity->save();
+					$entity = $productsModel->getById($id);
+				} else {
+					$entity->setAttributesGroupId(intval($_GET['attr_group_id']));
+					$entity->setAttributes($attrs);
+				}
+			}
+		}
 
 
 		if (!empty($_POST)) {
@@ -180,7 +207,7 @@ class ShopSettingsController
                     }
 				}
 			}
-
+		
             if ($entity->getTitle() != $_POST['title'])
                 $entity->setTitle($_POST['title']);
             if ($entity->getDescription() != $_POST['description'])
@@ -206,10 +233,10 @@ class ShopSettingsController
 			
 			if ($entity->save(true)) {
 				$_SESSION['message'] = __('Operation is successful');
-				redirect($this->getUrl('edit_product/' . $id));
+				redirect($this->getUrl('edit_product/' . $entity->getId()));
 			}
 			$_SESSION['errors'] = __('Some error occurred');
-			redirect($this->getUrl('edit_product/' . $id));
+			redirect($this->getCurrentUrl());
 		}
 
 
@@ -287,28 +314,53 @@ class ShopSettingsController
             ),
         );
         foreach ($foreign_models as $field => $params) {
+			$getter = 'get' . ucfirst($field);
             $foreign_entities = $params['model']->getCollection();
             $fields .= '<div class="setting-item">
                                 <div class="left">
                                 ' . $params['label'] . '
                                 </div>
                                 <div class="right"><select name="' . $field . '">';
+
+			$is_selected = false;
             if ($foreign_entities) {
                 foreach ($foreign_entities as $fentity) {
-                    $getter = 'get' . ucfirst($field);
-                    $selected = ($entity->$getter() === $fentity->getId()) ? ' selected="selected"' : '';
+					$change_attrs_group = false;
+					if ($field === 'attributes_group_id' &&
+						!empty($_GET['attr_group_id']) &&
+						$fentity->getId() == intval($_GET['attr_group_id'])) $change_attrs_group = true;
+						
+                    if ($entity->$getter() === $fentity->getId() || $change_attrs_group) {
+						$selected = ' selected="selected"';
+						$is_selected = true;
+					} else {
+						$selected = '';
+					}
+					
                     $fields .= '<option' . $selected . ' value="' . $fentity->getId()
                         . '">' . h($fentity->getTitle()) . '</option>';
                 }
             }
+			
+			if (!$entity->$getter() && !$is_selected) {
+				$fields .= '<option selected="selected" value=""> </option>';
+			}
+			
             $fields .= '</select></div>
                             <div class="clear"></div>
                         </div>';
         }
 
 
+		$content .= '<script type="text/javascript">
+			$(function(){
+				$(\'select[name="attributes_group_id"]\').change(function(e){
+					window.location.href = "' . $this->getCurrentUrl() . '?attr_group_id="+$(e.target).val();
+				});
+			});
+			</script>';
         $content .= '<div class="warning">' . __('Highlighted rows are related to the attributes group.') . '</div>';
-        $content .= '<form method="POST" action="' . $this->getUrl('edit_product/' . $id) . '" enctype="multipart/form-data">
+        $content .= '<form method="POST" action="' . $this->getCurrentUrl() . '" enctype="multipart/form-data">
             <div class="list">
                 <div class="title">' . $this->pageNav . '</div>
                 <div class="level1">
@@ -758,6 +810,7 @@ class ShopSettingsController
         $Register = Register::getInstance();
         $this->pageTitle = __('Shop') . ' / ' . __('Attributes group editing');
         $this->pageNav = __('Shop') . ' / ' . __('Attributes group editing');
+        $this->pageNavr = get_link(__('Attributes groups management'), $this->getUrl('attributes_groups'));
         $attributesModel = $Register['ModManager']->getModelInstance('shopAttributes');
         $model = $Register['ModManager']->getModelInstance('shopAttributesGroups');
         $model->bindModel('attributes');
@@ -815,7 +868,10 @@ class ShopSettingsController
 				$_SESSION['errors'] = __('Permission denied');
 				redirect($this->getUrl('attributes_group_edit/' . $id));
 			}
+			
+			$entity = $attributesModel->getById(intval($_GET['attr_id']));
 			$entity->delete();
+			
 			$_SESSION['message'] = __('Operation is successful');
 			redirect($this->getUrl('attributes_group_edit/' . $id));
 		}
@@ -967,7 +1023,7 @@ class ShopSettingsController
 						<td>" . h($attr->getIs_filterable()) . "</td>
 						<td colspan=\"\">
 						<a class=\"edit\" title=\"" . __('Edit') . "\" onClick=\"openPopup('" . $attr->getId() . "_attr');\" href='javascript:void(0);'></a>
-						<a class=\"delete\" title=\"" . __('Delete') . "\" href='" . $this->getUrl('attributes_group_edit/'
+						<a class=\"delete\" title=\"" . __('Delete') . "\" onClick=\"return confirm('" . __('Are you sure?') . "')\" href='" . $this->getUrl('attributes_group_edit/'
                         . $id . "?del_attr=1&attr_id=" . $attr->getId()) . "'></a>
 						</td>
 						</tr>";
@@ -1234,7 +1290,9 @@ class ShopSettingsController
 			
 			$entity->setTitle(trim($_POST['title']));
 			$entity->setDescription((!empty($_POST['description']) ? trim($_POST['description']) : ''));
+			$old_discount = $entity->getDiscount();
 			$entity->setDiscount((!empty($_POST['discount']) ? intval($_POST['discount']) : 0));
+			$old_view_on_home = $entity->getView_on_home();
 			$entity->setView_on_home((!empty($_POST['view_on_home']) ? '1' : '0'));
 			$entity->setHide_not_exists((!empty($_POST['hide_not_exists']) ? '1' : '0'));
 			if (!empty($_POST['logo_image_delete']) && $entity->getLogo_image()) {
@@ -2855,6 +2913,32 @@ class ShopSettingsController
                     'title' => __('Title'),
 				),
 			),
+			'attributes_group_edit' => array(
+				'title' => array(
+                    'required' => true,
+                    'max_lenght' => 250,
+                    'title' => __('Title'),
+				),
+				'label' => array(
+                    'required' => true,
+                    'max_lenght' => 250,
+                    'title' => __('Label'),
+				),
+				'type' => array(
+                    'required' => true,
+                    'max_lenght' => 10,
+                    'title' => __('Type'),
+				),
+				'params' => array(
+                    'required' => false,
+                    'max_lenght' => 1000,
+                    'title' => __('Params'),
+				),
+				'is_filterable' => array(
+                    'required' => false,
+                    'title' => __('Is filterable'),
+				),
+			),
             'delivery' => array(
                 'title' => array(
                     'required' => true,
@@ -2945,4 +3029,14 @@ LEFT JOIN shop_attributes_content battrs ON battrs.product_id = b.id
 JOIN shop_attributes atr ON aattrs.attribute_id = atr.id
 WHERE a.stock_id IS NOT NULL AND a.stock_id != 0 AND (aattrs.attribute_id = battrs.attribute_id AND aattrs.content != battrs.content)
 GROUP BY a.id
+
+- Search the different attributes content(for create filters)
+SELECT DISTINCT (
+c.content
+), a.title, b.title
+FROM shop_attributes_groups a
+JOIN shop_attributes b ON b.group_id = a.id
+LEFT JOIN shop_attributes_content c ON c.attribute_id = b.id
+WHERE a.id
+IN ( 1, 2 )
 */

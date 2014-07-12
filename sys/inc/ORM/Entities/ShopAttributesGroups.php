@@ -36,7 +36,7 @@ class ShopAttributesGroupsEntity extends FpsEntity
 		$params = array(
 			'title' => $this->title ,
 		);
-		if ($this->id) $params['id'] = $this->id;
+		if ($this->id) $params['id'] = intval($this->id);
 		$Register = Register::getInstance();
 		return $Register['DB']->save('shop_attributes_groups', $params);
 	}

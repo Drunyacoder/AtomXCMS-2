@@ -52,7 +52,6 @@ class ShopProductsEntity extends FpsEntity
 	
 	public function save($full = false)
 	{
-        if ($full === true) $this->__saveAttributes();
 		$params = array(
 			'stock_id' => intval($this->stock_id),
 			'stock_description' => (string)$this->stock_description,
@@ -62,7 +61,7 @@ class ShopProductsEntity extends FpsEntity
 			'category_id' => intval($this->category_id),
 			'vendor_id' => intval($this->vendor_id),
 			'user_id' => intval($this->user_id),
-			'date' => $this->date,
+			'date' => (empty($this->date)) ? new Expr('NOW()') : $this->date,
             'orders_cnt' => intval($this->orders_cnt),
             'comments_cnt' => intval($this->comments_cnt),
             'available' => (!empty($this->available)) ? '1' : '0',
@@ -77,7 +76,11 @@ class ShopProductsEntity extends FpsEntity
 		);
 		if ($this->id) $params['id'] = $this->id;
 		$Register = Register::getInstance();
-		return $Register['DB']->save('shop_products', $params);
+		$self_id = $Register['DB']->save('shop_products', $params);
+		if (!$this->id) $this->id = intval($self_id);
+		
+		if ($full === true) $this->__saveAttributes();
+		return $this->id;
 	}
 
 	
@@ -92,6 +95,62 @@ class ShopProductsEntity extends FpsEntity
     {
         $this->price = floatval($price);
     }
+	
+	
+	public function getFinal_price()
+	{
+		$discount = $this->getTotalDiscount();
+		$price = (!empty($discount))
+			? $this->price - ($this->price * ($discount / 100))
+			: $this->price;
+		return $price;
+	}
+	
+	
+	/**
+	 * Algorithms:
+	 * 1 - Priority: product > vendor > category
+	 * 2 - Priority: product > category > vendor
+	 * 3 - Amount: vendor + category + product
+	 * 4 - Max: vendor | category | product
+	 * 5 - Min: vendor | category | product
+	 */
+	public function getTotalDiscount()
+	{
+		$discount = intval($this->discount);
+		$vendor_discount = (!empty($this->vendor) && is_object($this->vendor))
+			? $this->vendor->getDiscount() : 0;
+		$category_discount = (!empty($this->category) && is_object($this->category))
+			? $this->category->getDiscount() : 0;
+		
+		$algorithm = Config::read('shop.discount_algorithm');
+		switch ($algorithm) {
+			case 1:
+				if (!$discount && !empty($vendor_discount))
+					$discount = $vendor_discount;
+				if (!$discount && !empty($category_discount))
+					$discount = $category_discount;
+				break;
+			case 2:
+				if (!$discount && !empty($category_discount))
+					$discount = $category_discount;
+				if (!$discount && !empty($vendor_discount))
+					$discount = $vendor_discount;
+				break;
+			case 3:
+				$discount += $vendor_discount + $category_discount;
+				break;
+			default:
+			case 4:
+				$discount = max($discount, $vendor_discount, $category_discount);
+				break;
+			case 5:
+				$discount = min($discount, $vendor_discount, $category_discount);
+				break;
+		}
+		
+		return $discount;
+	}
 
 
     /**
@@ -143,7 +202,9 @@ class ShopProductsEntity extends FpsEntity
         if (empty($this->attributes)) return;
         foreach ($this->attributes as $attr) {
             if (!$attr->getContent()->getId() || $attr->getContent()->getChanged()) {
-                $attr->save(true);
+				if (!$attr->getContent()->getProduct_id()) 
+					$attr->getContent()->setProduct_id($this->id);
+				$attr->save(true);
             }
         }
     }

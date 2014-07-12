@@ -299,7 +299,7 @@ class Module {
 	public function _view($content)
     {
         $Register = Register::getInstance();
-		
+
 		if (!empty($this->template) && $this->wrap == true) {
             Plugins::intercept('before_parse_layout', $this);
 			
@@ -812,22 +812,24 @@ class Module {
 		
 		if (!empty($attachment)) $entity->setAttachment($attachment);
 		
-		if (preg_match_all('#\{ATTACH(\d+)(\|(\d+))?(\|(left|right))?\}#i', $announce, $matches)) {
+		if (preg_match_all('#\{ATTACH(\d+)(\|(\d+))?(\|(left|right))?(\|([^\|]+))?\}#ui', $announce, $matches)) {
 			$ids = array();
 			$sizes = array();
 			$floats = array();
+			$descriptions = array();
 			foreach ($matches[1] as $key => $id) {
 				$ids[] = $id;
 				$sizes[$id] = (!empty($matches[3][$key])) ? intval($matches[3][$key]) : false;
 				$floats[$id] = (!empty($matches[5][$key])) ? 'float:' . $matches[5][$key] . ';' : false;
+				$descriptions[$id] = (!empty($matches[7][$key])) ? $matches[7][$key] : false;
 			}
 			$ids = implode(', ', $ids);
+			
 
-			//$attachesModel = $this->Register['ModManager']->getModelInstance($module . 'Attaches');
-			//$attaches = $attachesModel->getCollection(array("`id` IN ($ids)"));
 			$attaches = $entity->getAttaches();
 			if ($attaches) {
 				foreach ($attaches as $attach) {
+					
 					if ($attach->getIs_image() == 1) {
 						$style_ = (array_key_exists($attach->getId(), $sizes) && !empty($sizes[$attach->getId()])) 
 							? ' style="width:' . $sizes[$attach->getId()] . 'px;' . $floats[$attach->getId()] . '"'
@@ -835,11 +837,15 @@ class Module {
 						$size = (array_key_exists($attach->getId(), $sizes) && !empty($sizes[$attach->getId()]))
 							? '/' . $sizes[$attach->getId()]
 							: '';
+						$descr = (!empty($descriptions[$attach->getId()])) 
+							? '<div class="atm-img-description">' . h($descriptions[$attach->getId()]) . '</div>' 
+							: '';
 						
-						$announce = preg_replace('#\{ATTACH' . $attach->getId() . '[^\}]*\}#', 
+						$announce = preg_replace('#\{ATTACH' . $attach->getId() . '[^\}]*\}#ui', 
 							'<a class="gallery" href="' . get_url('/sys/files/' . $module . '/' . $attach->getFilename()) 
 							. '"><img' . $style_ . ' alt="' . h($entity->getTitle()) . '" title="' . h($entity->getTitle()) 
-							. '" title="" src="' . get_url('/image/' . $module . '/' . $attach->getFilename()) . $size . '" /></a>',
+							. '" title="" src="' . get_url('/image/' . $module . '/' . $attach->getFilename()) . $size . '" />' 
+							. $descr .  '</a>',
 							$announce);
 					} else {
 						$announce = preg_replace('#\{ATTACH' . $attach->getId() . '[^\}]*\}#', 

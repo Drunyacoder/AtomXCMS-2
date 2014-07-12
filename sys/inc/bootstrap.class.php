@@ -131,8 +131,7 @@ class Bootstrap
         * pinpoint the time
         * I wont know time needed for load page
         */
-        list($usec, $sec) = explode(" ", microtime());
-        $this->Register['fps_boot_start_time'] = ((float)$usec + (float)$sec);
+        $this->Register['fps_boot_start_time'] = getMicroTime();
     }
 
 

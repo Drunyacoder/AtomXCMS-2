@@ -48,8 +48,9 @@ Class ShopModule extends Module {
 	/**
 	 * Default NewsModule action
 	 */
-	public function index($tag = null)
+	public function index($category_id = null)
     {
+		$category_id = intval($category_id);
 		//turn access
 		$this->ACL->turn(array($this->module, 'view_catalog'));
 		
@@ -58,17 +59,30 @@ Class ShopModule extends Module {
 			$source = $this->Cache->read($this->cacheKey);
 			return $this->_view($source);
 		}
+		
+		
+		if (!empty($category_id)) {
+			$categoryModel = $this->Register['ModManager']->getModelInstance('shopCategories');
+			$category = $categoryModel->getById($category_id);
+			if (!$category) 
+				return $this->showInfoMessage(__('Can not find category'), '/' . $this->module . '/');
+			$this->addToPageMetaContext('category_title', h($category->getTitle()));
+		}
 	
 		
 		$where = array("(quantity > 0 || hide_not_exists = '0')");
 		// get products only from allowed categories (.no_access field)
-		$where[] = $this->_getDeniSectionsCond();
+		$where[] = $this->_getDeniSectionsCond($category_id);
+		$where[] = $this->__getProductsFiltersCond();
 		if (!$this->ACL->turn(array('other', 'can_see_hidden'), false)) {
 			$where['available'] = 1;
 		}
 		if (!empty($tag)) {
 			$tag = $this->Register['DB']->escape($tag);
 			$where[] = "CONCAT(',', `tags`, ',') LIKE '%,{$tag},%'";
+		}
+		if (!$category_id) {
+			$where['view_on_home'] = 1;
 		}
 
 
@@ -89,17 +103,13 @@ Class ShopModule extends Module {
 		$navi['pagination'] = $pages;
 		$navi['meta'] = __('Total materials') . $total;
 		$this->_globalize($navi);
-
-		if($total <= 0) {
-			$html = __('Materials not found');
-			return $this->_view($html);
-		}
-
+		
 		
 		$this->Model->bindModel('attributes_group');
 		$this->Model->bindModel('attributes.content');
 		$this->Model->bindModel('vendor');
 		$this->Model->bindModel('category');
+		$this->Model->bindModel('author');
         $params = array(
             'page' => $page,
             'limit' => $this->Register['Config']->read('per_page', $this->module),
@@ -108,16 +118,15 @@ Class ShopModule extends Module {
 		$records = $this->Model->getCollection($where, $params);
 		
 
-		if (is_object($this->AddFields) && count($records) > 0) {
-			$records = $this->AddFields->mergeRecords($records);
-		}
-		pr($records); die();
+		$filters = $this->__getProductsFilters($category_id);
+		$filters .= $this->__getVendorsFilter($category_id);
+		$this->_globalize(array('products_filters' => $filters));
 
 		// create markers
 		foreach ($records as $result) {
 			$result->setModer_panel($this->_getAdminBar($result));
 			$entry_url = get_url(entryUrl($result, $this->module));
-			$markers->setEntry_url($entry_url);
+			$result->setEntry_url($entry_url);
 			
 
 			// Cut announce
@@ -140,181 +149,42 @@ Class ShopModule extends Module {
 				'record_id_' . $result->getId(),
 			));
 		}
-		
+
 		$source = $this->render('list.html', array('entities' => $records));
-		
 		
 		//write int cache
 		if ($this->cached)
 			$this->Cache->write($source, $this->cacheKey, $this->cacheTags);
-		
+
 		return $this->_view($source);
 	}
 
 
-
-	/**
-	 * Show materials in category. Category ID must be integer and not null.
-	 */
-	public function category($id = null, $user_id = null)
-    {
-		//turn access
-		$this->ACL->turn(array($this->module, 'view_list'));
-		$id = intval($id); $user_id = intval($user_id);
-		if (empty($id) || $id < 1) redirect('/');
-
-		
-		$SectionsModel = $this->Register['ModManager']->getModelInstance($this->module . 'Categories');
-		$category = $SectionsModel->getById($id);
-		if (!$category)
-			return $this->showInfoMessage(__('Can not find category'), '/' . $this->module . '/');
-		if (!$this->ACL->checkCategoryAccess($category->getNo_access())) 
-			return $this->showInfoMessage(__('Permission denied'), '/' . $this->module . '/');
-		
-
-        Plugins::intercept('view_category', $category);
-		$this->page_title = h($category->getTitle()) . ' - ' . $this->page_title;
-		
-		
-		//формируем блок со списком  разделов
-		$this->_getCatsTree($id, !empty($user_id) ? '/' . $user_id : '');
-
-		
-		if ($this->cached && $this->Cache->check($this->cacheKey)) {
-			$source = $this->Cache->read($this->cacheKey);
-			return $this->_view($source);
-		}
-	
-		// we need to know whether to show hidden
-		$childCats = $SectionsModel->getOneField('id', array('parent_id' => $id));
-		$childCats[] = $id;
-		$childCats = implode(', ', $childCats);
-		
-		$group = (!empty($_SESSION['user']['status'])) ? $_SESSION['user']['status'] : 0;
-		$sectionModel = $this->Register['ModManager']->getModelInstance($this->module . 'Categories');
-		$deni_sections = $sectionModel->getCollection(array(
-			"CONCAT(',', `no_access`, ',') NOT LIKE '%,$group,%'",
-			"`id` IN ({$childCats})",
-		));
-		$ids = array();
-		if ($deni_sections) {
-			foreach ($deni_sections as $deni_section) {
-				$ids[] = $deni_section->getId();
-			}
-		}
-		$ids = (count($ids)) ? implode(', ', $ids) : 'NULL';
-		
-		$query_params = array('cond' => array(
-			"`category_id` IN ({$ids})",
-		));
-		if (!$this->ACL->turn(array('other', 'can_see_hidden'), false)) {
-			$query_params['cond']['available'] = 1;
-		}
-		if (!$this->ACL->turn(array('other', 'can_premoder'), false)) {
-			$query_params['cond']['premoder'] = 'confirmed';
-		}
-        if (!empty($user_id)) {
-            $usersModel = $this->Register['ModManager']->getModelInstance('users');
-            $main_user = $usersModel->getById($user_id);
-            if ($main_user) {
-                $query_params['cond']['author_id'] = $user_id;
-            }
-        }
-
-        pr($query_params); die();
-		$total = $this->Model->getTotal($query_params);
-		list ($pages, $page) = pagination( $total, Config::read('per_page', $this->module), '/' . $this->module . '/');
-		$this->Register['pages'] = $pages;
-		$this->Register['page'] = $page;
-		$this->page_title .= ' (' . $page . ')';
-
-
-		
-		$navi = array();
-		$navi['add_link'] = ($this->ACL->turn(array($this->module, 'add_materials'), false)) 
-			? get_link(__('Add material'), '/' . $this->module . '/add_form/') : '';
-		$navi['navigation'] = $this->_buildBreadCrumbs($id);
-		$navi['pagination'] = $pages;
-		$navi['meta'] = __('Count material in cat') . $total;
-		$navi['category_name'] = h($category->getTitle());
-		$this->_globalize($navi);
-
-
-		if($total <= 0) {
-			$html = __('Materials not found');
-			return $this->_view($html);
-		}
-	  
-
-		$where = $query_params['cond'];
-		if (!$this->ACL->turn(array('other', 'can_see_hidden'), false)) $where['available'] = '1';
-
-
-		$this->Model->bindModel('attaches');
-		$this->Model->bindModel('author');
-		$this->Model->bindModel('category');
-        $params = array(
-            'page' => $page,
-            'limit' => Config::read('per_page', $this->module),
-            'order' => $this->Model->getOrderParam(),
-        );
-		$records = $this->Model->getCollection($where, $params);
-
-
-		if (is_object($this->AddFields) && count($records) > 0) {
-			$records = $this->AddFields->mergeRecords($records);
-		}
-
-
-		// create markers
-		foreach ($records as $result) {
-			$markers = array();
-			
-			
-			$markers['moder_panel'] = $this->_getAdminBar($result);
-			$entry_url = get_url(entryUrl($result, $this->module));
-			$markers['entry_url'] = $entry_url;
-			
-			
-			$announce = $this->Textarier->getAnnounce($result->getMain()
-				, $entry_url
-				, 0 
-				, $this->Register['Config']->read('announce_lenght', $this->module)
-				, $result
-			);
-			$announce = $this->insertImageAttach($result, $announce);
-
-
-			$markers['announce'] = $announce;
-			
-			
-			$markers['category_url'] = get_url('/' . $this->module . '/category/' . $result->getCategory_id());
-			$markers['profile_url'] = getProfileUrl($result->getAuthor()->getId());
-			if ($result->getTags()) $result->setTags(explode(',', $result->getTags()));
-
-
-			//set users_id that are on this page
-			$this->setCacheTag(array(
-				'user_id_' . $result->getAuthor()->getId(),
-				'record_id_' . $result->getId(),
-			));
-		
-
-			$result->setAdd_markers($markers);
-		}
-		
-		
-		$source = $this->render('list.html', array('entities' => $records));
-		
-		
-		//write int cache
-		if ($this->cached)
-			$this->Cache->write($source, $this->cacheKey, $this->cacheTags);
-		
-	
-		return $this->_view($source);
+	private function __getProductsFiltersCond()
+	{
+		return $this->Model->getProductsFilterSubquery();
 	}
+	
+	
+	private function __getProductsFilters($category_id)
+	{
+		$data = $this->Model->getCategoryFilters($category_id);
+		if (!$data) return '';
 
+		$source = $this->render('filters.html', array('context' => $data));
+		return $source;
+	}
+	
+	
+	private function __getVendorsFilter($category_id = null)
+	{
+		$data = $this->Model->getVendorsFilter($category_id);
+		if (!$data) return '';
+		
+		$source = $this->render('filters.html', array('context' => $data));
+		return $source;
+	}
+	
 
 
 	/**
@@ -413,560 +283,6 @@ Class ShopModule extends Module {
 		$this->DB->cleanSqlCache();
 		
 		return $this->_view($source);
-	}
-
-
-	/**
-	 * Show materials by user. User ID must be integer and not null.
-	 */
-	public function user($id = null) 
-	{
-		//turn access
-		$this->ACL->turn(array($this->module, 'view_list'));
-		$id = intval($id);
-		if ($id < 1)
-		return $this->showInfoMessage(__('Can not find user'), $this->getModuleURL());
-
-
-		$usersModel = $this->Register['ModManager']->getModelInstance('Users');
-		$user = $usersModel->getById($id);
-		if (!$user)
-			return $this->showInfoMessage(__('Can not find user'), $this->getModuleURL());
-		if (!$this->ACL->checkCategoryAccess($user->getNo_access()))
-			return $this->showInfoMessage(__('Permission denied'), $this->getModuleURL());
-
-
-		$this->page_title = sprintf(__('User materials'), h($user->getName())) . ' - ' . $this->page_title;
-
-
-		//формируем блок со списком разделов
-		$this->_getCatsTree(false, '/' . $id);
-
-
-		if ($this->cached && $this->Cache->check($this->cacheKey)) {
-			$source = $this->Cache->read($this->cacheKey);
-			return $this->_view($source);
-		}
-
-		// we need to know whether to show hidden
-		$where = array('author_id' => $id);
-		if (!$this->ACL->turn(array('other', 'can_see_hidden'), false)) {
-			$where['available'] = 1;
-		}
-
-
-		$total = $this->Model->getTotal(array('cond' => $where));
-		list ($pages, $page) = pagination($total, $this->Register['Config']->read('per_page', $this->module), $this->getModuleURL('user/' . $id));
-		$this->Register['pages'] = $pages;
-		$this->Register['page'] = $page;
-		$this->page_title .= ' (' . $page . ')';
-
-
-
-		$navi = array();
-		$navi['add_link'] = ($this->ACL->turn(array($this->module, 'add_materials'), false)) ? get_link(__('Add material'), $this->getModuleURL('add_form/')) : '';
-		$navi['navigation'] = get_link(__('Home'), '/') . __('Separator')
-		. get_link(h($this->module_title), $this->getModuleURL()) . __('Separator') . sprintf(__('User materials'), h($user->getName())) . '"';
-		$navi['pagination'] = $pages;
-		$navi['meta'] = __('Total materials') . $total;
-		$navi['category_name'] = sprintf(__('User materials'), h($user->getName()));
-		$this->_globalize($navi);
-
-
-		if ($total <= 0) {
-			$html = __('Materials not found');
-			return $this->_view($html);
-		}
-
-
-		$this->Model->bindModel('author');
-		$this->Model->bindModel('category');
-        $params = array(
-            'page' => $page,
-            'limit' => $this->Register['Config']->read('per_page', $this->module),
-            'order' => $this->Model->getOrderParam(),
-        );
-		$records = $this->Model->getCollection($where, $params);
-
-
-		// create markers
-		foreach ($records as $entity) {
-			$markers = array();
-
-
-			$markers['moder_panel'] = $this->_getAdminBar($entity);
-			$entry_url = get_url(entryUrl($entity, $this->module));
-			$markers['entry_url'] = $entry_url;
-
-			
-			
-			$announce = $this->Textarier->getAnnounce($entity->getMain(), $entry_url, 0, $this->Register['Config']->read('announce_lenght', $this->module), $entity);
-			$announce = $this->insertImageAttach($entity, $announce);
-
-
-			$markers['announce'] = $announce;
-
-			
-
-			$markers['category_url'] = get_url($this->getModuleURL('category/' . $entity->getCategory_id()));
-			$markers['profile_url'] = getProfileUrl($entity->getAuthor_id());
-
-
-			//set users_id that are on this page
-			$this->setCacheTag(array(
-			'user_id_' . $entity->getAuthor_id(),
-			'record_id_' . $entity->getId(),
-			'category_id_' . $id,
-			));
-
-
-			$entity->setAdd_markers($markers);
-		}
-
-
-		$source = $this->render('list.html', array('entities' => $records));
-
-
-		//write int cache
-		if ($this->cached)
-			$this->Cache->write($source, $this->cacheKey, $this->cacheTags);
-
-
-		return $this->_view($source);
-	}
-
-
-	
-
-	/**
-	 *
-	 */
-	public function add_form ()
-    {
-		//turn access
-		$this->ACL->turn(array($this->module, 'add_materials'));
-		$writer_status = (!empty($_SESSION['user']['status'])) ? $_SESSION['user']['status'] : 0;
-		
-		
-		// categories block
-		$this->_getCatsTree();
-		
-		
-		// Additional fields
-		$markers = array();
-		if (is_object($this->AddFields)) {
-			$_addFields = $this->AddFields->getInputs(array(), true, $this->module);
-			foreach($_addFields as $k => $field) {
-				$markers[strtolower($k)] = $field;
-			}
-		}
-		
-		
-		$data = $this->Register['Validate']->getAndMergeFormPost($this->Register['action'], $markers);
-        $data['preview'] = $this->Parser->getPreview($data['main_text']);
-        $data['errors'] = $this->Register['Validate']->getErrors();
-        if (isset($_SESSION['viewMessage'])) unset($_SESSION['viewMessage']);
-        if (isset($_SESSION['FpsForm'])) unset($_SESSION['FpsForm']);
-		
-		
-		$SectionsModel = $this->Register['ModManager']->getModelInstance($this->module . 'Categories');
-		$sql = $SectionsModel->getCollection();
-		$data['cats_selector'] = $this->_buildSelector($sql, ((!empty($data['cats_selector'])) ? $data['cats_selector'] : false));
-		
-		
-		//comments and hide
-		$data['commented'] = (!empty($commented) || !isset($_POST['submitForm'])) ? 'checked="checked"' : '';
-		if (!$this->ACL->turn(array($this->module, 'record_comments_management'), false)) $data['commented'] .= ' disabled="disabled"';
-		$data['available'] = (!empty($available) || !isset($_POST['submitForm'])) ? 'checked="checked"' : '';
-		if (!$this->ACL->turn(array($this->module, 'hide_material'), false)) $data['available'] .= ' disabled="disabled"';
-		
-		
-		$data['action'] = get_url('/' . $this->module . '/add/');
-		$data['max_attaches'] = $this->Register['Config']->read('max_attaches', $this->module);
-		if (empty($data['max_attaches']) || !is_numeric($data['max_attaches'])) $data['max_attaches'] = 5;
-			
-			
-		//navigation panel
-		$navi = array();
-		$navi['navigation'] = $this->_buildBreadCrumbs();
-		$this->_globalize($navi);
-		
-		
-		$source = $this->render('addform.html', array('context' => $data));
-		return $this->_view($source);
-	}
-
-
-	
-	/**
-	 * 
-	 * Validate data and create a new record into 
-	 * Data Base. If an errors, redirect user to add form
-	 * and show error message where speaks as not to admit 
-	 * errors in the future
-	 * 
-	 */
-	public function add()
-    {
-		//turn access
-		$this->ACL->turn(array($this->module, 'add_materials'));
-		$errors  = '';
-		
-		
-		// Check additional fields if an exists.
-		// This must be doing after define $error variable.
-		if (is_object($this->AddFields)) {
-			$_addFields = $this->AddFields->checkFields();
-			if (is_string($_addFields)) $errors .= $_addFields; 
-		}
-		
-		
-		$errors .= $this->Register['Validate']->check($this->Register['action']);
-		$form_fields = $this->Register['Validate']->getFormFields($this->Register['action']);
-
-		// Если пользователь хочет посмотреть на сообщение перед отправкой
-		if ( isset( $_POST['viewMessage'] ) ) {
-			$_SESSION['viewMessage'] = array_merge($form_fields, $_POST);
-			redirect('/' . $this->module . '/add_form/');
-		}
-		
-		if (!empty($_POST['cats_selector'])) {
-			$categoryModel = $this->Register['ModManager']->getModelInstance($this->module . 'Categories');
-			$cat = $categoryModel->getById($_POST['cats_selector']);
-			if (empty($cat)) $errors .= '<li>' . __('Can not find category') . '</li>'."\n";
-		}
-
-
-		// Errors
-		if (!empty($errors)) {
-			$_SESSION['FpsForm'] = array_merge($form_fields, $_POST);
-			$_SESSION['FpsForm']['error'] = $this->Register['Validate']->wrapErrors($errors);
-			redirect('/' . $this->module . '/add_form/');
-		}
-			
-		// Защита от того, чтобы один пользователь не добавил
-		// 100 материалов за одну минуту
-		if ( isset( $_SESSION['unix_last_post'] ) and ( time()-$_SESSION['unix_last_post'] < 10 ) ) {
-			return $this->showInfoMessage(__('Your message has been added'), '/' . $this->module . '/');
-		}
-		
-		
-		//remove cache
-		$this->Register['Cache']->clean(CACHE_MATCHING_ANY_TAG, array('module_' . $this->module));
-		$this->DB->cleanSqlCache();
-		
-
-		$post = $this->Register['Validate']->getAndMergeFormPost($this->Register['action'], array(), true);
-		extract($post);
-		
-		
-		// Auto tags generation
-		if (empty($tags)) {
-			$TagGen = new MetaTags;
-			$tags = $TagGen->getTags($_POST['main_text']);
-			$tags = (!empty($tags) && is_array($tags)) ? implode(',', array_keys($tags)) : '';
-		}
-		
-		// Обрезаем переменные до длины, указанной в параметре maxlength тега input
-		$commented = (!empty($_POST['commented'])) ? 1 : 0;
-		$available = (!empty($_POST['available'])) ? 1 : 0;
-		if (!$this->ACL->turn(array($this->module, 'record_comments_management'), false)) $commented = '1';
-		if (!$this->ACL->turn(array($this->module, 'hide_material'), false)) $available = '1';
-		
-
-		$max_lenght = $this->Register['Config']->read('max_lenght', $this->module);
-		$add = mb_substr($main_text, 0, $max_lenght);
-		$res = array(
-			'title'        => $title,
-			'main'         => $add,
-			'date'         => new Expr('NOW()'),
-			'author_id'    => $_SESSION['user']['id'],
-			'category_id'  => $cats_selector,
-			'description'  => $description,
-			'tags'         => $tags,
-			'sourse'  	   => $sourse,
-			'sourse_email' => $sourse_email,
-			'sourse_site'  => $sourse_site,
-			'commented'    => $commented,
-			'available'    => $available,
-			'view_on_home' => $cat->getView_on_home(),
-			'premoder' 	   => 'confirmed',
-		);
-		if ($this->ACL->turn(array($this->module, 'materials_require_premoder'), false)) {
-			$res['premoder'] = 'nochecked';
-		}
-		
-		$className = ucfirst($this->module) . 'Entity';
-		$new = new $className($res);
-		$last_id = $new->save();
-		
-
-		if (is_object($this->AddFields)) {
-			$this->AddFields->save($last_id, $_addFields);
-		}
-		
-		downloadAttaches($this->module, $last_id);
-		
-		
-		// hook for plugins
-		Plugins::intercept('new_entity', array(
-			'entity' => $new,
-			'module' => $this->module,
-		));
-		
-		//clean cache
-		$this->Register['Cache']->clean(CACHE_MATCHING_TAG, array('module_' . $this->module));
-		$this->DB->cleanSqlCache();
-		if ($this->Log) $this->Log->write('adding ' . $this->module, $this->module . ' id(' . $last_id . ')');
-		return $this->showInfoMessage(__('Material successfully added'), '/' . $this->module . '/view/' . $last_id);				  
-	}
-
-
-
-	/**
-	 * 
-	 * Create form and fill his data from record which ID
-	 * transfered into function. Show errors if an exists
-	 * after unsuccessful attempt. Also can get data for filling
-	 * from SESSION if user try preview message or create error.
-	 *
-	 * @param int $id material then to be edit
-	 */
-	public function edit_form($id = null)
-    {
-		$id = (int)$id;
-		if ( $id < 1 ) redirect('/');
-		$writer_status = (!empty($_SESSION['user']['status'])) ? $_SESSION['user']['status'] : 0;
-
-		
-		$this->Model->bindModel('attaches');
-		$this->Model->bindModel('author');
-		$this->Model->bindModel('category');
-		$entity = $this->Model->getById($id);
-		
-		if (!$entity) redirect('/' . $this->module . '/');
-		
-		
-		if (is_object($this->AddFields) && count($entity) > 0) {
-			$entity = $this->AddFields->mergeRecords(array($entity), true);
-			$entity = $entity[0];
-		}
-		
-		
-		//turn access
-		if (!$this->ACL->turn(array($this->module, 'edit_materials'), false) 
-		&& (!empty($_SESSION['user']['id']) && $entity->getAuthor()->getId() == $_SESSION['user']['id'] 
-		&& $this->ACL->turn(array($this->module, 'edit_mine_materials'), false)) === false) {
-			return $this->showInfoMessage(__('Permission denied'), '/' . $this->module . '/');
-		}
-
-		
-		//forming categories list
-		$this->_getCatsTree($entity->getCategory()->getId());
-		
-
-        $data = array(
-			'title' 		=> '', 
-			'main_text' 		=> $entity->getMain(), 
-			'in_cat' 		=> $entity->getCategory_id(), 
-			'description' 	=> '', 
-			'tags' 			=> '', 
-			'sourse' 		=> '', 
-			'sourse_email' 	=> '', 
-			'sourse_site' 	=> '', 
-			'commented' 	=> '', 
-			'available' 	=> '',
-		);
-		$markers = Validate::getCurrentInputsValues($entity, $data);
-		
-		
-        $markers->setPreview($this->Parser->getPreview($markers->getMain()));
-        $markers->setErrors($this->Parser->getErrors());
-        if (isset($_SESSION['viewMessage'])) unset($_SESSION['viewMessage']);
-        if (isset($_SESSION['FpsForm'])) unset($_SESSION['FpsForm']);
-
-		
-		$sectionsModel = $this->Register['ModManager']->getModelInstance($this->module . 'Categories');
-		$cats = $sectionsModel->getCollection();
-		$selectedCatId = ($markers->getIn_cat()) ? $markers->getIn_cat() : $markers->getCategory_id();
-		$cats_change = $this->_buildSelector($cats, $selectedCatId);
-		
-		
-		//comments and hide
-		$commented = ($markers->getCommented()) ? 'checked="checked"' : '';
-		if (!$this->ACL->turn(array($this->module, 'record_comments_management'), false)) $commented .= ' disabled="disabled"';
-		$available = ($markers->getAvailable()) ? 'checked="checked"' : '';
-        if (!$this->ACL->turn(array('loads', 'hide_material'), false)) $available .= ' disabled="disabled"';
-		$markers->setAction(get_url('/' . $this->module . '/update/' . $markers->getId()));
-		
-		
-		$markers->setCommented($commented);
-		$markers->setAvailable($available);
-		
-		
-		$attaches = $markers->getAttaches();
-		$attDelButtons = '';
-        if (count($attaches)) {
-            foreach ($attaches as $key => $attach) {
-                $attDelButtons .= '<input type="checkbox" name="' . $attach->getAttach_number()
-                . 'dattach"> ' . $attach->getAttach_number() . '. (' . $attach->getFilename() . ')' . "<br />\n";
-            }
-        }
-		
-		
-
-
-		$markers->setCats_selector($cats_change);
-		$markers->setAttaches_delete($attDelButtons);
-		$markers->setMax_attaches($this->Register['Config']->read('max_attaches', $this->module));
-
-
-		//navigation panel
-		$navi = array();
-		$navi['navigation']  = $this->_buildBreadCrumbs($entity->getCategory_id());
-		$this->_globalize($navi);
-
-
-		setReferer();
-		$source = $this->render('editform.html', array('context' => $markers));
-		return $this->_view($source);
-	}
-
-
-	/**
-	 * 
-	 * Validate data and update record into 
-	 * Data Base. If an errors, redirect user to add form
-	 * and show error message where speaks as not to admit 
-	 * errors in the future
-	 * 
-	 */
-	public function update($id = null)
-    {
-		// Если не переданы данные формы - функция вызвана по ошибке
-		if (!isset($id) 
-		|| !isset($_POST['title']) 
-		|| !isset($_POST['main_text']) 
-		|| !isset($_POST['cats_selector'])) {
-			redirect('/');
-		}
-		$id = (int)$id;
-		if ($id < 1) redirect('/' . $this->module . '/');
-		$errors = '';
-		
-
-		$target = $this->Model->getById($id);
-		if (!$target) redirect('/' . $this->module . '/');
-		
-		
-		//turn access
-		if (!$this->ACL->turn(array($this->module, 'edit_materials'), false) 
-		&& (!empty($_SESSION['user']['id']) && $target->getAuthor_id() == $_SESSION['user']['id'] 
-		&& $this->ACL->turn(array($this->module, 'edit_mine_materials'), false)) === false) {
-			return $this->showInfoMessage(__('Permission denied'), '/' . $this->module . '/');
-		}
-		
-		
-		// Check additional fields if an exists.
-		// This must be doing after define $error variable.
-		if (is_object($this->AddFields)) {
-			$_addFields = $this->AddFields->checkFields();
-			if (is_string($_addFields)) $errors .= $_addFields; 
-		}
-		
-		
-		$errors .= $this->Register['Validate']->check($this->Register['action']);
-		
-		
-		$fields = array('description', 'tags', 'sourse', 'sourse_email', 'sourse_site');
-		$fields_settings = $this->Register['Config']->read('fields', $this->module);
-		foreach ($fields as $field) {
-			if (empty($_POST[$field]) && in_array($field, $fields_settings)) {
-				$$field = '';
-			} else {
-				$$field = trim($_POST[$field]);
-			}
-		}
-		
-		// Обрезаем переменные до длины, указанной в параметре maxlength тега input
-		$title  = trim(mb_substr($_POST['title'], 0, 128));
-		$edit   = trim($_POST['main_text']);
-		$commented = (!empty($_POST['commented'])) ? 1 : 0;
-		$available = (!empty($_POST['available'])) ? 1 : 0;
-        $in_cat = intval($_POST['cats_selector']);
-
-		
-		// Если пользователь хочет посмотреть на сообщение перед отправкой
-		if (isset($_POST['viewMessage'])) {
-			$_SESSION['viewMessage'] = array_merge(array('title' => null, 'main_text' => null, 'in_cat' => $in_cat,
-				'description' => null, 'tags' => null, 'sourse' => null, 'sourse_email' => null, 
-				'sourse_site' => null, 'commented' => null, 'available' => null), $_POST);
-			redirect('/' . $this->module . '/edit_form/' . $id);
-		}
-		
-		
-		
-		if (!empty($in_cat)) {
-			$catModel = $this->Register['ModManager']->getModelInstance($this->module . 'Categories');
-			$category = $catModel->getById($in_cat);
-			if (!$category) $errors = $errors . '<li>' . __('Can not find category') . '</li>' . "\n";
-		}
-		
-	
-
-		// Errors
-		if (!empty($errors)) {
-			$_SESSION['FpsForm'] = array_merge(array('title' => null, 'main_text' => null, 'in_cat' => $in_cat, 
-				'description' => null, 'tags' => null, 'sourse' => null, 'sourse_email' => null, 
-				'sourse_site' => null, 'commented' => null, 'available' => null), $_POST);
-			$_SESSION['FpsForm']['error']   = '<p class="errorMsg">' . __('Some error in form') . '</p>'
-				."\n".'<ul class="errorMsg">'."\n".$errors.'</ul>'."\n";
-			redirect('/' . $this->module . '/edit_form/' . $id);
-		}
-		
-        downloadAttaches($this->module, $id);
-		
-
-		if (!$this->ACL->turn(array($this->module, 'record_comments_management'), false)) $commented = '1';
-		if (!$this->ACL->turn(array($this->module, 'hide_material'), false)) $available = '1';
-		
-		
-		//remove cache
-		$this->Cache->clean(CACHE_MATCHING_TAG, array('module_' . $this->module, 'record_id_' . $id));
-		$this->DB->cleanSqlCache();
-		
-		
-		// Auto tags generation
-		if (empty($tags)) {
-			$TagGen = new MetaTags;
-			$tags = $TagGen->getTags($edit);
-			$tags = (!empty($tags) && is_array($tags)) ? implode(',', array_keys($tags)) : '';
-		}
-		
-		
-		$max_lenght = $this->Register['Config']->read('max_lenght', $this->module);
-		$edit = mb_substr($edit, 0, $max_lenght);
-		$data = array(
-			'title' 	   => $title,
-			'main' 		   => $edit,
-			'category_id'  => $in_cat,
-			'description'  => $description,
-			'tags'         => $tags,
-			'sourse'  	   => $sourse,
-			'sourse_email' => $sourse_email,
-			'sourse_site'  => $sourse_site,
-			'commented'    => $commented,
-			'available'    => $available,
-		);
-		$target->__construct($data);
-		$target->save();
-		if (is_object($this->AddFields)) {
-			$this->AddFields->save($id, $_addFields);
-		}
-		
-		
-		if ($this->Log) $this->Log->write('editing ' . $this->module, $this->module . ' id(' . $id . ')');
-		return $this->showInfoMessage(__('Operation is successful'), getReferer());
 	}
 
 
@@ -1288,8 +604,6 @@ Class ShopModule extends Module {
 		
 		return $moder_panel;
 	}
-
-
 
 
     /**

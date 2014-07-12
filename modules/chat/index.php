@@ -178,7 +178,7 @@ class ChatModule extends Module {
 			'name' => $name,
 			'message' => $message,
 			'ip' => $ip,
-			'date' => date("Y-m-d h:i"),
+			'date' => date("Y-m-d H:i"),
 		);
 		
 		

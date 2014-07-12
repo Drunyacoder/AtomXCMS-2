@@ -1,0 +1,7 @@
+#atm-products-filters h4 {margin:10px 0px 5px 10px;}
+#atm-products-filters .filter-item {padding:0px 0px 0px 20px;}
+#atm-products-filters .filter-item > label {width: 150px; display:inline-block; font-size:12px; text-overflow:ellipsis; overflow:hidden; white-space:nowrap; color:#769B16;}
+
+.catalog {}
+.catalog .product-item {width:200px; height:300px; padding:10px; margin:5px; float:left; font-size:14px;}
+.catalog .product-item .product-image {width:150px; height:200px; margin:auto; margin-bottom:20px; border:1px solid #777;}

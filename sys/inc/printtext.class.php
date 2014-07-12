@@ -115,7 +115,6 @@ class PrintText {
 	}
 	
 	
-	
 	/**
 	 * @param string $str
 	 * @return string with closed tags
@@ -145,9 +144,6 @@ class PrintText {
 		return $str;
 	}
 
-	
-	
-	
 
 	/**
 	 * @param string $message
@@ -400,20 +396,33 @@ class PrintText {
 			$sizey = $Register['Config']->read('img_size_y', $Register['dispath_params'][0]);
 			$sizex = intval($sizex);
 			$sizey = intval($sizey);
-			if (!empty($sizex) && !empty($sizey)) {
-				$str = preg_replace("#\[img\][\s]*([^\"'\>\<\(\)]+)[\s]*\[\/img\]#isU"
-				,'<a href="\\1" class="gallery"><img style="max-width:'.$sizex.'px; max-height:'.$sizey
-				.'px;" src="\\1" alt="'.$title.'" title="'.$title.'" /></a>',$str);
-				$str = preg_replace("#\[imgl\][\s]*([^\"'\>\<\(\)]+)[\s]*\[\/imgl\]#isU"
-				,'<a style="float:left;" href="\\1" class="gallery"><img style="max-width:'.$sizex.'px; max-height:'
-				.$sizey.'px;" src="\\1" alt="'.$title.'" title="'.$title.'" /><div class="clear"></div></a>',$str);
-				return $str;
+		}
+		$styles = (!empty($sizex) && !empty($sizey)) 
+			? ' style="max-width:' . $sizex . 'px; max-height:' . $sizey . 'px;"'
+			: ' style="max-width:150px;"';
+		
+		if (preg_match_all("#\[img(\|([^\]]+))?\][\s]*([^\"'\>\<\(\)]+)[\s]*\[\/img\]#uisU", $str, $matches)) {
+			foreach ($matches[0] as $key => $match) {
+				$descr = (!empty($matches[2][$key])) 
+					? '<div class="atm-img-description">' . h($matches[2][$key]) . '</div>' 
+					: '';
+				$str = preg_replace('#' . preg_quote($match) . '#uisU', 
+					'<a href="' . h($matches[3][$key]) . '" class="gallery">
+					<img' . $styles . ' src="' . h($matches[3][$key]) . '" alt="' . $title 
+					. '" title="' . $title . '" />' . $descr . '</a>', $str);
 			}
 		}
-		$str = preg_replace("#\[img\][\s]*([^\"'\>\<\(\)]+)[\s]*\[\/img\]#isU"
-		,'<a href="\\1" class="gallery"><img style="max-width:150px;" src="\\1" alt="'.$title.'" title="'.$title.'" /></a>',$str);
-		$str = preg_replace("#\[imgl\][\s]*([^\"'\>\<\(\)]+)[\s]*\[\/imgl\]#isU"
-		,'<a style="float:left;" href="\\1" class="gallery"><img style="max-width:150px;" src="\\1" alt="'.$title.'" title="'.$title.'" /></a>',$str);
+		if (preg_match_all("#\[imgl(\|([^\]]+))?\][\s]*([^\"'\>\<\(\)]+)[\s]*\[\/imgl\]#uisU", $str, $matches)) {
+			foreach ($matches[0] as $key => $match) {
+				$descr = (!empty($matches[2][$key])) 
+					? '<div class="atm-img-description">' . h($matches[2][$key]) . '</div>' 
+					: '';
+				$str = preg_replace('#' . preg_quote($match) . '#uisU', 
+					'<a href="' . h($matches[3][$key]) . '" class="gallery" style="float:left;">'
+					. '<img' . $styles . ' src="' . h($matches[3][$key]) . '" alt="' . $title 
+					. '" title="' . $title . '" />' . $descr . '</a>', $str);
+			}
+		}
 		return $str;
 	}
 	public function parseUrlBb($str) {
@@ -458,8 +467,6 @@ class PrintText {
 		return $str;
 	}
 
-
-	
 	
 	/**
 	 * @param string $str
@@ -490,9 +497,6 @@ class PrintText {
 	}
 
 	
-	
-	
-	
 	/**
 	 * @param string $str
 	 * @return string 
@@ -511,8 +515,6 @@ class PrintText {
 
 		return $sql;
 	}
-
-
 	
 }
 

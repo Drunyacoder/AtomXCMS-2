@@ -227,9 +227,9 @@
 		  [
 		  '<a href="/admin"><?php echo __('Main page'); ?></a>',
 		  'sep',
-		  '<span><?php echo __('Version of Fapos'); ?> [ <b><?php echo FPS_VERSION ?></b> ]</span>',
+		  '<span><?php echo __('Version of AtomX'); ?> [ <b><?php echo FPS_VERSION ?></b> ]</span>',
 		  <?php if ($new_ver): ?>
-		  '<span><?php echo __('New version of Fapos'); ?> [ <?php echo $new_ver; ?> ]</span>',
+		  '<span><?php echo __('New version of AtomX'); ?> [ <?php echo $new_ver; ?> ]</span>',
 		  <?php endif; ?>
 		  'sep',
 		  '<a href="/admin/settings.php?m=sys"><?php echo __('Common settings'); ?></a>',
@@ -291,7 +291,7 @@
 
 		['<?php echo __('Help'); ?>',
 		  [
-		  '<a href="http://fapos.net" target="_blank"><?php echo __('Fapos CMS Community'); ?></a>',
+		  '<a href="http://fapos.net" target="_blank"><?php echo __('AtomX CMS Community'); ?></a>',
 		  '<a href="faq.php"><?php echo __('FAQ'); ?></a>',
 		  'sep',
 		  '<a href="authors.php"><?php echo __('Dev. Team'); ?></a>',

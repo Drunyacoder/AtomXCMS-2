@@ -177,7 +177,7 @@ class FpsPDO {
 		if ((array_key_exists('id', $values) && !empty($values['id'])) || !empty($params)) {
 			if (!empty($values['id'])) {
 				$conditions = array('id' => $values['id']);
-                $this->queryParams['id'] = $values['id'];
+                //$this->queryParams['id'] = $values['id'];
 				unset($values['id']);
 			} else {
 				$conditions = $params;
@@ -302,6 +302,18 @@ class FpsPDO {
 	}
 
 
+	public function renderQuery($table, $params = array())
+	{
+		$this->queryParams = array();
+		$this->DB_TYPE = 'DB_ALL';
+
+        if (!empty($params['alias'])) $this->table_alias = $this->__name($params['alias']);
+		$query = $this->__buildQuery($params, $table);
+		
+		return $this->getQueryDump($query);
+	}
+	
+	
     private function prepareOutput(PDOStatement $query) {
         $rows = $query->fetchAll(PDO::FETCH_NUM);
 
@@ -534,7 +546,13 @@ class FpsPDO {
         $this->statement = $statement = $this->dbh->prepare($query);
         //pr($query);
         //pr($this->queryParams);
-		$statement->execute($this->queryParams);
+		try {
+			$statement->execute($this->queryParams);
+		} catch (PDOException $e) {
+			pr($e->getMessage());
+			pr($query);
+			pr($this->queryParams);
+		}
 		return $statement;
 	}
 	
@@ -608,15 +626,28 @@ class FpsPDO {
 				}
 			}
 
+			
+			/**
+			 * If we have both joins and limit, query must contain subquery
+			 */
             if ($this->__limit($params['limit'], $params['offset'])/* && false*/) {
                 $cond = array();
+				// Replace conditions for first table to subquery
                 if (!empty($params['cond']) && is_array($params['cond'])) {
-                    foreach ($params['cond'] as $k => $v) {
+                    
+					foreach ($params['cond'] as $k => $v) {
                         if (is_numeric($k) || !strstr($k, '.')) {
-                            if (!empty($params['alias']) && preg_match('#^' . $params['alias'] . '\.\w+#', $v))
-								$v = str_replace($params['alias'] . '.', '', $v);
+							if (is_array($v)) {
+								foreach ($v as $vk => $vv) {
+									if (!empty($params['alias']) && preg_match('#^' . $params['alias'] . '\.\w+#', $vv))
+										$v[$vk] = str_replace($params['alias'] . '.', '', $vv);
+								}
+							} else {
+								if (!empty($params['alias']) && preg_match('#^' . $params['alias'] . '\.\w+#', $v))
+									$v = str_replace($params['alias'] . '.', '', $v);
+							}
 							$cond[$k] = $v;
-                            unset($params['cond'][$k]);
+							unset($params['cond'][$k]);
                         }
                     }
                 }
@@ -969,24 +1000,38 @@ class FpsPDO {
 		// finaly params must contains :id => 1 (without "`").
         if (!empty($key) && strstr($key, '`')) $key = strtr($key, array('`' => ''));
 
-		if (empty($value) && is_int($value)) $this->queryParams[":$key"] = '0';
-		else if (empty($value)) $this->queryParams[":$key"] = "";
+		if (empty($value) && is_int($value)) $this->setQueryParam($key, '0');
+		else if (empty($value)) $this->setQueryParam($key, "");
 
 		
 		else if (is_array($value) && !empty($value)) {
 			foreach ($value as $k => $v) {
 				$value[$k] = $this->__value($v, $key);
 			}
-			
+			return $value;
 			
 		} else {
 			if ($value instanceof Expr) {
 				return (string)$value;
 			}
 			
-			$this->queryParams[":$key"] = $value;
+			$this->setQueryParam($key, $value);
 		}
 		return ":$key";
+	}
+	
+	
+	private function setQueryParam(&$key, $value)
+	{
+		$n = 1;
+		$key_ = $key . $n;
+		while (array_key_exists(":$key_", $this->queryParams)) {
+			$n++;
+			$key_ = $key . $n;
+		}
+		
+		$key = $key_;
+		$this->queryParams[":$key"] = $value;
 	}
 	
 	
@@ -1041,7 +1086,7 @@ class FpsPDO {
 		if ($data === '*') {
 			return '*';
 		}
-
+		
 		if (is_array($data)) {
 			foreach ($data as $i => $dataItem) {
 				$data[$i] = $this->__name($dataItem, $alias);
@@ -1068,11 +1113,15 @@ class FpsPDO {
 		}
 		if (preg_match('/^([\w-]+(\.[\w-]+|\(.*\))*)\s+' . preg_quote($this->alias) 
 		. '\s*([\w-]+)$/iu', $data, $matches)) {
+			
 			return preg_replace('/\s{2,}/', ' ', $this->__name($matches[1]) . ' '
 			. $this->alias . ' ' . $this->__name($matches[3]));
 		}
 
-		if (preg_match('/^([\w_-]+(\.[\w_-]+)?)(\s((\(.*\))|[\s\w_-]+)+)/i', $data, $matches)) { // id DESC, id in (1, 2...)
+		/** "id DESC", "id in (1, 2...)" 
+		 * "DISTINCT (field)" is not matched
+		 */
+		if (preg_match('/^([\w_-]+(\.[\w_-]+)?)(\s([a-z]{2,4}\s+(\(.*\))|[\s\w_-]+)+)/i', $data, $matches)) { 
 			return $this->__name($matches[1], true) . $matches[3];
 		}
 		return $data;

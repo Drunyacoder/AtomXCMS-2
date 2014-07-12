@@ -16,4 +16,5 @@ $FpsInstallSettings = array(
     'img_size_x' => '150',
     'img_size_y' => '350',
     'comments_order' => 0,
+    'discount_algorithm' => 1,
 );
