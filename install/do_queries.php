@@ -26,8 +26,6 @@ session_start();
 define ('ROOT', dirname(dirname(__FILE__)));
 if (function_exists('set_time_limit')) set_time_limit(0);
 include_once '../sys/boot.php';
-//include_once '../sys/inc/config.class.php';
-//include_once '../sys/inc/helpers.lib.php';
 
 
 $errors = array();
@@ -600,7 +598,8 @@ $n = 0;
 foreach ($array as $key => $query) {
 	$DB->query($query);
 	if ($DB->getErrorInfo()) {
-		$errors['query'] = 'При формировании базы данных произошел збой! <br /> Начните  пожалуйста заново. (' . $query . ')';
+		$errors['query'] = __('Some error occurred during database creation')
+            . ' <br /> ' . __('Please, start from beginning') . '. (' . $query . ')';
 		break;
 		
 		
@@ -617,7 +616,8 @@ if (empty($errors['query'])) {
 	$DB->query("INSERT INTO `{$set['db']['prefix']}users` (`id`, `name`, `passw`, `email`, `status`, `puttime`) 
 	VALUES (1, '" . $_SESSION['adm_name'] . "', '" . md5($_SESSION['adm_pass']) . "', '".$_SESSION['adm_email']."', '4', NOW())");
 	if ($DB->getErrorInfo()) 
-		$errors['query'] = 'При формировании базы данных произошел збой! <br /> Начните  пожалуйста заново.<br /><br />';
+		$errors['query'] = __('Some error occurred during database creation')
+            . ' <br /> ' . __('Please, start from beginning') . '.<br /><br />';
 }
 
 
@@ -626,9 +626,9 @@ if (empty($errors)) :
 ?>
 </div>
 <div style="">
-<h1 class="fin-h">Все готово</h1>
-<a class="fin-a" href="../">Перейти на сайт :)</a><a style="margin-left:40px;" class="fin-a" href="../admin/">В админку</a><br />
-<span class="help">Перед использованием сайта не забудте удалить или переименовать директорию INSTALL</span>
+<h1 class="fin-h"><?php echo __('All done') ?></h1>
+<a class="fin-a" href="../"><?php echo __('Go to the site') ?></a><a style="margin-left:40px;" class="fin-a" href="../admin/"><?php echo __('To admin panel') ?></a><br />
+<span class="help"><?php echo __('Before using the site, remove or rename INSTALL directory') ?></span>
 </div>
 <?php 
  

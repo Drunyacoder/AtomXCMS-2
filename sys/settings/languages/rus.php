@@ -815,6 +815,13 @@ return array(
     'Search results' 				=> 'Вид результата',
     'Not found material for premoderation' => 'Нет материалов для премодерации',
     'Module not found' 				=> 'Модуль не найден',
+
+    // Install
+    'Some error occurred during database creation' => 'При формировании базы данных произошел збой!',
+    'Please, start from beginning'  => 'Начните  пожалуйста заново',
+    'Go to the site'                => 'Перейти на сайт :)',
+    'To admin panel'                => 'В админку',
+    'Before using the site, remove or rename INSTALL directory' => 'Перед использованием сайта не забудте удалить или переименовать директорию INSTALL',
 );
 
 

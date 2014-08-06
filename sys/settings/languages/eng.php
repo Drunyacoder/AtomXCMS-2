@@ -782,6 +782,14 @@ return array(
     'Search results' 				=> 'Result type',
     'Not found material for premoderation' => 'There are no materials for pre-moderation',
     'Module not found' 				=> 'The module is not found',
+
+
+    // Install
+    'Some error occurred during database creation' => 'Some error occurred during database creation!',
+    'Please, start from beginning'  => 'Please, start from beginning',
+    'Go to the site'                => 'Go to the site :)',
+    'To admin panel'                => 'To admin panel',
+    'Before using the site, remove or rename INSTALL directory' => 'Before using the site, remove or rename INSTALL directory',
 );
 
 
