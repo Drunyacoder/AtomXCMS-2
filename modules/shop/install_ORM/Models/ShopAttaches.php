@@ -5,9 +5,9 @@
 | @Version:      1.0                           |
 | @Project:      CMS                           |
 | @Package       AtomX CMS                     |
-| @subpackege    StatAttaches Model            |
-| @copyright     ©Andrey Brykin 2010-2012      |
-| @last mod      2012/04/25                    |
+| @subpackege    ShopAttaches Model            |
+| @copyright     ©Andrey Brykin 2010-2014      |
+| @last mod      2014/08/25                    |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
@@ -24,10 +24,10 @@
 /**
  *
  */
-class StatAttachesModel extends FpsModel
+class ShopAttachesModel extends FpsModel
 {
 	
-    public $Table = 'stat_attaches';
+    public $Table = 'shop_attaches';
 
     protected $RelatedEntities = array(
         'user' => array(
@@ -45,6 +45,7 @@ class StatAttachesModel extends FpsModel
 		return $data;
 	}
 	
+
 	public function getUserOveralFilesSize($user_id)
 	{
 		$ovaral_size = $this->getDbDriver()->select($this->Table, DB_ALL, array(
