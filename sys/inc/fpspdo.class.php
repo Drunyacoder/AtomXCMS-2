@@ -666,7 +666,7 @@ class FpsPDO {
             }
 		}
 
-
+		
 		return $this->__renderQuery('select', array(
 			'conditions' => $this->__conditions($params['cond'], true, true),
 			'fields' => $this->__fields($params['fields'], true),
@@ -870,7 +870,7 @@ class FpsPDO {
 		}
 		if (is_array($conditions) && !empty($conditions)) {
 			$output = $this->__conditionKeysToString($conditions, $quoteValues);
-
+			
 			if (empty($output)) {
 				return null;
 			}
@@ -1086,7 +1086,7 @@ class FpsPDO {
 		if ($data === '*') {
 			return '*';
 		}
-		
+
 		if (is_array($data)) {
 			foreach ($data as $i => $dataItem) {
 				$data[$i] = $this->__name($dataItem, $alias);
@@ -1121,7 +1121,7 @@ class FpsPDO {
 		/** "id DESC", "id in (1, 2...)" 
 		 * "DISTINCT (field)" is not matched
 		 */
-		if (preg_match('/^([\w_-]+(\.[\w_-]+)?)(\s([a-z]{2,4}\s+(\(.*\))|[\s\w_-]+)+)/i', $data, $matches)) { 
+		if (preg_match('/^([\w_-]+(\.[\w_-]+)?)(\s([a-z]{2,4}\s+(\(.*\))|[\s\w_-]+)+)$/i', $data, $matches)) { 
 			return $this->__name($matches[1], true) . $matches[3];
 		}
 		return $data;

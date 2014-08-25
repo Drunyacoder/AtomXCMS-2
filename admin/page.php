@@ -530,7 +530,7 @@ $(document).ready(function(){
 		removeEmptyTags: false,
 		phpTags: true,
 		uploadCrossDomain: true,
-		visual: false
+		visual: true
 	});
 	
 	
