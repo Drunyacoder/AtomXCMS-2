@@ -41,7 +41,7 @@ class LoadsAttachesModel extends FpsModel
 	public function getByEntity($entity)
 	{
 		$params['entity_id'] = $entity->getId();
-		$data = $this->getMapper()->getCollection($params);
+		$data = $this->getCollection($params);
 		return $data;
 	}
 	
