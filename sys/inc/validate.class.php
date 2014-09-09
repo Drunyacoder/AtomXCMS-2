@@ -381,11 +381,6 @@ class Validate {
 	public function getAndMergeFormPost($action = null, $additional_fields = array(), $correct = false)
 	{
 		$rules = $this->prepareRules($action);
-		
-		$Register = Register::getInstance();
-		$request = $_POST;
-			
-		
 		$pattern = array_fill_keys(array_keys($rules), null);
 		$pattern = array_merge($pattern, $additional_fields);
 		$fields = $this->getCurrentInputsValues($pattern);
