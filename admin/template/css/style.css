@@ -280,6 +280,20 @@ select {height:27px;}
 .float-block select {width:250px;}
 .float-block h3 {margin:0px 0px 5px 0px;}
 
+.upload-area {position:relative; height:150px; width:300px; float:left;}
+.upload-area input[type="file"] {position:absolute; top:0px; left:0px; width:300px; height:150px; opacity:0; cursor:pointer;}
+.upload-area .drag-area {position:absolute; top:0px; left:0px; width:300px; height:30px; background:#efffe0; border:1px dashed #cfefc0; font-size: 25px; color:#fff; text-align:center; padding: 60px 0;}
+.setting-item .right .main-image {float:left; padding-right:40px }
+.setting-item .right .products-images {width:550px; height:100px; padding:10px 0px; position:relative; display:none; overflow-x:auto; overflow-y:hidden;}
+.setting-item .right .products-images .viewport {min-width:100%;}
+.setting-item .right .products-images .viewport .attach-item {position:relative; display:inline-block;}
+.setting-item .right .products-images .viewport .attach-item img {margin:0px 5px;}
+.setting-item .right .products-images .viewport .atmshop-del-attach, .setting-item .right .products-images .viewport .atmshop-asmain-attach {width:calc(100% - 10px); height:14px; padding:18px 0px; position:absolute; left:5px; background:#ccc; font-size:14px; font-weight:bold; text-align:center; opacity:0.8; display:none; cursor:pointer;}
+.setting-item .right .products-images .viewport .atmshop-del-attach {top:50px;}
+.setting-item .right .products-images .viewport .atmshop-asmain-attach {top:0px;}
+.setting-item .right .products-images .viewport .atmshop-del-attach:hover, .setting-item .right .products-images .viewport .atmshop-asmain-attach:hover {background:#fafafa;}
+.setting-item .right .products-images .viewport .attach-item:hover .atmshop-del-attach, .setting-item .right .products-images .viewport  .attach-item:hover .atmshop-asmain-attach {display:block;}
+
 
 /* Pages */
 .white {padding-top:5px;}

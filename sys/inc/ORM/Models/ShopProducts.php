@@ -54,6 +54,11 @@ class ShopProductsModel extends FpsModel
             'type' => 'has_one',
             'internalKey' => 'category_id',
         ),
+        'attaches' => array(
+            'model' => 'shopAttaches',
+            'type' => 'has_many',
+            'foreignKey' => 'entity_id',
+        ),
         'comments' => array(
             'model' => 'Comments',
             'type' => 'has_many',

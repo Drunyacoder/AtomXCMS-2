@@ -66,7 +66,55 @@ AtomX = new function() {
 		});
 	};
 	
+	
+	this.initMultiFileUploadHandler = function(module, callback){
+		if (typeof callback == 'function') this.parseRespnse = callback;
+	
+		function progressHandlingFunction(e){
+			if(e.lengthComputable){
+				$('progress').attr({value:e.loaded, max:e.total});
+			}
+		}
+			 
+		$('#preloader').hide();
+		$('#attach').bind('change', function(){
+			var data = new FormData();
+			jQuery.each($('#attach')[0].files, function(i, file) {
+				var ii = i + 1;
+				data.append('attach'+ii, file);
+		 
+			});
 
+			$.ajax({
+				url: '/' + module + '/upload_attaches/',
+				type: 'POST',
+				xhr: function() { 
+					var myXhr = $.ajaxSettings.xhr();
+					if(myXhr.upload){ // проверка что осуществляется upload
+						myXhr.upload.addEventListener('progress',progressHandlingFunction, false); //передача в функцию значений
+					}
+					return myXhr;
+				},
+				data: data,
+				cache: false,
+				contentType: false,
+				dataType: 'json',
+				processData: false,
+				beforeSend: function() {
+					$('progress').show().attr({value:'0', max:'10000'}); 
+					if (!$('#attaches-info').is(':visible')) $('#attaches-info').show();
+				},
+				success: function(data){
+					AtomX.parseRespnse(module, data);
+					$('progress').hide();
+				   
+				},
+				error: errorHandler = function() {
+					$('#attaches-info').html('Some error during the files upload!');
+				}
+			});
+		});
+	};
 }
 
 

@@ -298,7 +298,13 @@ class Validate {
 	
 	
 	public function wrapErrors($errors, $preprocess = false) {
-        if ($preprocess) $errors = $this->completeErrorMessage($errors);
+        if ($preprocess) {
+			if (is_array($errors)) {
+				foreach ($errors as $k => $error) {
+					$errors[$k] = $this->completeErrorMessage($error);
+				}
+			} else $errors = $this->completeErrorMessage($errors);
+		}
 		return (is_callable($this->layoutWrapper))
 			? call_user_func($this->layoutWrapper, $errors)
 			: $errors;

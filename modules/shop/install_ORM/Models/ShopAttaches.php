@@ -60,4 +60,21 @@ class ShopAttachesModel extends FpsModel
 			? $ovaral_size[0]['size']
 			: 0;
 	}
+	
+	
+	public function deleteNotRelated()
+	{
+		$attaches = $this->getCollection(array(
+			'or' => array(
+				'entity_id IS NULL',
+				'entity_id = 0',
+			),
+			"date < '" . date('Y-m-d H:i:s', time() - 84600) . "'"
+		));
+		if ($attaches) {
+			foreach ($attaches as $attach) {
+				$attach->delete();
+			}
+		}
+	}
 }
