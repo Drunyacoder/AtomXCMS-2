@@ -79,6 +79,7 @@ class FpsAdditionalFields {
 				
 				
 					$fieldContent = array();
+                    $viewData = '';
 					if (!empty($addContents)) {
 						foreach($addContents as $addCon) {
 						
@@ -91,14 +92,11 @@ class FpsAdditionalFields {
 						}
 					}
 					$addField->setContent($fieldContent);
-					
 				
 
                     $field = 'add_field_' . $addField->getId();
                     $f_params = $addField->getParams();
                     if (!empty($f_params)) $f_params = unserialize($f_params);
-
-
 
 
                     if ($inputs === true) {
@@ -249,8 +247,6 @@ class FpsAdditionalFields {
 				$field_name = 'add_field_' . $field->getId();
 				$value = '';
 				$array = array('field_id' => $field->getId());
-				
-				
 				
 				
 				switch ($field->getType()) {

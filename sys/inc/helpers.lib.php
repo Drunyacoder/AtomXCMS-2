@@ -599,6 +599,11 @@ function get_link($ankor, $url, $params = array(), $notRoot = false) {
  * work stop script and die. Better redirect
  * user to another page but if can't doing this
  * better stop script.
+ *
+ * @param $url (string)
+ * @param $header (int)
+ *     302 - Moved temporarily
+ *     301 - Moved permanently
  */
 function redirect($url, $header = 302) {
 	

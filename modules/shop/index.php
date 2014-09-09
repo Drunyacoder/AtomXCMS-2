@@ -87,7 +87,7 @@ Class ShopModule extends Module {
 
 
         //формируем блок со списком  разделов
-        $this->_getCatsTree(false);
+        $this->_getCatsTree($category_id);
 
 
 		$total = $this->Model->getTotal(array('cond' => $where));
@@ -110,6 +110,7 @@ Class ShopModule extends Module {
 		$this->Model->bindModel('vendor');
 		$this->Model->bindModel('category');
 		$this->Model->bindModel('author');
+        $this->Model->bindModel('attaches');
         $params = array(
             'page' => $page,
             'limit' => $this->Register['Config']->read('per_page', $this->module),
@@ -287,48 +288,27 @@ Class ShopModule extends Module {
 	}
 	
 
-	private function __getProductsFiltersCond()
-	{
-		return $this->Model->getProductsFilterSubquery();
-	}
-	
-	
-	private function __getProductsFilters($category_id)
-	{
-		$data = $this->Model->getCategoryFilters($category_id);
-		if (!$data) return '';
-
-		$source = $this->render('filters.html', array('context' => $data));
-		return $source;
-	}
-	
-	
-	private function __getVendorsFilter($category_id = null)
-	{
-		$data = $this->Model->getVendorsFilter($category_id);
-		if (!$data) return '';
-		
-		$source = $this->render('filters.html', array('context' => $data));
-		return $source;
-	}
-	
-
-
 	/**
      * @param null|int $id
      */
 	public function view ($id = null)
     {
 		//turn access
-		$this->ACL->turn(array($this->module, 'view_materials'));
+		$this->ACL->turn(array($this->module, 'view_product'));
 		$id = intval($id);
 		if (empty($id) || $id < 1) redirect('/');
 
-		
-		$this->Model->bindModel('attaches');
-		$this->Model->bindModel('author');
-		$this->Model->bindModel('category');
-		$entity = $this->Model->getById($id);
+
+        $where = array("(quantity > 0 || hide_not_exists = '0')");
+        $where['id'] = $id;
+
+        $this->Model->bindModel('attributes_group');
+        $this->Model->bindModel('attributes.content');
+        $this->Model->bindModel('vendor');
+        $this->Model->bindModel('category');
+        $this->Model->bindModel('author');
+        $this->Model->bindModel('attaches');
+        $entity = $this->Model->getFirst($where);
 		
 		
 		if (empty($entity)) redirect('/error.php?ac=404');
@@ -336,30 +316,13 @@ Class ShopModule extends Module {
 			return $this->showInfoMessage(__('Permission denied'), '/' . $this->module . '/');
 		if (!$this->ACL->checkCategoryAccess($entity->getCategory()->getNo_access())) 
 			return $this->showInfoMessage(__('Permission denied'), '/' . $this->module . '/');
-			
-			
-		if (!$this->ACL->turn(array('other', 'can_premoder'), false) && in_array($entity->getPremoder(), array('rejected', 'nochecked'))) {
-			return $this->showInfoMessage(__('Permission denied'), '/' . $this->module . '/');
-		}
+
 
         Plugins::intercept('view_category', $entity->getCategory());
-			
-		
-		// Some gemor with add fields
-		if (is_object($this->AddFields)) {
-			$entity = $this->AddFields->mergeRecords(array($entity));
-			$entity = $entity[0];
-		}
-		
-		
-		
-		$max_attaches = $this->Register['Config']->read('max_attaches', $this->module);
-		if (empty($max_attaches) || !is_numeric($max_attaches)) $max_attaches = 5;
-		
-		
-		//category block
+
+		// category block
 		$this->_getCatsTree($entity->getCategory()->getId());
-		/* COMMENT BLOCK */
+		// Comments && add comment form
 		if (Config::read('comment_active', $this->module) == 1 
 		&& $this->ACL->turn(array($this->module, 'view_comments'), false) 
 		&& $entity->getCommented() == 1) {
@@ -369,12 +332,11 @@ Class ShopModule extends Module {
 		}
 		
 
-		$this->page_title = h($entity->getTitle()) . ' - ' . $this->page_title;
 		$tags = $entity->getTags();
-		$description = $entity->getDescription();
-		if (!empty($tags)) $this->page_meta_keywords = h($tags);
-		if (!empty($description)) $this->page_meta_description = h($description);
-		
+		if (!empty($tags)) $this->addToPageMetaContext('tags', h($tags));
+        $this->addToPageMetaContext('entity_title', h($entity->getTitle()));
+        $this->addToPageMetaContext('category_title', h($entity->getCategory()->getTitle()));
+
 		$navi = array();
 		$navi['module_url'] = get_url('/' . $this->module . '/');
 		$navi['category_url'] = get_url('/' . $this->module . '/category/' . $entity->getCategory()->getId());
@@ -385,77 +347,128 @@ Class ShopModule extends Module {
 		
 		$markers = array();
 		$markers['moder_panel'] = $this->_getAdminBar($entity);
-		$markers['profile_url'] = getProfileUrl($entity->getAuthor()->getId());
-		
-		
+
 		$entry_url = get_url(entryUrl($entity, $this->module));
 		$markers['entry_url'] = $entry_url;
 		
 		
-		$announce = $entity->getMain();
+		$announce = $entity->getDescription();
 		$announce = $this->Textarier->print_page($announce, $entity->getAuthor()->getStatus(), $entity->getTitle());
 		$announce = $this->insertImageAttach($entity, $announce);
 
-
 		$markers['main_text'] = $announce;
 		$entity->setAdd_markers($markers);
-		if ($entity->getTags()) $entity->setTags(explode(',', $entity->getTags()));
-		
-		
+
+
 		$source = $this->render('material.html', array('entity' => $entity));
-		
-		
-		$entity->setViews($entity->getViews() + 1);
-		$entity->save();
-		$this->DB->cleanSqlCache();
 		
 		return $this->_view($source);
 	}
 
 
-
-	/**
-	 * Check user access and if all right
-	 * delete record with geting ID.
-	 *
-	 * @param int $id
-	 */
-	public function delete($id = null)
+    public function add_to_basket($id = null, $quantity = null)
     {
-		$this->cached = false;
-		$id = (int)$id;
-		if ($id < 1) redirect('/');
+        //turn access
+        $this->ACL->turn(array($this->module, 'buy_product'));
+        $id = intval($id);
+        $quantity = (intval($quantity) > 0) ? intval($quantity) : 1;
+        if (empty($id) || $id < 1) redirect('/');
 
 
-		$target = $this->Model->getById($id);
-		if (!$target) redirect('/');
-		
-		
-		//turn access
-		if (!$this->ACL->turn(array($this->module, 'delete_materials'), false) 
-		&& (!empty($_SESSION['user']['id']) && $target->getAuthor_id() == $_SESSION['user']['id'] 
-		&& $this->ACL->turn(array($this->module, 'delete_mine_materials'), false)) === false) {
-			return showInfoMessage(__('Permission denied'), '/' . $this->module . '/');
-		}
-		
-		
-		//remove cache
-		$this->Cache->clean(CACHE_MATCHING_TAG, array('module_' . $this->module, 'record_id_' . $id));
-		$this->DB->cleanSqlCache();
+        $where = array("(quantity > 0 || hide_not_exists = '0')");
+        $where['id'] = $id;
 
-		$target->delete();
-		
-		$user_id = (!empty($_SESSION['user']['id'])) ? intval($_SESSION['user']['id']) : 0;
-		if ($this->Log) $this->Log->write('delete ' . $this->module, $this->module . ' id(' . $id . ') user id('.$user_id.')');
-		return $this->showInfoMessage(__('Operation is successful'), '/' . $this->module . '/');
-	}
+        $this->Model->bindModel('vendor');
+        $this->Model->bindModel('category');
+        $this->Model->bindModel('author');
+        $this->Model->bindModel('attaches');
+        $entity = $this->Model->getFirst($where);
 
-	
+
+        if (empty($entity)) redirect('/error.php?ac=404');
+        if ($entity->getAvailable() == 0 && !$this->ACL->turn(array('other', 'can_see_hidden'), false))
+            return $this->showInfoMessage(__('Permission denied'), '/' . $this->module . '/');
+        if (!$this->ACL->checkCategoryAccess($entity->getCategory()->getNo_access()))
+            return $this->showInfoMessage(__('Permission denied'), '/' . $this->module . '/');
+
+        try {
+            $this->__addToBasket(array(
+                'id' => $entity->getId(),
+                'title' => $entity->getTitle(),
+                'price' => $entity->getPrice(),
+                'quantity' => $quantity,
+            ));
+            $this->showAjaxResponse(array('result' => 1));
+        } catch (Exception $e) {
+            return $this->showInfoMessage($e->getMessage(), '/' . $this->module . '/');
+        }
+    }
+
+
+    public function create_order_form()
+    {
+        //turn access
+        $this->ACL->turn(array($this->module, 'buy_product'));
+
+
+        $navi = array();
+        $navi['navigation'] = $this->_buildBreadCrumbs();
+        $this->_globalize($navi);
+        $this->addToPageMetaContext('entity_title', __('Basket', $this->module));
+
+        // category block
+        $this->_getCatsTree();
+
+
+        //$this->Model->bindModel('attributes_group');
+        //$this->Model->bindModel('attributes.content');
+        $this->Model->bindModel('vendor');
+        $this->Model->bindModel('category');
+        $this->Model->bindModel('author');
+        $this->Model->bindModel('attaches');
+
+
+        $errors = null;
+        $entities = array();
+        $total = 0;
+        $basket = $this->__getBasket();
+
+        if (is_array($basket) && !empty($basket['products']) && count($basket['products'])) {
+            $_total = 0;
+
+            foreach ($basket['products'] as $basket_row) {
+                $product = $this->Model->getById($basket_row['id']);
+                $_total += $product->getPrice();
+                $entities[] = $product;
+            }
+
+            if ($_total != $basket['total']) {
+                $errors .= $this->Register['Validate']->wrapErrors(__('Price of some products was changed', $this->module), true);
+            }
+            $total = $_total;
+        }
+
+
+        $source = $this->render('basket.html', array('context' => array(
+            'entities' => $entities,
+            'total' => $total,
+            'errors' => $errors,
+        )));
+
+        return $this->_view($source);
+    }
+
+
+    public function create_order()
+    {
+        die('TODO');
+    }
+
 	
 	/**
 	* add comment to entity
 	*
-	* @id (int)    entity ID
+	* @param $id (int)    entity ID
 	* @return      info message
 	*/
 	public function add_comment($id = null)
@@ -467,7 +480,7 @@ Class ShopModule extends Module {
 	/**
 	* add comment form to entity
 	*
-	* @id (int)    entity ID
+	* @param $id (int)    entity ID
 	* @return      html form
 	*/
 	private function _add_comment_form($id = null)
@@ -477,11 +490,10 @@ Class ShopModule extends Module {
 	}
 	
 	
-	
 	/**
 	* edit comment form to entity
 	*
-	* @id (int)    comment ID
+	* @param $id (int)    comment ID
 	* @return      html form
 	*/
 	public function edit_comment_form($id = null)
@@ -490,24 +502,22 @@ Class ShopModule extends Module {
 	}
 	
 	
-	
 	/**
 	* update comment
 	*
-	* @id (int)    comment ID
+	* @param $id (int)    comment ID
 	* @return      info message
 	*/
 	public function update_comment($id = null)
     {
 		include_once(ROOT . '/sys/inc/includes/update_comment.php');
 	}
-	
-	
+
 	
 	/**
 	* get comments for entity
 	*
-	* @id (int)    entity ID
+	* @param $id (int)    entity ID
 	* @return      html comments list
 	*/
 	private function _get_comments($entity = null)
@@ -516,12 +526,11 @@ Class ShopModule extends Module {
 		return $html;
 	}
 	
-	
-	
+
 	/**
 	* delete comment
 	*
-	* @id (int)    comment ID
+	* @param $id (int)    comment ID
 	* @return      info message
 	*/
 	public function delete_comment($id = null)
@@ -530,206 +539,9 @@ Class ShopModule extends Module {
 	}
 
 
-
 	public function set_rating($id = null)
     {
 		include_once(ROOT . '/sys/inc/includes/set_rating.php');
-	}		
-	
-	
-
-	/**
-	* @param int $id - record ID
-	*
-	* update date by record also up record in recods list
-	*/
-	public function upper($id)
-    {
-		//turn access
-		$this->ACL->turn(array($this->module, 'up_materials'));
-		$id = (int)$id;
-		if ($id < 1) redirect('/' . $this->module . '/');
-
-		
-		$entity = $this->Model->getById($id);
-		if (!$entity) redirect('/' . $this->module . '/');
-		
-		$entity->setDate(date("Y-m-d H-i-s"));
-		$entity->save();
-		return $this->showInfoMessage(__('Operation is successful'), '/' . $this->module . '/');
-	}
-
-	
-	
-	/**
-	* @param int $id - record ID
-	*
-	* allow record be on home page
-	*/
-	public function on_home($id)
-    {
-		//turn access
-		$this->ACL->turn(array($this->module, 'on_home'));
-		$id = (int)$id;
-		if ($id < 1) redirect('/' . $this->module . '/');
-
-		
-		$entity = $this->Model->getById($id);
-		if (!$entity) redirect('/' . $this->module . '/');
-		
-		$entity->setView_on_home('1');
-		$entity->save();
-		return $this->showInfoMessage(__('Operation is successful'), '/' . $this->module . '/');
-	}
-
-
-	
-	/**
-	* @param int $id - record ID
-	*
-	* denied record be on home page
-	*/
-	public function off_home($id)
-    {
-		//turn access
-		$this->ACL->turn(array($this->module, 'on_home'));
-		$id = (int)$id;
-		if ($id < 1) redirect('/' . $this->module . '/');
-
-		
-		$entity = $this->Model->getById($id);
-		if (!$entity) redirect('/' . $this->module . '/');
-		
-		$entity->setView_on_home('0');
-		$entity->save();
-		return $this->showInfoMessage(__('Operation is successful'), '/' . $this->module . '/');
-	}
-	
-	
-	
-	/**
-	* @param int $id - record ID
-	*
-	* fix or unfix record on top on home page
-	*/
-	public function fix_on_top($id)
-    {
-		$this->ACL->turn(array($this->module, 'on_home'));
-		$id = (int)$id;
-		if ($id < 1) redirect('/' . $this->module . '/');
-
-		$target = $this->Model->getById($id);
-		if (!$target) redirect('/');
-		
-		$curr_state = $target->getOn_home_top();
-		$dest = ($curr_state) ? '0' : '1';
-		$target->setOn_home_top($dest);
-		$target->save();
-		return $this->showInfoMessage(__('Operation is successful'), '/' . $this->module . '/');
-	}
-	
-	
-	
-	
-	/**
-	* @param int $id - record ID
-	*
-	* fix or unfix record on top on home page
-	*/
-	public function premoder($id, $type)
-    {
-		$this->ACL->turn(array('other', 'can_premoder'));
-		$id = (int)$id;
-		if ($id < 1) redirect('/' . $this->module . '/');
-		
-		if (!in_array((string)$type, $this->premoder_types)) 
-			return $this->showInfoMessage(__('Some error occurred'), '/' . $this->module . '/');
-
-		$target = $this->Model->getById($id);
-		if (!$target) redirect('/');
-		
-		$target->setPremoder((string)$type);
-		$target->save();
-		return $this->showInfoMessage(__('Operation is successful'), '/' . $this->module . '/');
-	}
-	
-	
-	
-	
-	/**
-	* @param array $record - assoc record array
-	* @return string - admin buttons
-	*
-	* create and return admin bar
-	*/
-	protected function _getAdminBar($record)
-    {
-		$moder_panel = '';
-        $uid = $record->getAuthor_id();
-        $id = $record->getId();
-		
-		
-		if ($this->ACL->turn(array('other', 'can_premoder'), false) && 'nochecked' == $record->getPremoder()) {
-			$moder_panel .= get_link('', '/' . $this->module . '/premoder/' . $id . '/confirmed',
-				array(
-					'class' => 'fps-premoder-confirm', 
-					'title' => 'Confirm', 
-					'onClick' => "return confirm('" . __('Are you sure') . "')",
-				)) . '&nbsp;';
-			$moder_panel .= get_link('', '/' . $this->module . '/premoder/' . $id . '/rejected',
-				array(
-					'class' => 'fps-premoder-reject', 
-					'title' => 'Reject', 
-					'onClick' => "return confirm('" . __('Are you sure') . "')",
-				)) . '&nbsp;';
-		
-		
-		} else if ($this->ACL->turn(array('other', 'can_premoder'), false) && 'rejected' == $record->getPremoder()) {
-			$moder_panel .= get_link('', '/' . $this->module . '/premoder/' . $id . '/confirmed',
-				array(
-					'class' => 'fps-premoder-confirm', 
-					'title' => 'Confirm', 
-					'onClick' => "return confirm('" . __('Are you sure') . "')",
-				)) . '&nbsp;';
-		}
-		
-
-		if ($this->ACL->turn(array($this->module, 'edit_materials'), false) 
-		|| (!empty($_SESSION['user']['id']) && $uid == $_SESSION['user']['id']
-		&& $this->ACL->turn(array($this->module, 'edit_mine_materials'), false))) {
-			$moder_panel .= get_link('', '/' . $this->module . '/edit_form/' . $id, array('class' => 'fps-edit')) . '&nbsp;';
-		}
-		
-		if ($this->ACL->turn(array($this->module, 'up_materials'), false)) {
-			$moder_panel .= get_link('', '/' . $this->module . '/fix_on_top/' . $id,
-				array('class' => 'fps-star', 'onClick' => "return confirm('" . __('Are you sure') . "')")) . '&nbsp;';
-			$moder_panel .= get_link('', '/' . $this->module . '/upper/' . $id,
-				array('class' => 'fps-up', 'onClick' => "return confirm('" . __('Are you sure') . "')")) . '&nbsp;';
-		}
-		
-		if ($this->ACL->turn(array($this->module, 'on_home'), false)) {
-				if ($record->getView_on_home() == 1) {
-					$moder_panel .= get_link('', '/' . $this->module . '/off_home/' . $id, array(
-						'class' => 'fps-on', 
-						'onClick' => "return confirm('" . __('Are you sure') . "')",
-					)) . '&nbsp;';
-				} else {
-					$moder_panel .= get_link('', '/' . $this->module . '/on_home/' . $id, array(
-						'class' => 'fps-off',
-						'onClick' => "return confirm('" . __('Are you sure') . "')",
-					)) . '&nbsp;';
-				}
-		}
-		
-		if ($this->ACL->turn(array($this->module, 'delete_materials'), false) 
-		|| (!empty($_SESSION['user']['id']) && $uid == $_SESSION['user']['id']
-		&& $this->ACL->turn(array($this->module, 'delete_mine_materials'), false))) {
-			$moder_panel .= get_link('', '/' . $this->module . '/delete/' . $id,
-				array('class' => 'fps-delete', 'onClick' => "return confirm('" . __('Are you sure') . "')")) . '&nbsp;';
-		}
-		
-		
-		return $moder_panel;
 	}
 
 
@@ -740,7 +552,23 @@ Class ShopModule extends Module {
     public function rss() {
 		include_once ROOT . '/sys/inc/includes/rss.php';
     }
-	
+
+
+    /**
+     * @param array $record - assoc record array
+     * @return string - admin buttons
+     *
+     * create and return admin bar
+     */
+    protected function _getAdminBar($record)
+    {
+        $moder_panel = '';
+        $uid = $record->getAuthor_id();
+        $id = $record->getId();
+
+        return '';
+    }
+
 	
 	/**
 	 * Uses for before render
@@ -896,6 +724,58 @@ Class ShopModule extends Module {
 		);
 		
 		return $rules;
-	}	
+	}
+
+
+    protected function _sessionStorage()
+    {
+        return $_SESSION;
+    }
+
+
+    private function __getProductsFiltersCond()
+    {
+        return $this->Model->getProductsFilterSubquery();
+    }
+
+
+    private function __getProductsFilters($category_id)
+    {
+        $data = $this->Model->getCategoryFilters($category_id);
+        if (!$data) return '';
+
+        $source = $this->render('filters.html', array('context' => $data));
+        return $source;
+    }
+
+
+    private function __getVendorsFilter($category_id = null)
+    {
+        $data = $this->Model->getVendorsFilter($category_id);
+        if (!$data) return '';
+
+        $source = $this->render('filters.html', array('context' => $data));
+        return $source;
+    }
+
+
+    private function __addToBasket($data)
+    {
+        $storage = $this->_sessionStorage();
+        if (!array_key_exists($storage, 'basket'))
+            $storage['basket'] = array(
+                'products' => array(),
+                'total' => 0,
+            );
+        array_push($storage['basket']['products'], $data);
+        $storage['basket']['total'] += $data['price'];
+    }
+
+
+    private function __getBasket()
+    {
+        $storage = $this->_sessionStorage();
+        return (array_key_exists($storage, 'basket')) ? $storage['basket'] : array();
+    }
 }
 
