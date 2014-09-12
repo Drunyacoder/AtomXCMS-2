@@ -149,6 +149,8 @@ Class ShopModule extends Module {
 				'user_id_' . $result->getAuthor()->getId(),
 				'record_id_' . $result->getId(),
 			));
+            if ($category_id)
+                $this->setCacheTag(array('category_id_' . $category_id));
 		}
 
 		$source = $this->render('list.html', array('entities' => $records));
@@ -211,7 +213,15 @@ Class ShopModule extends Module {
 		));
 		
 		$attaches = downloadAtomAttaches($this->module);
-		$this->showAjaxResponse($attaches);
+
+        if ($attaches) {
+            $last_ids = '';
+            foreach ($attaches as $k => $attach)
+                $last_ids += ($k > 0 ? ', ' : '') . $attach['id'];
+            if ($this->Log) $this->Log->write('add attach[s](' . $this->module . ')', 'id[s](' . $last_ids . ')');
+        }
+
+        $this->showAjaxResponse($attaches);
 	}
 	
 	
@@ -244,7 +254,19 @@ Class ShopModule extends Module {
 			if (!empty($filename) && file_exists(ROOT . '/sys/files/' . $this->module . '/' . $filename)) {
 				_unlink(ROOT . '/sys/files/' . $this->module . '/' . $filename);
 			}
+
+            if ($attach->getIs_main() == 1) {
+                $new_main = $attachModel->getFirst(array(
+                    'id != ' + $id,
+                    'entity_id' => $attach->getEntity_id(),
+                ));
+                if ($new_main)
+                    $new_main->setIs_main('1')->save();
+            }
+
 			$attach->delete();
+
+            if ($this->Log) $this->Log->write('delete attach(' . $this->module . ')', 'id(' . $id . ')');
 		}
 		$this->showAjaxResponse(array('result' => '1'));
 	}
@@ -276,14 +298,20 @@ Class ShopModule extends Module {
 				'errors' => $this->Register['Validate']->wrapErrors($errors, true),
 			));
 		}
-			
-		if ($attach) {
-			$filename = $attach->getFilename();
-			if (!empty($filename) && file_exists(ROOT . '/sys/files/' . $this->module . '/' . $filename)) {
-				_unlink(ROOT . '/sys/files/' . $this->module . '/' . $filename);
-			}
-			$attach->delete();
-		}
+
+        $main_attach = $attachModel->getCollection(array(
+            'entity_id' => $attach->getEntity_id(),
+            'is_main' => '1',
+        ));
+        if ($main_attach) {
+            foreach ($main_attach as $row) {
+                $row->setIs_main('0')->save();
+            }
+        }
+
+
+        $attach->setIs_main('1')->save();
+
 		$this->showAjaxResponse(array('result' => '1'));
 	}
 	
@@ -449,7 +477,7 @@ Class ShopModule extends Module {
         }
 
 
-        $source = $this->render('basket.html', array('context' => array(
+        $source = $this->render('order_form.html', array('context' => array(
             'entities' => $entities,
             'total' => $total,
             'errors' => $errors,
@@ -462,6 +490,7 @@ Class ShopModule extends Module {
     public function create_order()
     {
         die('TODO');
+        if ($this->Log) $this->Log->write('add order(' . $this->module . ')', 'id(' . $id . ')');
     }
 
 	

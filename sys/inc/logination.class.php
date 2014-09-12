@@ -93,13 +93,13 @@ class Logination {
 		$file_name = $this->getFileName();
 		/* get records if exists */
 		if (file_exists(ROOT . '/sys/logs/' . $this->logDir . '/' . $file_name)) {
-			$log_data = unserialize(file_get_contents(ROOT . '/sys/logs/' . $this->logDir . '/' . $file_name));
+			$log_data = json_decode(file_get_contents(ROOT . '/sys/logs/' . $this->logDir . '/' . $file_name), true);
 			$log_data = array_merge($log_data, array(0 => $param_log));
 		} else {
 			$log_data = array();
 			$log_data[] = $param_log;
 		}
-		$log_data = serialize($log_data);
+		$log_data = json_encode($log_data);
 		/* write... */
 		$file = fopen(ROOT . '/sys/logs/' . $this->logDir . '/' . $file_name, 'w+');
 		fwrite($file, $log_data);
@@ -119,7 +119,7 @@ class Logination {
 		if (file_exists($filename) && is_readable($filename)) {
 			$data = file_get_contents($filename);
 			if (!empty($data)) {
-				$data = unserialize($data);
+				$data = json_decode($data, true);
 			} else {
 				$data = null;
 			}
