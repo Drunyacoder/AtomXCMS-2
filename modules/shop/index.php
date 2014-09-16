@@ -159,134 +159,7 @@ Class ShopModule extends Module {
 
 		return $this->_view($source);
 	}
-	
-	
-	public function upload_attaches()
-	{
-		$model = $this->Register['ModManager']->getModelInstance('ShopAttaches');
-		$model->deleteNotRelated();
-		
-		$this->counter = false;
-		if (!$this->ACL->turn(array($this->module, 'edit_products'), false)) {
-			$this->showAjaxResponse(array(
-				'errors' => __('Permission denied'), 
-				'result' => '0'
-			));
-		}
-		
-		
-		$attachModel = $this->Register['ModManager']->getModelInstance($this->module . 'Attaches');
-		$errors = '';
-		
-		if (!empty($_FILES) && is_array($_FILES)) {
-			$cnt = 0;
-			$new_file_size = 0;
-			foreach ($_FILES as $name => $file) {
-				if (preg_match('#^attach\d+$#', $name)) {
-					$cnt++;
-					$new_file_size += $file['size'];
-				}
-			}
-		}
-		if ($cnt > Config::read('max_attaches', $this->module))
-			$errors .= '<li>' . sprintf(__('You can upload only %s file(s)'), Config::read('max_attaches', $this->module)) . '</li>';
-		
-		if (!empty($_SESSION['user']['id'])) {
-			$old_files_size = $attachModel->getUserOveralFilesSize($_SESSION['user']['id']);
-			$overal_files_size = intval($new_file_size) + $old_files_size;
-			$max_overal_size = Config::read('max_all_attaches_size', $this->module) * 1024 * 1024;
-		} else {
-			$overal_files_size = intval($new_file_size);
-			$max_overal_size = Config::read('max_guest_attaches_size', $this->module) * 1024 * 1024;
-		}
-		
-		if ($overal_files_size > $max_overal_size)
-			$errors .= '<li>' . sprintf(__('Max overal files size is %s Mb'), $max_overal_size / 1024 / 1024) . '</li>';
-		
-		
-		$errors .= $this->Register['Validate']->check($this->Register['action']);
-		if (!empty($errors)) $this->showAjaxResponse(array(
-			'errors' => $this->Register['Validate']->wrapErrors($errors), 
-			'result' => '0'
-		));
-		
-		$attaches = downloadAtomAttaches($this->module);
-		$this->showAjaxResponse($attaches);
-	}
-	
-	
-	public function delete_attach($id)
-	{
-		$this->counter = false;
-		if (!$this->ACL->turn(array($this->module, 'edit_products'), false)) {
-			$this->showAjaxResponse(array(
-				'errors' => __('Permission denied'), 
-				'result' => '0'
-			));
-		}
-			
-		if (empty($_SESSION['user']['id'])) $this->showAjaxResponse(array());
-		
-		$attachModel = $this->Register['ModManager']->getModelInstance($this->module . 'Attaches');
-		$attach = $attachModel->getById($id);
-		
-		$errors = '';
-			
-		if (!empty($errors)) {
-			$this->showAjaxResponse(array(
-				'result' => '0', 
-				'errors' => $this->Register['Validate']->wrapErrors($errors),
-			));
-		}
-			
-		if ($attach) {
-			$filename = $attach->getFilename();
-			if (!empty($filename) && file_exists(ROOT . '/sys/files/' . $this->module . '/' . $filename)) {
-				_unlink(ROOT . '/sys/files/' . $this->module . '/' . $filename);
-			}
-			$attach->delete();
-		}
-		$this->showAjaxResponse(array('result' => '1'));
-	}
-	
-	
-	public function as_main_attach($id)
-	{
-		$this->counter = false;
-		if (!$this->ACL->turn(array($this->module, 'edit_products'), false)) {
-			$this->showAjaxResponse(array(
-				'errors' => __('Permission denied'), 
-				'result' => '0'
-			));
-		}
-			
-		if (empty($_SESSION['user']['id'])) $this->showAjaxResponse(array());
-		
-		$attachModel = $this->Register['ModManager']->getModelInstance($this->module . 'Attaches');
-		$attach = $attachModel->getById($id);
-		
-		$errors = array();
-		
-		if (!$attach) 
-			$errors[] = __('Record not found');
-			
-		if (!empty($errors)) {
-			$this->showAjaxResponse(array(
-				'result' => '0', 
-				'errors' => $this->Register['Validate']->wrapErrors($errors, true),
-			));
-		}
-			
-		if ($attach) {
-			$filename = $attach->getFilename();
-			if (!empty($filename) && file_exists(ROOT . '/sys/files/' . $this->module . '/' . $filename)) {
-				_unlink(ROOT . '/sys/files/' . $this->module . '/' . $filename);
-			}
-			$attach->delete();
-		}
-		$this->showAjaxResponse(array('result' => '1'));
-	}
-	
+
 
 	/**
      * @param null|int $id
@@ -553,7 +426,134 @@ Class ShopModule extends Module {
 		include_once ROOT . '/sys/inc/includes/rss.php';
     }
 
-
+	
+	public function upload_attaches()
+	{
+		$model = $this->Register['ModManager']->getModelInstance('ShopAttaches');
+		$model->deleteNotRelated();
+		
+		$this->counter = false;
+		if (!$this->ACL->turn(array($this->module, 'edit_products'), false)) {
+			$this->showAjaxResponse(array(
+				'errors' => __('Permission denied'), 
+				'result' => '0'
+			));
+		}
+		
+		
+		$attachModel = $this->Register['ModManager']->getModelInstance($this->module . 'Attaches');
+		$errors = '';
+		
+		if (!empty($_FILES) && is_array($_FILES)) {
+			$cnt = 0;
+			$new_file_size = 0;
+			foreach ($_FILES as $name => $file) {
+				if (preg_match('#^attach\d+$#', $name)) {
+					$cnt++;
+					$new_file_size += $file['size'];
+				}
+			}
+		}
+		if ($cnt > Config::read('max_attaches', $this->module))
+			$errors .= '<li>' . sprintf(__('You can upload only %s file(s)'), Config::read('max_attaches', $this->module)) . '</li>';
+		
+		if (!empty($_SESSION['user']['id'])) {
+			$old_files_size = $attachModel->getUserOveralFilesSize($_SESSION['user']['id']);
+			$overal_files_size = intval($new_file_size) + $old_files_size;
+			$max_overal_size = Config::read('max_all_attaches_size', $this->module) * 1024 * 1024;
+		} else {
+			$overal_files_size = intval($new_file_size);
+			$max_overal_size = Config::read('max_guest_attaches_size', $this->module) * 1024 * 1024;
+		}
+		
+		if ($overal_files_size > $max_overal_size)
+			$errors .= '<li>' . sprintf(__('Max overal files size is %s Mb'), $max_overal_size / 1024 / 1024) . '</li>';
+		
+		
+		$errors .= $this->Register['Validate']->check($this->Register['action']);
+		if (!empty($errors)) $this->showAjaxResponse(array(
+			'errors' => $this->Register['Validate']->wrapErrors($errors), 
+			'result' => '0'
+		));
+		
+		$attaches = downloadAtomAttaches($this->module);
+		$this->showAjaxResponse($attaches);
+	}
+	
+	
+	public function delete_attach($id)
+	{
+		$this->counter = false;
+		if (!$this->ACL->turn(array($this->module, 'edit_products'), false)) {
+			$this->showAjaxResponse(array(
+				'errors' => __('Permission denied'), 
+				'result' => '0'
+			));
+		}
+			
+		if (empty($_SESSION['user']['id'])) $this->showAjaxResponse(array());
+		
+		$attachModel = $this->Register['ModManager']->getModelInstance($this->module . 'Attaches');
+		$attach = $attachModel->getById($id);
+		
+		$errors = '';
+			
+		if (!empty($errors)) {
+			$this->showAjaxResponse(array(
+				'result' => '0', 
+				'errors' => $this->Register['Validate']->wrapErrors($errors),
+			));
+		}
+			
+		if ($attach) {
+			$filename = $attach->getFilename();
+			if (!empty($filename) && file_exists(ROOT . '/sys/files/' . $this->module . '/' . $filename)) {
+				_unlink(ROOT . '/sys/files/' . $this->module . '/' . $filename);
+			}
+			$attach->delete();
+		}
+		$this->showAjaxResponse(array('result' => '1'));
+	}
+	
+	
+	public function as_main_attach($id)
+	{
+		$this->counter = false;
+		if (!$this->ACL->turn(array($this->module, 'edit_products'), false)) {
+			$this->showAjaxResponse(array(
+				'errors' => __('Permission denied'), 
+				'result' => '0'
+			));
+		}
+			
+		if (empty($_SESSION['user']['id'])) $this->showAjaxResponse(array());
+		
+		$attachModel = $this->Register['ModManager']->getModelInstance($this->module . 'Attaches');
+		$attach = $attachModel->getById($id);
+		
+		$errors = array();
+		
+		if (!$attach) 
+			$errors[] = __('Record not found');
+			
+		if (!empty($errors)) {
+			$this->showAjaxResponse(array(
+				'result' => '0', 
+				'errors' => $this->Register['Validate']->wrapErrors($errors, true),
+			));
+		}
+			
+		if ($attach) {
+			$filename = $attach->getFilename();
+			if (!empty($filename) && file_exists(ROOT . '/sys/files/' . $this->module . '/' . $filename)) {
+				_unlink(ROOT . '/sys/files/' . $this->module . '/' . $filename);
+			}
+			$attach->delete();
+		}
+		$this->showAjaxResponse(array('result' => '1'));
+	}
+	
+	
     /**
      * @param array $record - assoc record array
      * @return string - admin buttons
