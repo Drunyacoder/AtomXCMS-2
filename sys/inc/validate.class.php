@@ -321,7 +321,7 @@ class Validate {
      * @param array $pattern
      * @return array
      */
-    public static function getCurrentInputsValues($entity, $pattern = array())
+    public static function  getCurrentInputsValues($entity, $pattern = array())
     {
         if (!empty($_SESSION['viewMessage'])) {
 			$session = $_SESSION['viewMessage'];

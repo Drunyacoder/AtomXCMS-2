@@ -477,8 +477,16 @@ Class ShopModule extends Module {
         }
 
 
+        $fields = Validate::getAndMergeFormPost($this->Register['action'], array(), true);
+
+        $deliveryTypesModel = $this->Register['ModManager']->getModelInstance('shopDeliveryTypes');
+        $delivery_types = $deliveryTypesModel->getCollection();
+
+
         $source = $this->render('order_form.html', array('context' => array(
             'entities' => $entities,
+            'fields' => $fields,
+            'delivery_types' => ($delivery_types) ? $delivery_types : array(),
             'total' => $total,
             'errors' => $errors,
         )));
@@ -489,7 +497,19 @@ Class ShopModule extends Module {
 
     public function create_order()
     {
+        $this->ACL->turn(array($this->module, 'buy_product'));
+
+        $errors = $this->Register['Validate']->check($this->Register['action']);
+        $fields = Validate::getAndMergeFormPost($this->Register['action'], array(), true);
+
+        if ($errors) {
+            $_SESSION['FpsForm'] = $fields;
+            $_SESSION['FpsForm']['error'] = $errors;
+            redirect($this->getModuleURL('create_order_form'));
+        }
+
         die('TODO');
+
         if ($this->Log) $this->Log->write('add order(' . $this->module . ')', 'id(' . $id . ')');
     }
 
@@ -618,125 +638,56 @@ Class ShopModule extends Module {
 		$max_attach = Config::read('max_attaches', $this->module);
 		if (empty($max_attach) || !is_numeric($max_attach)) $max_attach = 5;
 		$rules = array(
-			'add' => array(
-				'title' => array(
+			'create_order_form' => array(
+				'name' => array(
 					'required' => true,
-					'max_lenght' => 250,
-					'title' => 'Title',
+					'max_lenght' => 100,
+					'title' => 'Name',
 				),
-				'main_text' => array(
+				'telephone' => array(
 					'required' => true,
-					'max_lenght' => Config::read('max_lenght', $this->module),
+					'max_lenght' => 20,
+					'pattern' => Validate::V_INT,
 					'title' => 'Text',
 				),
-				'cats_selector' => array(
+				'delivery_type' => array(
 					'required' => true,
-					'pattern' => V_INT,
-					'max_lenght' => 11,
-					'title' => 'Category',
+					'title' => 'Delivery type',
 				),
-				'description' => array(
+                'address' => array(
+                    'required' => true,
+                    'max_lenght' => 200,
+                ),
+				'comment' => array(
 					'required' => 'editable',
+                    'max_lenght' => 1000,
 				),
-				'tags' => array(
-					'required' => 'editable',
-					'pattern' => V_TITLE,
-				),
-				'sourse' => array(
-					'required' => 'editable',
-					'pattern' => V_TITLE,
-				),
-				'sourse_email' => array(
-					'required' => 'editable',
-					'pattern' => V_MAIL,
-				),
-				'sourse_site' => array(
-					'required' => 'editable',
-					'pattern' => V_URL,
-				),
-				'files__attach' => array(
-					'for' => array(
-						'from' => 1,
-						'to' => $max_attach,
-					),
-					'type' => 'image',
-					'max_size' => Config::read('max_attaches_size', $this->module),
-				),
-				'commented' => array(),
-				'available' => array(),
-			),
-			'update' => array(
-				'title' => array(
-					'required' => true,
-					'max_lenght' => 250,
-					'title' => 'Title',
-				),
-				'main_text' => array(
-					'required' => true,
-					'max_lenght' => Config::read('max_lenght', $this->module),
-					'title' => 'Text',
-				),
-				'cats_selector' => array(
-					'required' => true,
-					'pattern' => V_INT,
-					'max_lenght' => 11,
-					'title' => 'Category',
-				),
-				'description' => array(
-					'required' => 'editable',
-				),
-				'tags' => array(
-					'required' => 'editable',
-					'pattern' => V_TITLE,
-				),
-				'sourse' => array(
-					'required' => 'editable',
-					'pattern' => V_TITLE,
-				),
-				'sourse_email' => array(
-					'required' => 'editable',
-					'pattern' => V_MAIL,
-				),
-				'sourse_site' => array(
-					'required' => 'editable',
-					'pattern' => V_URL,
-				),
-				'files__attach' => array(
-					'for' => array(
-						'from' => 1,
-						'to' => $max_attach,
-					),
-					'type' => 'image',
-					'max_size' => Config::read('max_attaches_size', $this->module),
-				),
-				'commented' => array(),
-				'available' => array(),
 			),
 			'add_comment' => array(
 				'login' => array(
 					'required' => true,
-					'pattern' => V_TITLE,
+					'pattern' => Validate::V_TITLE,
 					'max_lenght' => 40,
 				),
 				'message' => array(
 					'required' => true,
 				),
 				'captcha_keystring' => array(
-					'pattern' => V_CAPTCHA,
+					'pattern' => Validate::V_CAPTCHA,
 					'title' => 'Kaptcha',
 				),
 			),
 			'update_comment' => array(
 				'login' => array(
 					'required' => true,
-					'pattern' => V_TITLE,
+					'pattern' => Validate::V_TITLE,
 					'max_lenght' => 40,
 				),
 				'message' => array(
 					'required' => true,
 				),
 				'captcha_keystring' => array(
-					'pattern' => V_CAPTCHA,
+					'pattern' => Validate::V_CAPTCHA,
 					'title' => 'Kaptcha',
 				),
 			),
