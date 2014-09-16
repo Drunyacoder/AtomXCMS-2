@@ -1,25 +1,35 @@
-<div class="catalog">
-{% if entities %}
+<!--{#
+For inspect an any variable use "show" filter as shown below:
+{{ context.entities|show }}
 
-	{% for entity in entities %}
-		{% if entity %}
-			<div class="product-item">
-				<h2>{{ entity.title|escape }}</h2>
-				<div class="product-image"></div>
-				<strong>Price</strong>: 
-				{% if entity.final_price != entity.price %}<s style="color:#777; font-size:14px;">{{ entity.price|num_format(2, ',', ' ') }}</s>{% endif %}
-				{{ entity.final_price|num_format(2, ',', ' ') }}
-				
-				<div class="attrs">
-				{% for attr in entity.attributes %}
-					<strong>{{ attr.label|lang|escape }}</strong>: {{ attr.content.content|escape }}<br>
-				{% endfor %}
-				</div>
-			</div>
-		{% endif %}
+It represents a variable the same way as the "var_dump" function in PHP.
+
+- context
+- - entities
+- - total
+- - fields
+- - errors
+#}-->
+
+{{ context.errors }}
+<div class="catalog">
+{% if context.entities %}
+
+	{% for entity in context.entities %}
+        <div class="product-item">
+            <h4>{{ entity.title|escape }} ({{ entity.quantity }})</h4>
+            <div class="product-image">{{ entity.price }}({{ entity.price * entity.quantity }})</div>
+        </div>
 	{% endfor %}
 
 {% else %}
 	{{ 'Materials not found'|lang }}
 {% endif %}
+    <h3>{{ context.total }}</h3>
+
+    {% for name, value in context.fields %}
+    <div class="product-item">
+        {{ name|replace({"_":" "})|capitalize|lang|escape }}<input type="text" name="{{ name|escape }}" value="{{ value|escape }}" /><br />
+    </div>
+    {% endfor %}
 </div>

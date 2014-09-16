@@ -42,6 +42,8 @@ Class ShopModule extends Module {
 	public $module = 'shop';
 	
 	public $premoder_types = array('rejected', 'confirmed');
+
+    private $storage;
 	
 
 
@@ -243,11 +245,12 @@ Class ShopModule extends Module {
 
     public function add_to_basket($id = null, $quantity = null)
     {
+        pr($_SESSION);
         //turn access
         $this->ACL->turn(array($this->module, 'buy_product'));
         $id = intval($id);
         $quantity = (intval($quantity) > 0) ? intval($quantity) : 1;
-        if (empty($id) || $id < 1) redirect('/');
+        if (empty($id) || $id < 1) redirect($this->getModuleURL());
 
 
         $where = array("(quantity > 0 || hide_not_exists = '0')");
@@ -262,21 +265,19 @@ Class ShopModule extends Module {
 
         if (empty($entity)) redirect('/error.php?ac=404');
         if ($entity->getAvailable() == 0 && !$this->ACL->turn(array('other', 'can_see_hidden'), false))
-            return $this->showInfoMessage(__('Permission denied'), '/' . $this->module . '/');
+            return $this->showInfoMessage(__('Permission denied'), $this->getModuleURL());
         if (!$this->ACL->checkCategoryAccess($entity->getCategory()->getNo_access()))
-            return $this->showInfoMessage(__('Permission denied'), '/' . $this->module . '/');
+            return $this->showInfoMessage(__('Permission denied'), $this->getModuleURL());
 
-        try {
-            $this->__addToBasket(array(
-                'id' => $entity->getId(),
-                'title' => $entity->getTitle(),
-                'price' => $entity->getPrice(),
-                'quantity' => $quantity,
-            ));
+
+        if ($this->__addToBasket($entity, $quantity)) {
             $this->showAjaxResponse(array('result' => 1));
-        } catch (Exception $e) {
-            return $this->showInfoMessage($e->getMessage(), '/' . $this->module . '/');
         }
+
+        $this->showAjaxResponse(array(
+            'result' => 0,
+            'errors' => $this->Register['Validate']->wrapErrors(__('Some error occurred'), true),
+        ));
     }
 
 
@@ -306,25 +307,31 @@ Class ShopModule extends Module {
         $errors = null;
         $entities = array();
         $total = 0;
-        $basket = $this->__getBasket();
+        $basket = array();
+        if (array_key_exists('basket', $this->storage)) {
+            $basket = &$this->storage['basket'];
+        }
 
         if (is_array($basket) && !empty($basket['products']) && count($basket['products'])) {
             $_total = 0;
 
             foreach ($basket['products'] as $basket_row) {
                 $product = $this->Model->getById($basket_row['id']);
-                $_total += $product->getPrice();
+                $_total += $product->getPrice() * $basket_row['quantity'];
+                $product->setQuantity($basket_row['quantity']);
                 $entities[] = $product;
             }
 
+            // Price might changed while user choosing a products
             if ($_total != $basket['total']) {
+                $basket['total'] = $_total;
                 $errors .= $this->Register['Validate']->wrapErrors(__('Price of some products was changed', $this->module), true);
             }
             $total = $_total;
         }
 
 
-        $fields = Validate::getAndMergeFormPost($this->Register['action'], array(), true);
+        $fields = $this->Register['Validate']->getAndMergeFormPost($this->Register['action'], array(), true);
 
         $deliveryTypesModel = $this->Register['ModManager']->getModelInstance('shopDeliveryTypes');
         $delivery_types = $deliveryTypesModel->getCollection();
@@ -338,6 +345,7 @@ Class ShopModule extends Module {
             'errors' => $errors,
         )));
 
+        die($source);
         return $this->_view($source);
     }
 
@@ -511,7 +519,7 @@ Class ShopModule extends Module {
         $this->showAjaxResponse($attaches);
 	}
 	
-	
+
 	public function delete_attach($id)
 	{
 		$this->counter = false;
@@ -629,6 +637,7 @@ Class ShopModule extends Module {
 	protected function _beforeRender()
     {
         $this->Model = $this->Register['ModManager']->getModelInstance('shopProducts');
+        $this->storage =& $_SESSION;
 		parent::_beforeRender();
 	}
 	
@@ -707,12 +716,6 @@ Class ShopModule extends Module {
 	}
 
 
-    protected function _sessionStorage()
-    {
-        return $_SESSION;
-    }
-
-
     private function __getProductsFiltersCond()
     {
         return $this->Model->getProductsFilterSubquery();
@@ -739,23 +742,41 @@ Class ShopModule extends Module {
     }
 
 
-    private function __addToBasket($data)
+    private function __addToBasket($entity, $quantity)
     {
-        $storage = $this->_sessionStorage();
-        if (!array_key_exists($storage, 'basket'))
-            $storage['basket'] = array(
+        $data = array(
+            'id' => $entity->getId(),
+            'title' => $entity->getTitle(),
+            'price' => $entity->getPrice(),
+            'quantity' => $quantity,
+        );
+
+        if (!array_key_exists('basket', $this->storage))
+            $this->storage['basket'] = array(
                 'products' => array(),
                 'total' => 0,
             );
-        array_push($storage['basket']['products'], $data);
-        $storage['basket']['total'] += $data['price'];
+
+        $push = true;
+        if (count($this->storage['basket']['products'])) {
+            foreach ($this->storage['basket']['products'] as &$product) {
+                if ($data['id'] === $product['id']) {
+                    $product['quantity']++;
+                    $push = false;
+                    break;
+                }
+            }
+        }
+
+        if ($push)
+            array_push($this->storage['basket']['products'], $data);
+        $this->storage['basket']['total'] += $data['price'];
     }
 
 
     private function __getBasket()
     {
-        $storage = $this->_sessionStorage();
-        return (array_key_exists($storage, 'basket')) ? $storage['basket'] : array();
+        return (array_key_exists('basket', $this->storage)) ? $this->storage['basket'] : array();
     }
 }
 

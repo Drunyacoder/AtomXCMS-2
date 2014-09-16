@@ -125,7 +125,6 @@ class FpsPDO {
 		$data = $this->runQuery($query);
 		$took = getMicroTime($start);
 		
-		
 		// querys list 
 		$redirect = true;
 		if (Config::read('debug_mode') == 1) {
@@ -544,8 +543,7 @@ class FpsPDO {
 	private function runQuery($query) 
 	{
         $this->statement = $statement = $this->dbh->prepare($query);
-        //pr($query);
-        //pr($this->queryParams);
+
 		try {
 			$statement->execute($this->queryParams);
 		} catch (PDOException $e) {
@@ -666,7 +664,7 @@ class FpsPDO {
             }
 		}
 
-		
+
 		return $this->__renderQuery('select', array(
 			'conditions' => $this->__conditions($params['cond'], true, true),
 			'fields' => $this->__fields($params['fields'], true),
@@ -870,7 +868,7 @@ class FpsPDO {
 		}
 		if (is_array($conditions) && !empty($conditions)) {
 			$output = $this->__conditionKeysToString($conditions, $quoteValues);
-			
+
 			if (empty($output)) {
 				return null;
 			}
@@ -911,7 +909,7 @@ class FpsPDO {
 			if (is_numeric($key) && empty($value)) {
 				continue;
 			} elseif (is_numeric($key) && is_string($value)) {
-				$out[] = $not . $this->__quoteFields($value);
+				$out[] = $not . $this->__name($this->__quoteFields($value));
 			} elseif ((is_numeric($key) && is_array($value)) || in_array(strtolower(trim($key)), $bool)) {
 				if (in_array(strtolower(trim($key)), $bool)) {
 					$join = ' ' . strtoupper($key) . ' ';
@@ -1000,10 +998,13 @@ class FpsPDO {
 		// finaly params must contains :id => 1 (without "`").
         if (!empty($key) && strstr($key, '`')) $key = strtr($key, array('`' => ''));
 
-		if (empty($value) && is_int($value)) $this->setQueryParam($key, '0');
-		else if (empty($value)) $this->setQueryParam($key, "");
 
-		
+		if (empty($value) && is_int($value))
+            $this->setQueryParam($key, '0');
+
+		else if (empty($value))
+            $this->setQueryParam($key, "");
+
 		else if (is_array($value) && !empty($value)) {
 			foreach ($value as $k => $v) {
 				$value[$k] = $this->__value($v, $key);
@@ -1121,7 +1122,7 @@ class FpsPDO {
 		/** "id DESC", "id in (1, 2...)" 
 		 * "DISTINCT (field)" is not matched
 		 */
-		if (preg_match('/^([\w_-]+(\.[\w_-]+)?)(\s([a-z]{2,4}\s+(\(.*\))|[\s\w_-]+)+)$/i', $data, $matches)) { 
+		if (preg_match('/^([\w_-]+(\.[\w_-]+)?)(\s([!=\>\<a-z]{2,4}\s+(\(.*\)|\d+)|[\s\w_-]+)+)$/i', $data, $matches)) {
 			return $this->__name($matches[1], true) . $matches[3];
 		}
 		return $data;

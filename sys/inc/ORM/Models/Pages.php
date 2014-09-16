@@ -150,7 +150,7 @@ class PagesModel extends FpsModel
 		
         $page = $this->getCollection(array(
 			'id' => $page_id,
-			'publish' => 1,
+			'publish' => '1',
 		));
 		
 		$page = (!empty($page)) ? $page[0] : false;
