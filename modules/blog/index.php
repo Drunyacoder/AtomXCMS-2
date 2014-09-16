@@ -257,7 +257,7 @@ Class BlogModule extends Module {
             }
         }
 
-        pr($query_params); die();
+
 		$total = $this->Model->getTotal($query_params);
 		list ($pages, $page) = pagination( $total, Config::read('per_page', $this->module), '/' . $this->module . '/');
 		$this->Register['pages'] = $pages;
@@ -550,9 +550,9 @@ Class BlogModule extends Module {
 
 			//set users_id that are on this page
 			$this->setCacheTag(array(
-			'user_id_' . $entity->getAuthor_id(),
-			'record_id_' . $entity->getId(),
-			'category_id_' . $id,
+                'user_id_' . $entity->getAuthor_id(),
+                'record_id_' . $entity->getId(),
+                'category_id_' . $id,
 			));
 
 
