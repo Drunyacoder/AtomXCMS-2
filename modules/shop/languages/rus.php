@@ -65,6 +65,7 @@ return array(
         'Deivery types by days' => 'Типы доставки по дням',
         'Product orders' 	=> 'Заказы товара',
         'Orders for "%s"' 	=> 'Заказы товара - "%ы"',
+        'Basket is empty' => 'Корзина пуста',
     ),
 );
 

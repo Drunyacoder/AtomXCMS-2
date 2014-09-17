@@ -384,7 +384,7 @@ class Validate {
 	 * @param $rules array
 	 * @param $additional_fields array
 	 */
-	public function getAndMergeFormPost($action = null, $additional_fields = array(), $correct = false)
+	public function getAndMergeFormPost($action = null, $additional_fields = array(), $correct = false, $fields_meta = false)
 	{
 		$rules = $this->prepareRules($action);
 		$pattern = array_fill_keys(array_keys($rules), null);
@@ -395,6 +395,15 @@ class Validate {
 			$fields = array_map(function($n){
 				return trim($n);
 			}, $fields);
+
+        if ($fields_meta === true) {
+            foreach ($fields as $k => $value) {
+                $fields[$k] = array(
+                    'value' => $value,
+                    'label' => $rules[$k]['title'],
+                );
+            }
+        }
 		
 		return $fields;
 	}

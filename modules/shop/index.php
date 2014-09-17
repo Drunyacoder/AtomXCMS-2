@@ -245,7 +245,6 @@ Class ShopModule extends Module {
 
     public function add_to_basket($id = null, $quantity = null)
     {
-        pr($_SESSION);
         //turn access
         $this->ACL->turn(array($this->module, 'buy_product'));
         $id = intval($id);
@@ -256,10 +255,8 @@ Class ShopModule extends Module {
         $where = array("(quantity > 0 || hide_not_exists = '0')");
         $where['id'] = $id;
 
-        $this->Model->bindModel('vendor');
+
         $this->Model->bindModel('category');
-        $this->Model->bindModel('author');
-        $this->Model->bindModel('attaches');
         $entity = $this->Model->getFirst($where);
 
 
@@ -270,13 +267,84 @@ Class ShopModule extends Module {
             return $this->showInfoMessage(__('Permission denied'), $this->getModuleURL());
 
 
-        if ($this->__addToBasket($entity, $quantity)) {
-            $this->showAjaxResponse(array('result' => 1));
+        $data = array(
+            'id' => $entity->getId(),
+            'title' => $entity->getTitle(),
+            'price' => $entity->getPrice(),
+            'quantity' => $quantity,
+        );
+        $basket = $this->storage['basket'];
+        $push = true;
+
+        if (count($basket['products'])) {
+            foreach ($basket['products'] as &$product) {
+                if ($data['id'] === $product['id']) {
+                    $product['quantity']++;
+                    $push = false;
+                    break;
+                }
+            }
+        }
+
+        if ($push)
+            array_push($basket['products'], $data);
+        $basket['total'] += $data['price'];
+
+
+        $this->showAjaxResponse(array(
+            'result' => 1,
+            'data' => $basket,
+        ));
+    }
+
+
+    public function remove_from_basket($id = null)
+    {
+        //turn access
+        $this->ACL->turn(array($this->module, 'buy_product'));
+        $id = intval($id);
+        if (empty($id) || $id < 1) redirect($this->getModuleURL());
+
+
+        $basket = $this->storage['basket'];
+        if (count($basket['products'])) {
+            foreach ($basket['products'] as $k => $product) {
+                if ($product['id'] == $id) {
+                    $basket['total'] -= ($product['price'] * $product['quantity']);
+                    unset($basket['products'][$k]);
+                }
+            }
         }
 
         $this->showAjaxResponse(array(
-            'result' => 0,
-            'errors' => $this->Register['Validate']->wrapErrors(__('Some error occurred'), true),
+            'result' => 1,
+            'data' => $basket,
+        ));
+    }
+
+
+    public function edit_basket($id = null, $quantity = 1)
+    {
+        //turn access
+        $this->ACL->turn(array($this->module, 'buy_product'));
+        $id = intval($id);
+        $quantity = (intval($quantity) >= 1) ? intval($quantity) : 1;
+        if (empty($id) || $id < 1) redirect($this->getModuleURL());
+
+
+        $basket = $this->storage['basket'];
+        if (count($basket['products'])) {
+            foreach ($basket['products'] as $k => $product) {
+                if ($product['id'] == $id) {
+                    $basket['total'] -= ($product['price'] * $product['quantity']);
+                    unset($basket['products'][$k]);
+                }
+            }
+        }
+
+        $this->showAjaxResponse(array(
+            'result' => 1,
+            'data' => $basket,
         ));
     }
 
@@ -331,7 +399,9 @@ Class ShopModule extends Module {
         }
 
 
-        $fields = $this->Register['Validate']->getAndMergeFormPost($this->Register['action'], array(), true);
+        $fields = $this->Register['Validate']->getAndMergeFormPost($this->Register['action'], array(), true, true);
+        $errors .= $this->Register['Validate']->getErrors();
+        if (isset($_SESSION['FpsForm'])) unset($_SESSION['FpsForm']);
 
         $deliveryTypesModel = $this->Register['ModManager']->getModelInstance('shopDeliveryTypes');
         $delivery_types = $deliveryTypesModel->getCollection();
@@ -354,8 +424,45 @@ Class ShopModule extends Module {
     {
         $this->ACL->turn(array($this->module, 'buy_product'));
 
-        $errors = $this->Register['Validate']->check($this->Register['action']);
+        $this->Model->bindModel('category');
+        $basket = &$this->storage['basket'];
         $fields = Validate::getAndMergeFormPost($this->Register['action'], array(), true);
+        $errors = null;
+
+
+        if (!$basket['products']) {
+            $errors .= $this->Register['Validate']->completeErrorMessage(__('You have to select at least one product', $this->module));
+
+        } else {
+            // Check if something was changed in the selected products
+            $_total = 0;
+            foreach ($basket['products'] as $row) {
+                $product = $this->Model->getById($row['id']);
+
+                if (!$product || $product->getQuantity() < $row['quantity']) {
+                    $errors .= $this->Register['Validate']
+                        ->completeErrorMessage(sprintf(__('Not enough quantity of "%s"', $this->module), h($row['title'])));
+                    continue;
+                }
+
+                if ($product->getAvailable() == 0 || !$this->ACL->checkCategoryAccess($product->getCategory()->getNo_access()))
+                    $errors .= $this->Register['Validate']
+                        ->completeErrorMessage(sprintf(__('"%s" have been disabled for selling', $this->module), h($row['title'])));
+
+                $_total += $product->getPrice();
+            }
+
+            if (!errors && $_total != $basket['total']) {
+                $errors .= $this->Register['Validate']
+                    ->completeErrorMessage(__('Total price does not match. Some products might change the price.', $this->module));
+            }
+        }
+
+        if (!empty($errors))
+            $errors = $this->Register['Validate']->wrapErrors($errors);
+        else
+            $errors = $this->Register['Validate']->check($this->Register['action']);
+
 
         if ($errors) {
             $_SESSION['FpsForm'] = $fields;
@@ -363,9 +470,65 @@ Class ShopModule extends Module {
             redirect($this->getModuleURL('create_order_form'));
         }
 
-        die('TODO');
 
-        if ($this->Log) $this->Log->write('add order(' . $this->module . ')', 'id(' . $id . ')');
+        $ordersEntity = $this->Register['ModManager']->getEntityInstance('shopOrders');
+        $ordersProductsEntity = $this->Register['ModManager']->getEntityInstance('shopOrdersProducts');
+
+        try {
+            $order_data = array(
+                'user_id' => ($_SESSION['user']) ? $_SESSION['user']['id'] : 0,
+                'date' => new Expr('NOW()'),
+                'total' => $basket['total'],
+                'comment' => $fields['comment'],
+                'delivery_address' => $fields['address'],
+                'delivery_type_id' => $fields['delivery_type'],
+                'telephone' => $fields['telephone'],
+                'first_name' => trim(strstr($fields['name'], ' ', true)),
+                'last_name' => trim(strstr($fields['name'], ' ')),
+            );
+            $order_id = $ordersEntity($order_data)->save();
+            pr($order_id);
+
+            foreach ($basket['products'] as $row) {
+                $ordersProductsEntity(array(
+                    'order_id' => $order_id,
+                    'product_id' => $row['id'],
+                    'quantity' => $row['quantity'],
+                ))->save();
+            }
+
+            // Clear basket
+            $basket['total'] = 0;
+            $basket['products'] = array();
+
+            if ($this->Log) $this->Log->write('add order(' . $this->module . ')', 'id(' . $order_id . ')');
+            redirect($this->getModuleURL('complete_order/' . $order_id));
+
+
+        } catch (Exception $e) {
+            $_SESSION['FpsForm'] = $fields;
+            $_SESSION['FpsForm']['error'] = $e->getMessage();
+            redirect($this->getModuleURL('create_order_form'));
+        }
+    }
+
+
+    public function complete_order($id = null)
+    {
+        $this->ACL->turn(array($this->module, 'buy_product'));
+        $id = intval($id);
+        if (empty($id) || $id < 1) redirect($this->getModuleURL());
+
+        $ordersModel = $this->Register['ModManager']->getModelInstance('shopOrders');
+        $order = $ordersModel->getById($id);
+
+        if (!$order)
+            $this->showInfoMessage(__('Order not found', $this->module), $this->getModuleURL());
+
+        $source = $this->render('order_form.html', array('context' => array(
+            'order' => $order,
+        )));
+        return $this->_view($source);
     }
 
 	
@@ -637,7 +800,11 @@ Class ShopModule extends Module {
 	protected function _beforeRender()
     {
         $this->Model = $this->Register['ModManager']->getModelInstance('shopProducts');
+
         $this->storage =& $_SESSION;
+        if (!array_key_exists('basket', $this->storage))
+            $this->storage['basket'] = array('products' => array(), 'total' => 0);
+
 		parent::_beforeRender();
 	}
 	
@@ -650,14 +817,14 @@ Class ShopModule extends Module {
 			'create_order_form' => array(
 				'name' => array(
 					'required' => true,
-					'max_lenght' => 100,
+					'max_lenght' => 50,
 					'title' => 'Name',
 				),
 				'telephone' => array(
 					'required' => true,
 					'max_lenght' => 20,
 					'pattern' => Validate::V_INT,
-					'title' => 'Text',
+					'title' => 'Telephone',
 				),
 				'delivery_type' => array(
 					'required' => true,
@@ -666,10 +833,12 @@ Class ShopModule extends Module {
                 'address' => array(
                     'required' => true,
                     'max_lenght' => 200,
+                    'title' => 'Address',
                 ),
 				'comment' => array(
 					'required' => 'editable',
                     'max_lenght' => 1000,
+                    'title' => 'Comment',
 				),
 			),
 			'add_comment' => array(
@@ -739,44 +908,6 @@ Class ShopModule extends Module {
 
         $source = $this->render('filters.html', array('context' => $data));
         return $source;
-    }
-
-
-    private function __addToBasket($entity, $quantity)
-    {
-        $data = array(
-            'id' => $entity->getId(),
-            'title' => $entity->getTitle(),
-            'price' => $entity->getPrice(),
-            'quantity' => $quantity,
-        );
-
-        if (!array_key_exists('basket', $this->storage))
-            $this->storage['basket'] = array(
-                'products' => array(),
-                'total' => 0,
-            );
-
-        $push = true;
-        if (count($this->storage['basket']['products'])) {
-            foreach ($this->storage['basket']['products'] as &$product) {
-                if ($data['id'] === $product['id']) {
-                    $product['quantity']++;
-                    $push = false;
-                    break;
-                }
-            }
-        }
-
-        if ($push)
-            array_push($this->storage['basket']['products'], $data);
-        $this->storage['basket']['total'] += $data['price'];
-    }
-
-
-    private function __getBasket()
-    {
-        return (array_key_exists('basket', $this->storage)) ? $this->storage['basket'] : array();
     }
 }
 

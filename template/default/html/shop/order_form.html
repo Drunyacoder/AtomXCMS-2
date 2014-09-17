@@ -4,32 +4,36 @@ For inspect an any variable use "show" filter as shown below:
 
 It represents a variable the same way as the "var_dump" function in PHP.
 
-- context
-- - entities
-- - total
-- - fields
-- - errors
+More details & documentation are located at http://atomx.net/stat/category/27/.
+
+- context (array)
+- - entities (array)
+- - total (int)
+- - fields (array)
+- - errors (string)
 #}-->
 
 {{ context.errors }}
 <div class="catalog">
-{% if context.entities %}
+    <form action="">
+    {% if context.entities %}
 
-	{% for entity in context.entities %}
+        {% for entity in context.entities %}
+            <div class="product-item">
+                <h4>{{ entity.title|escape }} ({{ entity.quantity }})</h4>
+                <div class="product-image">{{ entity.price }}({{ entity.price * entity.quantity }})</div>
+            </div>
+        {% endfor %}
+        <h3>{{ context.total }}</h3>
+
+        {% for name, params in context.fields %}
         <div class="product-item">
-            <h4>{{ entity.title|escape }} ({{ entity.quantity }})</h4>
-            <div class="product-image">{{ entity.price }}({{ entity.price * entity.quantity }})</div>
+            {{ params.label|lang|escape }}<input type="text" name="{{ name|escape }}" value="{{ params.value|escape }}" /><br />
         </div>
-	{% endfor %}
-
-{% else %}
-	{{ 'Materials not found'|lang }}
-{% endif %}
-    <h3>{{ context.total }}</h3>
-
-    {% for name, value in context.fields %}
-    <div class="product-item">
-        {{ name|replace({"_":" "})|capitalize|lang|escape }}<input type="text" name="{{ name|escape }}" value="{{ value|escape }}" /><br />
-    </div>
-    {% endfor %}
+        {% endfor %}
+        <input type="submit" name="send" value="{{ 'Buy'|lang('shop') }}">
+    {% else %}
+        {{ 'Basket is empty'|lang('shop') }}
+    {% endif %}
+    </form>
 </div>
