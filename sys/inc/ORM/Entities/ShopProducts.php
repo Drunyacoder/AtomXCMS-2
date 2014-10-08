@@ -95,9 +95,15 @@ class ShopProductsEntity extends FpsEntity
     {
         $this->price = floatval($price);
     }
-	
-	
-	public function getFinal_price()
+
+
+    /**
+     * Returns the product price without the active discounts.
+     * So the getPrice() & getFinal_price() returns different results if a product has discount(s).
+     *
+     * @return mixed
+     */
+    public function getFinal_price()
 	{
 		$discount = $this->getTotalDiscount();
 		$price = (!empty($discount))
@@ -197,6 +203,9 @@ class ShopProductsEntity extends FpsEntity
     }
 
 
+    /**
+     * Saves the all product attributes & their content
+     */
     private function __saveAttributes()
     {
         if (empty($this->attributes)) return;

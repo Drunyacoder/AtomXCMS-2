@@ -231,6 +231,7 @@ class ShopSettingsController
                     }
 				}
 			}
+
 		
             if ($entity->getTitle() != $_POST['title'])
                 $entity->setTitle($_POST['title']);
@@ -254,8 +255,20 @@ class ShopSettingsController
 			$entity->setAvailable((!empty($_POST['available']) ? '1' : '0'));
 			$entity->setView_on_home((!empty($_POST['view_on_home']) ? '1' : '0'));
 			$entity->setHide_not_exists((!empty($_POST['hide_not_exists']) ? '1' : '0'));
-			
-			if ($entity->save(true)) {
+
+            $entity_id = $entity->save(true);
+
+			if ($entity_id) {
+                if (!empty($_POST['attaches']) && is_array($_POST['attaches'])) {
+                    $attachesModel = $Register['ModManager']->getModelInstance('shopAttaches');
+
+                    foreach ($_POST['attaches'] as $attach_id) {
+                        $attach = $attachesModel->getById($attach_id);
+                        if ($attach && $attach->getEntity_id() !== $entity_id)
+                            $attach->setEntity_id($entity_id)->save();
+                    }
+                }
+
 				$_SESSION['message'] = __('Operation is successful');
 				redirect($this->getUrl('edit_product/' . $entity->getId()));
 			}
@@ -437,20 +450,30 @@ class ShopSettingsController
 				AtomX.initMultiFileUploadHandler("shop", parseResponse);
 				$(".atmshop-del-attach").live("click", function(){
 					var attachId = $(this).parent().find("input").val();
-					$.get("' . get_url('/shop/delete_attach/') . '\'+ attachId +\'/", function(data){
-						if (data.result != 1) return; 
-						if ($("#main-image img").data("id") == attachId) {
-							$("#main-image img").attr("src", "/image/shop/"+$("#attaches-list div:eq(0) input").val()+"/150/");
-						}
-						$(this).parent().remove();
-						$("#attaches-list").width($("#attaches-list img").length * 110 + "px" );
+					$.ajax({
+					    url: "' . get_url('/shop/delete_attach/') . '\'+ attachId +\'/",
+					    type: "POST",
+					    dataType: "json",
+					    success: function(data){
+                            if (data.result != 1) return;
+                            if ($("#main-image img").data("id") == attachId) {
+                                $("#main-image img").attr("src", "/image/shop/"+$("#attaches-list div:eq(0) input").val()+"/150/");
+                            }
+                            $(this).parent().remove();
+                            $("#attaches-list").width($("#attaches-list img").length * 110 + "px" );
+					    }
 					});
 				});
 				$(".atmshop-asmain-attach").live("click", function(){
 					var attachId = $(this).parent().find("input").val();
-					$.get("' . get_url('/shop/as_main_attach/') . '\'+ attachId +\'/", function(data){
-						if (data.result != 1) return; 
-						$("#main-image img").attr("src", "/image/shop/"+attachId+"/150/");
+					$.ajax({
+					    url: "' . get_url('/shop/as_main_attach/') . '\'+ attachId +\'/",
+					    type: "POST",
+					    dataType: "json",
+					    success: function(data){
+						    if (data.result != 1) return;
+						    $("#main-image img").attr("src", "/image/shop/"+attachId+"/150/");
+					    }
 					});
 				});
 			});

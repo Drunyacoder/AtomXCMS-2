@@ -254,6 +254,14 @@ class Module {
     {
         $this->addToPageMetaContext('module', ucfirst($this->module));
 
+        if (
+            (!empty($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST')
+            || substr($_SERVER['PHP_SELF'], 1, 5) === 'admin'
+            || in_array($this->module, array('chat', 'rating'))
+        ) {
+            $this->counter = false;
+        }
+
 		if (isset($_SESSION['page'])) unset($_SESSION['page']);
 		if (isset($_SESSION['pagecnt'])) unset($_SESSION['pagecnt']);
 	}
@@ -276,19 +284,17 @@ class Module {
 		
 		/*
 		* counter ( if active )
-		* and if we not in admin panel
+		* and if we not in admin panel (see _beforeRender())
 		*/
-		if (in_array($this->module, array('chat', 'rating'))) return;
 		if ($this->counter === false) return;
 		
-		if (substr($_SERVER['PHP_SELF'], 1, 5) != 'admin') {
-			include_once ROOT . '/modules/statistics/index.php';
-			if (Config::read('active', 'statistics') == 1) {
-				StatisticsModule::index();
-			} else {
-				StatisticsModule::viewOffCounter();
-			}
-		}
+
+        include_once ROOT . '/modules/statistics/index.php';
+        if (Config::read('active', 'statistics') == 1) {
+            StatisticsModule::index();
+        } else {
+            StatisticsModule::viewOffCounter();
+        }
 	}
 	
 
