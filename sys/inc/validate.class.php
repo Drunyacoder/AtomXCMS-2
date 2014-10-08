@@ -372,9 +372,16 @@ class Validate {
 	public function getErrors()
 	{
         $outputContent = '';
-        if (!empty($_SESSION['FpsForm']['error'])) {
+
+        if (!empty($_SESSION['FpsForm']['errors'])) {
+            $outputContent = $this->wrapErrors($_SESSION['FpsForm']['errors']);
+        }
+
+        // $_SESSION['FpsForm']['error'] is deprecated.
+        if (!$outputContent && !empty($_SESSION['FpsForm']['error'])) {
             $outputContent = $this->wrapErrors($_SESSION['FpsForm']['error']);
         }
+
         return $outputContent;
 	}
 	
