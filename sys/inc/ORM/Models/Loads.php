@@ -2,12 +2,12 @@
 /*---------------------------------------------\
 |											   |
 | @Author:       Andrey Brykin (Drunya)        |
-| @Version:      1.1                           |
+| @Version:      1.2                           |
 | @Project:      CMS                           |
 | @Package       AtomX CMS                     |
 | @subpackege    Loads Model                   |
-| @copyright     ©Andrey Brykin 2010-2012      |
-| @last mod      2012/05/04                    |
+| @copyright     ©Andrey Brykin 2010-2014      |
+| @last mod      2014/10/09                    |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
@@ -58,7 +58,14 @@ class LoadsModel extends FpsModel
     );
 
 
-	
+    public function getById($id)
+    {
+        $entity = parent::getById($id);
+        $entities = $this->getMaterialsAttaches(array($entity), 'loads');
+        return $entities[0];
+    }
+
+
     /**
      * @param array $params
      * @param array $addParams

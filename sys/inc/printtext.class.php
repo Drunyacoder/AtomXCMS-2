@@ -72,14 +72,13 @@ class PrintText {
 			$ustatus = $material->getAuthor()->getStatus();
 			$title = $material->getTitle();
 		} else {
-			$ustatus = $material;
+			$ustatus = false;
 			$title = false;
 		}
 		
 		//pr($announce);
 		$announce = $this->closeOpenTags($announce); 
-		$announce = $this->print_page($announce, $ustatus, $title); 
-		//$announce .= ' ... <br /><div style="clear:both;"></div> <a class="fps-show-mat" href="' . get_url($url) . '">'.__('Show material').'</a>';
+		$announce = $this->print_page($announce, $ustatus, $title);
 		return $announce;
 	}
 	
@@ -277,8 +276,10 @@ class PrintText {
 		
 		
 		$ACL = $register['ACL'];
-		if (!$ACL->turn(array('bbcodes', 'html'), false, $ustatus) 
-		|| !Config::read('allow_html')) {
+		if (!$ustatus
+            || !$ACL->turn(array('bbcodes', 'html'), false, $ustatus)
+		    || !Config::read('allow_html')
+        ) {
 			$message = htmlspecialchars($message, ENT_NOQUOTES);
 		}
 	
@@ -346,8 +347,6 @@ class PrintText {
 		}
 
 		
-		
-		
 		$message = nl2br( $message);
 		//work for smile
 		if (Config::read('allow_smiles')) {
@@ -364,8 +363,6 @@ class PrintText {
 
 		// Над этим тоже надо будет подумать
 		$message = str_replace( '</div><br />', '</div>', $message );
-
-		
 
 		return $message;
 	}

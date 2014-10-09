@@ -819,17 +819,14 @@ class Module {
 		if (!empty($attachment)) $entity->setAttachment($attachment);
 		
 		if (preg_match_all('#\{ATTACH(\d+)(\|(\d+))?(\|(left|right))?(\|([^\|]+))?\}#ui', $announce, $matches)) {
-			$ids = array();
 			$sizes = array();
 			$floats = array();
 			$descriptions = array();
 			foreach ($matches[1] as $key => $id) {
-				$ids[] = $id;
 				$sizes[$id] = (!empty($matches[3][$key])) ? intval($matches[3][$key]) : false;
 				$floats[$id] = (!empty($matches[5][$key])) ? 'float:' . $matches[5][$key] . ';' : false;
 				$descriptions[$id] = (!empty($matches[7][$key])) ? $matches[7][$key] : false;
 			}
-			$ids = implode(', ', $ids);
 			
 
 			$attaches = $entity->getAttaches();

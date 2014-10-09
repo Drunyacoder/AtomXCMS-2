@@ -95,7 +95,9 @@ $FpsInstallQueries[] = "CREATE TABLE `{$db_prefix}shop_orders_products` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `order_id` int(11) NOT NULL,
   `product_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
+  `quantity` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX (`order_id`, `product_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8";
 
 

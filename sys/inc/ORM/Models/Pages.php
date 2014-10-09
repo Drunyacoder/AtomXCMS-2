@@ -2,12 +2,12 @@
 /*---------------------------------------------\
 |											   |
 | @Author:       Andrey Brykin (Drunya)        |
-| @Version:      1.2                           |
+| @Version:      1.3                           |
 | @Project:      CMS                           |
 | @Package       AtomX CMS                     |
 | @subpackege    Pages Model                   |
-| @copyright     ©Andrey Brykin 2010-2013      |
-| @last mod      2013/07/16                    |
+| @copyright     ©Andrey Brykin 2010-2014      |
+| @last mod      2014/10/09                    |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
@@ -421,6 +421,9 @@ class PagesModel extends FpsModel
 				foreach ($module_materials as &$mat) {
 					$mat = new $entity($mat);
 				}
+
+                $module_materials = $module_model->getMaterialsAttaches($module_materials, $module);
+
 			} else {
 				$module_materials = array();
 			}

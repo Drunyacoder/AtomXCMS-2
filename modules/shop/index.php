@@ -237,7 +237,7 @@ Class ShopModule extends Module {
 		$entity->setAdd_markers($markers);
 
 
-		$source = $this->render('material.html', array('entity' => $entity));
+		$source = $this->render('material.html', array('context' => array('entity' => $entity)));
 		
 		return $this->_view($source);
 	}
@@ -270,7 +270,7 @@ Class ShopModule extends Module {
         $data = array(
             'id' => $entity->getId(),
             'title' => $entity->getTitle(),
-            'price' => $entity->getPrice(),
+            'price' => $entity->getFinal_price(),
             'quantity' => $quantity,
         );
         $basket = $this->storage['basket'];
@@ -279,7 +279,7 @@ Class ShopModule extends Module {
         if (count($basket['products'])) {
             foreach ($basket['products'] as &$product) {
                 if ($data['id'] === $product['id']) {
-                    $product['quantity']++;
+                    $product['quantity'] += $data['quantity'];
                     $push = false;
                     break;
                 }
@@ -288,7 +288,7 @@ Class ShopModule extends Module {
 
         if ($push)
             array_push($basket['products'], $data);
-        $basket['total'] += $data['price'];
+        $basket['total'] += $data['price'] * $data['quantity'];
 
 
         $this->showAjaxResponse(array(
@@ -328,16 +328,21 @@ Class ShopModule extends Module {
         //turn access
         $this->ACL->turn(array($this->module, 'buy_product'));
         $id = intval($id);
-        $quantity = (intval($quantity) >= 1) ? intval($quantity) : 1;
+        $quantity = (intval($quantity) >= 1) ? intval($quantity) : 0;
         if (empty($id) || $id < 1) redirect($this->getModuleURL());
 
 
         $basket = $this->storage['basket'];
         if (count($basket['products'])) {
-            foreach ($basket['products'] as $k => $product) {
+            foreach ($basket['products'] as $k => &$product) {
                 if ($product['id'] == $id) {
-                    $basket['total'] -= ($product['price'] * $product['quantity']);
-                    unset($basket['products'][$k]);
+                    if ($quantity == 0) {
+                        $basket['total'] -= ($product['price'] * $product['quantity']);
+                        unset($basket['products'][$k]);
+                    } else {
+                        $product['quantity'] = $quantity;
+                        $basket['total'] -= ($product['quantity'] - $quantity) * $product['price'];
+                    }
                 }
             }
         }
@@ -385,7 +390,7 @@ Class ShopModule extends Module {
 
             foreach ($basket['products'] as $basket_row) {
                 $product = $this->Model->getById($basket_row['id']);
-                $_total += $product->getPrice() * $basket_row['quantity'];
+                $_total += $product->getFinal_price() * $basket_row['quantity'];
                 $product->setQuantity($basket_row['quantity']);
                 $entities[] = $product;
             }
@@ -449,7 +454,7 @@ Class ShopModule extends Module {
                     $errors .= $this->Register['Validate']
                         ->completeErrorMessage(sprintf(__('"%s" have been disabled for selling', $this->module), h($row['title'])));
 
-                $_total += $product->getPrice();
+                $_total += $product->getFinal_price() * $row['quantity'];
             }
 
             if (!errors && $_total != $basket['total']) {
@@ -487,7 +492,6 @@ Class ShopModule extends Module {
                 'last_name' => trim(strstr($fields['name'], ' ')),
             );
             $order_id = $ordersEntity($order_data)->save();
-            pr($order_id);
 
             foreach ($basket['products'] as $row) {
                 $ordersProductsEntity(array(
@@ -500,6 +504,9 @@ Class ShopModule extends Module {
             // Clear basket
             $basket['total'] = 0;
             $basket['products'] = array();
+
+            // for check access to complete_order page.
+            $_SESSION['complete_order_id'] = $order_id;
 
             if ($this->Log) $this->Log->write('add order(' . $this->module . ')', 'id(' . $order_id . ')');
             redirect($this->getModuleURL('complete_order/' . $order_id));
@@ -519,13 +526,19 @@ Class ShopModule extends Module {
         $id = intval($id);
         if (empty($id) || $id < 1) redirect($this->getModuleURL());
 
+        // Check the user access for this order
+        if (empty($_SESSION['complete_order_id']) || $_SESSION['complete_order_id'] !== $id) {
+            $this->showInfoMessage(__('Permission denied'), $this->getModuleURL());
+        }
+
         $ordersModel = $this->Register['ModManager']->getModelInstance('shopOrders');
         $order = $ordersModel->getById($id);
 
         if (!$order)
             $this->showInfoMessage(__('Order not found', $this->module), $this->getModuleURL());
 
-        $source = $this->render('order_form.html', array('context' => array(
+
+        $source = $this->render('complete_order.html', array('context' => array(
             'order' => $order,
         )));
         return $this->_view($source);

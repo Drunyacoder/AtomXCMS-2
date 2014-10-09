@@ -10,6 +10,7 @@ More details & documentation are located at http://atomx.net/stat/category/27/.
 - - entities (array)
 - - total (int)
 - - fields (array)
+- - delivery_types (array)
 - - errors (string)
 #}-->
 
@@ -28,7 +29,7 @@ More details & documentation are located at http://atomx.net/stat/category/27/.
 
         {% for name, params in context.fields %}
         <div class="product-item">
-            {{ params.label|lang|escape }}<input type="text" name="{{ name|escape }}" value="{{ params.value|escape }}" /><br />
+            {{ params.label|lang('shop')|escape }}<input type="text" name="{{ name|escape }}" value="{{ params.value|escape }}" /><br />
         </div>
         {% endfor %}
         <input type="submit" name="send" value="{{ 'Buy'|lang('shop') }}">

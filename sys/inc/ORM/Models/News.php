@@ -2,12 +2,12 @@
 /*---------------------------------------------\
 |											   |
 | @Author:       Andrey Brykin (Drunya)        |
-| @Version:      1.0                           |
+| @Version:      1.2                           |
 | @Project:      CMS                           |
 | @Package       AtomX CMS                     |
 | @subpackege    News Model                    |
-| @copyright     ©Andrey Brykin 2010-2011      |
-| @last mod      2012/02/27                    |
+| @copyright     ©Andrey Brykin 2010-2014      |
+| @last mod      2014/10/09                    |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
@@ -57,7 +57,15 @@ class NewsModel extends FpsModel
         'default' => 'date',
     );
 
-	
+
+    public function getById($id)
+    {
+        $entity = parent::getById($id);
+        $entities = $this->getMaterialsAttaches(array($entity), 'news');
+        return $entities[0];
+    }
+
+
     /**
      * @param array $params
      * @param array $addParams
