@@ -34,6 +34,7 @@ $api_url = 'http://home.develdo.com/';
 
 
 function showError() {
+    $Register = Register::getInstance();
 	$errors = $Register['PluginController']->getErrors();
 	
 	$_SESSION['message'] = $errors;

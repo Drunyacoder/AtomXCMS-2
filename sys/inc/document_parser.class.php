@@ -104,7 +104,13 @@ class Document_Parser {
     {
 		$viewer = new Fps_Viewer_Manager(new Fps_Viewer_Loader());
         $outputContent = '';
-        if (!empty($_SESSION['FpsForm']['error'])) {
+
+        if (!empty($_SESSION['FpsForm']['errors'])) {
+            $outputContent = $viewer->view('infomessage.html', array('info_message' => $_SESSION['FpsForm']['errors']));
+        }
+
+        // $_SESSION['FpsForm']['error'] is deprecated.
+        if (empty($outputContent) && !empty($_SESSION['FpsForm']['error'])) {
             $outputContent = $viewer->view('infomessage.html', array('info_message' => $_SESSION['FpsForm']['error']));
         }
         return $outputContent;
