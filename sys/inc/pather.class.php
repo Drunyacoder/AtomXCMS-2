@@ -200,7 +200,7 @@ Class Pather {
 				if ($params[1] !== 'view' && (empty($params[2]) || !is_numeric($params[2]))) {
                     $mat_id = $this->getHluId($params[1], $params[0]);
                     if ($mat_id) {
-                        // redirect to old ID (e.g. which did before we changed the title)
+                        // redirect to new URL (might the title was changed)
                         redirect($params[0] . '/' . $mat_id, 301);
                     }
                 }
