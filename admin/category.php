@@ -464,7 +464,7 @@ function edit() {
 	}
 	/* if errors exists */
 	if (!empty($error)) {
-		$_SESSION['errors'] = $Register['Validate']->wrapErrors($error);
+		$_SESSION['errors'] = $Register['DocParser']->wrapErrors($error);
 		redirect('/admin/category.php?mod=' . getCurrMod());
 	}
 	
@@ -571,7 +571,7 @@ function delete() {
 	$model = $Register['ModManager']->getModelInstance(getCurrMod() . 'Categories');
 	$total = $model->getTotal();
 	if ($total <= 1) {
-		$_SESSION['errors'] = $Register['Validate']->wrapErrors(__('You can\'t remove the last category'), true);
+		$_SESSION['errors'] = $Register['DocParser']->wrapErrors(__('You can\'t remove the last category'), true);
 		redirect('/admin/category.php?mod=' . getCurrMod());
 	}
 	

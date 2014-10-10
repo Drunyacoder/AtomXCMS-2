@@ -97,23 +97,18 @@ class Document_Parser {
     }
 
 
-    /**
-     * @return mixed|string
-     */
-    public function getErrors()
+    public function wrapErrors($errors, $preprocess = false)
     {
-		$viewer = new Fps_Viewer_Manager(new Fps_Viewer_Loader());
-        $outputContent = '';
-
-        if (!empty($_SESSION['FpsForm']['errors'])) {
-            $outputContent = $viewer->view('infomessage.html', array('info_message' => $_SESSION['FpsForm']['errors']));
+        if ($preprocess) {
+            if (is_array($errors)) {
+                foreach ($errors as $k => $error) {
+                    $errors[$k] = $this->completeErrorMessage($error);
+                }
+            } else $errors = $this->completeErrorMessage($errors);
         }
 
-        // $_SESSION['FpsForm']['error'] is deprecated.
-        if (empty($outputContent) && !empty($_SESSION['FpsForm']['error'])) {
-            $outputContent = $viewer->view('infomessage.html', array('info_message' => $_SESSION['FpsForm']['error']));
-        }
-        return $outputContent;
+        $viewer = new Fps_Viewer_Manager(new Fps_Viewer_Loader());
+        return $viewer->view('infomessage.html', array('info_message' => $errors));
     }
 
 
@@ -363,6 +358,10 @@ class Document_Parser {
 		$out .= '</ul>';
 		return $out;
 	}
-	
+
+
+    private function completeErrorMessage($message) {
+        return "<li>$message</li>\n";
+    }
 }
 

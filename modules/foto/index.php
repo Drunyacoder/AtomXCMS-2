@@ -479,7 +479,7 @@ Class FotoModule extends Module {
 
 
 		$html = '';
-        $errors = $this->Parser->getErrors();
+        $errors = $this->Register['Validate']->getErrors();
         if (isset($_SESSION['FpsForm'])) unset($_SESSION['FpsForm']);
         if (!empty($errors)) $html = $errors;
 
@@ -669,7 +669,7 @@ Class FotoModule extends Module {
         $data = Validate::getCurrentInputsValues($entity, $data);
 	
 	
-        $errors = $this->Parser->getErrors();
+        $errors = $this->Register['Validate']->getErrors();
         if (isset($_SESSION['FpsForm'])) unset($_SESSION['FpsForm']);
         if (!empty($errors)) $html = $errors . $html;
 	

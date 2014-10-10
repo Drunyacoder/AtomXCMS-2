@@ -398,7 +398,7 @@ Class ShopModule extends Module {
             // Price might changed while user choosing a products
             if ($_total != $basket['total']) {
                 $basket['total'] = $_total;
-                $errors .= $this->Register['Validate']->wrapErrors(__('Price of some products was changed', $this->module), true);
+                $errors .= $this->Register['DocParser']->wrapErrors(__('Price of some products was changed', $this->module), true);
             }
             $total = $_total;
         }
@@ -464,7 +464,7 @@ Class ShopModule extends Module {
         }
 
         if (!empty($errors))
-            $errors = $this->Register['Validate']->wrapErrors($errors);
+            $errors = $this->Register['DocParser']->wrapErrors($errors);
         else
             $errors = $this->Register['Validate']->check($this->Register['action']);
 
@@ -679,7 +679,7 @@ Class ShopModule extends Module {
 		
 		$errors .= $this->Register['Validate']->check($this->Register['action']);
 		if (!empty($errors)) $this->showAjaxResponse(array(
-			'errors' => $this->Register['Validate']->wrapErrors($errors), 
+			'errors' => $this->Register['DocParser']->wrapErrors($errors),
 			'result' => '0'
 		));
 		
@@ -716,7 +716,7 @@ Class ShopModule extends Module {
 		if (!empty($errors)) {
 			$this->showAjaxResponse(array(
 				'result' => '0', 
-				'errors' => $this->Register['Validate']->wrapErrors($errors),
+				'errors' => $this->Register['DocParser']->wrapErrors($errors),
 			));
 		}
 			
@@ -766,7 +766,7 @@ Class ShopModule extends Module {
 		if (!empty($errors)) {
 			$this->showAjaxResponse(array(
 				'result' => '0', 
-				'errors' => $this->Register['Validate']->wrapErrors($errors, true),
+				'errors' => $this->Register['DocParser']->wrapErrors($errors, true),
 			));
 		}
 

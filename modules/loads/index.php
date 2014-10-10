@@ -592,7 +592,7 @@ Class LoadsModule extends Module {
 
 
         $data['preview'] = $this->Parser->getPreview($data['mainText']);
-        $data['errors'] = $this->Parser->getErrors();
+        $data['errors'] = $this->Register['Validate']->getErrors();
         if (isset($_SESSION['viewMessage'])) unset($_SESSION['viewMessage']);
         if (isset($_SESSION['FpsForm'])) unset($_SESSION['FpsForm']);
 
@@ -857,7 +857,7 @@ Class LoadsModule extends Module {
 
 
         $markers->setPreview($this->Parser->getPreview($markers->getMain()));
-        $markers->setErrors($this->Parser->getErrors());
+        $markers->setErrors($this->Register['Validate']->getErrors());
         if (isset($_SESSION['viewMessage'])) unset($_SESSION['viewMessage']);
         if (isset($_SESSION['FpsForm'])) unset($_SESSION['FpsForm']);
 

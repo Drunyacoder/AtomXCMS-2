@@ -196,7 +196,7 @@ Class UsersModule extends Module {
         $data = Validate::getCurrentInputsValues($data);
 
 
-        $errors = $this->Parser->getErrors();
+        $errors = $this->Register['Validate']->getErrors();
         if (isset($_SESSION['FpsForm'])) unset($_SESSION['FpsForm']);
         if (!empty($errors)) $markers['errors'] = $errors;
 		else $markers['errors'] = '';
@@ -493,7 +493,7 @@ Class UsersModule extends Module {
 		$errors = $this->Register['Validate']->check($this->Register['action']);
 		if (!empty($errors)) {
 			$_SESSION['FpsForm'] = array();
-			$_SESSION['FpsForm']['errors'] = $this->Register['Validate']->wrapErrors($errors);
+			$_SESSION['FpsForm']['errors'] = $this->Register['DocParser']->wrapErrors($errors);
 			redirect('/users/new_password_form/');
 		}
 		
@@ -506,7 +506,7 @@ Class UsersModule extends Module {
 		
 		if (empty($res)) {
 			$_SESSION['FpsForm'] = array();
-			$_SESSION['FpsForm']['errors'] = $this->Register['Validate']->wrapErrors('<li>' . __('Wrong login or email') . '</li>');
+			$_SESSION['FpsForm']['errors'] = $this->Register['DocParser']->wrapErrors('<li>' . __('Wrong login or email') . '</li>');
 			redirect('/users/new_password_form/');
 		}
 
@@ -640,7 +640,7 @@ Class UsersModule extends Module {
         //$data = array_merge($data, $user);
         $data = Validate::getCurrentInputsValues($user, $data);
 
-        $errors = $this->Parser->getErrors();
+        $errors = $this->Register['Validate']->getErrors();
         if (isset($_SESSION['FpsForm'])) unset($_SESSION['FpsForm']);
         if (!empty($errors)) $data->setErrors($errors);
 
@@ -922,7 +922,7 @@ Class UsersModule extends Module {
         $data = Validate::getCurrentInputsValues($user, $data);
 
 
-        $errors = $this->Parser->getErrors();
+        $errors = $this->Register['Validate']->getErrors();
         if (isset($_SESSION['FpsForm'])) unset($_SESSION['FpsForm']);
         if (!empty($errors)) $data->setErrors($errors);
 

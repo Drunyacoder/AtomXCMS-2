@@ -702,7 +702,7 @@ class Module {
 		
 		$errors .= $this->Register['Validate']->check($this->Register['action']);
 		if (!empty($errors)) $this->showAjaxResponse(array(
-			'errors' => $this->Register['Validate']->wrapErrors($errors), 
+			'errors' => $this->Register['DocParser']->wrapErrors($errors),
 			'result' => '0'
 		));
 		
@@ -758,7 +758,7 @@ class Module {
 		if (!empty($errors)) {
 			$this->showAjaxResponse(array(
 				'result' => '0', 
-				'errors' => $this->Register['Validate']->wrapErrors($errors),
+				'errors' => $this->Register['DocParser']->wrapErrors($errors),
 			));
 		}
 			

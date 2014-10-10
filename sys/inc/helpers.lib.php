@@ -86,8 +86,8 @@ function AtmGetSimpleDate($date) {
  * @return string
  */
 function wrap_errors($errors) {
-	return '<p class="errorMsg">' . __('Some error in form') . '</p>' .
-			"\n" . '<ul class="errorMsg">' . "\n" . $errors . '</ul>' . "\n";
+    $Register = Register::getInstance();
+	return $Register['DocParser']->wrapErrors($errors);
 }
 
 

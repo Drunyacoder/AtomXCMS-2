@@ -294,23 +294,7 @@ class Validate {
 		
 		return $errors;
 	}
-	
-	
-	
-	public function wrapErrors($errors, $preprocess = false) {
-        if ($preprocess) {
-			if (is_array($errors)) {
-				foreach ($errors as $k => $error) {
-					$errors[$k] = $this->completeErrorMessage($error);
-				}
-			} else $errors = $this->completeErrorMessage($errors);
-		}
-		return (is_callable($this->layoutWrapper))
-			? call_user_func($this->layoutWrapper, $errors)
-			: $errors;
-	}
 
-	
 	
     /**
      * Merge entity with form session(viewMessage|FpsForm).
@@ -414,8 +398,21 @@ class Validate {
 		
 		return $fields;
 	}
-	
-	
+
+
+    private function wrapErrors($errors, $preprocess = false) {
+        if ($preprocess) {
+            if (is_array($errors)) {
+                foreach ($errors as $k => $error) {
+                    $errors[$k] = $this->completeErrorMessage($error);
+                }
+            } else $errors = $this->completeErrorMessage($errors);
+        }
+        return (is_callable($this->layoutWrapper))
+            ? call_user_func($this->layoutWrapper, $errors)
+            : $errors;
+    }
+
 	
 	private function getErrorMessage($type, $params, $title) {
 		$publicTitle = (!empty($params['title'])) ? $params['title'] : $title;

@@ -215,7 +215,7 @@ class ShopSettingsController
 		if (!empty($_POST)) {
             $errors = $Register['Validate']->check(__FUNCTION__);
             if (!empty($errors)) {
-                $_SESSION['errors'] = $Register['Validate']->wrapErrors($errors);
+                $_SESSION['errors'] = $Register['DocParser']->wrapErrors($errors);
                 redirect($this->getUrl('edit_product/' . $id));
             }
 
@@ -638,7 +638,7 @@ class ShopSettingsController
 
         $errors = $Register['Validate']->check(__FUNCTION__);
         if (!empty($errors)) {
-            $_SESSION['errors'] = $Register['Validate']->wrapErrors($errors);
+            $_SESSION['errors'] = $Register['DocParser']->wrapErrors($errors);
             redirect($this->getUrl('categories'));
         }
 
@@ -647,7 +647,7 @@ class ShopSettingsController
         if (!empty($id)) {
             $entity = $model->getById($id);
             if (!$entity) {
-                $_SESSION['errors'] = $Register['Validate']->wrapErrors(__('Record not found'), true);
+                $_SESSION['errors'] = $Register['DocParser']->wrapErrors(__('Record not found'), true);
                 redirect($this->getUrl('categories'));
             }
         } else {
@@ -657,7 +657,7 @@ class ShopSettingsController
         // check parent category
         $target_section = $model->getById(intval($_POST['parent_id']));
         if (!$target_section) {
-            $_SESSION['errors'] = $Register['Validate']->wrapErrors(__('Parent section not found'), true);
+            $_SESSION['errors'] = $Register['DocParser']->wrapErrors(__('Parent section not found'), true);
             redirect($this->getUrl('categories'));
         }
         $path = $target_section->getPath();
@@ -711,7 +711,7 @@ class ShopSettingsController
 
 		$total = $model->getTotal();
 		if ($total <= 1) {
-			$_SESSION['errors'] = $Register['Validate']->wrapErrors(__('You can\'t remove the last category'), true);
+			$_SESSION['errors'] = $Register['DocParser']->wrapErrors(__('You can\'t remove the last category'), true);
 			redirect($this->getUrl('categories'));
 		}
 		
@@ -799,7 +799,7 @@ class ShopSettingsController
 			
 			$errors = $Register['Validate']->check(__FUNCTION__);
             if (!empty($errors)) {
-                $_SESSION['errors'] = $Register['Validate']->wrapErrors($errors);
+                $_SESSION['errors'] = $Register['DocParser']->wrapErrors($errors);
                 redirect($this->getUrl('attributes_groups'));
             }
 			
@@ -809,7 +809,7 @@ class ShopSettingsController
 			if (!empty($id)) {
 				$entity = $model->getById($id);
 				if (!$entity) {
-					$_SESSION['errors'] = $Register['Validate']->wrapErrors(__('Record not found'), true);
+					$_SESSION['errors'] = $Register['DocParser']->wrapErrors(__('Record not found'), true);
 					redirect($this->getUrl('attributes_groups'));
 				}
 			} else {
@@ -937,7 +937,7 @@ class ShopSettingsController
 
         $entity = $model->getById($id);
         if (!$entity) {
-            $_SESSION['errors'] = $Register['Validate']->wrapErrors(__('Record not found'), true);
+            $_SESSION['errors'] = $Register['DocParser']->wrapErrors(__('Record not found'), true);
             redirect($this->getUrl('attributes_groups'));
         }
 		
@@ -950,7 +950,7 @@ class ShopSettingsController
 				
 			$errors = $Register['Validate']->check(__FUNCTION__);
 			if (!empty($errors)) {
-				$_SESSION['errors'] = $Register['Validate']->wrapErrors($errors);
+				$_SESSION['errors'] = $Register['DocParser']->wrapErrors($errors);
 				redirect($this->getUrl('attributes_group_edit/' . $id));
 			}
 			
@@ -958,7 +958,7 @@ class ShopSettingsController
 			if (!empty($attr_id)) {
 				$add_attr = $model->getById($attr_id);
 				if (!$add_attr) {
-					$_SESSION['errors'] = $Register['Validate']->wrapErrors(__('Record not found'), true);
+					$_SESSION['errors'] = $Register['DocParser']->wrapErrors(__('Record not found'), true);
 					redirect($this->getUrl('attributes_group_edit/' . $id));
 				}
 			} else {
@@ -1210,7 +1210,7 @@ class ShopSettingsController
 			
             $errors = $Register['Validate']->check(__FUNCTION__);
             if (!empty($errors)) {
-                $_SESSION['errors'] = $Register['Validate']->wrapErrors($errors);
+                $_SESSION['errors'] = $Register['DocParser']->wrapErrors($errors);
                 redirect($this->getUrl('delivery'));
             }
 			
@@ -1218,7 +1218,7 @@ class ShopSettingsController
 			if (!empty($id)) {
 				$entity = $model->getById($id);
 				if (!$entity) {
-					$_SESSION['errors'] = $Register['Validate']->wrapErrors(__('Record not found'), true);
+					$_SESSION['errors'] = $Register['DocParser']->wrapErrors(__('Record not found'), true);
 					redirect($this->getUrl('delivery'));
 				}
 			} else {
@@ -1392,7 +1392,7 @@ class ShopSettingsController
 			
             $errors = $Register['Validate']->check(__FUNCTION__);
             if (!empty($errors)) {
-                $_SESSION['errors'] = $Register['Validate']->wrapErrors($errors);
+                $_SESSION['errors'] = $Register['DocParser']->wrapErrors($errors);
                 redirect($this->getUrl('vendors'));
             }
 			
@@ -1400,7 +1400,7 @@ class ShopSettingsController
 			if (!empty($id)) {
 				$entity = $model->getById($id);
 				if (!$entity) {
-					$_SESSION['errors'] = $Register['Validate']->wrapErrors(__('Record not found'), true);
+					$_SESSION['errors'] = $Register['DocParser']->wrapErrors(__('Record not found'), true);
 					redirect($this->getUrl('vendors'));
 				}
 			} else {
@@ -1836,7 +1836,7 @@ class ShopSettingsController
 		if ($id > 0) {
 			$entity = $model->getById($id);
             if (!$entity) {
-                $_SESSION['errors'] = $Register['Validate']->wrapErrors(__('Record not found'), true);
+                $_SESSION['errors'] = $Register['DocParser']->wrapErrors(__('Record not found'), true);
                 redirect($this->getUrl('orders'));
             }
 		} else {
@@ -1852,7 +1852,7 @@ class ShopSettingsController
 			
 			$errors = $Register['Validate']->check(__FUNCTION__);
 			if (!empty($errors)) {
-				$_SESSION['errors'] = $Register['Validate']->wrapErrors($errors);
+				$_SESSION['errors'] = $Register['DocParser']->wrapErrors($errors);
 				redirect($this->getUrl('order_edit/' . $id));
 			}
 			
@@ -1874,7 +1874,7 @@ class ShopSettingsController
 					}
 					
 					if (count($products) == 1) {
-						$_SESSION['errors'] = $Register['Validate']->wrapErrors(__('You can\'t remove the last product in order'), true);
+						$_SESSION['errors'] = $Register['DocParser']->wrapErrors(__('You can\'t remove the last product in order'), true);
 						redirect($this->getUrl('order_edit/' . $id));
 					}
 					$deleted_products[] = $pr;
@@ -1882,7 +1882,7 @@ class ShopSettingsController
 				}
 			}
 			if (empty($products) && empty($_POST['products'])) {
-				$_SESSION['errors'] = $Register['Validate']->wrapErrors(__('You can\'t seve an order without products'), true);
+				$_SESSION['errors'] = $Register['DocParser']->wrapErrors(__('You can\'t seve an order without products'), true);
 				redirect($this->getUrl('order_edit/' . $id));
 			}
 			

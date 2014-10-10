@@ -3475,7 +3475,7 @@ Class ForumModule extends Module {
         $data = array('title' => null, 'description' => null, 'forum_id' => null,
             'locked' => null, 'first_top' => null, 'new_theme' => null, 'theme' => null, 'posts_ids' => null);
         $data = Validate::getCurrentInputsValues($data);
-        $data['errors'] = $this->Parser->getErrors();
+        $data['errors'] = $this->Register['Validate']->getErrors();
         if (isset($_SESSION['FpsForm'])) unset($_SESSION['FpsForm']);
 
 

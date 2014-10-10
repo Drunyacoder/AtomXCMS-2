@@ -637,7 +637,7 @@ Class StatModule extends Module {
 		// Errors
 		if (!empty($errors)) {
 			$_SESSION['FpsForm'] = array_merge($form_fields, $_POST);
-			$_SESSION['FpsForm']['error'] = $this->Register['Validate']->wrapErrors($errors);
+			$_SESSION['FpsForm']['error'] = $this->Register['DocParser']->wrapErrors($errors);
 			redirect('/' . $this->module . '/add_form/');
 		}
 			
@@ -780,7 +780,7 @@ Class StatModule extends Module {
 		
 		
         $markers->setPreview($this->Parser->getPreview($markers->getMain()));
-        $markers->setErrors($this->Parser->getErrors());
+        $markers->setErrors($this->Register['Validate']->getErrors());
         if (isset($_SESSION['viewMessage'])) unset($_SESSION['viewMessage']);
         if (isset($_SESSION['FpsForm'])) unset($_SESSION['FpsForm']);
 
