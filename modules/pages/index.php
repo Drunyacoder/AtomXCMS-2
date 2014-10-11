@@ -232,9 +232,12 @@ Class PagesModule extends Module {
                         $announce = $result->getMain();
 
 						
-                        $announce = $this->Textarier->getAnnounce($announce, $entry_url, 0,
-                            $this->Register['Config']->read('announce_lenght'), $result);
-						$announce = $this->insertImageAttach($result, $announce, $result->getSkey());
+                        $announce = $this->Textarier->getAnnounce(
+							$announce,
+                            $result,
+							Config::read('announce_lenght'),
+							0,
+							$result->getSkey());
 						
 						
                         $markers['announce'] = $announce;

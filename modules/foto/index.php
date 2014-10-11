@@ -308,7 +308,7 @@ Class FotoModule extends Module {
 		$markers['moder_panel'] = $this->_getAdminBar($entity);
 		$markers['main'] = get_url('/sys/files/foto/full/' . $entity->getFilename());
 		$markers['foto_alt'] = h(preg_replace('#[^\w\d ]+#ui', ' ', $entity->getTitle()));
-		$markers['description'] = $this->Textarier->print_page($entity->getDescription(), $entity->getAuthor()->geteStatus());
+		$markers['description'] = $this->Textarier->parseBBCodes($entity->getDescription(), $entity);
 		
 
 		$prev_id = (!empty($next_prev['prev'])) ? $next_prev['prev']->getId() : $id;
@@ -684,7 +684,7 @@ Class FotoModule extends Module {
 		
 		$data->setAction(get_url('/foto/update/' . $id));
 		$data->setCats_selector($cats_change);
-		$data->setMainText($this->Textarier->print_page($data->getDescription(), $data->getAuthor()->geteStatus()));
+		$data->setMainText($this->Textarier->parseBBCodes($data->getDescription(), $data));
 		
 		
 		$source = $this->render('editform.html', array('data' => $data));

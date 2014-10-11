@@ -132,17 +132,11 @@ Class StatModule extends Module {
 			
 
 			// Cut announce
-			$announce = $this->Textarier->getAnnounce($result->getMain()
-				, $entry_url
-				, 0 
-				, $this->Register['Config']->read('announce_lenght', $this->module)
-				, $result
-			);
-			$announce = $this->insertImageAttach($result, $announce);
-			
+			$markers['announce'] = $this->Textarier->getAnnounce(
+				$result->getMain(),
+				$result,
+				$this->Register['Config']->read('announce_lenght', $this->module));
 
-			$markers['announce'] = $announce;
-			
 			
 			$markers['category_url'] = get_url('/' . $this->module . '/category/' . $result->getCategory_id());
 			$markers['profile_url'] = getProfileUrl($result->getAuthor()->getId());
@@ -271,17 +265,11 @@ Class StatModule extends Module {
 			$markers['entry_url'] = $entry_url;
 			
 			
-			$announce = $this->Textarier->getAnnounce($result->getMain()
-				, $entry_url
-				, 0 
-				, $this->Register['Config']->read('announce_lenght', $this->module)
-				, $result
-			);
-			$announce = $this->insertImageAttach($result, $announce);
+			$markers['announce'] = $this->Textarier->getAnnounce(
+				$result->getMain(), 
+				$result,
+				$this->Register['Config']->read('announce_lenght', $this->module));
 
-
-			$markers['announce'] = $announce;
-			
 			
 			$markers['category_url'] = get_url('/' . $this->module . '/category/' . $result->getCategory_id());
 			$markers['profile_url'] = getProfileUrl($result->getAuthor()->getId());
@@ -389,14 +377,9 @@ Class StatModule extends Module {
 		
 		$entry_url = get_url(entryUrl($entity, $this->module));
 		$markers['entry_url'] = $entry_url;
-		
-		
-		$announce = $entity->getMain();
-		$announce = $this->Textarier->print_page($announce, $entity->getAuthor()->getStatus(), $entity->getTitle());
-		$announce = $this->insertImageAttach($entity, $announce);
+		$markers['main_text'] = $this->Textarier->parseBBCodes($entity->getMain(), $entity);
 
 
-		$markers['main_text'] = $announce;
 		$entity->setAdd_markers($markers);
 		if ($entity->getTags()) $entity->setTags(explode(',', $entity->getTags()));
 		
@@ -495,15 +478,12 @@ Class StatModule extends Module {
 			$entry_url = get_url(entryUrl($entity, $this->module));
 			$markers['entry_url'] = $entry_url;
 
-			
-			
-			$announce = $this->Textarier->getAnnounce($entity->getMain(), $entry_url, 0, $this->Register['Config']->read('announce_lenght', $this->module), $entity);
-			$announce = $this->insertImageAttach($entity, $announce);
+	
+			$markers['announce'] = $this->Textarier->getAnnounce(
+				$entity->getMain(), 
+				$entity,
+				$this->Register['Config']->read('announce_lenght', $this->module));
 
-
-			$markers['announce'] = $announce;
-
-			
 
 			$markers['category_url'] = get_url($this->getModuleURL('category/' . $entity->getCategory_id()));
 			$markers['profile_url'] = getProfileUrl($entity->getAuthor_id());

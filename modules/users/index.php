@@ -1354,7 +1354,9 @@ Class UsersModule extends Module {
 		
 	
 		if (isset($_SESSION['viewMessage']) && !empty($_SESSION['viewMessage']['message'])) {
-			$prevMessage = $this->Textarier->print_page($_SESSION['viewMessage']['message'], $writer_status);
+			$prevMessage = $this->Textarier->parseBBCodes(
+				$_SESSION['viewMessage']['message'], 
+				array('status' => $writer_status));
             $prevSource = $this->render('previewmessage.html', array('message' => $prevMessage));
 			$toUser  = h($_SESSION['viewMessage']['toUser']);
 			$subject = h($_SESSION['viewMessage']['subject']);
@@ -1567,7 +1569,9 @@ Class UsersModule extends Module {
                 $this->showInfoMessage(__('Some error occurred'), '/' . $this->module . '/' );
             }
 
-            $text = $this->Textarier->print_page($message->getMessage(), $message->getFromuser()->getStatus());
+            $text = $this->Textarier->parseBBCodes(
+				$message->getMessage(), 
+				array('status' => $message->getFromuser()->getStatus()));
             $message->setMessage($text);
             $message->setDeleteLink(get_link(__('Delete'), '/users/pm_delete/' . $message->getId(), array('onClick' => "return confirm('" . __('Are you sure') . "');")));
 
@@ -1614,7 +1618,9 @@ Class UsersModule extends Module {
         $newMessages = $this->Model->getDialog($owner, $collocutor, array("`sendtime` > '" . $last_date . "'"));
         if (is_array($newMessages) && count($newMessages)) {
             foreach ($newMessages as &$mes) {
-                $message_text = $this->Textarier->print_page($mes->getMessage(), $mes->getFromuser()->getStatus());
+                $message_text = $this->Textarier->parseBBCodes(
+					$mes->getMessage(), 
+					array('status' => $mes->getFromuser()->getStatus()));
                 $mes_ = array(
                     'touser' => array(
                         'id' => $mes->getTouser()->getId(),
@@ -2633,7 +2639,7 @@ Class UsersModule extends Module {
 
 
 				$markers['moder_panel'] = $moder_panel;
-				$markers['message'] = $this->Textarier->print_page($entity->getMessage());
+				$markers['message'] = $this->Textarier->parseBBCodes($entity->getMessage(), $entity);
 
 				if ($entity->getEditdate()!='0000-00-00 00:00:00') {
 					$markers['editdate'] = 'Комментарий был изменён '.$entity->getEditdate();

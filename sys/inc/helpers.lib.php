@@ -100,31 +100,6 @@ function get_cont($path) {
 }
 
 
-	
-/**
- * Replace image marker
- */
-function insertImageAttach($entity, $announce, $module = null) {
-	// replace image tags in text
-	$attaches = $entity->getAttaches();
-	if (!empty($attaches) && count($attaches) > 0) {
-		$attachDir = ROOT . '/sys/files/' . $module . '/';
-		foreach ($attaches as $attach) {
-			if ($attach->getIs_image() == 1 && file_exists($attachDir . $attach->getFilename())) {
-			
-				$announce = str_replace('{IMAGE' . $attach->getAttach_number() . '}'
-					, '<a class="gallery" href="' . get_url('/sys/files/' . $module . '/' . $attach->getFilename()) 
-					. '"><img alt="' . h($entity->getTitle()) . '" title="' . h($entity->getTitle()) 
-					. '" title="" src="' . get_url('/image/' . $module . '/' . $attach->getFilename()) . '" /></a>'
-					, $announce);
-			}
-		}
-	}
-
-	return $announce;
-}
-
-
 
 function checkAccess($params = null) {
 	if (isset($params) && is_array($params)) {

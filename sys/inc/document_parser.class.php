@@ -89,7 +89,7 @@ class Document_Parser {
 		if (!empty($_SESSION['viewMessage'])) {
 			$viewer = new Fps_Viewer_Manager(new Fps_Viewer_Loader());
 			$context = array(
-				'message' => $this->Register['PrintText']->print_page($message),
+				'message' => $this->Register['PrintText']->parseBBCodes($message),
 			);
 			$outputContent = $viewer->view('previewmessage.html', $context);
 		}

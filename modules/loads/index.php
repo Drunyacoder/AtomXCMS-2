@@ -143,15 +143,10 @@ Class LoadsModule extends Module {
             $markers['entry_url'] = $entry_url;
 
 
-            $announce = $entity->getMain();
-			
-			
-            $announce = $this->Textarier->getAnnounce($announce, $entry_url, 0,
-                $this->Register['Config']->read('announce_lenght', $this->module), $entity);
-			$announce = $this->insertImageAttach($entity, $announce);
-			
-
-            $markers['announce'] = $announce;
+            $markers['announce'] = $this->Textarier->getAnnounce(
+				$entity->getMain(),
+                $entity,
+				$this->Register['Config']->read('announce_lenght', $this->module));
 
 
             $markers[$this->module] = $entity->getDownloads();
@@ -273,16 +268,10 @@ Class LoadsModule extends Module {
             $markers['entry_url'] = $entry_url;
 	
 			
-            $announce = $this->Textarier->getAnnounce($result->getMain()
-                , $entry_url
-                , 0
-                , $this->Register['Config']->read('announce_lenght', $this->module)
-                , $result
-            );
-			$announce = $this->insertImageAttach($result, $announce);
-
-
-            $markers['announce'] = $announce;
+            $markers['announce'] = $this->Textarier->getAnnounce(
+				$result->getMain(),
+                $result,
+				$this->Register['Config']->read('announce_lenght', $this->module));
 
 
             $markers['category_url'] = get_url('/' . $this->module . '/category/' . $result->getCategory_id());
@@ -410,16 +399,11 @@ Class LoadsModule extends Module {
 		$markers['attachment'] = $attach_serv . ' | ' . $attach_rem_url;
 
 
-        $announce = $entity->getMain();
-        $announce = $this->Textarier->print_page($announce, $entity->getAuthor()->getStatus(), $entity->getTitle());
-		$announce = $this->insertImageAttach($entity, $announce);
-		
-
+        $announce = $this->Textarier->parseBBCodes($entity->getMain(), $entity);
         $markers['mainText'] = $announce;
         $markers['main_text'] = $announce;
 		
 		
-
 		$entry_url = get_url(entryUrl($entity, $this->module));
 		$markers['entry_url'] = $entry_url;
 
@@ -524,15 +508,12 @@ Class LoadsModule extends Module {
 			$markers['entry_url'] = $entry_url;
 
 			
-			
-			$announce = $this->Textarier->getAnnounce($entity->getMain(), $entry_url, 0, $this->Register['Config']->read('announce_lenght', $this->module), $entity);
-			$announce = $this->insertImageAttach($entity, $announce);
-
-
-			$markers['announce'] = $announce;
+			$markers['announce'] = $this->Textarier->getAnnounce(
+				$entity->getMain(), 
+				$entity,
+				Config::read('announce_lenght', $this->module));
 
 			
-
 			$markers['category_url'] = get_url($this->getModuleURL('category/' . $entity->getCategory_id()));
 			$markers['profile_url'] = getProfileUrl($entity->getAuthor_id());
 

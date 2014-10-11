@@ -40,14 +40,16 @@ class PrintText {
 	
 	/**
 	 * @param string $str
-	 * @param string $url - URL to full material
-	 * @param int $start
+	 * @param object $material
 	 * @param int $length - announce length
+	 * @param int $offset
+	 * @param string $module - just for translate to parseBBCodes
 	 * @return string announce
 	 *
-	 * create announce and close opened bb tags
+	 * Create announce and close opened bb tags.
+	 * Parse BB-codes and attaches markers.
 	 */
-	public function getAnnounce($str, $url, $start = 0, $length = 500, $material = false) {
+	public function getAnnounce($str, $material = false, $length = 500, $offset = 0, $module = false) {
 		// Announce tags
 		$start_tag = mb_strpos($str, '[announce]');
 		$end_tag = mb_strpos($str, '[/announce]');
@@ -58,27 +60,18 @@ class PrintText {
 			$announce = mb_substr($str, $start_tag, ($end_tag - $start_tag));
 		} else {
 			// if no tags, use settings lenght
-			$start = (int)$start;
+			$offset = (int)$offset;
 			$length = (int)$length; 
 			
 			if ($length < 1) $length = 500;
-			if ($start >= $length) $start = 0; 
-			$announce = mb_substr($str, $start, $length);
+			if ($offset >= $length) $offset = 0; 
+			$announce = mb_substr($str, $offset, $length);
 			//if (!preg_match('#[a-zа-я]$#ui', $announce)) $announce = mb_substr($announce, 0, -1);
 		}
 
 
-		if (is_object($material)) {
-			$ustatus = $material->getAuthor()->getStatus();
-			$title = $material->getTitle();
-		} else {
-			$ustatus = false;
-			$title = false;
-		}
-		
-		//pr($announce);
 		$announce = $this->closeOpenTags($announce); 
-		$announce = $this->print_page($announce, $ustatus, $title);
+		$announce = $this->parseBBCodes($announce, $material, $module);
 		return $announce;
 	}
 	
@@ -146,15 +139,28 @@ class PrintText {
 
 	/**
 	 * @param string $message
-	 * @param int $ustatus
-	 * @param string $title
+	 * @param object $entity
+	 * @param string $module - just for translate to insertImageAttach
 	 * @return string
 	 * 
-	 * bb code process
+	 * bb code process. 
+	 * Parse BB-codes & attaches markers.
 	 */
-	public function print_page($message, $ustatus = false, $title = false) {
+	public function parseBBCodes($message, $entity = false, $module = false) {
         $register = Register::getInstance();
-
+		
+		
+		if (is_object($entity)) {
+			$ustatus = $entity->getAuthor()->getStatus();
+			$title = $entity->getTitle();
+		} else if (is_array($entity)) {
+			$ustatus = (!empty($entity['status'])) ? $entity['status'] : false;
+			$title = (!empty($entity['title'])) ? $entity['title'] : false;
+		}
+		if (empty($ustatus) || !$ustatus) $ustatus = false;
+		if (empty($title) || !$title) $title = false;
+		
+		
 		// hook (for plugins)
 		$message = Plugins::intercept('before_print_page', $message);
 	
@@ -181,9 +187,6 @@ class PrintText {
 			$matches[1][$i] = preg_replace('#^\s*<\?(.*)\?>\s*$#uis', '$1', $matches[1][$i]);
 			$phpBlocks[] = '<div class="codePHP">' . $this->highlight_php_string('<?php ' . trim($matches[1][$i]) . '?>', true ) . '</div>';
 			
-			/*
-			$phpBlocks[] = '<div class="codePHP">' . geshi_highlight($matches[1][$i], 'php', '', true) . '</div>';
-			*/
 			// Вот над этим надо будет подумать - усовершенствовать рег. выражение
 			$phpBlocks[$i] = str_replace( '<div class="codePHP"><br />', '<div class="codePHP">', $phpBlocks[$i]);
 			$uniqidPHP = '[php_'.uniqid('').']';
@@ -266,13 +269,6 @@ class PrintText {
 			$uniqidsXML[] = $uniqidXML;
 			$message = str_replace( $matches[0][$i], $uniqidXML, $message ); 
 		}
-		/*
-		preg_match_all( "#\[img\][\s]*([\S]+)[\s]*\[\/img\]#isU", $message, $matches );
-		foreach ( $matches[0] as $src ) {
-		$img = file_get_contents( $src );
-		file_put_contents( );
-		}
-		*/
 		
 		
 		$ACL = $register['ACL'];
@@ -363,7 +359,108 @@ class PrintText {
 
 		// Над этим тоже надо будет подумать
 		$message = str_replace( '</div><br />', '</div>', $message );
+		
+		$message = $this->insertImageAttach($message, $entity, $module);
 
+		return $message;
+	}
+	
+
+	/**
+	 * Replace an attaches markers.
+	 *
+	 * @param $message string
+	 * @param $entity object
+	 * @param $module string
+	 */
+	public function insertImageAttach($message, $entity, $module = null)
+	{
+		$Register = Register::getInstance();
+		$attachment = null;
+		$module = (!empty($module)) ? $module : $Register['module'];
+		
+		$attaches = ($module == 'forum') ? $entity->getAttacheslist() : $entity->getAttaches();
+		if (!$attaches) return $message;
+		
+       
+		$sizex = Config::read('img_size_x', $module);
+		$sizey = Config::read('img_size_y', $module);
+		$sizex = intval($sizex);
+		$sizey = intval($sizey);
+		$style = ' style="max-width:' . $sizex . 'px; max-height:' . $sizey . 'px;"';
+
+
+        if (!empty($attaches) && count($attaches) > 0) {
+            $attachDir = ROOT . '/sys/files/' . $module . '/';
+			
+            foreach ($attaches as $attach) {
+				if (file_exists($attachDir . $attach->getFilename())) {
+				
+				
+					if ($attach->getIs_image() == 1) {
+						$message = str_replace('{IMAGE' . $attach->getAttach_number() . '}'
+							, '<a class="gallery" href="' . get_url('/sys/files/' . $module . '/' . $attach->getFilename()) 
+							. '"><img' . $style . ' alt="' . h($entity->getTitle()) . '" title="' . h($entity->getTitle()) 
+							. '" title="" src="' . get_url('/image/' . $module . '/' . $attach->getFilename()) . '" /></a>'
+							, $message);
+							
+							
+					} else {
+						$attachment .= __('Attachment') . $attach->getAttach_number() 
+							. ': ' . get_img('/sys/img/file.gif', array('alt' => __('Open file'), 'title' => __('Open file'))) 
+							. '&nbsp;' . get_link(($attach->getSize() / 1000) .' Kb', '/forum/download_file/' 
+							. $attach->getFilename(), array('target' => '_blank')) . '<br />';
+					}
+				}
+            }
+        }
+		
+		if (!empty($attachment)) $entity->setAttachment($attachment);
+		
+		if (preg_match_all('#\{ATTACH(\d+)(\|(\d+))?(\|(left|right))?(\|([^\|]+))?\}#ui', $message, $matches)) {
+			$sizes = array();
+			$floats = array();
+			$descriptions = array();
+			foreach ($matches[1] as $key => $id) {
+				$sizes[$id] = (!empty($matches[3][$key])) ? intval($matches[3][$key]) : false;
+				$floats[$id] = (!empty($matches[5][$key])) ? 'float:' . $matches[5][$key] . ';' : false;
+				$descriptions[$id] = (!empty($matches[7][$key])) ? $matches[7][$key] : false;
+			}
+			
+
+			$attaches = $entity->getAttaches();
+			if ($attaches) {
+				foreach ($attaches as $attach) {
+					
+					if ($attach->getIs_image() == 1) {
+						$style_ = (array_key_exists($attach->getId(), $sizes) && !empty($sizes[$attach->getId()])) 
+							? ' style="width:' . $sizes[$attach->getId()] . 'px;' . $floats[$attach->getId()] . '"'
+							: $style;
+						$size = (array_key_exists($attach->getId(), $sizes) && !empty($sizes[$attach->getId()]))
+							? '/' . $sizes[$attach->getId()]
+							: '';
+						$descr = (!empty($descriptions[$attach->getId()])) 
+							? '<div class="atm-img-description">' . h($descriptions[$attach->getId()]) . '</div>' 
+							: '';
+						
+						$message = preg_replace('#\{ATTACH' . $attach->getId() . '[^\}]*\}#ui', 
+							'<a class="gallery" href="' . get_url('/sys/files/' . $module . '/' . $attach->getFilename()) 
+							. '"><img' . $style_ . ' alt="' . h($entity->getTitle()) . '" title="' . h($entity->getTitle()) 
+							. '" title="" src="' . get_url('/image/' . $module . '/' . $attach->getFilename()) . $size . '" />' 
+							. $descr .  '</a>',
+							$message);
+					} else {
+						$message = preg_replace('#\{ATTACH' . $attach->getId() . '[^\}]*\}#', 
+							__('Attachment') . $attach->getAttach_number() 
+							. ': ' . get_img('/sys/img/file.gif', array('alt' => __('Open file'), 'title' => __('Open file'))) 
+							. '&nbsp;' . get_link(($attach->getSize() / 1000) .' Kb', '/forum/download_file/' 
+							. $attach->getFilename(), array('target' => '_blank')) . '<br />',
+							$message);
+					}
+				}
+			}
+		}
+	
 		return $message;
 	}
 

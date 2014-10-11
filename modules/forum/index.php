@@ -816,12 +816,8 @@ Class ForumModule extends Module {
 				    $postAuthor->setName(__('Guest'));
 				}
 				
-				
-                $author_status = ($post->getAuthor()) ? $post->getAuthor()->getStatus() : 0;
-				
-				
-				$message = $this->Textarier->print_page($post->getMessage(), $author_status);
-				$message = $this->insertImageAttach($post, $message);
+
+				$message = $this->Textarier->parseBBCodes($post->getMessage(), $post);
 				$post->setMessage($message);
 				
 
@@ -1573,7 +1569,9 @@ Class ForumModule extends Module {
 		if (isset($_SESSION['viewMessage']) and !empty($_SESSION['viewMessage']['message'])) {
 			$view = $this->render('previewmessage.html', array(
 				'context' => array(
-					'message' => $this->Textarier->print_page($_SESSION['viewMessage']['message'], $writer_status),
+					'message' => $this->Textarier->parseBBCodes(
+						$_SESSION['viewMessage']['message'], 
+						array('status' => $writer_status)),
 				),
 			));
 			$html = $html . $view . "\n";
@@ -2225,7 +2223,9 @@ Class ForumModule extends Module {
 				if (isset($_SESSION['viewMessage']) and !empty($_SESSION['viewMessage'])) {
 					$view = $this->render('previewmessage.html', array(
 						'context' => array(
-							'message' => $this->Textarier->print_page($_SESSION['viewMessage'], $writer_status),
+							'message' => $this->Textarier->parseBBCodes(
+								$_SESSION['viewMessage'], 
+								array('status' => $writer_status)),
 						),
 					));
 					$html    = $html . $view . "<script>window.location.href=\"#preview\";</script>\n";
@@ -2535,7 +2535,9 @@ Class ForumModule extends Module {
 		if (isset($_SESSION['viewMessage']) and !empty($_SESSION['viewMessage'])) {
 			$view = $tis->render('previewmessage.html', array(
 				'context' => array(
-					'message' => $this->Textarier->print_page($_SESSION['viewMessage'], $writer_status),
+					'message' => $this->Textarier->parseBBCodes(
+						$_SESSION['viewMessage'], 
+						array('status' => $writer_status)),
 				),
 			));
 			$html    = $html . $view . "\n";
@@ -3501,8 +3503,7 @@ Class ForumModule extends Module {
             return $this->showInfoMessage(__('Not enough posts'), '/' . $this->module . '/');
 
         foreach ($posts as $post) {
-            $author_status = ($post->getAuthor()) ? $post->getAuthor()->getStatus() : 0;
-            $message = $this->Textarier->print_page($post->getMessage(), intval($author_status));
+            $message = $this->Textarier->parseBBCodes($post->getMessage(), $post);
             $post->setMessage($message);
         }
 
