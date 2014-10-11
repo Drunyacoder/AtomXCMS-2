@@ -105,7 +105,7 @@ class SearchModule extends Module {
 			$_SESSION['search_query'] = $str;
 			if (!empty($error)) {
 				$_SESSION['FpsForm'] = array();
-				$_SESSION['FpsForm']['error'] = $error;
+				$_SESSION['FpsForm']['errors'] = $error;
 				redirect($this->getModuleURL());
 			}
 
@@ -190,7 +190,7 @@ class SearchModule extends Module {
 		//if an errors
 		if (isset($_SESSION['FpsForm'])) {
 			$markers['info'] = $this->render('infomessage.html', array('context' => array(
-					'message' => $_SESSION['FpsForm']['error'],
+					'message' => $_SESSION['FpsForm']['errors'],
 					)));
 			unset($_SESSION['FpsForm']);
 		}

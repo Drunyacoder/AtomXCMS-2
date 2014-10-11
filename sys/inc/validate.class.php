@@ -361,11 +361,6 @@ class Validate {
             $outputContent = $this->wrapErrors($_SESSION['FpsForm']['errors']);
         }
 
-        // $_SESSION['FpsForm']['error'] is deprecated.
-        if (!$outputContent && !empty($_SESSION['FpsForm']['error'])) {
-            $outputContent = $this->wrapErrors($_SESSION['FpsForm']['error']);
-        }
-
         return $outputContent;
 	}
 	

@@ -700,8 +700,7 @@ Class LoadsModule extends Module {
 			'download_url_size' => null, 
 			'commented' => null, 
 			'available' => null), $_POST);
-			$_SESSION['FpsForm']['error'] = '<p class="errorMsg">' . __('Some error in form') . '</p>'.
-				"\n" . '<ul class="errorMsg">' . "\n" . $errors . '</ul>' . "\n";
+			$_SESSION['FpsForm']['errors'] = $this->Register['DocParser']->wrapErrors($errors);;
 			redirect('/' . $this->module . '/add_form/');
 		}
 
@@ -979,8 +978,7 @@ Class LoadsModule extends Module {
 			$_SESSION['FpsForm'] = array_merge(array('title' => null, 'mainText' => null, 
 				'description' => null, 'tags' => null, 'sourse' => null, 'sourse_email' => null, 'in_cat' => $in_cat,
 				'sourse_site' => null, 'download_url' => null, 'download_url_size' => null, 'commented' => null, 'available' => null), $_POST);
-			$_SESSION['FpsForm']['error'] = '<p class="errorMsg">' . __('Some error in form') 
-				. '</p>' . "\n" . '<ul class="errorMsg">'."\n".$errors.'</ul>'."\n";
+			$_SESSION['FpsForm']['errors'] = $this->Register['DocParser']->wrapErrors($errors);
 			redirect('/' . $this->module . '/edit_form/' . $id );
 		}
 		

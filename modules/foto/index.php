@@ -539,8 +539,7 @@ Class FotoModule extends Module {
 		if (!empty($errors)) {
 			$data = array('title' => null, 'description' => $description, 'in_cat' => $in_cat);
 			$data = array_merge($data, $_POST);
-			$data['error'] = '<p class="errorMsg">' . __('Some error in form') . '</p>'.
-				"\n".'<ul class="errorMsg">'."\n".$errors.'</ul>'."\n";
+			$data['errors'] = $this->Register['DocParser']->wrapErrors($errors);
 			$_SESSION['FpsForm'] = $data;
 			redirect('/foto/add_form/');
 		}
@@ -589,8 +588,7 @@ Class FotoModule extends Module {
 			
 			$data = array('title' => null, 'description' => null, 'in_cat' => $in_cat);
 			$data = array_merge($data, $_POST);
-			$data['error'] = '<p class="errorMsg">Произошла ошибка:</p>'
-				. "\n" . '<ul class="errorMsg">'."\n".'Неизвесная ошибка. Попробуйте начать заново.</ul>'."\n";
+			$data['errors'] = $this->Register['DocParser']->wrapErrors(__('Some error occurred'), true);
 			$_SESSION['FpsForm'] = $data;
 			redirect('/foto/add_form/');
 		}
@@ -737,8 +735,7 @@ Class FotoModule extends Module {
 		// errors
 		if (!empty( $errors )) {
 			$data = array('title' => $title, 'description' => $description, 'in_cat' => $in_cat);
-			$data['error'] = '<p class="errorMsg">' . __('Some error in form') 
-			. '</p>'."\n".'<ul class="errorMsg">'."\n".$errors.'</ul>'."\n";
+			$data['errors'] = $this->Register['DocParser']->wrapErrors($errors);
 			$_SESSION['FpsForm'] = $data;
 			redirect('/foto/edit_form/' . $id );
 		}

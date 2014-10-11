@@ -152,12 +152,11 @@ class ChatModule extends Module {
 		
 		/* if an errors */
 		if (!empty($errors)) {
-			$_SESSION['addForm']            = array();
-			$_SESSION['addForm']['error']   = '<p class="errorMsg">' . __('Some error in form') . '</p>' . 
-				"\n" . '<ul class="errorMsg">' . "\n" . $errors . '</ul>' . "\n";
-			$_SESSION['addForm']['name']    = $name;
+			$_SESSION['addForm'] = array();
+			$_SESSION['addForm']['errors'] = $this->Register['DocParser']->wrapErrors($errors);;
+			$_SESSION['addForm']['name'] = $name;
 			$_SESSION['addForm']['message'] = $message;
-			die($_SESSION['addForm']['error']);
+			die($_SESSION['addForm']['errors']);
 		}
 		
 		/* create dir for chat tmp file if not exists */

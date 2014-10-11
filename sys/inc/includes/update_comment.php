@@ -40,8 +40,7 @@ $errors .= $this->Register['Validate']->check($this->Register['action']);
 /* if an error */
 if (!empty( $errors )) {
 	$_SESSION['FpsForm'] = array();
-	$_SESSION['FpsForm']['error'] = '<p class="errorMsg">' . __('Some error in form') . '</p>'
-		."\n".'<ul class="errorMsg">'."\n".$errors.'</ul>'."\n";
+	$_SESSION['FpsForm']['errors'] = $this->Register['DocParser']->wrapErrors($errors);
 	$_SESSION['FpsForm']['message'] = $message;
 	$_SESSION['FpsForm']['name'] = $name;
 	redirect('/' . $this->module . '/edit_comment_form/' . $id );

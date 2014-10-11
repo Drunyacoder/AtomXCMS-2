@@ -463,7 +463,7 @@ Class ShopModule extends Module {
 
         if ($errors) {
             $_SESSION['FpsForm'] = $fields;
-            $_SESSION['FpsForm']['error'] = $errors;
+            $_SESSION['FpsForm']['errors'] = $errors;
             redirect($this->getModuleURL('create_order_form'));
         }
 
@@ -506,7 +506,7 @@ Class ShopModule extends Module {
 
         } catch (Exception $e) {
             $_SESSION['FpsForm'] = $fields;
-            $_SESSION['FpsForm']['error'] = $e->getMessage();
+            $_SESSION['FpsForm']['errors'] = $e->getMessage();
             redirect($this->getModuleURL('create_order_form'));
         }
     }

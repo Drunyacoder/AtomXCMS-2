@@ -1293,7 +1293,7 @@ Class ForumModule extends Module {
 		if (isset($_SESSION['FpsForm'])) {
 			$info        = $this->render('infomessage.html', array(
 				'context' => array(
-					'info_message' => $_SESSION['FpsForm']['error'],
+					'info_message' => $_SESSION['FpsForm']['errors'],
 				),
 			));
 			$html        = $html . $info . "\n";
@@ -1353,19 +1353,18 @@ Class ForumModule extends Module {
 
 		
 		// Check fields fo empty values and valid chars
-		$error = '';
+		$errors = '';
 		$valobj = $this->Register['Validate'];
 		if (empty($title))                          
-			$error = $error .'<li>'. __('Empty field "forum name"') .'</li>'. "\n";
+			$errors = $errors .'<li>'. __('Empty field "forum name"') .'</li>'. "\n";
 		elseif (!$valobj->cha_val($title, V_TITLE)) 
-			$error = $error .'<li>'. __('Wrong chars in "forum name"') .'</li>'. "\n";
+			$errors = $errors .'<li>'. __('Wrong chars in "forum name"') .'</li>'. "\n";
 
 
 		// if an errors
-		if (!empty($error)) {
+		if (!empty($errors)) {
 			$_SESSION['FpsForm'] = array();
-			$_SESSION['FpsForm']['error'] = '<p class="errorMsg">' . __('Some error in form') . '</p>'.
-					"\n" . '<ul class="errorMsg">' . "\n" . $error . '</ul>' . "\n";
+			$_SESSION['FpsForm']['errors'] = $this->Register['DocParser']->wrapErrors($errors);;
 			$_SESSION['FpsForm']['title'] = $title;
 			$_SESSION['FpsForm']['description'] = $description;
 			
@@ -1587,7 +1586,7 @@ Class ForumModule extends Module {
 		if (isset($_SESSION['FpsForm'])) {
 			
 			$info = $this->render('infomessage.html', array(
-				'info_message' => $_SESSION['FpsForm']['error'],
+				'info_message' => $_SESSION['FpsForm']['errors'],
 			));
 			
 			$html    = $html . $info . "\n";
@@ -1681,8 +1680,7 @@ Class ForumModule extends Module {
 		// errors
 		if (!empty($errors)) {
 			$_SESSION['FpsForm'] = array();
-			$_SESSION['FpsForm']['error'] = '<p class="errorMsg">' . __('Some error in form') . '</p>'.
-				"\n" . '<ul class="errorMsg">' . "\n" . $errors . '</ul>' . "\n";
+			$_SESSION['FpsForm']['errors'] = $this->Register['DocParser']->wrapErrors($errors);;
 			$_SESSION['FpsForm']['theme'] = $theme;
 			$_SESSION['FpsForm']['description'] = $description;
 			$_SESSION['FpsForm']['message'] = $message;
@@ -1844,7 +1842,7 @@ Class ForumModule extends Module {
 		// Если при заполнении формы были допущены ошибки
 		if (isset($_SESSION['FpsForm'])) {
 			$info = $this->render('infomessage.html', array(
-				'info_message' => $_SESSION['FpsForm']['error'],
+				'info_message' => $_SESSION['FpsForm']['errors'],
 			));
 			$html    = $info . $html . "\n";
 			$name = h($_SESSION['FpsForm']['theme']);
@@ -1948,8 +1946,7 @@ Class ForumModule extends Module {
 		// errors
 		if (!empty($errors)) {
 			$_SESSION['FpsForm'] = array();
-			$_SESSION['FpsForm']['error'] = '<p class="errorMsg">' . __('Some error in form')
-			. '</p>' . "\n" . '<ul class="errorMsg">'."\n".$errors.'</ul>'."\n";
+			$_SESSION['FpsForm']['errors'] = $this->Register['DocParser']->wrapErrors($errors);;
 			$_SESSION['FpsForm']['theme'] = $name;
 			$_SESSION['FpsForm']['description'] = $description;
 			$_SESSION['FpsForm']['gr_access'] = $gr_access;
@@ -2237,7 +2234,7 @@ Class ForumModule extends Module {
 				// Если при заполнении формы были допущены ошибки
 				if (isset($_SESSION['FpsForm'])) {
 					$info = $this->render('infomessage.html', array(
-						'info_message' => $_SESSION['FpsForm']['error'],
+						'info_message' => $_SESSION['FpsForm']['errors'],
 					));
 					$html    = $html . $info . "\n";
 					$message = h($_SESSION['FpsForm']['message']);
@@ -2318,8 +2315,7 @@ Class ForumModule extends Module {
 		// errors
 		if (!empty($errors)) {
 			$_SESSION['FpsForm'] = array();
-			$_SESSION['FpsForm']['error'] = '<p class="errorMsg">' . __('Some error in form') . '</p>'."\n".
-			'<ul class="errorMsg">'."\n".$errors.'</ul>'."\n";
+			$_SESSION['FpsForm']['errors'] = $this->Register['DocParser']->wrapErrors($errors);
 			$_SESSION['FpsForm']['message'] = $message;
 			redirect('/forum/view_theme/' . $id_theme . '#bottom');
 		}		
@@ -2548,7 +2544,7 @@ Class ForumModule extends Module {
 		// errors
 		if (isset($_SESSION['FpsForm'])) {
 			$info = $tis->render('infomessage.html', array(
-				'info_message' => $_SESSION['FpsForm']['error'],
+				'info_message' => $_SESSION['FpsForm']['errors'],
 			));
 			$html    = $info . $html . "\n";
 			$message = $_SESSION['FpsForm']['message'];
@@ -2645,8 +2641,7 @@ Class ForumModule extends Module {
 		/* if an error */
 		if (!empty($errors)) {
 			$_SESSION['FpsForm'] = array();
-			$_SESSION['FpsForm']['error'] = '<p class="errorMsg">' . __('Some error in form')
-			. '</p>' . "\n" . '<ul class="errorMsg">'."\n".$errors.'</ul>'."\n";
+			$_SESSION['FpsForm']['errors'] = $this->Register['DocParser']->wrapErrors($errors);;
 			$_SESSION['FpsForm']['message'] = $message;
 			redirect('/forum/edit_post_form/' . $id);
 		}
@@ -3326,8 +3321,7 @@ Class ForumModule extends Module {
         if (!empty($errors)) {
             $_SESSION['FpsForm'] = array_merge(array('title' => null, 'description' => null, 'forum_id' => null,
                 'theme' => null, 'locked' => null, 'first_top' => null), $_POST);
-            $_SESSION['FpsForm']['error']   = '<p class="errorMsg">' . __('Some error in form') . '</p>'.
-                "\n".'<ul class="errorMsg">' . "\n" . $errors . '</ul>' . "\n";
+            $_SESSION['FpsForm']['errors'] = $this->Register['DocParser']->wrapErrors($errors);;
             redirect('/' . $this->module . '/move_posts_form/' . $id_theme);
         }
 

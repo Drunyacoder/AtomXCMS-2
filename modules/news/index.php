@@ -617,7 +617,7 @@ Class NewsModule extends Module {
 		// Errors
 		if (!empty($errors)) {
 			$_SESSION['FpsForm'] = array_merge($form_fields, $_POST);
-			$_SESSION['FpsForm']['error'] = $this->Register['DocParser']->wrapErrors($errors);
+			$_SESSION['FpsForm']['errors'] = $this->Register['DocParser']->wrapErrors($errors);
 			redirect('/' . $this->module . '/add_form/');
 		}
 			
@@ -891,8 +891,7 @@ Class NewsModule extends Module {
 			$_SESSION['FpsForm'] = array_merge(array('title' => null, 'main_text' => null, 'in_cat' => $in_cat, 
 				'description' => null, 'tags' => null, 'sourse' => null, 'sourse_email' => null, 
 				'sourse_site' => null, 'commented' => null, 'available' => null), $_POST);
-			$_SESSION['FpsForm']['error']   = '<p class="errorMsg">' . __('Some error in form') . '</p>'
-				."\n".'<ul class="errorMsg">'."\n".$errors.'</ul>'."\n";
+			$_SESSION['FpsForm']['errors'] = $this->Register['DocParser']->wrapErrors($errors);;
 			redirect('/' . $this->module . '/edit_form/' . $id);
 		}
 		

@@ -333,8 +333,7 @@ Class UsersModule extends Module {
 			$_SESSION['FpsForm'] = array_merge(array('name' => null, 'email'=> null, 'timezone' => null, 'icq' => null,
                 'url' => null, 'about' => null, 'signature' => null, 'pol' => $pol, 'telephone' => null, 'city' => null,
                 'jabber' => null, 'byear' => null, 'bmonth' => null, 'bday' => null), $_POST);
-			$_SESSION['FpsForm']['error'] 	= '<p class="errorMsg">' . __('Some error in form') . '</p>'.
-			"\n".'<ul class="errorMsg">'."\n".$errors.'</ul>'."\n";
+			$_SESSION['FpsForm']['errors'] = $this->Register['DocParser']->wrapErrors($errors);
 			redirect('/users/add_form/yes');
 		}
 		
@@ -765,7 +764,7 @@ Class UsersModule extends Module {
 		// Additional fields
 		if (is_object($this->AddFields)) {
 			$_addFields = $this->AddFields->checkFields();
-			if (is_string($_addFields)) $markers['error'] = $_addFields;
+			if (is_string($_addFields)) $markers['errors'] = $_addFields;
 		}
 		
 		
@@ -818,8 +817,7 @@ Class UsersModule extends Module {
 			'icq' => null, 'url' => null, 'about' => null, 'signature' => null, 'pol' => $pol, 
 			'telephone' => null, 'city' => null, 'jabber' => null, 'byear' => null, 
 			'bmonth' => null, 'bday' => null, 'email_notification' => null, 'summer_time' => null), $_POST);
-			$_SESSION['FpsForm']['error']     = '<p class="errorMsg">' . __('Some error in form') . '</p>'.
-			"\n".'<ul class="errorMsg">'."\n".$errors.'</ul>'."\n";
+			$_SESSION['FpsForm']['errors'] = $this->Register['DocParser']->wrapErrors($errors);
 			redirect('/users/edit_form/');
 		}
 
@@ -1148,8 +1146,7 @@ Class UsersModule extends Module {
                     'bday' => null),
                 $_POST
             );
-			$_SESSION['FpsForm']['error'] = '<p class="errorMsg">' . __('Some error in form') . '</p>'.
-			"\n".'<ul class="errorMsg">'."\n".$errors.'</ul>'."\n";
+			$_SESSION['FpsForm']['errors'] = $this->Register['DocParser']->wrapErrors($errors);
 			redirect('/users/edit_form_by_admin/' . $id );
 		}
 
@@ -1368,7 +1365,7 @@ Class UsersModule extends Module {
         $error = '';
 		// Если при заполнении формы были допущены ошибки
 		if (isset($_SESSION['FpsForm'])) {
-			$error = $this->render('infomessage.html', array('info_message' => $_SESSION['FpsForm']['error']));
+			$error = $this->render('infomessage.html', array('info_message' => $_SESSION['FpsForm']['errors']));
 			$toUser  = h( $_SESSION['FpsForm']['toUser'] );
 			$subject = h( $_SESSION['FpsForm']['subject'] );
 			$message = h( $_SESSION['FpsForm']['message'] );
@@ -1476,8 +1473,7 @@ Class UsersModule extends Module {
 		// Errors
 		if (!empty($errors )) {
 			$_SESSION['FpsForm'] = array();
-			$_SESSION['FpsForm']['error'] = '<p class="errorMsg">' . __('Some error in form') . '</p>'.
-			"\n".'<ul class="errorMsg">'."\n".$errors.'</ul>'."\n";
+			$_SESSION['FpsForm']['errors'] = $this->Register['DocParser']->wrapErrors($errors);
 			$_SESSION['FpsForm']['toUser'] = $toUser;
 			$_SESSION['FpsForm']['subject'] = $subject;
 			$_SESSION['FpsForm']['message'] = $message;
@@ -1858,8 +1854,8 @@ Class UsersModule extends Module {
 		
 		// Если при заполнении формы были допущены ошибки
 		if (isset($_SESSION['FpsForm'])) {
-			$markers['error'] = $this->render('infomessage.html', array(
-				'info_message' => $_SESSION['FpsForm']['error']
+			$markers['errors'] = $this->render('infomessage.html', array(
+				'info_message' => $_SESSION['FpsForm']['errors']
 			));
 			$markers['to_user']  = $_SESSION['FpsForm']['toUser'];
 			$markers['subject'] = $_SESSION['FpsForm']['subject'];
@@ -1903,8 +1899,7 @@ Class UsersModule extends Module {
 		// перенаправляем посетителя для исправления ошибок
 		if (!empty($errors)) {
 			$_SESSION['FpsForm'] = array();
-			$_SESSION['FpsForm']['error'] = '<p class="errorMsg">' . __('Some error in form') . '</p>'.
-			"\n".'<ul class="errorMsg">'."\n".$errors.'</ul>'."\n";
+			$_SESSION['FpsForm']['errors'] = $this->Register['DocParser']->wrapErrors($errors);
 			$_SESSION['FpsForm']['toUser']  = $toUser;
 			$_SESSION['FpsForm']['subject'] = $subject;
 			$_SESSION['FpsForm']['message'] = $message;
