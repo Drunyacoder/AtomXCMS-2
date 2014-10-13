@@ -9,7 +9,7 @@
 | @Package       AtomX CMS                     |
 | @Subpackege    Shop Module                   |
 | @Copyright     ©Andrey Brykin                |
-| @Last mod      2014/08/25                    |
+| @Last mod      2014/10/13                    |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
@@ -130,11 +130,6 @@ class ShopSettingsController
 
 
         foreach ($entities as $entity) {
-            /*
-            $status_info = $Register['ACL']->get_user_group($entity->getAuthor()->getStatus());
-            $status = $status_info['title'];
-            $color = (!empty($status_info['color'])) ? $status_info['color'] : '';
-            */
             $content .= "<tr>
                         <td>" . h($entity->getTitle()) . "</td>
 						<td>" . h($entity->getCategory()->getTitle()) . "</td>
@@ -212,6 +207,7 @@ class ShopSettingsController
 		}
 
 
+        // Save product if POST data have been sent
 		if (!empty($_POST)) {
             $errors = $Register['Validate']->check(__FUNCTION__);
             if (!empty($errors)) {
@@ -259,10 +255,13 @@ class ShopSettingsController
             $entity_id = $entity->save(true);
 
 			if ($entity_id) {
+                // Save product attaches
                 if (!empty($_POST['attaches']) && is_array($_POST['attaches'])) {
                     $attachesModel = $Register['ModManager']->getModelInstance('shopAttaches');
 
                     foreach ($_POST['attaches'] as $attach_id) {
+                        if (intval($attach_id) < 1) continue;
+
                         $attach = $attachesModel->getById($attach_id);
                         if ($attach && $attach->getEntity_id() !== $entity_id)
                             $attach->setEntity_id($entity_id)->save();
@@ -281,9 +280,6 @@ class ShopSettingsController
 		$fields .= '<input type="hidden" name="attributes[]" value="" />';
         if ($entity->getAttributes()) {
             foreach ($entity->getAttributes() as $attr) {
-                $attr_content = ($attr->getContent())
-                    ? $attr->getContent()->getContent()
-                    : '';
                 $fields .= '<div class="setting-item highlight">
                             <div class="left">
                             ' . h($attr->getLabel()) . '
@@ -295,33 +291,148 @@ class ShopSettingsController
                         </div>';
             }
         }
-		
+
+
         // product image
 		$attaches = array();
 		$main_image = '';
-		$slider_images = '';
+		$slider_images = array();
 		foreach ($attaches as $attach) {
-			//if ()
+			if ($attach->getIs_main()) {
+                $main_image = '<img data-id="' . $attach->getId() . '" title="' .
+                    $attach->getFilename() . '" src="/image/shop/' . $attach->getFilename() . '/150/" />';
+                continue;
+            }
+            $slider_images[] = '<div class="attach-item">
+                <img title="' . $attach->getFilename() . '" src="/image/shop/' . $attach->getFilename() . '/100/" />
+                <input type="hidden" name="attaches[]" value="' . $attach->getId() . '" />
+                <div class="atmshop-del-attach">' . __('Delete') .
+                '</div><div class="atmshop-asmain-attach">' . __('As main') . '</div>
+                </div>';
 		}
+
+        // If main image is not set, uses the first image
+        if (empty($main_image)) {
+            $attach = $attaches[0];
+            $main_image = '<img data-id="' . $attach->getId() . '" title="' .
+                $attach->getFilename() . '" src="/image/shop/' . $attach->getFilename() . '/150/" />';
+            array_shift($slider_images);
+        }
+        $slider_width = count($slider_images) * 110;
+
 		$fields .= '<div class="setting-item">
 						<div class="left">
 						' . __('Image') . '
 						</div>
 						<div class="right">
-							<div id="main-image" class="main-image"></div>
+							<div id="main-image" class="main-image">' . $main_image . '</div>
 							<div class="upload-area">
 								<div class="drag-area">' . __('Add') . '</div>
 								<input id="attach" multiple="multiple" type="file" name="attach[]" />
 							</div>
 							<div class="clear"></div>
-							<div class="products-images"><div class="viewport" id="attaches-list"></div></div>
+							<div class="products-images">
+							<div style="width:' . $slider_width . 'px;" class="viewport" id="attaches-list">' .
+                            implode('', $slider_images) . '</div></div>
 						</div>
 						<div class="clear"></div>
 					</div>';
 
+        // Atributes group ID listener & multi image upload handler
+        $content .= '<script type="text/javascript">
+			$(function(){
+				$(\'select[name="attributes_group_id"]\').change(function(e){
+					window.location.href = "' . $this->getCurrentUrl(array('attr_group_id')) . '?attr_group_id="+$(e.target).val();
+				});
+
+                var openAttachesSlider = function() {
+					if ($("#attaches-list img").length > 1 && !$("#attaches-list").parent().is(":visible")) {
+						$("#attaches-list").parent().slideDown();
+					}
+                };
+				var parseResponse = function(module, data) {
+					var $mainImage = $("#main-image"),
+						main;
+
+					if (typeof data.errors != "undefined" && data.errors.length > 0) {
+						showHelpWin(data.errors, "' . __('Error') . '");
+						return;
+					}
+
+					if (typeof data == "undefined" || data.length == 0 || data == false) {
+						showHelpWin("Files not found", "Information");
+						return;
+					}
+
+					var getTitle = function(data) {
+						return data.filename;
+					}
+
+					console.log($mainImage.html());
+					if ($mainImage.html() == \'\') {
+						$(data).each(function(key, value){
+							if (value.is_main == 1) main = value;
+						});
+					}
+					$(data).each(function(key, value) {
+						if ($mainImage.html() == \'\') {
+							if ((main && main.id == value.id) || key == 0) {
+								$("#main-image").html(\'<img data-id="\'+value.id+\'" title="\'+getTitle(value)+\'" src="/image/shop/\'+value.filename+\'/150/" />\');
+							}
+						}
+
+						var content = \'<div class="attach-item">\'
+							+ \'<img title="\'+getTitle(value)
+							+\'" src="/image/shop/\'+value.filename+\'/100/" />\'
+							+\'<input type="hidden" name="attaches[]" value="\'+value.id+\'" />\'
+							+\'<div class="atmshop-del-attach">' . __('Delete') . '</div><div class="atmshop-asmain-attach">' . __('As main') . '</div>\'
+							+\'</div>\';
+						$("#attaches-list").append(content);
+					});
+
+                    openAttachesSlider();
+					$("#attaches-list").width($("#attaches-list img").length * 110 + "px" );
+				};
+				openAttachesSlider();
+
+				AtomX.initMultiFileUploadHandler("shop", parseResponse);
+
+				$(".atmshop-del-attach").live("click", function(){
+					var attachId = $(this).parent().find("input").val();
+					$.ajax({
+					    url: "' . get_url('/shop/delete_attach/') . '\'+ attachId +\'/",
+					    type: "POST",
+					    dataType: "json",
+					    success: function(data){
+                            if (data.result != 1) return;
+                            if ($("#main-image img").data("id") == attachId) {
+                                $("#main-image img").attr("src", "/image/shop/"+$("#attaches-list div:eq(0) input").val()+"/150/");
+                            }
+                            $(this).parent().remove();
+                            $("#attaches-list").width($("#attaches-list img").length * 110 + "px" );
+					    }
+					});
+				});
+				$(".atmshop-asmain-attach").live("click", function(){
+					var attachId = $(this).parent().find("input").val();
+					$.ajax({
+					    url: "' . get_url('/shop/as_main_attach/') . '\'+ attachId +\'/",
+					    type: "POST",
+					    dataType: "json",
+					    success: function(data){
+						    if (data.result != 1) return;
+						    $("#main-image img").attr("src", "/image/shop/"+attachId+"/150/");
+					    }
+					});
+				});
+			});
+			</script>';
+
+
         // product fields
         $attrs = array('title', 'description', 'article', 'price', 'discount', 'commented', 'available', 'view_on_home', 'hide_not_exists', 'quantity');
         $checkboxes = array('commented', 'available', 'view_on_home', 'hide_not_exists');
+
         foreach ($attrs as $attr) {
             $getter = 'get' . ucfirst($attr);
             if (in_array($attr, $checkboxes)) {
@@ -397,87 +508,6 @@ class ShopSettingsController
         }
 
 
-		$content .= '<script type="text/javascript">
-			$(function(){
-				$(\'select[name="attributes_group_id"]\').change(function(e){
-					window.location.href = "' . $this->getCurrentUrl(array('attr_group_id')) . '?attr_group_id="+$(e.target).val();
-				});
-				
-				var parseResponse = function(module, data) {
-					var $mainImage = $("#main-image"),
-						main;
-				
-					if (typeof data.errors != "undefined" && data.errors.length > 0) {
-						showHelpWin(data.errors, "' . __('Error') . '");
-						return;
-					}
-					
-					if (typeof data == "undefined" || data.length == 0 || data == false) {
-						showHelpWin("Files not found", "Information");
-						return;
-					}
-					
-					var getTitle = function(data) {
-						return data.filename;
-					}
-				
-					console.log($mainImage.html());
-					if ($mainImage.html() == \'\') {
-						$(data).each(function(key, value){
-							if (value.is_main == 1) main = value;	
-						});
-					}
-					$(data).each(function(key, value) {
-						if ($mainImage.html() == \'\') {
-							if ((main && main.id == value.id) || key == 0) {
-								$("#main-image").html(\'<img data-id="\'+value.id+\'" title="\'+getTitle(value)+\'" src="/image/shop/\'+value.filename+\'/150/" />\');
-							}
-						}
-						
-						var content = \'<div class="attach-item">\'
-							+ \'<img title="\'+getTitle(value)
-							+\'" src="/image/shop/\'+value.filename+\'/100/" />\'
-							+\'<input type="hidden" name="attaches[]" value="\'+value.id+\'" />\'
-							+\'<div class="atmshop-del-attach">' . __('Delete') . '</div><div class="atmshop-asmain-attach">' . __('As main') . '</div>\'
-							+\'</div>\';
-						$("#attaches-list").append(content);
-					});
-					if (!$("#attaches-list").parent().is(":visible")) {
-						$("#attaches-list").parent().slideDown();
-					}	
-					$("#attaches-list").width($("#attaches-list img").length * 110 + "px" );
-				};
-				AtomX.initMultiFileUploadHandler("shop", parseResponse);
-				$(".atmshop-del-attach").live("click", function(){
-					var attachId = $(this).parent().find("input").val();
-					$.ajax({
-					    url: "' . get_url('/shop/delete_attach/') . '\'+ attachId +\'/",
-					    type: "POST",
-					    dataType: "json",
-					    success: function(data){
-                            if (data.result != 1) return;
-                            if ($("#main-image img").data("id") == attachId) {
-                                $("#main-image img").attr("src", "/image/shop/"+$("#attaches-list div:eq(0) input").val()+"/150/");
-                            }
-                            $(this).parent().remove();
-                            $("#attaches-list").width($("#attaches-list img").length * 110 + "px" );
-					    }
-					});
-				});
-				$(".atmshop-asmain-attach").live("click", function(){
-					var attachId = $(this).parent().find("input").val();
-					$.ajax({
-					    url: "' . get_url('/shop/as_main_attach/') . '\'+ attachId +\'/",
-					    type: "POST",
-					    dataType: "json",
-					    success: function(data){
-						    if (data.result != 1) return;
-						    $("#main-image img").attr("src", "/image/shop/"+attachId+"/150/");
-					    }
-					});
-				});
-			});
-			</script>';
         $content .= '<div class="warning">' . __('Highlighted rows are related to the attributes group.') . '</div>';
         $content .= '<form method="POST" action="' . $this->getCurrentUrl() . '" enctype="multipart/form-data">
             <div class="list">
@@ -1646,9 +1676,8 @@ class ShopSettingsController
 	}
 
 
-	public function orders($id = null)
+	public function orders()
 	{
-		$id = intval($id);
 		$per_page = 50;
         $Register = Register::getInstance();
         $this->pageTitle = __('Shop') . ' / ' . __('Orders management');
@@ -1677,7 +1706,7 @@ class ShopSettingsController
             'limit' => $per_page,
             'order' => $model->getOrderParam(),
         );
-		$orders = $model->getCollection();
+		$orders = $model->getCollection($where, $params);
 		
 		
         $content .= "<div class=\"list\">
@@ -1817,7 +1846,8 @@ class ShopSettingsController
 			}
         }
         $content .= '</table></div>';
-		return $popups . $content;
+
+		return $popups . $filters . $content . $filters;
 	}
 	
 	
@@ -3141,21 +3171,3 @@ class ShopSettingsController
         return $rules;
     }
 }
-
-/* Поиск материалов в ассортименте
-LEFT JOIN shop_attributes_content aattrs ON aattrs.product_id = a.id
-LEFT JOIN shop_attributes_content battrs ON battrs.product_id = b.id
-JOIN shop_attributes atr ON aattrs.attribute_id = atr.id
-WHERE a.stock_id IS NOT NULL AND a.stock_id != 0 AND (aattrs.attribute_id = battrs.attribute_id AND aattrs.content != battrs.content)
-GROUP BY a.id
-
-- Search the different attributes content(for create filters)
-SELECT DISTINCT (
-c.content
-), a.title, b.title
-FROM shop_attributes_groups a
-JOIN shop_attributes b ON b.group_id = a.id
-LEFT JOIN shop_attributes_content c ON c.attribute_id = b.id
-WHERE a.id
-IN ( 1, 2 )
-*/
