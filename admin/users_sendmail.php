@@ -126,13 +126,13 @@ if (isset($_POST['send'])) {
 			}
 			
 			if (empty($error)) 
-				$_SESSION['info_message'] = __('Mails are sent') . ': ' . $n 
+				$_SESSION['message'] = __('Mails are sent') . ': ' . $n
 				. '<br>Времени потрачено: ' . round(getMicroTime($start_time), 4) . ' сек.';
 		} else {
-			$_SESSION['info_message'] = '<span style="color:red;">' . __('Users not found') . '</span>';
+			$_SESSION['errors'] = '<span style="color:red;">' . __('Users not found') . '</span>';
 		}
 	} else {
-		$_SESSION['info_message'] = '<span style="color:red;">' . __('Needed fields are empty') . '</span>';
+		$_SESSION['errors'] = '<span style="color:red;">' . __('Needed fields are empty') . '</span>';
 	}
 	
 	redirect('/admin/users_sendmail.php');
@@ -268,20 +268,7 @@ include_once ROOT . '/admin/template/header.php';
 </form>
 
 
-
-
 <?php
-if (!empty($_SESSION['info_message'])):
-?>
-<script type="text/javascript">showHelpWin('<?php echo $_SESSION['info_message'] ?>', 'Сообщение');</script>
-<?php
-	unset($_SESSION['info_message']);
-endif;
-?>
-
-
-<?php
-
 include_once ROOT . '/admin/template/footer.php';
 ?>
 

@@ -120,12 +120,12 @@ if (!empty($_GET['ac']) && $_GET['ac'] == 'make_dump') {
 		}
 		fclose ($fp);
 	}
-	$_SESSION['info_message'] = __('DB backup complete');
+	$_SESSION['message'] = __('DB backup complete');
 	redirect('/admin/dump.php');
 	
 } else if (!empty($_GET['ac']) && $_GET['ac'] == 'delete' && !empty($_GET['id'])) {
 	@unlink($_GET['id']);
-	$_SESSION['info_message'] = __('Backup file is removed');
+	$_SESSION['message'] = __('Backup file is removed');
 	redirect('/admin/dump.php');
 	
 } else if (!empty($_GET['ac']) && $_GET['ac'] == 'restore' && !empty($_GET['id'])) {
@@ -139,7 +139,7 @@ if (!empty($_GET['ac']) && $_GET['ac'] == 'make_dump') {
 			}
 		}
 	}
-	$_SESSION['info_message'] = __('Database is restored');
+	$_SESSION['message'] = __('Database is restored');
 	redirect('/admin/dump.php');
 }
 
@@ -161,14 +161,6 @@ include_once ROOT . '/admin/template/header.php';
 	<a href="dump.php?ac=make_dump"><div class="add-cat-butt"><div class="add"></div><?php echo __('Create DB backup') ?></div></a>
 	<table style="width:100%;" cellspacing="0" class="grid">
 
-	<?php
-	if (!empty($_SESSION['info_message'])):
-	?>
-	<script type="text/javascript">showHelpWin('<?php echo h($_SESSION['info_message']) ?>', '<?php echo __('Message') ?>');</script>
-	<?php
-		unset($_SESSION['info_message']);
-	endif;
-	?>
 	<?php  
 	if (!empty($current_dumps)): 
 		foreach ($current_dumps as $dump): 

@@ -193,18 +193,3 @@ function offPlugin() {
 		file_put_contents($conf_pach, json_encode($history));
 		redirect('../admin/plugins.php');
 }
-
-
-
-
-
-?>
-
-<?php
-if (!empty($_SESSION['info_message'])):
-?>
-<script type="text/javascript">showHelpWin('<?php echo h($_SESSION['info_message']) ?>', '<?php echo __('Message') ?>');</script>
-<?php
-	unset($_SESSION['info_message']);
-endif;
-?>
