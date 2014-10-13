@@ -198,7 +198,9 @@ Class Pather {
 			// Human Like URL
 			if ($this->Register['Config']->read('hlu_understanding') || $this->Register['Config']->read('hlu')) {
 				if ($params[1] !== 'view' && (empty($params[2]) || !is_numeric($params[2]))) {
-                    $mat_id = $this->getHluId($params[1], $params[0]);
+
+                    // Geting new HLU title if he was changed.
+                    $mat_id = $this->getNewHLUTitle($params[1], $params[0]);
                     if ($mat_id) {
                         // redirect to new URL (might the title was changed)
                         redirect($params[0] . '/' . $mat_id, 301);
@@ -221,6 +223,7 @@ Class Pather {
 			}
 			if (!method_exists($this->module, $params[1])) {
                 if (method_exists($this->module, ($params[0] === 'forum') ? 'view_theme' : 'view')) {
+                    // geting entity ID by HLU title from URL
                     $params[2] = $this->module->getEntryId($params[1]);
                     $params[1] = ($params[0] === 'forum') ? 'view_theme' : 'view';
                 } else {
@@ -237,26 +240,20 @@ Class Pather {
 
 
 	/**
-	 * Find relation string->id on Human Like Url
+	 * Tries to find temporary file with the new entity title if he was changed.
 	 *
 	 * @param string $string
 	 * @param string $module
 	 * @return int ID
 	 */
-	private function getHluId($string, $module) {
+	private function getNewHLUTitle($string, $module) {
 		$Register = Register::getInstance();
-		//$clean_str = substr($string, 0, strpos($string, '.'));
 		$clean_str = $string;
 		$tmp_file = $Register['URL']->getTmpFilePath($clean_str, $module);
 		if (!file_exists($tmp_file) || !is_readable($tmp_file)) return false;
 
         $params = json_decode(file_get_contents($tmp_file), true);
         return $params['title'];
-        /*
-		$id = file_get_contents($tmp_file);
-		$id = (int)$id;
-		return (is_int($id)) ? $id : false;
-        */
 	}
 
 }
