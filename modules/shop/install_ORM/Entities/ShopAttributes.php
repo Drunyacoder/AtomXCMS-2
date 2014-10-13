@@ -58,7 +58,7 @@ class ShopAttributesEntity extends FpsEntity
         if (!isset($this->content)) {
             $contentEntity = new ShopAttributesContentEntity(array(
                 'attribute_id' => $this->getId(),
-                'product_id' => $this->getId(),
+                'product_id' => '',
                 'content' => '',
             ));
             $this->content = $contentEntity;

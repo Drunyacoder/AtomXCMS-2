@@ -1,0 +1,25 @@
+<div class="catalog">
+{% if entities %}
+
+	{% for entity in entities %}
+		{% if entity %}
+			<div class="product-item">
+				<h2>{{ entity.title|escape }}</h2>
+				<div class="product-image"></div>
+				<strong>Price</strong>: 
+				{% if entity.final_price != entity.price %}<s style="color:#777; font-size:14px;">{{ entity.price|num_format(2, ',', ' ') }}</s>{% endif %}
+				{{ entity.final_price|num_format(2, ',', ' ') }}
+				
+				<div class="attrs">
+				{% for attr in entity.attributes %}
+					<strong>{{ attr.label|lang|escape }}</strong>: {{ attr.content.content|escape }}<br>
+				{% endfor %}
+				</div>
+			</div>
+		{% endif %}
+	{% endfor %}
+
+{% else %}
+	{{ 'Materials not found'|lang }}
+{% endif %}
+</div>

@@ -30,6 +30,7 @@ class ShopOrdersProductsEntity extends FpsEntity
 	protected $id;
 	protected $order_id;
 	protected $product_id;
+	protected $quantity;
 
 	
 	public function save()
@@ -37,6 +38,7 @@ class ShopOrdersProductsEntity extends FpsEntity
 		$params = array(
 			'order_id' => intval($this->order_id),
 			'product_id' => intval($this->product_id),
+			'quantity' => (intval($this->quantity) >= 1) ? intval($this->quantity) : 1,
 		);
 		if ($this->id) $params['id'] = $this->id;
 		$Register = Register::getInstance();

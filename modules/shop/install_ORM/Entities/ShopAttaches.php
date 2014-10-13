@@ -30,11 +30,10 @@ class ShopAttachesEntity extends FpsEntity
 	protected $id;
 	protected $entity_id;
 	protected $user_id;
-	protected $attach_number;
 	protected $filename ;
 	protected $size;
 	protected $date;
-	protected $is_image;
+	protected $is_main;
 
 	
 	public function save()
@@ -42,11 +41,10 @@ class ShopAttachesEntity extends FpsEntity
 		$params = array(
 			'entity_id' => intval($this->entity_id),
 			'user_id' => intval($this->user_id),
-			'attach_number' => intval($this->attach_number),
 			'filename' => $this->filename,
 			'size' => intval($this->size),
 			'date' => $this->date,
-			'is_image' => (!empty($this->is_image)) ? '1' : new Expr("'0'"),
+			'is_main' => (!empty($this->is_main)) ? '1' : new Expr("'0'"),
 		);
 		if($this->id) $params['id'] = $this->id;
 		$Register = Register::getInstance();
