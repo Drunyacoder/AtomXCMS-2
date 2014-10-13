@@ -103,12 +103,6 @@ if (!empty($_SESSION['clean_cache'])):
 endif;
 ?>
 
-<?php if (!empty($_SESSION['message'])): ?>
-<div class="warning ok"><?php echo h($_SESSION['message']) ?></div>
-<?php unset($_SESSION['message']); ?>
-<?php elseif (!empty($_SESSION['errors'])): ?>
-<div class="warning error"><?php echo h($_SESSION['errors']) ?></div>
-<?php unset($_SESSION['errors']); endif; ?>
 
 
 

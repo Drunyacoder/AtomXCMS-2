@@ -267,14 +267,6 @@ include_once ROOT . '/admin/template/header.php';
 
 
 
-<?php
-if(!empty($_SESSION['message'])) {
-	echo '<div class="warning ok">'.$_SESSION['message'].'</div>';
-	unset($_SESSION['message']);
-}
-?>
-
-
 
 <!-- Find users for add new special rules -->
 <div id="sp_rules_find_users" class="popup">

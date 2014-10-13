@@ -218,14 +218,6 @@ include_once ROOT . '/admin/template/header.php';
 ?>
 
 
-<?php if (!empty($_SESSION['message'])): ?>
-<div class="warning ok"><?php echo $_SESSION['message'] ?></div>
-<?php unset($_SESSION['message']); endif; ?>
-<?php if (!empty($_SESSION['errors'])): ?>
-<div class="warning error"><?php echo $_SESSION['errors'] ?></div>
-<?php unset($_SESSION['errors']); endif; ?>
-
-
 <form method="POST" action="" enctype="multipart/form-data">
 <div class="list">
 	<div class="title"><?php echo $pageNav; ?></div>

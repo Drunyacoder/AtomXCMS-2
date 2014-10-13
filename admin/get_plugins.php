@@ -143,14 +143,6 @@ include 'template/header.php';
 ?>
 
 
-<?php if (!empty($_SESSION['message'])): ?>
-	<script type="text/javascript">showHelpWin('<?php echo $_SESSION['message'] ?>', '<?php echo __('Message') ?>');</script>
-<?php
-	unset($_SESSION['message']);
-endif;
-?>
-
-
 <div class="warning">
 <?php echo __('Plugins instruction') ?>
 </div>
