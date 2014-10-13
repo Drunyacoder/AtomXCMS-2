@@ -895,20 +895,6 @@ function submitForm(){
 
 
 
-
-<?php
-if (!empty($_SESSION['info_message'])):
-?>
-<script type="text/javascript">showHelpWin('<?php echo h($_SESSION['info_message']) ?>', 'Сообщение');</script>
-<?php
-	unset($_SESSION['info_message']);
-endif;
-
-
-?>
-
-
-
 <ul class="markers">
 	<li><div class="global-marks">{{ content }}</div> - Основной контент страницы</li>
 	<li><div class="global-marks">{{ title }}</div> - Заголовок страницы</li>
@@ -932,5 +918,3 @@ endif;
 
 <?php
 include_once 'template/footer.php';
-
-
