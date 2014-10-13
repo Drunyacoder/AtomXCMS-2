@@ -128,7 +128,7 @@ Class ShopModule extends Module {
 		// create markers
 		foreach ($records as $result) {
 			$result->setModer_panel($this->_getAdminBar($result));
-			$entry_url = get_url(entryUrl($result, $this->module));
+			$entry_url = entryUrl($result, $this->module);
 			$result->setEntry_url($entry_url);
 			
 
@@ -222,7 +222,7 @@ Class ShopModule extends Module {
 		$markers = array();
 		$markers['moder_panel'] = $this->_getAdminBar($entity);
 
-		$entry_url = get_url(entryUrl($entity, $this->module));
+		$entry_url = entryUrl($entity, $this->module);
 		$markers['entry_url'] = $entry_url;
 		$markers['main_text'] = $this->Textarier->parseBBCodes($entity->getDescription(), $entity);
 

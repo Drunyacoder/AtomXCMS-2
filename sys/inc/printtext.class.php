@@ -417,7 +417,7 @@ class PrintText {
 		
 		if (!empty($attachment)) $entity->setAttachment($attachment);
 		
-		if (preg_match_all('#\{ATTACH(\d+)(\|(\d+))?(\|(left|right))?(\|([^\|]+))?\}#ui', $message, $matches)) {
+		if (preg_match_all('#\{ATTACH(\d+)(\|(\d+))?(\|(left|right))?(\|([^\|\}]+))?\}#ui', $message, $matches)) {
 			$sizes = array();
 			$floats = array();
 			$descriptions = array();
@@ -446,7 +446,7 @@ class PrintText {
 						$message = preg_replace('#\{ATTACH' . $attach->getId() . '[^\}]*\}#ui', 
 							'<a class="gallery" href="' . get_url('/sys/files/' . $module . '/' . $attach->getFilename()) 
 							. '"><img' . $style_ . ' alt="' . h($entity->getTitle()) . '" title="' . h($entity->getTitle()) 
-							. '" title="" src="' . get_url('/image/' . $module . '/' . $attach->getFilename()) . $size . '" />' 
+							. '" src="' . get_url('/image/' . $module . '/' . $attach->getFilename()) . $size . '" />'
 							. $descr .  '</a>',
 							$message);
 					} else {

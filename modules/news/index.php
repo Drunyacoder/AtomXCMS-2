@@ -127,7 +127,7 @@ Class NewsModule extends Module {
 			
 			
 			$markers['moder_panel'] = $this->_getAdminBar($result);
-			$entry_url = get_url(entryUrl($result, $this->module));
+			$entry_url = entryUrl($result, $this->module);
 			$markers['entry_url'] = $entry_url;
 			
 
@@ -261,7 +261,7 @@ Class NewsModule extends Module {
 			
 			
 			$markers['moder_panel'] = $this->_getAdminBar($result);
-			$entry_url = get_url(entryUrl($result, $this->module));
+			$entry_url = entryUrl($result, $this->module);
 			$markers['entry_url'] = $entry_url;
 			
 			
@@ -373,17 +373,14 @@ Class NewsModule extends Module {
 		$markers = array();
 		$markers['moder_panel'] = $this->_getAdminBar($entity);
 		$markers['profile_url'] = getProfileUrl($entity->getAuthor()->getId());
-		
-		
-		$entry_url = get_url(entryUrl($entity, $this->module));
+		$entry_url = entryUrl($entity, $this->module);
 		$markers['entry_url'] = $entry_url;
 		$markers['main_text'] = $this->Textarier->parseBBCodes($entity->getMain(), $entity);
 
 		
 		$entity->setAdd_markers($markers);
 		if ($entity->getTags()) $entity->setTags(explode(',', $entity->getTags()));
-		
-		
+
 		$source = $this->render('material.html', array('entity' => $entity));
 		
 		
@@ -475,7 +472,7 @@ Class NewsModule extends Module {
 
 
 			$markers['moder_panel'] = $this->_getAdminBar($entity);
-			$entry_url = get_url(entryUrl($entity, $this->module));
+			$entry_url = entryUrl($entity, $this->module);
 			$markers['entry_url'] = $entry_url;
 
 			

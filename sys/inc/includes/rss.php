@@ -67,7 +67,7 @@ if ($this->Cache->check($cache_key)) {
 		
 		foreach ($records as $record) { 
 			$html .= '<item>';
-			$html .= '<link>' . $sitename . get_url(entryUrl($record, $this->module)) . '</link>';
+			$html .= '<link>' . $sitename . entryUrl($record, $this->module) . '</link>';
 			$html .= '<pubDate>' . date('r', strtotime($record->getDate())) . '</pubDate>';
 			$html .= '<title>' . $record->getTitle() . '</title>';
 			$html .= '<description><![CDATA[' . mb_substr($record->getMain(), 0, $this->Register['Config']->read('rss_lenght', 'rss')) . '<br />';

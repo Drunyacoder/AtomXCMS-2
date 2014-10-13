@@ -399,6 +399,23 @@ function entryUrl($material, $module) {
 }
 
 
+/**
+ * Return URL to user profile.
+ *
+ * @param $user_id
+ * @return string
+ */
+function getProfileUrl($user_id) {
+    if (!empty($_SESSION['user']) && $_SESSION['user']['id'] == $user_id) {
+        //$url = '/users/edit_form/';
+        $url = '/users/info/' . $user_id . '/';
+    } else {
+        $url = '/users/info/' . $user_id . '/' ;
+    }
+    return $url;
+}
+
+
 function array_search_recursive($needle, $array) {
     $result = array();
 	if (!is_array($array)) return $result;
@@ -523,10 +540,10 @@ function get_img($url, $params = array(), $notRoot = false) {
 /**
  * Uses for valid create url.
  * When you use this function you
- * mustn't wory obout Fapos install
- * into subdri or SUBDIRS.
+ * mustn't wory obout the Fapos install
+ * into subdir or SUBDIRS.
  * This function return url only from root (/)
- * But you can send $notRoot and get url from not root.
+ * But you can send $notRoot as true and get relative URL.
  *
  * @param string $url
  * @param boolean $notRoot

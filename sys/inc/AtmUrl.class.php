@@ -63,7 +63,7 @@ class AtmUrl {
             } else break;
         }
 
-        // check the old URLs (by the old title(s))
+        // check the old URLs (by the old title(s)) & put into them new data.
         if (file_exists($tmp_file_id)) {
             $path_to_tmp_file_title = json_decode(file_get_contents($tmp_file_id), true);
             if (count($path_to_tmp_file_title) && is_array($path_to_tmp_file_title)) {
@@ -85,13 +85,27 @@ class AtmUrl {
     }
 
 
+    /**
+     * Removes just one temporary file related to the current object title
+     *
+     * @param $entity object
+     * @param $module string
+     */
     public function removeOldTmpFile($entity, $module)
     {
-        $tmp_file_title = $this->getTmpFilePath($entity->getTitle(), $module);
+        $title = $this->getUrlByTitle($entity->getTitle());
+        $tmp_file_title = $this->getTmpFilePath($title, $module);
         if (file_exists($tmp_file_title)) @unlink($tmp_file_title);
     }
 
 
+    /**
+     * Removes the all temporary files relates to the entity.
+     * Usualy uses during an entities deleting process.
+     *
+     * @param $entity object
+     * @param $module string
+     */
     public function removeOldTmpFiles($entity, $module)
     {
         $tmp_file = $this->getTmpFilePath($entity->getId(), $module);
@@ -108,20 +122,36 @@ class AtmUrl {
     }
 
 
-	public function getEntryUrl($material, $module){
-        $pattern = '/' . $module . '/%s';
-        $title = $this->getUrlByTitle($material->getTitle());
+    /**
+     * Return complete URL to the material page.
+     * If human like URL is enabled, will be returned human like URL.
+     * In opposite will be returned common URL. For example, /news/view/1/, for News module.
+     *
+     * @param $material object
+     * @param $module string
+     * @return string
+     */
+    public function getEntryUrl($material, $module){
+        if (Config::read('hlu') == 1) {
+            $pattern = '/' . $module . '/%s';
+            $title = $this->getUrlByTitle($material->getTitle());
+            $url = h(sprintf($pattern, $title));
+        } else {
+            $url = '/' . $module . '/' .
+                ($module === 'forum' ? 'view_theme' : 'view') .
+                '/' . $material->getId() . '/';
+        }
+        return $this->__invoke($url);
+    }
 
-        return h(sprintf($pattern, $title));
-	}
-	
-	
-	/**
-	 * Only create HLU URL by title
-	 *
-	 * @param stirng title
-	 * @return string
-	 */
+
+    /**
+     * Only converts a title to the HLU title & add HLU Extension if it exists.
+     *
+     * @param $title string
+     * @param $use_extention bool
+     * @return string
+     */
 	public function getUrlByTitle($title, $use_extention = true) {
 		//$title = $this->translit($title);
 		$title = strtolower(preg_replace('#[^0-9a-zА-Я]#ui', '_', $title));

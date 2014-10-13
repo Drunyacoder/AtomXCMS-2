@@ -405,8 +405,7 @@ Class ForumModule extends Module {
 				));
 				
 				
-			}	
-			
+			}
 			
 			$forum->setCount_themes_here($cnt_themes_here);
 			$forum->setWho_is_here(substr($who_is_here, 0, -2));
@@ -488,8 +487,8 @@ Class ForumModule extends Module {
 		
 		//ICONS
 		$themeicon = $this->__getThemeIcon($theme); 
-			
-		$theme->setTheme_url(get_url('/forum/view_theme/' . $theme->getId()));
+
+		$theme->setTheme_url(entryUrl($theme, $this->module));
 
 		
 		//ADMINBAR 

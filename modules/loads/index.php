@@ -139,7 +139,7 @@ Class LoadsModule extends Module {
             $markers = array();
 
             $markers['moder_panel'] = $this->_getAdminBar($entity);
-            $entry_url = get_url(entryUrl($entity, $this->module));
+            $entry_url = entryUrl($entity, $this->module);
             $markers['entry_url'] = $entry_url;
 
 
@@ -264,7 +264,7 @@ Class LoadsModule extends Module {
 
 
             $markers['moder_panel'] = $this->_getAdminBar($result);
-            $entry_url = get_url(entryUrl($result, $this->module));
+            $entry_url = entryUrl($result, $this->module);
             $markers['entry_url'] = $entry_url;
 	
 			
@@ -404,7 +404,7 @@ Class LoadsModule extends Module {
         $markers['main_text'] = $announce;
 		
 		
-		$entry_url = get_url(entryUrl($entity, $this->module));
+		$entry_url = entryUrl($entity, $this->module);
 		$markers['entry_url'] = $entry_url;
 
 		
@@ -504,7 +504,7 @@ Class LoadsModule extends Module {
 
 
 			$markers['moder_panel'] = $this->_getAdminBar($entity);
-			$entry_url = get_url(entryUrl($entity, $this->module));
+			$entry_url = entryUrl($entity, $this->module);
 			$markers['entry_url'] = $entry_url;
 
 			

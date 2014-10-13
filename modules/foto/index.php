@@ -114,7 +114,7 @@ Class FotoModule extends Module {
 			
 			
 			$_addParams['moder_panel'] = $this->_getAdminBar($result);
-			$entry_url = get_url(entryUrl($result, $this->module));
+			$entry_url = entryUrl($result, $this->module);
 			$_addParams['entry_url'] = $entry_url;
 			$_addParams['preview_foto'] = get_url('/sys/files/foto/preview/' . $result->getFilename());
 			$_addParams['foto_alt'] = h(preg_replace('#[^\w\d ]+#ui', ' ', $result->getTitle()));
@@ -222,7 +222,7 @@ Class FotoModule extends Module {
 			
 			
 			$_addParams['moder_panel'] = $this->_getAdminBar($result);
-			$entry_url = get_url(entryUrl($result, $this->module));
+			$entry_url = entryUrl($result, $this->module);
 			$_addParams['entry_url'] = $entry_url;
 			//$_addParams['entry_url'] = get_url('/foto/view/' . $result->getId());
 			
@@ -317,7 +317,7 @@ Class FotoModule extends Module {
 		$markers['previous_url'] = get_url('/foto/view/' . $prev_id);
 		$markers['next_url'] = get_url('/foto/view/' . $next_id);
 
-		$entry_url = get_url(entryUrl($entity, $this->module));
+		$entry_url = entryUrl($entity, $this->module);
 		$markers['entry_url'] = $entry_url;
 		
 		
@@ -421,7 +421,7 @@ Class FotoModule extends Module {
 
 
 			$markers['moder_panel'] = $this->_getAdminBar($entity);
-			$entry_url = get_url(entryUrl($entity, $this->module));
+			$entry_url = entryUrl($entity, $this->module);
 			$markers['entry_url'] = $entry_url;
 
 			$markers['preview_foto'] = get_url('/sys/files/foto/preview/' . $entity->getFilename());

@@ -223,7 +223,7 @@ Class PagesModule extends Module {
 
                         //moder panel
                         $markers['moder_panel'] = $this->_getAdminBar($result->getId(), $result->getSkey());
-                        $entry_url = get_url(entryUrl($result, $result->getSkey()));
+                        $entry_url = entryUrl($result, $result->getSkey());
                         $markers['entry_url'] = $entry_url;
 
 

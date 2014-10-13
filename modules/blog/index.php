@@ -144,7 +144,7 @@ Class BlogModule extends Module {
 			
 			
 			$markers['moder_panel'] = $this->_getAdminBar($result);
-			$entry_url = get_url(entryUrl($result, $this->module));
+			$entry_url = entryUrl($result, $this->module);
 			$markers['entry_url'] = $entry_url;
 			
 
@@ -303,7 +303,7 @@ Class BlogModule extends Module {
 			
 			
 			$markers['moder_panel'] = $this->_getAdminBar($result);
-			$entry_url = get_url(entryUrl($result, $this->module));
+			$entry_url = entryUrl($result, $this->module);
 			$markers['entry_url'] = $entry_url;
 			
 			
@@ -417,7 +417,7 @@ Class BlogModule extends Module {
 		$markers['profile_url'] = getProfileUrl($entity->getAuthor()->getId());
 		
 		
-		$entry_url = get_url(entryUrl($entity, $this->module));
+		$entry_url = entryUrl($entity, $this->module);
 		$markers['entry_url'] = $entry_url;
 		$markers['main_text'] = $this->Textarier->parseBBCodes($entity->getMain(), $entity);
 
@@ -514,7 +514,7 @@ Class BlogModule extends Module {
 
 
 			$markers['moder_panel'] = $this->_getAdminBar($entity);
-			$entry_url = get_url(entryUrl($entity, $this->module));
+			$entry_url = entryUrl($entity, $this->module);
 			$markers['entry_url'] = $entry_url;
 
 
