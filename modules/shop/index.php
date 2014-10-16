@@ -152,7 +152,7 @@ Class ShopModule extends Module {
                 $this->setCacheTag(array('category_id_' . $category_id));
 		}
 
-		$source = $this->render('list.html', array('entities' => $records));
+		$source = $this->render('list.html', array('context' => array('entities' => $records)));
 		
 		//write int cache
 		if ($this->cached)
