@@ -14,10 +14,12 @@ Current context:
 {% if context.entities %}
 	{% for entity in context.entities %}
         <div class="product-item">
-            <h2>{{ entity.title|escape }}</h2>
+            <a href="{{ entity.entry_url }}"><h2>{{ entity.title|escape }}</h2></a>
             <div class="product-image">
                 {% if entity.attaches %}
-                    <img src="/image/shop/{{ entity.attaches[0].filename }}/200/" title="{{ entity.title|escape }}" />
+                    <a href="{{ entity.entry_url }}">
+                        <img src="/image/shop/{{ entity.attaches[0].filename }}/200/" title="{{ entity.title|escape }}" />
+                    </a>
                 {% else %}
                     <img src="{{ template_path }}/img/noimage.png" title="No image" />
                 {% endif %}
