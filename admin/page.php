@@ -128,11 +128,17 @@ class PagesAdminController {
 		$parent = $this->Model->getById($params['id']);
 		if (!empty($parent)) {
 
+			$errors = array();
+			
             if (empty($params['title']))
+				$errors[] = sprintf(__('Empty field "%s"'), __('Title'));
+			
+			if (!empty($errors)) {
                 return json_encode(array(
                     'status' => 0,
-                    'errors' => array(sprintf(__('Empty field "%s"'), __('Title'))),
+                    'errors' => $errors,
                 ));
+			}
 		
 			$path = ('.' === $parent->getPath()) ? null : $parent->getPath();
 			$template = ($parent->getTemplate()) ? $parent->getTemplate() : '';
@@ -280,7 +286,7 @@ class PagesAdminController {
         if (empty($params['content']))
             $errors[] = sprintf(__('Empty field "%s"'), __('Content'));
 
-        if (empty($errors)) {
+        if (!empty($errors)) {
             return json_encode(array(
                 'status' => 0,
                 'errors' => $errors,
@@ -913,14 +919,15 @@ function submitForm(){
 		'page.php?operation=save&id='+id, 
 		$(form).serialize(), 
 		function(data) {
+			
+			
             if (data.errors && data.errors.length) {
                 alert(data.errors.join("\n"));
-            }
-		
-			$("#pageTree").jstree('refresh', -1);
-			if (typeof data.id != 'undefined') setTimeout('fillForm('+data.id+')', 1000);
+            } else {
+				$("#pageTree").jstree('refresh', -1);
+				if (typeof data.id != 'undefined') setTimeout('fillForm('+data.id+')', 1000);
+			}
 			
-		
 			FpsLib.hideLoader();
 		}
 	);
