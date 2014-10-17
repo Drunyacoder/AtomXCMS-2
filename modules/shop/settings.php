@@ -312,7 +312,7 @@ class ShopSettingsController
 		}
 
         // If main image is not set, uses the first image
-        if (empty($main_image)) {
+        if (empty($main_image) && !empty($attaches)) {
             $attach = $attaches[0];
             $main_image = '<img data-id="' . $attach->getId() . '" title="' .
                 $attach->getFilename() . '" src="/image/shop/' . $attach->getFilename() . '/150/" />';
@@ -416,7 +416,7 @@ class ShopSettingsController
 				$(".atmshop-asmain-attach").live("click", function(){
 					var attachId = $(this).parent().find("input").val();
 					$.ajax({
-					    url: "' . get_url('/shop/as_main_attach/') . '\'+ attachId +\'/",
+					    url: "' . get_url('/shop/as_main_attach/') . '" + attachId + "/",
 					    type: "POST",
 					    dataType: "json",
 					    success: function(data){

@@ -738,17 +738,17 @@ Class ShopModule extends Module {
 	public function as_main_attach($id)
 	{
 		$this->counter = false;
-		if (!$this->ACL->turn(array($this->module, 'edit_products'), false)) {
+		if (!$this->ACL->turn(array($this->module, 'edit_products'), false)
+		|| empty($_SESSION['user']['id'])) {
 			$this->showAjaxResponse(array(
 				'errors' => __('Permission denied'), 
 				'result' => '0'
 			));
 		}
-			
-		if (empty($_SESSION['user']['id'])) $this->showAjaxResponse(array());
+
 		
 		$attachModel = $this->Register['ModManager']->getModelInstance($this->module . 'Attaches');
-		$attach = $attachModel->getById($id);
+		$attach = $attachModel->getById(intval($id));
 		
 		$errors = array();
 		
@@ -758,7 +758,7 @@ Class ShopModule extends Module {
 		if (!empty($errors)) {
 			$this->showAjaxResponse(array(
 				'result' => '0', 
-				'errors' => $this->Register['DocParser']->wrapErrors($errors, true),
+				'errors' => $errors,
 			));
 		}
 
