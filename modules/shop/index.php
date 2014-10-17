@@ -152,7 +152,7 @@ Class ShopModule extends Module {
                 $this->setCacheTag(array('category_id_' . $category_id));
 		}
 
-		$source = $this->render('list.html', array('entities' => $records));
+		$source = $this->render('list.html', array('context' => array('entities' => $records)));
 		
 		//write int cache
 		if ($this->cached)
@@ -235,13 +235,31 @@ Class ShopModule extends Module {
 	}
 
 
+    public function basket()
+    {
+        //turn access
+        if (!$this->ACL->turn(array($this->module, 'buy_product'), false))
+            return $this->showInfoMessage(__('Permission denied'), $this->getModuleURL());
+
+        $basket = $this->storage['basket'];
+
+        $this->showAjaxResponse(array(
+            'result' => 1,
+            'data' => $basket,
+        ));
+    }
+
+
     public function add_to_basket($id = null, $quantity = null)
     {
         //turn access
-        $this->ACL->turn(array($this->module, 'buy_product'));
+        if (!$this->ACL->turn(array($this->module, 'buy_product'), false))
+            return $this->showInfoMessage(__('Permission denied'), $this->getModuleURL());
+
         $id = intval($id);
         $quantity = (intval($quantity) > 0) ? intval($quantity) : 1;
-        if (empty($id) || $id < 1) redirect($this->getModuleURL());
+        if (empty($id) || $id < 1)
+            return $this->showInfoMessage(__('Empty ID'), $this->getModuleURL());
 
 
         $where = array("(quantity > 0 || hide_not_exists = '0')");

@@ -1,22 +1,39 @@
-<div class="catalog">
-{% if entities %}
+<!--{#
+For inspect an any variable use "show" filter as shown below:
+{{ context.entity|show }}
 
-	{% for entity in entities %}
-		{% if entity %}
-			<div class="product-item">
-				<h2>{{ entity.title|escape }}</h2>
-				<div class="product-image"></div>
-				<strong>Price</strong>: 
-				{% if entity.final_price != entity.price %}<s style="color:#777; font-size:14px;">{{ entity.price|num_format(2, ',', ' ') }}</s>{% endif %}
-				{{ entity.final_price|num_format(2, ',', ' ') }}
-				
-				<div class="attrs">
-				{% for attr in entity.attributes %}
-					<strong>{{ attr.label|lang|escape }}</strong>: {{ attr.content.content|escape }}<br>
-				{% endfor %}
-				</div>
-			</div>
-		{% endif %}
+It represents a variable the same way as the "var_dump" function in PHP.
+
+More details & documentation are located at http://atomx.net/stat/category/27/.
+
+Current context:
+- context (array)
+- - entities (array)
+#}-->
+<div class="catalog">
+{% if context.entities %}
+	{% for entity in context.entities %}
+        <div class="product-item">
+            <a href="{{ entity.entry_url }}"><h2>{{ entity.title|escape }}</h2></a>
+            <div class="product-image">
+                {% if entity.attaches %}
+                    <a href="{{ entity.entry_url }}">
+                        <img src="/image/shop/{{ entity.attaches[0].filename }}/200/" title="{{ entity.title|escape }}" />
+                    </a>
+                {% else %}
+                    <img src="{{ template_path }}/img/noimage.png" title="No image" />
+                {% endif %}
+            </div>
+            <strong>Price</strong>:
+            {% if entity.final_price != entity.price %}<s style="color:#777; font-size:14px;">{{ entity.price|num_format(2, ',', ' ') }}</s>{% endif %}
+            {{ entity.final_price|num_format(2, ',', ' ') }}
+
+            <div class="attrs">
+            {% for attr in entity.attributes %}
+                <strong>{{ attr.label|lang|escape }}</strong>: {{ attr.content.content|escape }}<br>
+            {% endfor %}
+            </div>
+        </div>
 	{% endfor %}
 
 {% else %}

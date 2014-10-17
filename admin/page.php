@@ -127,6 +127,12 @@ class PagesAdminController {
 		
 		$parent = $this->Model->getById($params['id']);
 		if (!empty($parent)) {
+
+            if (empty($params['title']))
+                return json_encode(array(
+                    'status' => 0,
+                    'errors' => array(sprintf(__('Empty field "%s"'), __('Title'))),
+                ));
 		
 			$path = ('.' === $parent->getPath()) ? null : $parent->getPath();
 			$template = ($parent->getTemplate()) ? $parent->getTemplate() : '';
@@ -267,11 +273,30 @@ class PagesAdminController {
 	 */
 	public function save($params)
 	{
+        $errors = array();
+
+        if (empty($params['title']))
+            $errors[] = sprintf(__('Empty field "%s"'), __('Title'));
+        if (empty($params['content']))
+            $errors[] = sprintf(__('Empty field "%s"'), __('Content'));
+
+        if (empty($errors)) {
+            return json_encode(array(
+                'status' => 0,
+                'errors' => $errors,
+            ));
+        }
+
 
 		if (!empty($params['id'])) {
 			$id = intval($params['id']);
 			$entity = $this->Model->getById(intval($params['id']));
-			if (empty($entity)) return json_encode(array('status' => '0'));
+			if (empty($entity)) {
+                return json_encode(array(
+                    'status' => '0',
+                    'errors' => array(__('Record not found'))
+                ));
+            }
 
 			$entity->setName($params['name']);
 			$entity->setTitle($params['title']);
@@ -305,7 +330,12 @@ class PagesAdminController {
 			);
 			$id = $this->Model->add($data);
 
-			if (empty($id)) return json_encode(array('status' => '0'));
+			if (empty($id)) {
+                return json_encode(array(
+                    'status' => '0',
+                    'errors' => array(__('Some error occurred'))
+                ));
+            }
 			return json_encode(array('status' => '1', 'id' => $id));
 		}
 		
@@ -727,9 +757,11 @@ $("#pageTree")
 			function (r) {
 				if(r.status) {
 					$(data.rslt.obj).attr("id", "node_" + r.id);
-				}
-				else {
+				} else {
 					$.jstree.rollback(data.rlbk);
+                    if (r.errors && r.errors.length) {
+                        alert(r.errors.join("\n"));
+                    }
 				}
 			}
 		);
@@ -880,7 +912,10 @@ function submitForm(){
 	$.post(
 		'page.php?operation=save&id='+id, 
 		$(form).serialize(), 
-		function(data){
+		function(data) {
+            if (data.errors && data.errors.length) {
+                alert(data.errors.join("\n"));
+            }
 		
 			$("#pageTree").jstree('refresh', -1);
 			if (typeof data.id != 'undefined') setTimeout('fillForm('+data.id+')', 1000);
