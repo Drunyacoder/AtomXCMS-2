@@ -64,37 +64,41 @@ $(document).ready(function() {
 <div><a href="http://atomx.net/users/info/1/">{{ 'Contacts'|lang }}</a></div>
 <div><a href="https://github.com/Drunyacoder/AtomXCMS-2">GitHub</a></div>
 <div><a href="http://atomx.net/forum/">{{ 'Support'|lang }}</a></div></div>
- <div class="userlinksap">
-{% if fps_user_id %}
-<div><a href="{{ get_url('/users/pm/') }}">{{ 'Message'|lang }}</a></div>
-<div class="activewindow"><a href="{{ personal_page_link }}">{{ fps_user_name }}</a><div class="miniprofileadm" style="width: 300px;padding: 10px;{% if fps_admin_access == 1 %}height:150px;{% endif %}">
-    <span class="avatarminpro"><img class="avatar" src="{{ getAvatar(fps_user.id) }}"></span>
-    <span class="uslinkminpro">
-        <a href="{{ personal_page_link }}">{{ 'Profile'|lang }}</a>
-        <a href="{{ get_url('/users/pm_send_form/') }}">{{ 'Send a message'|lang }}</a>
-		<a href="{{ get_url('/users/pm/') }}">{{ 'Message'|lang }}</a>
-		<a href="{{ get_url('/users/edit_form/' ~ fps_user_id) }}">{{ 'Edit profile'|lang }}</a>
-        {% if fps_admin_access == 1 %}
-		<a href="{{ get_url('/admin/', false, false) }}" target="_blank">{{ 'panel'|lang }}</a>
-		{% endif %}
-    </span>
-</div></div>
-<div><a href="{{ get_url('/users/logout/') }}">{{ 'Exit'|lang }}</a></div>
-{% else %}
-<div><a href="{{ get_url('/users/add_form/') }}">{{ 'Registration'|lang }}</a></div>
-<div class="activewindow login"><a href="{{ get_url('/users/login_form/') }}">{{ 'Enter'|lang }}</a>
-<div style="width: 258px;"><span>
-<form id="mloginForm"  action="{{ get_url('/users/login/?ajax') }}" method="post">
-	{{ 'Login'|lang }}: <input type="text" class="loginad" name="username">
-	{{ 'Password'|lang }}: <input type="password" class="passad" name="password">
-	{{ 'The autologin'|lang }}: <input type="checkbox" name="autologin" value="1">
-	<button type="submit" onclick="sendu('mloginForm'); return false" class="buttonadm">{{ 'Enter'|lang }}</button>
-	<input type="hidden" value="submit" name="submitForm">
-</form>
-</span></div></div>
-{% endif %}
-<div><a href="{{ get_url('/users/') }}">{{ 'Users'|lang }}</a></div>
- </div>
+<div class="userlinksap">
+     <div>
+         <div class="activewindow mini-cart{% if shop_basket.total > 0 %} active{% endif %}">
+             <a href="javascript:void(0)">{{ 'Cart'|lang('shop') }}</a>
+             <div class="products-list"></div>
+         </div>
+     </div>
+    {% if fps_user_id %}
+        <div class="activewindow"><a href="{{ personal_page_link }}">{{ fps_user_name }}</a>
+            <div class="miniprofileadm" style="width: 300px;padding: 10px;{% if fps_admin_access == 1 %}height:150px;{% endif %}">
+                <span class="avatarminpro"><img class="avatar" src="{{ getAvatar(fps_user.id) }}"></span>
+                <span class="uslinkminpro">
+                    <a href="{{ personal_page_link }}">{{ 'Profile'|lang }}</a>
+                    <a href="{{ get_url('/users/edit_form/' ~ fps_user_id) }}">{{ 'Edit profile'|lang }}</a>
+                    {% if fps_admin_access == 1 %}
+                    <a href="{{ get_url('/admin/', false, false) }}" target="_blank">{{ 'panel'|lang }}</a>
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+        <div><a href="{{ get_url('/users/logout/') }}">{{ 'Exit'|lang }}</a></div>
+    {% else %}
+        <div><a href="{{ get_url('/users/add_form/') }}">{{ 'Registration'|lang }}</a></div>
+        <div class="activewindow login"><a href="{{ get_url('/users/login_form/') }}">{{ 'Enter'|lang }}</a>
+        <div style="width: 258px;"><span>
+        <form id="mloginForm"  action="{{ get_url('/users/login/?ajax') }}" method="post">
+            {{ 'Login'|lang }}: <input type="text" class="loginad" name="username">
+            {{ 'Password'|lang }}: <input type="password" class="passad" name="password">
+            {{ 'The autologin'|lang }}: <input type="checkbox" name="autologin" value="1">
+            <button type="submit" onclick="sendu('mloginForm'); return false" class="buttonadm">{{ 'Enter'|lang }}</button>
+            <input type="hidden" value="submit" name="submitForm">
+        </form>
+        </span></div></div>
+    {% endif %}
+</div>
 </div>
 <div class="global">
 <div class="header">
