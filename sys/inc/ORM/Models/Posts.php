@@ -72,7 +72,7 @@ class PostsModel extends FpsModel
 	}
 
 
-    public function getFirst($where, $params)
+    public function getFirst($where, $params = array())
     {
         $params['limit'] = 1;
         $post = $this->getCollection($where, $params);
