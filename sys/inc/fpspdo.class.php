@@ -637,6 +637,9 @@ class FpsPDO {
                         if (is_numeric($k) || !strstr($k, '.')) {
 							if (is_array($v)) {
 								foreach ($v as $vk => $vv) {
+									// First fix! TODO if it possible.
+									if (!is_string($vv)) continue;
+								
 									if (!empty($params['alias']) && preg_match('#^' . $params['alias'] . '\.\w+#', $vv))
 										$v[$vk] = str_replace($params['alias'] . '.', '', $vv);
 								}

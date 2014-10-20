@@ -150,7 +150,7 @@ class PrintText {
         $register = Register::getInstance();
 		
 		
-		if (is_object($entity)) {
+		if (is_object($entity) && is_object($entity->getAuthor())) {
 			$ustatus = $entity->getAuthor()->getStatus();
 			$title = $entity->getTitle();
 		} else if (is_array($entity)) {

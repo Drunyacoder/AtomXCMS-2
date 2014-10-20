@@ -294,7 +294,7 @@ class ShopSettingsController
 
 
         // product image
-		$attaches = array();
+		$attaches = $entity->getAttaches();
 		$main_image = '';
 		$slider_images = array();
 		foreach ($attaches as $attach) {
@@ -303,7 +303,7 @@ class ShopSettingsController
                     $attach->getFilename() . '" src="/image/shop/' . $attach->getFilename() . '/150/" />';
                 continue;
             }
-            $slider_images[] = '<div class="attach-item">
+            $slider_images[] = '<div class="attach-item" data-filename="' . $attach->getFilename() . '">
                 <img title="' . $attach->getFilename() . '" src="/image/shop/' . $attach->getFilename() . '/100/" />
                 <input type="hidden" name="attaches[]" value="' . $attach->getId() . '" />
                 <div class="atmshop-del-attach">' . __('Delete') .
@@ -381,7 +381,7 @@ class ShopSettingsController
 							}
 						}
 
-						var content = \'<div class="attach-item">\'
+						var content = \'<div class="attach-item" data-filename="\'+value.filename+\'">\'
 							+ \'<img title="\'+getTitle(value)
 							+\'" src="/image/shop/\'+value.filename+\'/100/" />\'
 							+\'<input type="hidden" name="attaches[]" value="\'+value.id+\'" />\'
@@ -399,29 +399,34 @@ class ShopSettingsController
 
 				$(".atmshop-del-attach").live("click", function(){
 					var attachId = $(this).parent().find("input").val();
+					var self = this;
 					$.ajax({
-					    url: "' . get_url('/shop/delete_attach/') . '\'+ attachId +\'/",
+					    url: "' . get_url('/shop/delete_attach/') . '"+ attachId +"/",
 					    type: "POST",
 					    dataType: "json",
 					    success: function(data){
                             if (data.result != 1) return;
+							
+							$(self).parent().remove();
+							
                             if ($("#main-image img").data("id") == attachId) {
-                                $("#main-image img").attr("src", "/image/shop/"+$("#attaches-list div:eq(0) input").val()+"/150/");
+                                $("#main-image img").attr("src", "/image/shop/"+$("#attaches-list div:eq(0)").data("filename")+"/150/");
                             }
-                            $(this).parent().remove();
+							
                             $("#attaches-list").width($("#attaches-list img").length * 110 + "px" );
 					    }
 					});
 				});
 				$(".atmshop-asmain-attach").live("click", function(){
 					var attachId = $(this).parent().find("input").val();
+					var attachFilename = $(this).parent().data("filename");
 					$.ajax({
 					    url: "' . get_url('/shop/as_main_attach/') . '" + attachId + "/",
 					    type: "POST",
 					    dataType: "json",
 					    success: function(data){
 						    if (data.result != 1) return;
-						    $("#main-image img").attr("src", "/image/shop/"+attachId+"/150/");
+						    $("#main-image img").attr("src", "/image/shop/"+attachFilename+"/150/");
 					    }
 					});
 				});

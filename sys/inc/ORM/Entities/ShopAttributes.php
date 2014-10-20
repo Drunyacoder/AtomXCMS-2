@@ -79,7 +79,7 @@ class ShopAttributesEntity extends FpsEntity
 
     public function getInputField()
     {
-        $attr_content = (is_object($this->content))
+        $attr_content = (!empty($this->content) && is_object($this->content))
             ? $this->content->getContent()
             : '';
         switch ($this->type) {
