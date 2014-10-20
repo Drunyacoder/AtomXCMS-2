@@ -828,7 +828,7 @@ Class ShopModule extends Module {
         if (!array_key_exists('basket', $this->storage))
             $this->storage['basket'] = array('products' => array(), 'total' => 0);
 
-        $this->globilize(array('shop_basket' => $this->storage['basket']));
+        $this->_globalize(array('shop_basket' => $this->storage['basket']));
 
 		parent::_beforeRender();
 	}
