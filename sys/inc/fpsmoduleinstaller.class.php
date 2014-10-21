@@ -102,9 +102,8 @@ class FpsModuleInstaller
     {
 		$Register = Register::getInstance();
 		$instmodPath = ROOT . '/modules/' . $module . '/';
+
 		if (file_exists($instmodPath)) {
-		
-		
 			$instDbQueries = $instmodPath . $this->DBQueriesFile;
 			$instOrm = $instmodPath . $this->OrmFiles;
 			$instGroupsRules = $instmodPath . $this->rulesFile;
@@ -131,7 +130,7 @@ class FpsModuleInstaller
 
 
                 // MODULES TEMPLATE IMPORT -------------------------------
-                $this->importTemplateFiles($instTemplateFiles);
+                $this->importTemplateFiles($instTemplateFiles, $module);
             } catch (Exception $e) {
                 throw new Exception('Module installation has been stoped (' . $e->getMessage() . ')');
             }
@@ -241,10 +240,25 @@ class FpsModuleInstaller
     }
 
 
-	public function importTemplateFiles($pathToTemplateFiles)
+	public function importTemplateFiles($pathToTemplateFiles, $module)
 	{
         if (file_exists($pathToTemplateFiles) && is_dir($pathToTemplateFiles)) {
-            copyr($pathToTemplateFiles, ROOT . '/template/' . getTemplateName(), 0777);
+            $templatePath = ROOT . '/template/' . getTemplateName();
+            $dirs = glob($pathToTemplateFiles . '/*');
+
+            foreach ($dirs as $dir) {
+                $dirName = substr(strrchr($dir, '/'), 1);
+
+                // Copying HTML templates to the special module directory
+                if ($dirName === 'html') {
+                    touchDir($templatePath . '/html/' . $module, 0777);
+                    copyr($dir, $templatePath . '/html/' . $module, 0777);
+                    continue;
+                }
+
+                touchDir($templatePath . '/' . $dirName, 0777);
+                copyr($dir, $templatePath . '/' . $dirName, 0777);
+            }
         }
 	}
 }
