@@ -27,7 +27,15 @@ function number_format(number, decimals, dec_point, thousands_sep) {
 }
 
 $(document).ready(function() {
-  $('.add-to-basket').on('click', function(event) {
+  $('.atm_shop-add_to_basket').on('click', function(event) {
+	$(this).next('.shop-modal-window').show();
+  });
+  
+  $('.atm_shop-cancel_basket').on('click', function(event) {
+	$(this).parent('.shop-modal-window').hide();
+  });
+  
+  $('.atm_shop-put_to_basket').on('click', function(event) {
     var formContainer = event.target.parent();
     var productId = event.target.data('product-id');
     var quantity = formContainer.find('input[name="quantity"]').val();
