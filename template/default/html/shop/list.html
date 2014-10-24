@@ -16,12 +16,12 @@ Current context:
         <div class="product-item">
 			<div class="product-item-overlay">
 				<div class="product-image">
-					{% if entity.attaches %}
+					{% if entity.attaches|count > 0 %}
 						<a href="{{ entity.entry_url }}">
 							<img src="/image/shop/{{ entity.attaches[0].filename }}/150/" title="{{ entity.title|escape }}" />
 						</a>
 					{% else %}
-						<img src="{{ template_path }}/img/noimage.png" title="No image" />
+						<img src="{{ www_root }}/sys/img/noimage.jpg" title="No image" />
 					{% endif %}
 				</div>
 				<a href="{{ entity.entry_url }}"><h2>{{ entity.title|escape }}</h2></a>
@@ -31,15 +31,21 @@ Current context:
 						<span class="product-old-price">{{ entity.price|num_format(2, ',', ' ') }}</span>
 					{% endif %}
 				</div>
-				<button class="buy-button add-to-basket">{{ 'Add to basket'|lang('shop') }}</button>
+				<button class="buy-button atm_shop-add_to_basket">{{ 'Add to basket'|lang('shop') }}</button>
                 <!--Add to basket modal window-->
-                <section class="shop-modal-window">
+                <section class="shop-modal-window" style="display:none;">
                     <header>
                         <h1>{{ 'Adding to the basket'|lang('shop') }}</h1>
                     </header>
                     <table class="products">
                         <tr>
-                            <td class="image"><img src="/image/shop/{{ entity.attaches[0].filename }}/100/" title="{{ entity.title|escape }}" /></td>
+                            <td class="image">
+								{% if entity.attaches|count > 0 %}
+									<img src="/image/shop/{{ entity.attaches[0].filename }}/100/" title="{{ entity.title|escape }}" />
+								{% else %}
+									<img src="{{ www_root }}/sys/img/noimage.jpg" title="No image" />
+								{% endif %}
+							</td>
                             <td class="title">{{ entity.title|escape }}</td>
                             <td class="price">
                                 {{ entity.final_price|num_format(2, ',', ' ') }}
@@ -50,8 +56,8 @@ Current context:
                             <td><input type="text" name="quantity" value="1" /></td>
                         </tr>
                     </table>
-                    <button data-product-id="{{ entity.id }}" class="button">{{ 'Add to basket'|lang('shop') }}</button>
-                    <button class="button">{{ 'Create order'|lang('shop') }}</button>
+                    <button data-product-id="{{ entity.id }}" class="button atm_shop-put_to_basket">{{ 'Add to basket'|lang('shop') }}</button>
+                    <button class="button atm_shop-cancel_basket">{{ 'Cancel'|lang }}</button>
                 </section>
                 <!--/Add to basket modal window-->
 

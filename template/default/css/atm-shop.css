@@ -2,28 +2,36 @@
 #main-overlay {display:none; position:absolute; top:0px; left:0px; width:100%; height:100%; background:rgba(0,0,0,0.7);}
 
 /* Common components */
-.btn-create-order {color:#fff; pading:1px 5px; font-size:13px; background:#eb3f3f; border-radius:4px; box-shadow:0px -9px 2px #333 inset;}
+.buy-button {float:right; font-size:13px; line-height:13px; background:#6f6b68; color:#fff; border:1px solid #434145; border-radius:4px; padding:1px 5px; cursor:pointer; box-shadow:0px -9px 2px #333 inset; transition:all .3s ease-in; height:auto; min-width:auto; text-transform:none;}
+.buy-button:hover {box-shadow:0px -7px 2px #444 inset; background:#8f8b88; border:1px solid #636165;}
 
 /* Modal window & product rows */
-.shop-modal-window {width:470px; padding:15px; height:auto; border:3px solid #769B16;}
-.shop-modal-window h1 {padding:5px 15px; margin:0px -15px;}
+.shop-modal-window {width:570px; padding:15px; height:auto; background:#fff; border:3px solid #769B16; border-radius:10px; position:fixed; top:15%; z-index:9999;}
+.shop-modal-window h1 {padding:0px 15px 5px 5px; margin:0px -15px 10px -15px; border-bottom:3px solid #ddd;}
 
 table.products {width:100%;}
+table.products tr td {padding:5px 0px;}
 table.products tr td img {max-width:100px;}
 table.products .price {font-size:20px; font-weight:bold; color:#eb3f3f; position:relative;}
 
 /* Mini cart */
-.mini-basket.active {width:200px; height:40px; padding:7px; margin:0px 10px; background:#ddd; border:2px solid #769B16; border-top:none; border-radius:5px; box-shadow:0px 2px 2px #333;}
-.mini-basket.active span {color:#769B16;}
-.mini-basket.active .total {color:#eb3f3f; font-size:15px; font-weight:bold; float:left;}
-.mini-basket.active .btn-create-order {float:right;}
-.mini-basket .btn-create-order, .mini-basket .total {display:none;}
+.mini-basket {height:28px; text-align:left; display:inline-block; position:relative;}
+.mini-basket * {font-family:ArialNarrow,Arial,sans-serif;}
+.mini-basket .wrapper {display:none; font-size:14px;}
+.mini-basket .total {float:left; color:#3c3c3c; font-size:14px;}
+.mini-basket .total .sum {color:#eb3f3f; font-weight:bold; margin-right:20px;}
+.mini-basket .buy-button {color:#fff; font-size:14px; width:auto; padding:5px; margin:0px -12px -8px 0px; display:block; float:right; background:#769B16; border:none; border-radius:5px 0px 5px 0px; box-shadow:none;}
+.mini-basket.active {width:250px; height:20px;}
+.mini-basket.active a {display:none;}
+.mini-basket.active * {text-shadow:none;}
+.mini-basket.active .wrapper {width:230px; padding:0px 10px 5px 10px; background:#ddd; border:2px solid #769B16; border-top:none; border-radius:0px 0px 5px 5px; box-shadow:0px 2px 2px #333; position:absolute; left:0px; top:0px; display:block; color:#3c3c3c; font-size:14; line-height:20px;}
 
-
+/* Filters block */
 #atm-products-filters h4 {margin:10px 0px 5px 10px;}
 #atm-products-filters .filter-item {padding:0px 0px 0px 20px;}
 #atm-products-filters .filter-item > label {width: 150px; display:inline-block; font-size:12px; text-overflow:ellipsis; overflow:hidden; white-space:nowrap; color:#769B16;}
 
+/* Products List */
 .catalog {}
 .catalog .product-item {width:170px; height:300px; margin:15px; float:left; font-size:14px;}
 .catalog .product-item .product-image {width:150px; height:150px; margin:auto; margin-bottom:20px;}
@@ -38,7 +46,6 @@ table.products .price {font-size:20px; font-weight:bold; color:#eb3f3f; position
 .catalog .product-item h2 {font-size:16px; font-weight:normal;}
 .catalog .product-item .product-price {font-size:20px; font-weight:bold; color:#eb3f3f; position:relative; float:left; letter-spacing: -1px;}
 .catalog .product-item .product-price .product-old-price, table.products .price .product-old-price {font-size:15px; font-weight:bold; color:#777; text-decoration:line-through; position:absolute; left:-11px; top:-13px;}
-.catalog .product-item .buy-button {float:right; font-size:13px; background:#6f6b68; color:#fff; border:1px solid #434145; border-radius:4px; padding:1px 5px; cursor:pointer; box-shadow:0px -9px 2px #333 inset; transition:all .3s ease-in;}
-.catalog .product-item .buy-button:hover {box-shadow:0px -7px 2px #444 inset; background:#8f8b88; border:1px solid #636165;}
 .catalog .product-item .product-footer {height:40px; width:100%; position:relative; top:-16px;  background:-moz-linear-gradient(center top , rgba(255, 255, 255, 0), #fff 40%, #fff 60%, rgba(255, 255, 255, 0));}
+
 

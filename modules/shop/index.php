@@ -250,112 +250,66 @@ Class ShopModule extends Module {
     }
 
 
-    public function add_to_basket($id = null, $quantity = null)
+    public function edit_basket($id = null, $quantity = 1)
     {
         //turn access
         if (!$this->ACL->turn(array($this->module, 'buy_product'), false))
-            return $this->showInfoMessage(__('Permission denied'), $this->getModuleURL());
-
+            $this->showInfoMessage(__('Permission denied'), $this->getModuleURL());
+			
+			
         $id = intval($id);
-        $quantity = (intval($quantity) > 0) ? intval($quantity) : 1;
-        if (empty($id) || $id < 1)
-            return $this->showInfoMessage(__('Empty ID'), $this->getModuleURL());
-
-
+		$push = true;
+        $quantity = (intval($quantity) >= 1) ? intval($quantity) : 0;
+        if (empty($id) || $id < 1) 
+			$this->showInfoMessage(__('Wrong parameters'), $this->getModuleURL());
+			
+			
         $where = array("(quantity > 0 || hide_not_exists = '0')");
         $where['id'] = $id;
-
 
         $this->Model->bindModel('category');
         $entity = $this->Model->getFirst($where);
 
-
-        if (empty($entity)) redirect('/error.php?ac=404');
+        if (empty($entity)) 
+			$this->showInfoMessage(__('Record not found'), $this->getModuleURL());
         if ($entity->getAvailable() == 0 && !$this->ACL->turn(array('other', 'can_see_hidden'), false))
-            return $this->showInfoMessage(__('Permission denied'), $this->getModuleURL());
+            $this->showInfoMessage(__('Permission denied'), $this->getModuleURL());
         if (!$this->ACL->checkCategoryAccess($entity->getCategory()->getNo_access()))
-            return $this->showInfoMessage(__('Permission denied'), $this->getModuleURL());
+            $this->showInfoMessage(__('Permission denied'), $this->getModuleURL());
 
 
-        $data = array(
-            'id' => $entity->getId(),
-            'title' => $entity->getTitle(),
-            'price' => $entity->getFinal_price(),
-            'quantity' => $quantity,
-        );
-        $basket = $this->storage['basket'];
-        $push = true;
-
-        if (count($basket['products'])) {
-            foreach ($basket['products'] as &$product) {
-                if ($data['id'] === $product['id']) {
-                    $product['quantity'] += $data['quantity'];
-                    $push = false;
-                    break;
-                }
-            }
-        }
-
-        if ($push)
-            array_push($basket['products'], $data);
-        $basket['total'] += $data['price'] * $data['quantity'];
-
-
-        $this->showAjaxResponse(array(
-            'result' => 1,
-            'data' => $basket,
-        ));
-    }
-
-
-    public function remove_from_basket($id = null)
-    {
-        //turn access
-        $this->ACL->turn(array($this->module, 'buy_product'));
-        $id = intval($id);
-        if (empty($id) || $id < 1) redirect($this->getModuleURL());
-
-
-        $basket = $this->storage['basket'];
-        if (count($basket['products'])) {
-            foreach ($basket['products'] as $k => $product) {
-                if ($product['id'] == $id) {
-                    $basket['total'] -= ($product['price'] * $product['quantity']);
-                    unset($basket['products'][$k]);
-                }
-            }
-        }
-
-        $this->showAjaxResponse(array(
-            'result' => 1,
-            'data' => $basket,
-        ));
-    }
-
-
-    public function edit_basket($id = null, $quantity = 1)
-    {
-        //turn access
-        $this->ACL->turn(array($this->module, 'buy_product'));
-        $id = intval($id);
-        $quantity = (intval($quantity) >= 1) ? intval($quantity) : 0;
-        if (empty($id) || $id < 1) redirect($this->getModuleURL());
-
-
-        $basket = $this->storage['basket'];
+        $basket = &$this->storage['basket'];
         if (count($basket['products'])) {
             foreach ($basket['products'] as $k => &$product) {
+			
                 if ($product['id'] == $id) {
+					$push = false;
+					
                     if ($quantity == 0) {
                         $basket['total'] -= ($product['price'] * $product['quantity']);
+                        $basket['total_products'] -= $product['quantity'];
                         unset($basket['products'][$k]);
                     } else {
                         $product['quantity'] = $quantity;
                         $basket['total'] -= ($product['quantity'] - $quantity) * $product['price'];
+                        $basket['total_products'] -= $product['quantity'] - $quantity;
                     }
                 }
             }
         }
+		
+		
+        if ($push && $quantity > 0) {
+            array_push($basket['products'], array(
+				'id' => $entity->getId(),
+				'title' => $entity->getTitle(),
+				'price' => $entity->getFinal_price(),
+				'quantity' => $quantity,
+			));
+			$basket['total'] += $entity->getFinal_price() * $quantity;
+			$basket['total_products'] += $quantity;
+		}
+
 
         $this->showAjaxResponse(array(
             'result' => 1,
@@ -825,9 +779,15 @@ Class ShopModule extends Module {
         $this->Model = $this->Register['ModManager']->getModelInstance('shopProducts');
 
         $this->storage =& $_SESSION;
-        if (!array_key_exists('basket', $this->storage))
-            $this->storage['basket'] = array('products' => array(), 'total' => 0);
+		//$this->storage['basket'] = array();
+        if (!array_key_exists('basket', $this->storage) || empty($this->storage['basket']))
+            $this->storage['basket'] = array(
+				'products' => array(), 
+				'total_products' => 0, 
+				'total' => 0
+			);
 
+			
         $this->_globalize(array('shop_basket' => $this->storage['basket']));
 
 		parent::_beforeRender();
