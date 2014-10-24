@@ -198,8 +198,6 @@ class ChatModule extends Module {
 	*/
 	public static function add_form() {
         $Register = Register::getInstance();
-
-
 		$Parser = $Register['DocParser'];
 		$Parser->templateDir = 'chat';
 		$ACL = $Register['ACL'];
@@ -235,7 +233,7 @@ class ChatModule extends Module {
 
 		
 		
-		$View = new Fps_Viewer_Manager(new Fps_Viewer_Loader());
+		$View = $Register['Viewer'];
 		$View->setLayout('chat');
 		$source = $View->view('addform.html', array('data' => $markers));
 

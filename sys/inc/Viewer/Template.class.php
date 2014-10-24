@@ -27,7 +27,11 @@ abstract class Fps_Viewer_Template
 	
 	public function includeFile($path, array $subcontext) {
         $context = array_merge($this->context, $subcontext);
-		$Viewer = new Fps_Viewer_Manager(new Fps_Viewer_Loader(array('root_dir' => '')));
+
+        $Register = Register::getInstance();
+        $Viewer = clone $Register['Viewer'];
+		$Viewer->setDefaultLayout('');
+
 		echo $Viewer->view($path, $context);
 	}
 	

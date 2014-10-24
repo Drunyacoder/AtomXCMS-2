@@ -28,8 +28,11 @@ function showErrorMessage( $message = '', $error = '', $redirect = false, $query
 	if ($redirect === true) {
 		header('Refresh: ' . Config::read('redirect_delay') . '; url=http://' . $_SERVER['SERVER_NAME'] . get_url($queryString));
 	}
-	$View = new Fps_Viewer_Manager(new Fps_Viewer_Loader());
-	$data['info_message'] = $message;
+
+    $Register = Register::getInstance();
+	$View = $Register['Viewer'];
+
+    $data['info_message'] = $message;
 	$data['error_message'] = Config::read('debug_mode') ? $error : null;
 	$html = $View->view('infomessagegrand.html', array('data' => $data));
 	echo $html;

@@ -54,8 +54,8 @@ if ($in_white) {
 		header('Refresh: ' . $delay . '; url=' . $url);
 	}
 
-	$View = new Fps_Viewer_Manager(new Fps_Viewer_Loader());
-	echo $View->view('redirect.html', array('url' => $url, 'black' => $in_black, 'template_path' => get_url('/template/' . $Register['Config']::read('template'))));
+	$View = $Register['Viewer'];
+	echo $View->view('redirect.html', array('url' => $url, 'black' => $in_black, 'template_path' => get_url('/template/' . Config::read('template'))));
 }
 
 

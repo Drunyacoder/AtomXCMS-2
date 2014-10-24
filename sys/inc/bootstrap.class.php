@@ -36,14 +36,20 @@ class Bootstrap
      */
     public function __construct()
     {
-        $this->setPhpSettings();
-		
         $this->Register = Register::getInstance();
 
+        $this->setPhpSettings();
         $this->touchStartTime();
 
-		
+        $viewerLoader = new Fps_Viewer_Loader(array(
+            'template_root' => ROOT . '/template/' . getTemplateName() . '/html/'
+        ));
+        $this->Register['Viewer'] = new Fps_Viewer_Manager($viewerLoader);
+
+
 		if (isInstall()) {
+            $this->registerCustomTemplateFunctions();
+
 			$this->Register['DB'] = (class_exists('PDO') && Config::read('use_pdo')) ? FpsPDO::get() : FpsDataBase::get();
 			$this->Register['UserAuth'] = new UserAuth;
 			$this->Register['Log'] = new Logination();
@@ -188,7 +194,7 @@ class Bootstrap
     /**
      * @return void
      */
-    public function setPhpSettings()
+    private function setPhpSettings()
     {
         @ini_set('session.gc_maxlifetime', 10000);
 
@@ -228,5 +234,18 @@ class Bootstrap
             mb_internal_encoding('UTF-8');
 			
 		date_default_timezone_set('UTC');
+    }
+
+
+    private function registerCustomTemplateFunctions()
+    {
+        $Viewer = $this->Register['Viewer'];
+        $functions = AtmTemplateFunctions::get();
+
+        if (is_array($functions) && count($functions)) {
+            foreach ($functions as $name => $function) {
+                $Viewer->registerCustomFunction($name, $function);
+            }
+        }
     }
 }

@@ -182,8 +182,8 @@ class Module {
         //init needed objects. Core...
 		// Use for templater (layout)
 		$this->template = $this->module;
-        $viewerLoader = new Fps_Viewer_Loader(array('layout' => $this->template));
-		$this->View = new Fps_Viewer_Manager($viewerLoader);
+		$this->View = $this->Register['Viewer'];
+		$this->View->setLayout($this->template);
 		$this->Parser = new Document_Parser;
 		$this->Parser->templateDir = $this->template;
 		

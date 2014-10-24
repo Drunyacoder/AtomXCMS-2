@@ -87,7 +87,7 @@ class Document_Parser {
         $outputContent = '';
 		
 		if (!empty($_SESSION['viewMessage'])) {
-			$viewer = new Fps_Viewer_Manager(new Fps_Viewer_Loader());
+			$viewer = $this->Register['Viewer'];
 			$context = array(
 				'message' => $this->Register['PrintText']->parseBBCodes($message),
 			);
@@ -107,7 +107,7 @@ class Document_Parser {
             } else $errors = $this->completeErrorMessage($errors);
         }
 
-        $viewer = new Fps_Viewer_Manager(new Fps_Viewer_Loader());
+        $viewer = $this->Register['Viewer'];
         return $viewer->view('infomessage.html', array('info_message' => $errors));
     }
 

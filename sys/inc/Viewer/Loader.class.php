@@ -27,12 +27,28 @@
 class Fps_Viewer_Loader
 {
     /**
+     * Template files root dir
+     *
+     * @var string
+     */
+    public $templateRoot;
+
+    /**
      * If isn't set, will be used "default" dir in current template.
      * Example: /template/current/html/MODULE/filename.html
      *
      * @var string
      */
     public $layout;
+
+    /**
+     * If the Viewer can't find a file in <viewer_root_dir>/<layout>,
+     * he tried find it in <viewer_root_dir>/<defaultLayout>
+     * or in <viewer_root_dir>/ if <defaultLayout> is empty.
+     *
+     * @var string
+     */
+    public $defaultLayout = 'default';
 
     /**
      * Used for change "[~ ID ~]" to URLs.
@@ -71,15 +87,15 @@ class Fps_Viewer_Loader
 	 * @var  string(Class name)
 	 */
 	public $debug;
-	
-	
-	public $rootDir = 'default';
+
 	
 	public $cache = false;
 
 
 	public function __construct(array $params = array())
 	{
+        $this->templateRoot = $params['template_root'];
+
         if (class_exists('Register') && is_callable(array('Register', 'getInstance'))) {
             $Register = Register::getInstance();
             $this->layout = (!empty($params['layout'])) ? $params['layout'] : 'default';
@@ -88,7 +104,7 @@ class Fps_Viewer_Loader
             $this->pluginsController = (!empty($params['plugins_class'])) ? $params['plugins_class'] : 'Plugins';
             $this->config = (!empty($params['config_class'])) ? $params['config_class'] : 'Config';
             $this->debug = (!empty($params['debug_class'])) ? $params['debug_class'] : 'AtmDebug';
-            $this->rootDir = (isset($params['root_dir'])) ? $params['root_dir'] : 'default';
+            $this->defaultLayout = (isset($params['default_layout'])) ? $params['default_layout'] : 'default';
 
 			$cache = clone $Register['Cache'];
 			$cache->prefix = 'template';

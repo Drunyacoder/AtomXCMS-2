@@ -124,7 +124,7 @@ $our_plugins = glob($pl_url, GLOB_ONLYDIR);
 
 foreach ($our_plugins as &$pl) {
 	if (file_exists($pl . '/config.dat')) {
-		$pl_conf = json_decode(get_cont($pl . '/config.dat'), true);
+		$pl_conf = json_decode(file_get_contents($pl . '/config.dat'), true);
 		if (!empty($pl_conf['title'])) {
 			$pl = $pl_conf['title'];
 		}

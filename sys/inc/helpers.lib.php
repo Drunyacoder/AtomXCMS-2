@@ -2,12 +2,12 @@
 /*---------------------------------------------\
 |											   |
 | Author:       Andrey Brykin (Drunya)         |
-| Version:      1.7.2                          |
+| Version:      1.7.3                          |
 | Project:      CMS                            |
 | package       CMS Fapos                      |
 | subpackege    Helpers library                |
-| copyright     ©Andrey Brykin 2010-2013       |
-| last mod.     2013/02/22                     |
+| copyright     ©Andrey Brykin 2010-2014       |
+| last mod.     2014/10/24                     |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
@@ -20,65 +20,7 @@
 \---------------------------------------------*/
 
 
-/**
- * Get one or couple entities.
- * If get one entity of the UsersModel, we also get user statistic
- *
- * @param $modelName
- * @param array $id
- * @return array
- * @throws Exception
- */
-function fetch($modelName, $id = array()){
-	$Register = Register::getInstance();
-    try {
-	    $model = $Register['ModManager']->getModelInstance($modelName);
 
-        // get collection of entities
-        if (is_array($id) && count($id)) {
-
-            $id = array_map(function($n){
-                $n = intval($n);
-                if ($n < 1) throw new Exception('Only integer value might send as ID.');
-                return $n;
-            }, $id);
-            $ids = implode(", ", $id);
-            $result = $model->getCollection(array("`id` IN ($ids)"));
-
-        // get one entity
-        } else if (is_numeric($id)) {
-            $id = intval($id);
-            if ($id < 1) throw new Exception('Only integer value might send as ID.');
-            $result = $model->getById($id);
-
-            if ($result && strtolower($modelName) == 'users') {
-                $stat = $model->getFullUserStatistic($id);
-                $result->setStatistic($stat);
-            }
-        }
-
-    } catch (Exception $e) {
-        throw new Exception($e->getMessage());
-    }
-
-	return (!empty($result)) ? $result : array();
-}
-
-
-/**
- * Template operator for date formating
- *
- * @param $date
- * @param string $format
- * @return string
- */
-function AtmGetDate($date, $format = false) {
-	return AtmDateTime::getDate($date, $format);
-}
-
-function AtmGetSimpleDate($date) {
-	return AtmDateTime::getSimpleDate($date);
-}
 
 
 /**
@@ -93,69 +35,6 @@ function wrap_errors($errors) {
 
 
 /**
- * Alias for file_get_contents
- */
-function get_cont($path) {
-	return file_get_contents($path);
-}
-
-
-
-function checkAccess($params = null) {
-	if (isset($params) && is_array($params)) {
-		$Register = Register::getInstance();
-		return $Register['ACL']->turn($params, false);
-	}
-	return false;
-}
-
-
-
-function getAvatar($id_user = null, $email_user = null) {
-	$def = get_url('/template/' . getTemplateName() . '/img/noavatar.png', false, false);
-	
-	if (isset($id_user) && $id_user > 0) {
-		if (is_file(ROOT . '/sys/avatars/' . $id_user . '.jpg')) {
-			return get_url('/sys/avatars/' . $id_user . '.jpg', false, false);
-		} else {
-			if (Config::read('use_gravatar', 'users') && function_exists('getGravatar')) {
-				if (!isset($email_user)) {
-					$Register = Register::getInstance();
-					$usersModel = $Register['ModManager']->getModelInstance('Users');
-					$user = $usersModel->getById($id_user);
-					if ($user) {
-						$email_user = $user->getEmail();
-					} else {
-						return $def;
-					}
-				}
-				return getGravatar($email_user);
-			} else {
-				return $def;
-			}
-		}
-	} else {
-		return $def;
-	}
-}
-
-
-/**
- * Get either a Gravatar URL or complete image tag for a specified email address.
- *
- * @param string $email The email address
- * @param string $s Size in pixels, defaults to 80px [ 1 - 2048 ]
- * @param string $d Default imageset to use [ 404 | mm | identicon | monsterid | wavatar ]
- * @param string $r Maximum rating (inclusive) [ g | pg | r | x ]
- * @return String containing either just a URL or a complete image tag
- */
-function getGravatar($email, $s = 120, $d = 'mm', $r = 'g') {
-	$url = 'http://www.gravatar.com/avatar/' . md5(strtolower(trim($email))) . ".png?s=$s&d=$d&r=$r";
-	return $url;
-}
-
-
-/**
 * Get correct name of template for current user
 */
 function getTemplateName()
@@ -163,46 +42,6 @@ function getTemplateName()
 	$template = Config::read('template');
 	$template = Plugins::intercept('select_template', $template);
 	return $template;
-}
-
-
-
-function getOrderLink($params) {
-	if (!$params || !is_array($params) || count($params) < 2) return '';
-	$order = (!empty($_GET['order'])) ? strtolower(trim($_GET['order'])) : '';
-	$new_order = strtolower($params[0]);
-	$active = ($order === $new_order);
-	$asc = ($active && isset($_GET['asc']));
-
-
-    $url = $_SERVER['REQUEST_URI'];
-    $url = preg_replace('#(order=[^&]*[&]?)|(asc=[^&]*[&]?)#i', '', $url);
-    if (substr($url, -1) !== '&' && substr($url, -1) !== '?') {
-        $url .= (!strstr($url, '?')) ? '?' : '&';
-    }
-
-	return '<a href="' . $url . 'order=' . $new_order . ($asc ? '' : '&asc=1') . '">' . $params[1] . ($active ? ' ' . ($asc ? '↑' : '↓') : '') . '</a>';
-}
-
-
-
-
-/**
- *
- */
-function show_date($date) {
-	$Register = Register::getInstance();
-	$timestamp = strtotime($date);
-	
-	if (!empty($_SESSION['user']) && !empty($_SESSION['user']['timezone'])) {
-		if ($_SESSION['user']['timezone'] >= -12 && $_SESSION['user']['timezone'] <= 12)
-		$timestamp = $timestamp + intval($_SESSION['user']['timezone']) * 60 * 60;
-	}
-
-	
-	$format = $Register['Config']->read('date_format');
-	$format = (!empty($format)) ? $format : 'Y-m-d H-i-s'; 
-	return date($format, $timestamp);
 }
 
 
@@ -416,6 +255,29 @@ function getProfileUrl($user_id) {
 }
 
 
+/**
+ * Recursive search by array keys.
+ * Examples:
+ *     input: [
+ *                'module1' => [
+ *                    'eng' => 'path/to/eng1.php',
+ *                    'rus' => 'path/to/rus1.php',
+ *                ],
+ *                'module2' => [
+ *                    'eng' => 'path/to/eng2.php',
+ *                    'rus' => 'path/to/rus2.php',
+ *                 ],
+ *             ],
+ *            'eng'
+ *     return: [
+ *                'path/to/eng1.php',
+ *                'path/to/eng2.php',
+ *             ]
+ *
+ * @param $needle string
+ * @param $array array
+ * @return array array
+ */
 function array_search_recursive($needle, $array) {
     $result = array();
 	if (!is_array($array)) return $result;
