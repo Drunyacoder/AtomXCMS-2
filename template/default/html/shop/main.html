@@ -66,15 +66,17 @@ AtomX.messages = {
 <div><a href="https://github.com/Drunyacoder/AtomXCMS-2">GitHub</a></div>
 <div><a href="http://atomx.net/forum/">{{ 'Support'|lang }}</a></div></div>
 <div class="userlinksap">
-     <div>
-         <div id="mini-basket" class="mini-basket{% if shop_basket.total > 0 %} active{% endif %}">
-             <span>{{ 'Cart'|lang('shop') }}
-			 <span id="products-cnt">({% if shop_basket.total > 0 %}{{ shop_basket.products|count }}{% else %}0{% endif %})</span>
-             </span>
-            <div class="total">{{ shop_basket.total|num_format(2, ',', ' ') }}</div>
-            <button class="btn-create-order">{{ 'Create order'|lang('shop') }}</button>
-         </div>
-     </div>
+    <section id="mini-basket" class="mini-basket{% if shop_basket.total > 0 %} active{% endif %}">
+		<a class="atm_shop-create_order" href="javascript:void(0)">{{ 'Basket'|lang('shop') }}</a>
+        <div class="wrapper">
+			<header>
+				{{ 'Products in the basket'|lang('shop') }}:
+				<span id="products-cnt">{{ shop_basket.total_products }}</span>
+			</header>
+			<div class="total">{{ 'Bill'|lang('shop') }}: <span class="sum">{{ shop_basket.total|num_format(2, ',', ' ') }}</span></div>
+			<button class="buy-button">{{ 'Create order'|lang('shop') }}</button>
+        </div>
+    </section>
     {% if fps_user_id %}
         <div class="activewindow"><a href="{{ personal_page_link }}">{{ fps_user_name }}</a>
             <div class="miniprofileadm" style="width: 300px;padding: 10px;{% if fps_admin_access == 1 %}height:150px;{% endif %}">

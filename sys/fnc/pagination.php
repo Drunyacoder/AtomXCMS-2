@@ -39,14 +39,6 @@ function pagination( $total, $perPage, $url )
     $Register['pagescnt'] = $cntPages;
 
 
-
-	if (file_exists(ROOT . '/template/' . getTemplateName() . '/customize/pagination.php')) {
-		include_once(ROOT . '/template/' . getTemplateName() . '/customize/pagination.php');
-		if (function_exists('custom_pagination')) {
-			return array(call_user_func('custom_pagination', array($page, $cntPages, $url)), $page);
-		}
-	}
-
 	if ($cntPages < 1) return array('', $page);
 	
 	
