@@ -777,10 +777,12 @@ Class ShopModule extends Module {
 	protected function _beforeRender()
     {
         $this->Model = $this->Register['ModManager']->getModelInstance('shopProducts');
-
         $this->storage =& $_SESSION;
+		
+		// Clear basket
 		//$this->storage['basket'] = array();
-        if (!array_key_exists('basket', $this->storage) || empty($this->storage['basket']))
+        
+		if (!array_key_exists('basket', $this->storage) || empty($this->storage['basket']))
             $this->storage['basket'] = array(
 				'products' => array(), 
 				'total_products' => 0, 

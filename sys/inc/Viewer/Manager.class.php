@@ -54,7 +54,7 @@ class Fps_Viewer_Manager
 	public function __construct(Fps_Viewer_Loader $loader)
 	{
         $this->loader = $loader;
-		if (!empty($this->loader->template_root)) $this->template_root = $this->loader->template_root;
+		if (!empty($this->loader->templateRoot)) $this->templateRoot = $this->loader->templateRoot;
 		if (!empty($this->loader->layout)) $this->layout = $this->loader->layout;
 		if (isset($this->loader->defaultLayout)) $this->defaultLayout = $this->loader->defaultLayout;
 
@@ -83,12 +83,14 @@ class Fps_Viewer_Manager
 		$cached = false;
 		$fileSource = $this->getTemplateFile($fileName, $filePath);
         $filePath = str_replace(ROOT, '', $filePath);
-	
+
 		
-		if (!empty($this->loader->pluginsController) 
-		&& is_callable(array($this->loader->pluginsController, 'intercept'))) {
+		// Process plugins hook. 
+		// It is DI for Plugins::intercept() method.
+		if (!empty($this->loader->pluginsCallback) 
+		&& is_callable($this->loader->pluginsCallback)) {
 			$fileSource = call_user_func(
-				array($this->loader->pluginsController, 'intercept'), 
+				$this->loader->pluginsCallback, 
 				'before_view', 
 				$fileSource
 			);
@@ -99,7 +101,7 @@ class Fps_Viewer_Manager
         $took = getMicroTime($start);
 		
 		call_user_func(
-			array($this->loader->debug, 'addRow'),
+			$this->loader->debugCallback,
 			array('Templates', 'Compile time', 'Cached'), 
 			array($filePath, $took, ($cached ? 'From cache' : 'Compiled'))
 		);
@@ -140,7 +142,7 @@ class Fps_Viewer_Manager
 		if (file_exists(sprintf($path, $this->layout)))
             $path = sprintf($path, $this->layout);
 		else $path = sprintf($path, $this->defaultLayout);
-
+		
 		$path = preg_replace('#([\\/])+#', '\\1', $path);
 		return $path;
 	}
@@ -150,18 +152,19 @@ class Fps_Viewer_Manager
 	{
 		$key = md5($code);
         // preprocess snippets
-		$this->loader->snippetsParser->setSource($code);
-        $this->loader->snippetsParser->preprocess();
+		if (is_object($this->loader->snippetsParser)) {
+			$this->loader->snippetsParser->setSource($code);
+			$this->loader->snippetsParser->preprocess();
+		}
 
 
-		if (
-			$this->loader->cache && 
-			call_user_func(array($this->loader->config, 'read'), 'templates_cache') && 
-			call_user_func($this->loader->cache['check'], $key)
-		) {
+		if ($this->loader->cache 
+		&& call_user_func($this->loader->cache['check'], $key)) {
 			$sourceCode = call_user_func($this->loader->cache['read'], $key);
 			$cached = true;
+			
 		} else {
+		
             try {
                 $this->treesParser->cleanStack();
                 $tokens = $this->getTokens($code, $filePath);
@@ -173,17 +176,24 @@ class Fps_Viewer_Manager
                 //pr(h($sourceCode)); die();
 
             } catch (Exception $e) {
-                throw new Exception('Parse template error on '
+                throw new Exception('Parse template error ('
                     . (!empty($filePath) ? h($filePath) : 'Undefined') . ':'
-                    . $e->getCode() . '. ' . $e->getMessage());
+                    . $e->getCode() . '): ' . $e->getMessage());
             }
 
-			call_user_func($this->loader->cache['write'], $sourceCode, $key);
+			
+			if ($this->loader->cache) {
+				call_user_func($this->loader->cache['write'], $sourceCode, $key);
+			}
 		}
 		
 		$output = $this->executeSource($sourceCode, $context);
+		
         // replace snippets markers
-        $output = $this->loader->snippetsParser->replace($output);
+		if (is_object($this->loader->snippetsParser)) {
+			$output = $this->loader->snippetsParser->replace($output);
+		}
+        
 		return $output;
 	}
 

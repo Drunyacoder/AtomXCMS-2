@@ -182,7 +182,7 @@ class Module {
         //init needed objects. Core...
 		// Use for templater (layout)
 		$this->template = $this->module;
-		$this->View = $this->Register['Viewer'];
+		$this->View = clone $this->Register['Viewer'];
 		$this->View->setLayout($this->template);
 		$this->Parser = new Document_Parser;
 		$this->Parser->templateDir = $this->template;
@@ -329,7 +329,7 @@ class Module {
 			
 			$boot_time = round(getMicroTime() - $Register['fps_boot_start_time'], 4);
 			$markers = array_merge($markers, array('boot_time' => $boot_time));
-			
+
 			$output = $this->render('main.html', $markers);
 		} else {
             $output = $content;

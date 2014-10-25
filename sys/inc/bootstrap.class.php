@@ -40,7 +40,9 @@ class Bootstrap
 
         $this->setPhpSettings();
         $this->touchStartTime();
+		$this->Register['Cache'] = new Cache;
 
+		
         $viewerLoader = new Fps_Viewer_Loader(array(
             'template_root' => ROOT . '/template/' . getTemplateName() . '/html/'
         ));
@@ -58,7 +60,6 @@ class Bootstrap
 		
         $this->Register['DocParser'] = new Document_Parser;
         $this->Register['ACL'] = new ACL(ROOT . '/sys/settings/');
-        $this->Register['Cache'] = new Cache;
         $this->Register['PrintText'] = new PrintText;
         $this->Register['Validate'] = new Validate(function($errors) {
             $Register = Register::getInstance();

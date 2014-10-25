@@ -294,7 +294,7 @@ class ShopSettingsController
 
 
         // product image
-		$attaches = $entity->getAttaches();
+		$attaches = (array)$entity->getAttaches();
 		$main_image = '';
 		$slider_images = array();
 		foreach ($attaches as $attach) {
