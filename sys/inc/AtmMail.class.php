@@ -69,7 +69,7 @@ class AtmMail {
 
         $headers = "MIME-Version: 1.0\n";
         $headers .= "From: ".$_SERVER['SERVER_NAME']." <" . $this->from . ">\n";
-        $headers .= "Content-type: multipart/mixed; boundary=\"$boundary\"\n";
+        $headers .= "Content-type: multipart/alternative; boundary=\"$boundary\"\n";
         $headers .= "Content-Transfer-Encoding: 8bit\n";
         $headers .= "Return-path: <" . $this->from . ">\n";
         if (!empty($additional_headers)) $headers .= $additional_headers;
@@ -78,11 +78,11 @@ class AtmMail {
 
 
         $body_parts = "--$boundary\n";
-        $body_parts .= "Content-Type: text/html; charset=utf-8\n";
+        $body_parts .= "Content-Type: text/plain; charset=utf-8\n";
         $this->bodyParts[] = $body_parts;
 
         $body_parts = "--$boundary\n";
-        $body_parts .= "Content-Type: text/plain; charset=utf-8\n";
+        $body_parts .= "Content-Type: text/html; charset=utf-8\n";
         $this->bodyParts[] = $body_parts;
     }
 
@@ -97,7 +97,7 @@ class AtmMail {
             'to' => $to,
             'subject' => $subject,
             'site_title' => Config::read('site_title'),
-            'site_url' => 'http://' . $_SERVER['SERVER_NAME'] . get_url('/'),
+            'site_url' => 'http://' . $_SERVER['SERVER_NAME'] . '/',
         ));
 
         try {
@@ -120,25 +120,25 @@ class AtmMail {
     private function joinBodyParts($body) {
         $output_body = '';
 
+		// Create two copies of the message - plain text & HTML for different clients.
         if (count($this->bodyParts) > 0) {
-            foreach ($this->bodyParts as $k => $part) {
-                // 1 index of $this->bodyParts is plain text headers
-                if ($k === 1) {
-                    $plainTextBody = $this->getPlainTextFromHTML($body);
-                    $output_body .= $part . $plainTextBody . "\n";
-                    continue;
-                }
-                $output_body .= $part . $body . "\n";
-            }
+			$output_body .= $this->bodyParts[0] . $this->getPlainTextFromHTML($body) . "\n";
+			$output_body .= $this->bodyParts[1] . $this->getCleanHTML($body) . "\n";
         }
 
         return $output_body;
     }
 
-
+    private function getCleanHTML($body) {
+        $body = preg_replace('#(\n)+#ium', "\n\r", $body);
+        return $body;
+    }
+	
+	
     private function getPlainTextFromHTML($body) {
         $body = preg_replace('#\<a[^>]*href="([^"]+)"[^>]*\>([^<]+)\</a>#ium', '$2 - $1', $body);
-        $body = preg_replace('#(\<br[^>]*\>)#ium', "\n", $body);
+        $body = preg_replace('#(\<br[^>]*\>)#ium', "\n\r", $body);
+        $body = preg_replace('#(\n)+#ium', "\n\r", $body);
         return strip_tags($body);
     }
 }
