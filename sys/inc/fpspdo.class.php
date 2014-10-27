@@ -320,9 +320,11 @@ class FpsPDO {
         $this->relationsMap = array();
         $meta = array();
         $affected_rows = array();
-
+		
         if (@!$query->columnCount()) {
-            pr($query); die();
+			return array();
+            pr('(FpsPdo.class.php:324):$query->columnCount() Error.');
+			pr($query); die();
         }
 
         foreach(range(0, $query->columnCount() - 1) as $column_index){
@@ -543,14 +545,15 @@ class FpsPDO {
 	private function runQuery($query) 
 	{
         $this->statement = $statement = $this->dbh->prepare($query);
-
+		
 		try {
 			$statement->execute($this->queryParams);
 		} catch (PDOException $e) {
-			pr($e->getMessage());
 			pr($query);
 			pr($this->queryParams);
+			pr($e->getMessage());
 		}
+		
 		return $statement;
 	}
 	

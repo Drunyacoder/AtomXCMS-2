@@ -32,6 +32,7 @@ class ShopProductsEntity extends FpsEntity
 	protected $stock_description;
 	protected $attributes_group_id;
 	protected $title;
+	protected $clean_url_title;
 	protected $description;
 	protected $category_id;
 	protected $vendor_id;
@@ -57,6 +58,7 @@ class ShopProductsEntity extends FpsEntity
 			'stock_description' => (string)$this->stock_description,
 			'attributes_group_id' => intval($this->attributes_group_id),
 			'title' => (string)$this->title,
+			'clean_url_title' => (string)$this->clean_url_title,
 			'description' => (string)$this->description,
 			'category_id' => intval($this->category_id),
 			'vendor_id' => intval($this->vendor_id),

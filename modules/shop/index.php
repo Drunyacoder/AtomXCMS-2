@@ -184,7 +184,6 @@ Class ShopModule extends Module {
         $this->Model->bindModel('attaches');
         $entity = $this->Model->getFirst($where);
 		
-		
 		if (empty($entity)) redirect('/error.php?ac=404');
 		if ($entity->getAvailable() == 0 && !$this->ACL->turn(array('other', 'can_see_hidden'), false)) 
 			return $this->showInfoMessage(__('Permission denied'), '/' . $this->module . '/');

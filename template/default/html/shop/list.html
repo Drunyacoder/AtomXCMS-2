@@ -24,11 +24,13 @@ Current context:
 						<img src="{{ www_root }}/sys/img/noimage.jpg" title="No image" />
 					{% endif %}
 				</div>
-				<a href="{{ entity.entry_url }}"><h2>{{ entity.title|escape }}</h2></a>
+				<a class="title" href="{{ entity.entry_url }}"><h2>{{ entity.title|escape }}</h2></a>
 				<div class="product-price">
-					{{ entity.final_price|num_format(2, ',', ' ') }}
 					{% if entity.final_price != entity.price %}
+						<span class="product-new-price">{{ entity.final_price|num_format(2, ',', ' ') }}</span>
 						<span class="product-old-price">{{ entity.price|num_format(2, ',', ' ') }}</span>
+					{% else %}
+						<span class="">{{ entity.final_price|num_format(2, ',', ' ') }}</span>
 					{% endif %}
 				</div>
 				<button class="buy-button atm_shop-add_to_basket">{{ 'Add to basket'|lang('shop') }}</button>
@@ -47,10 +49,13 @@ Current context:
 								{% endif %}
 							</td>
                             <td class="title">{{ entity.title|escape }}</td>
-                            <td class="price">
-                                {{ entity.final_price|num_format(2, ',', ' ') }}
+                            <td class="product-price">
+                                
                                 {% if entity.final_price != entity.price %}
-                                <span class="product-old-price">{{ entity.price|num_format(2, ',', ' ') }}</span>
+									<span class="product-new-price">{{ entity.final_price|num_format(2, ',', ' ') }}</span>
+									<span class="product-old-price">{{ entity.price|num_format(2, ',', ' ') }}</span>
+								{% else %}
+									<span>{{ entity.final_price|num_format(2, ',', ' ') }}</span>
                                 {% endif %}
                             </td>
                             <td><input type="text" name="quantity" value="1" /></td>
@@ -64,12 +69,13 @@ Current context:
 				<div class="clear"></div>
 				<div class="product-description">
 				{% for attr in entity.attributes %}
-					<strong>{{ attr.label|lang|escape }}</strong>: {{ attr.content.content|escape }}<br>
-					<strong>{{ attr.label|lang|escape }}</strong>: {{ attr.content.content|escape }}<br>
-					<strong>{{ attr.label|lang|escape }}</strong>: {{ attr.content.content|escape }}<br>
-					<strong>{{ attr.label|lang|escape }}</strong>: {{ attr.content.content|escape }}<br>
-					<strong>{{ attr.label|lang|escape }}</strong>: {{ attr.content.content|escape }}<br>
-					<strong>{{ attr.label|lang|escape }}</strong>: {{ attr.content.content|escape }}<br>
+					<span>{{ attr.label|lang|escape }}</span>: {{ attr.content.content|escape }}&nbsp;/&nbsp;
+					<span>{{ attr.label|lang|escape }}</span>: {{ attr.content.content|escape }}&nbsp;/&nbsp;
+					<span>{{ attr.label|lang|escape }}</span>: {{ attr.content.content|escape }}&nbsp;/&nbsp;
+					<span>{{ attr.label|lang|escape }}</span>: {{ attr.content.content|escape }}&nbsp;/&nbsp;
+					<span>{{ attr.label|lang|escape }}</span>: {{ attr.content.content|escape }}&nbsp;/&nbsp;
+ 
+
 				{% endfor %}
 				</div>
 				<div class="product-footer"></div>
