@@ -322,7 +322,6 @@ class FpsPDO {
         $affected_rows = array();
 		
         if (@!$query->columnCount()) {
-			return array();
             pr('(FpsPdo.class.php:324):$query->columnCount() Error.');
 			pr($query); die();
         }
@@ -548,10 +547,14 @@ class FpsPDO {
 		
 		try {
 			$statement->execute($this->queryParams);
+			
+			$errorInfo = $statement->errorInfo();
+			if (!empty($errorInfo[0]) && $errorInfo[0] != 0 && !empty($errorInfo[2])) {
+				throw new Exception('FpsPDO Driver error: ' . $errorInfo[2]);
+			}
+			
 		} catch (PDOException $e) {
-			pr($query);
-			pr($this->queryParams);
-			pr($e->getMessage());
+			throw new Exception('FpsPDO Driver catch PDOException: ' . $e->getMessage());
 		}
 		
 		return $statement;
