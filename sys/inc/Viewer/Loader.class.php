@@ -93,7 +93,7 @@ class Fps_Viewer_Loader
 
 	public function __construct(array $params = array())
 	{
-        $this->templateRoot = $params['template_root'];
+        $this->templateRoot = (!empty($params['template_root'])) ? $params['template_root'] : false;
 		$this->layout = (!empty($params['layout'])) ? $params['layout'] : 'default';
 		$this->defaultLayout = (isset($params['default_layout'])) ? $params['default_layout'] : 'default';
 

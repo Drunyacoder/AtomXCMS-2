@@ -137,6 +137,10 @@ class Fps_Viewer_Manager
 	
 	public function getTemplateFilePath($fileName)
 	{
+        if (empty($this->templateRoot)) {
+            throw new Exception('"templateRoot" is not setup. Setup it before use Viewer.');
+        }
+
 		$path = $this->templateRoot . '%s' . '/' . $fileName;
 
 		if (file_exists(sprintf($path, $this->layout)))

@@ -48,8 +48,37 @@ table.products .product-price {font-size:20px; font-weight:bold; color:#329a1c; 
 
 .product-new-price {font-size:20px; font-weight:bold; color:#f75; position:relative; float:left; letter-spacing: -1px;}
 .product-price {font-size:20px; font-weight:bold; color:#329a1c; position:relative; float:left; letter-spacing: -1px;}
-.product-old-price {font-size:15px; font-weight:bold; color:#769b16; text-decoration:line-thorough; position:absolute; left:-11px; top:-13px;}
+.product-old-price {font-size:15px; font-weight:bold; color:#769b16; text-decoration:line-through; position:absolute; left:-11px; top:-13px;}
 
 .catalog .product-item .product-footer {height:40px; width:100%; position:relative; top:-16px;  background:-moz-linear-gradient(center top , rgba(255, 255, 255, 0), #fff 40%, #fff 60%, rgba(255, 255, 255, 0));}
+
+/* View product */
+article.product {width:calc(100% - 30px); padding:15px;}
+article.product .image {width:250px; margin:20px; float:left;}
+article.product .common-info {width:50%; padding:0px 20px; float:left; text-align:left;}
+article.product .common-info .product-new-price {font-size:25px; letter-spacing: 1px;}
+article.product .common-info .product-price {font-size:25px; letter-spacing: 1px;}
+article.product .common-info .product-old-price {font-size:20px; left:-11px; top:-13px;}
+article.product .common-info .attrs {width:100%;}
+article.product .tabs {width:100%;}
+article.product .tabs {width:100%; position:relative;}
+article.product .tabs header {padding:0px 30px;}
+article.product .tabs .tab-switcher {padding:5px 15px; margin:0px 2px; font-size:15px; color:#777; border:1px solid #329a1c; border-bottom:none; border-radius:5px 5px 0px 0px; float:left; background:#fff; z-index:999; cursor:pointer;}
+article.product .tabs .tab-switcher.active {color:#fafafa; background:#329a1c;}
+article.product .tabs .tab {padding:2% 3%; border-top:3px solid #329a1c; display:none; z-index:1; line-height:25px;}
+article.product .tabs .tab.active {display:block;}
+
+article.product .characteristics-of {min-width:20%; float:left;}
+article.product .characteristics-of .left {float:left;}
+article.product .characteristics-of .right {float:right;}
+
+article.product .comments {min-width:30%; float:left;}
+article.product .comments .material {max-width:600px; !important;}
+article.product .comments li, article.product .comments .material {background:none !important; background-color:inherit !important; border:none !important; border-radius:0px !important; box-shadow:none !important; margin:0px !important; padding:0px !important;}
+article.product .comments input[type="text"] {width:70% !important;}
+article.product .comments .siu_title {width:20% !important;}
+article.product .comments .siu_title, article.product .comments .siu_data {margin:5px !important;}
+article.product .comments .comment-block {margin:20px 0px !important;}
+
 
 

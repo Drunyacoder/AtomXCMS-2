@@ -33,6 +33,8 @@ class AtmMail {
 
     private $from;
 
+    private $bodyParts = array();
+
     private $body = '';
 
     private $lastError = false;
@@ -48,17 +50,40 @@ class AtmMail {
         $this->from = ($from === null) ? Config::read('admin_email') : $from;
 
         if (!empty($template)) {
-            if (!file_exists($this->templatePath . $template . '.html'))
-                throw new Exception("Email template '$template' not found.");
-            $this->body = file_get_contents($this->templatePath . $template . '.html');
+            if (preg_match('#^[\d\w_\-]+$#i', $template)) {
+                if (!file_exists($this->templatePath . $template . '.html'))
+                    throw new Exception("Email template '$template' not found.");
+                $this->body = file_get_contents($this->templatePath . $template . '.html');
+            } else {
+                $this->body = $template;
+            }
         }
 
         // headers
-        $this->headers = "From: ".$_SERVER['SERVER_NAME']." <" . $this->from . ">\n";
-        $this->headers .= "Content-type: text/html; charset=\"utf-8\"\n";
-        $this->headers .= "Content-Transfer-Encoding: 8bit\n";
-        $this->headers .= "Return-path: <" . $this->from . ">\n";
-        if (!empty($additional_headers)) $this->headers .= $additional_headers;
+        $this->prepareHeaders($additional_headers);
+    }
+
+
+    public function prepareHeaders($additional_headers = '') {
+        $boundary = md5(time());
+
+        $headers = "MIME-Version: 1.0\n";
+        $headers .= "From: ".$_SERVER['SERVER_NAME']." <" . $this->from . ">\n";
+        $headers .= "Content-type: multipart/mixed; boundary=\"$boundary\"\n";
+        $headers .= "Content-Transfer-Encoding: 8bit\n";
+        $headers .= "Return-path: <" . $this->from . ">\n";
+        if (!empty($additional_headers)) $headers .= $additional_headers;
+
+        $this->headers = $headers;
+
+
+        $body_parts = "--$boundary\n";
+        $body_parts .= "Content-Type: text/html; charset=utf-8\n";
+        $this->bodyParts[] = $body_parts;
+
+        $body_parts = "--$boundary\n";
+        $body_parts .= "Content-Type: text/plain; charset=utf-8\n";
+        $this->bodyParts[] = $body_parts;
     }
 
 
@@ -77,6 +102,7 @@ class AtmMail {
 
         try {
             $body = $this->Viewer->parseTemplate($this->body, $context);
+            $body = $this->joinBodyParts($body);
             mail($to, $subject, $body, $this->headers);
         } catch (Exception $e) {
             $this->lastError = $e->getMessage();
@@ -88,6 +114,32 @@ class AtmMail {
 
     public function getError() {
         return $this->lastError;
+    }
+
+
+    private function joinBodyParts($body) {
+        $output_body = '';
+
+        if (count($this->bodyParts) > 0) {
+            foreach ($this->bodyParts as $k => $part) {
+                // 1 index of $this->bodyParts is plain text headers
+                if ($k === 1) {
+                    $plainTextBody = $this->getPlainTextFromHTML($body);
+                    $output_body .= $part . $plainTextBody . "\n";
+                    continue;
+                }
+                $output_body .= $part . $body . "\n";
+            }
+        }
+
+        return $output_body;
+    }
+
+
+    private function getPlainTextFromHTML($body) {
+        $body = preg_replace('#\<a[^>]*href="([^"]+)"[^>]*\>([^<]+)\</a>#ium', '$2 - $1', $body);
+        $body = preg_replace('#(\<br[^>]*\>)#ium', "\n", $body);
+        return strip_tags($body);
     }
 }
 

@@ -53,4 +53,16 @@ $(document).ready(function() {
       }
     });
   });
+
+  $('.tab-switcher').on('click', function() {
+    var tabId = 'tab-' + $(this).data('tab');
+
+    $('.tab').hide();
+    $('.tab').removeClass('active');
+    $('.tab-switcher').removeClass('active');
+
+    $('#' + tabId).show();
+    $('#' + tabId).addClass('active');
+    $(this).addClass('active');
+  });
 });
