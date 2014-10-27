@@ -101,7 +101,7 @@ Class ShopModule extends Module {
 		
 		$navi = array();
 		$navi['add_link'] = '';
-		$navi['navigation'] = $this->_buildBreadCrumbs();
+		$navi['navigation'] = $this->_buildBreadCrumbs($category_id);
 		$navi['pagination'] = $pages;
 		$navi['meta'] = __('Total materials') . $total;
 		$this->_globalize($navi);
@@ -176,6 +176,7 @@ Class ShopModule extends Module {
         $where = array("(quantity > 0 || hide_not_exists = '0')");
         $where['id'] = $id;
 
+		
         $this->Model->bindModel('attributes_group');
         $this->Model->bindModel('attributes.content');
         $this->Model->bindModel('vendor');
@@ -196,6 +197,8 @@ Class ShopModule extends Module {
 
 		// category block
 		$this->_getCatsTree($entity->getCategory()->getId());
+		
+		
 		// Comments && add comment form
 		if (Config::read('comment_active', $this->module) == 1 
 		&& $this->ACL->turn(array($this->module, 'view_comments'), false) 
@@ -211,12 +214,17 @@ Class ShopModule extends Module {
         $this->addToPageMetaContext('entity_title', h($entity->getTitle()));
         $this->addToPageMetaContext('category_title', h($entity->getCategory()->getTitle()));
 
+		
 		$navi = array();
 		$navi['module_url'] = get_url('/' . $this->module . '/');
 		$navi['category_url'] = get_url('/' . $this->module . '/category/' . $entity->getCategory()->getId());
 		$navi['category_name'] = h($entity->getCategory()->getTitle());
 		$navi['navigation'] = $this->_buildBreadCrumbs($entity->getCategory()->getId());
 		$this->_globalize($navi);
+		
+		$filters = $this->__getProductsFilters($entity->getCategory()->getId());
+		$filters .= $this->__getVendorsFilter($entity->getCategory()->getId());
+		$this->_globalize(array('products_filters' => $filters));
 		
 		
 		$markers = array();

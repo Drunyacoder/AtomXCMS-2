@@ -17,7 +17,9 @@ Current context:
     </header>
     <div class="image">
         {% if entity.attaches|count > 0 %}
+		<a href="/image/shop/{{ entity.attaches[0].filename }}/" class="gallery">
         <img src="/image/shop/{{ entity.attaches[0].filename }}/250/" title="{{ entity.title|escape }}" />
+		</a>
         {% else %}
         <img src="{{ www_root }}/sys/img/noimage.jpg" style="max-width:250px;" title="No image" />
         {% endif %}
@@ -25,6 +27,7 @@ Current context:
     <div class="common-info">
         <div class="price">
             <div class="product-price">
+				<span class="label">{{ 'Price'|lang('shop') }}:</span>
                 {% if entity.final_price != entity.price %}
                 <span class="product-new-price">{{ entity.final_price|num_format(2, ',', ' ') }}</span>
                 <span class="product-old-price">{{ entity.price|num_format(2, ',', ' ') }}</span>
@@ -63,6 +66,7 @@ Current context:
                 <button class="button atm_shop-cancel_basket">{{ 'Cancel'|lang }}</button>
             </section>
             <!--/Add to basket modal window-->
+			<div class="clear"></div>
         </div>
         <div class="attrs">
             {% for key, attr in entity.attributes %}
@@ -86,13 +90,26 @@ Current context:
         <section id="tab-characteristics-of" class="tab">
             <div class="characteristics-of">
                 {% for key, attr in entity.attributes %}
-                <span class="left">{{ attr.label|lang|escape }}</span>: <span class="right">{{ attr.content.content|escape }}</span><br />
-                <span class="left">{{ attr.label|lang|escape }}</span>: <span class="right">{{ attr.content.content|escape }}</span><br />
-                <span class="left">{{ attr.label|lang|escape }}</span>: <span class="right">{{ attr.content.content|escape }}</span><br />
-                <span class="left">{{ attr.label|lang|escape }}</span>: <span class="right">{{ attr.content.content|escape }}</span><br />
-                <span class="left">{{ attr.label|lang|escape }}</span>: <span class="right">{{ attr.content.content|escape }}</span><br />
-                <span class="left">{{ attr.label|lang|escape }}</span>: <span class="right">{{ attr.content.content|escape }}</span><br />
-                <span class="left">{{ attr.label|lang|escape }}</span>: <span class="right">{{ attr.content.content|escape }}</span><br />
+                <div class="row">
+					<span class="left">{{ attr.label|lang('shop')|escape }}</span>: 
+					<span class="right">{{ attr.content.content|escape }}</span>
+				</div>
+                <div class="row">
+					<span class="left">{{ attr.label|lang('shop')|escape }}</span>: 
+					<span class="right">{{ attr.content.content|escape }}</span>
+				</div>
+                <div class="row">
+					<span class="left">{{ attr.label|lang('shop')|escape }}</span>: 
+					<span class="right">{{ attr.content.content|escape }}</span>
+				</div>
+                <div class="row">
+					<span class="left">{{ attr.label|lang('shop')|escape }}</span>: 
+					<span class="right">{{ attr.content.content|escape }}</span>
+				</div>
+                <div class="row">
+					<span class="left">{{ attr.label|lang('shop')|escape }}</span>: 
+					<span class="right">{{ attr.content.content|escape }}</span>
+				</div>
                 {% endfor %}
             </div>
         </section>

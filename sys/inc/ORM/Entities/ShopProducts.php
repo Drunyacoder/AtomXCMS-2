@@ -130,6 +130,10 @@ class ShopProductsEntity extends FpsEntity
 			? $this->vendor->getDiscount() : 0;
 		$category_discount = (!empty($this->category) && is_object($this->category))
 			? $this->category->getDiscount() : 0;
+			
+		$discounts_array = array($discount);
+		if ($vendor_discount) $discounts_array[] = $discounts_array;
+		if ($category_discount) $discounts_array[] = $category_discount;
 		
 		$algorithm = Config::read('shop.discount_algorithm');
 		switch ($algorithm) {
@@ -150,10 +154,10 @@ class ShopProductsEntity extends FpsEntity
 				break;
 			default:
 			case 4:
-				$discount = max($discount, $vendor_discount, $category_discount);
+				$discount = max($discounts_array);
 				break;
 			case 5:
-				$discount = min($discount, $vendor_discount, $category_discount);
+				$discount = min($discounts_array);
 				break;
 		}
 		

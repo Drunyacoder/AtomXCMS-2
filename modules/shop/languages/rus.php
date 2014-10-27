@@ -68,6 +68,8 @@ return array(
         'Basket is empty' 	=> 'Корзина пуста',
         'Basket' 			=> 'Корзина',
         'Products in the basket' => 'Товаров в корзине',
+        'color' 			=> 'Цвет',
+        'size' 				=> 'Размер',
     ),
 );
 
