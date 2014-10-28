@@ -288,22 +288,29 @@ Class ShopModule extends Module {
 
         $basket = &$this->storage['basket'];
         if (count($basket['products'])) {
+		
             foreach ($basket['products'] as $k => &$product) {
-			
                 if ($product['id'] == $id) {
 					$push = false;
 					
                     if ($quantity == 0) {
-                        $basket['total'] -= ($product['price'] * $product['quantity']);
-                        $basket['total_products'] -= $product['quantity'];
                         unset($basket['products'][$k]);
                     } else {
                         $product['quantity'] = $quantity;
-                        $basket['total'] -= ($product['quantity'] - $quantity) * $product['price'];
-                        $basket['total_products'] -= $product['quantity'] - $quantity;
                     }
                 }
             }
+			
+			
+			// Recount totaled values. May be collisions.
+			$total = 0;
+			$total_products = 0;
+            foreach ($basket['products'] as $product) {
+				$total_products += $product['quantity'];
+				$total += $entity->getFinal_price() * $product['quantity'];
+            }
+			$basket['total'] = $total;
+			$basket['total_products'] = $total_products;
         }
 		
 		
@@ -390,9 +397,10 @@ Class ShopModule extends Module {
             'delivery_types' => ($delivery_types) ? $delivery_types : array(),
             'total' => $total,
             'errors' => $errors,
+            'action' => $this->getModuleURL('create_order'),
         )));
 
-        die($source);
+
         return $this->_view($source);
     }
 
@@ -808,6 +816,9 @@ Class ShopModule extends Module {
 	{
 		$max_attach = Config::read('max_attaches', $this->module);
 		if (empty($max_attach) || !is_numeric($max_attach)) $max_attach = 5;
+		
+		$Register = $this->Register;
+		
 		$rules = array(
 			'create_order_form' => array(
 				'name' => array(
@@ -824,6 +835,15 @@ Class ShopModule extends Module {
 				'delivery_type' => array(
 					'required' => true,
 					'title' => 'Delivery type',
+					'dataset' => function() use ($Register) {
+						$deliveryTypesModel = $Register['ModManager']->getModelInstance('shopDeliveryTypes');
+						$delivery_types = $deliveryTypesModel->getCollection();
+						
+						if (empty($delivery_types)) 
+							throw new Exception('Delivery types aren\'t exists.');
+						
+						return $delivery_types;
+					},
 				),
                 'address' => array(
                     'required' => true,
@@ -834,6 +854,7 @@ Class ShopModule extends Module {
 					'required' => 'editable',
                     'max_lenght' => 1000,
                     'title' => 'Comment',
+                    'input_type' => 'textarea',
 				),
 			),
 			'add_comment' => array(

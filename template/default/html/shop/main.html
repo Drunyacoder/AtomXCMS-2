@@ -74,7 +74,7 @@ AtomX.messages = {
 				<span id="products-cnt">{{ shop_basket.total_products }}</span>
 			</header>
 			<div class="total">{{ 'Bill'|lang('shop') }}: <span class="sum">{{ shop_basket.total|num_format(2, ',', ' ') }}</span></div>
-			<button class="buy-button">{{ 'Create order'|lang('shop') }}</button>
+			<button onClick="window.location.href='{{ www_root }}/{{ module }}/create_order_form/'" class="buy-button">{{ 'Create order'|lang('shop') }}</button>
         </div>
     </section>
     {% if fps_user_id %}
@@ -160,7 +160,7 @@ AtomX.messages = {
        </form> 
 	  </div>
 	</div>
-	<!-----------------------------------------CONTENT/---------------------------------------------------------->
+	<!------------------------------------CONTENT/--------------------------------------->
     <div class="content">
 	<div class="spedbar">
 		<div>
@@ -193,15 +193,10 @@ AtomX.messages = {
 		<div class="paginator"><div class="pages">{{ pagination }}</div></div>
 	</div>
 	<div class="clear"></div>
-	
-	<div class="material">
-           <div class="inftitle">{{ 'Now online:'|lang }} {{ all_online }}.{{ 'Registered:'|lang }} {{ users_online }}. {{ 'Guests:'|lang }} {{ guests_online }}. </div>
-	       <div class="infcont">{{ online_users_list }}</div>
-	    </div>
-	</div>
-	<!---------------------------------------------------------------------------/CONTENT----------------------------------------------------------------------------------------------->
+
+	<!-----------------------/CONTENT-------------------------------------------------------->
 </div>
-<!--------------------------------------------------------CHAT----------------------------------------------------------------------------------------------------------------------------->
+<!-----------------------------CHAT---------------------------------------------------------->
 {% if fps_chat %}
 <div class="footerbottom">
   <div class="butofooter"><a class="buttonfutokno" onclick="if($('#ochat').css('display') == 'none'){$('#ochat').show();}else{$('#ochat').hide();}">{{ 'General chat'|lang }}</a>
@@ -213,7 +208,7 @@ AtomX.messages = {
   </div>
 </div>
 {% endif %}
-<!--------------------------------------------------------FOOTER-BUTTONS------------------------------------------------------------------>
+<!----------------------------------------FOOTER-BUTTONS-------------------------------------->
 <div class="footer">
 <div class="people"><span>{{ 'Community'|lang }}</span>
 <a href="{{ get_url('/') }}">{{ 'Home'|lang }}</a>

@@ -777,8 +777,8 @@ class Module {
 	// Функция возвращает путь к модулю
     public function getModuleURL($page = null)
 	{
-		$url = '/' . $this->module . '/' . $page;
-		$url = str_replace('//', '/', $url);
+		$url = '/' . $this->module . '/' . $page . '/';
+		$url = get_url($url);
 		return $url;
 	}
 	

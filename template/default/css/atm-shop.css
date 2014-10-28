@@ -5,15 +5,6 @@
 .buy-button {float:right; font-size:13px; line-height:13px; background:#86ab26; color:#fff; border:1px solid #769B16; border-radius:4px; padding:1px 5px; cursor:pointer; box-shadow:0px -9px 2px #769B16 inset; height:auto; min-width:auto; text-transform:none;}
 .buy-button:hover {box-shadow:0px -7px 3px #a6cb46 inset; background:#769B16; border:1px solid #769B16;}
 
-/* Modal window & product rows */
-.shop-modal-window {width:570px; padding:15px; height:auto; background:#fff; border:3px solid #769B16; border-radius:10px; position:fixed; top:15%; z-index:9999;}
-.shop-modal-window h1 {padding:0px 15px 5px 5px; margin:0px -15px 10px -15px; border-bottom:3px solid #ddd;}
-
-table.products {width:100%;}
-table.products tr td {padding:5px 0px;}
-table.products tr td img {max-width:100px;}
-table.products .product-price {font-size:20px; font-weight:bold; color:#769b16; position:relative; float:none;}
-
 /* Mini cart */
 .mini-basket {height:28px; text-align:left; display:inline-block; position:relative;}
 .mini-basket * {font-family:ArialNarrow,Arial,sans-serif;}
@@ -46,8 +37,8 @@ table.products .product-price {font-size:20px; font-weight:bold; color:#769b16; 
 .catalog .product-item h2:hover {color:#333;}
 .catalog .product-item a.title {text-decoration:none;}
 
-.product-new-price {font-size:20px; font-weight:bold; color:#f75; position:relative; float:left; letter-spacing: -1px;}
-.product-price {font-size:20px; font-weight:bold; color:#769b16; position:relative; float:left; letter-spacing: -1px;}
+.product-new-price {font-size:20px; font-weight:bold; color:#f75; position:relative; float:left;}
+.product-price {font-size:20px; font-weight:bold; color:#769b16; position:relative; float:left;}
 .product-old-price {font-size:15px; font-weight:bold; color:#769b16; text-decoration:line-through; position:absolute; left:-11px; top:-13px;}
 
 .catalog .product-item .product-footer {height:40px; width:100%; position:relative; top:-16px;  background:-moz-linear-gradient(center top , rgba(255, 255, 255, 0), #fff 40%, #fff 60%, rgba(255, 255, 255, 0));}
@@ -83,6 +74,30 @@ article.product .comments input[type="text"] {width:70% !important;}
 article.product .comments .siu_title {width:20% !important;}
 article.product .comments .siu_title, article.product .comments .siu_data {margin:5px !important;}
 article.product .comments .comment-block {margin:20px 0px !important;}
+
+/* Order form */
+.order-form {width:100%; max-width:700px; padding:15px;}
+.order-form h1, .order-form h3 {border-bottom: 3px solid #769b16; padding-bottom:5px;} 
+.order-form h3 {font-size:17px; color:#333;}
+.order-form .total-sum {border:none;}
+.order-form .total-sum .sum {color:#769b16;}
+.order-form .order-fields {margin-top:40px; width:100%;}
+.order-form .field {clear:both; padding:5px 0px;}
+.order-form .field label {float:left;}
+.order-form .field input {float:right;}
+
+/* Modal window & product rows */
+.shop-modal-window {width:50%; padding:15px; height:auto; background:#fff; border:3px solid #769B16; border-radius:10px; position:fixed; top:15%; left:0px; right:0px; margin:0px auto; z-index:9999;}
+.shop-modal-window h1 {padding:0px 15px 5px 5px; margin:0px -15px 10px -15px; border-bottom:3px solid #ddd;}
+
+table.products {width:100%;}
+table.products tr td {padding:15px 10px;}
+table.products tr td.image {width:100px; margin:0px;}
+table.products tr td.title {font-size:20px; color:#333;}
+table.products tr td img {max-width:100px;}
+table.products tr td.product-price {font-size:17px; font-weight:bold; color:#769b16; position:relative; float:none;}
+table.products tr td.product-price .product-new-price {font-size:30px; letter-spacing: 1px; float:none;}
+table.products tr td.product-price .product-old-price {font-size:20px; left:-10px; top:28px; color:#888;}
 
 
 

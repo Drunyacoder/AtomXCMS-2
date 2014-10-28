@@ -387,7 +387,21 @@ class Validate {
                 $fields[$k] = array(
                     'value' => $value,
                     'label' => $rules[$k]['title'],
+					'input_type' => (!empty($rules[$k]['input_type'])) ? $rules[$k]['input_type'] : '',
                 );
+				
+				// Dataset is array with possible values
+				if (isset($rules[$k]['dataset'])) {
+					$fields[$k]['dataset'] = (is_callable($rules[$k]['dataset'])) 
+						? call_user_func($rules[$k]['dataset'])
+						: $rules[$k]['dataset'];
+				}
+				
+				$field_data = $rules[$k];
+				$fields[$k]['getFunc'] = function() use ($field_data, $k) {
+					return '<input type="' . ($field_data['input_type'] ? $field_data['input_type'] : 'text') 
+						. '" name="' . $k . '" value="1" />';
+				};
             }
         }
 		

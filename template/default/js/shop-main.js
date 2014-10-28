@@ -27,7 +27,7 @@ $(document).ready(function() {
       dataType: 'json',
       beforeSend: function() {
         $('#main-overlay').show();
-        formContainer.find('input[name="quantity"]').val(1);
+        //formContainer.find('input[name="quantity"]').val(1);
         formContainer.hide();
       },
       success: function(data){
@@ -43,6 +43,7 @@ $(document).ready(function() {
           $('#mini-basket').addClass('active');
         else
           $('#mini-basket').removeClass('active');
+		  
         $('#mini-basket #products-cnt').html(parseInt(data.total_products, 10));
         $('#mini-basket .total .sum').html(data.total.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,"));
         $('#main-overlay').hide();
@@ -65,4 +66,5 @@ $(document).ready(function() {
     $('#' + tabId).addClass('active');
     $(this).addClass('active');
   });
+  
 });

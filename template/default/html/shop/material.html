@@ -59,7 +59,15 @@ Current context:
                             <span>{{ entity.final_price|num_format(2, ',', ' ') }}</span>
                             {% endif %}
                         </td>
-                        <td><input type="text" name="quantity" value="1" /></td>
+						{% set quantity = 1 %}
+						{% if shop_basket.total > 0 %}
+							{% for key, product in shop_basket.products %}
+								{% if product.id == entity.id %}
+									{% set quantity = quantity + product.quantity %}
+								{% endif %}
+							{% endfor %}
+						{% endif %}
+                        <td><input type="text" name="quantity" value="{{ quantity }}" /></td>
                     </tr>
                 </table>
                 <button data-product-id="{{ entity.id }}" class="button atm_shop-put_to_basket">{{ 'Add to basket'|lang('shop') }}</button>
