@@ -2,8 +2,8 @@
 #main-overlay {display:none; position:absolute; top:0px; left:0px; width:100%; height:100%; background:rgba(0,0,0,0.7);}
 
 /* Common components */
-.buy-button {float:right; font-size:13px; line-height:13px; background:#41c527; color:#fff; border:1px solid #31a517; border-radius:4px; padding:1px 5px; cursor:pointer; box-shadow:0px -9px 2px #31a517 inset; height:auto; min-width:auto; text-transform:none;}
-.buy-button:hover {box-shadow:0px -7px 3px #71f547 inset; background:#51c937; border:1px solid #51c937;}
+.buy-button {float:right; font-size:13px; line-height:13px; background:#86ab26; color:#fff; border:1px solid #769B16; border-radius:4px; padding:1px 5px; cursor:pointer; box-shadow:0px -9px 2px #769B16 inset; height:auto; min-width:auto; text-transform:none;}
+.buy-button:hover {box-shadow:0px -7px 3px #a6cb46 inset; background:#769B16; border:1px solid #769B16;}
 
 /* Modal window & product rows */
 .shop-modal-window {width:570px; padding:15px; height:auto; background:#fff; border:3px solid #769B16; border-radius:10px; position:fixed; top:15%; z-index:9999;}
@@ -12,7 +12,7 @@
 table.products {width:100%;}
 table.products tr td {padding:5px 0px;}
 table.products tr td img {max-width:100px;}
-table.products .product-price {font-size:20px; font-weight:bold; color:#329a1c; position:relative; float:none;}
+table.products .product-price {font-size:20px; font-weight:bold; color:#769b16; position:relative; float:none;}
 
 /* Mini cart */
 .mini-basket {height:28px; text-align:left; display:inline-block; position:relative;}
@@ -47,7 +47,7 @@ table.products .product-price {font-size:20px; font-weight:bold; color:#329a1c; 
 .catalog .product-item a.title {text-decoration:none;}
 
 .product-new-price {font-size:20px; font-weight:bold; color:#f75; position:relative; float:left; letter-spacing: -1px;}
-.product-price {font-size:20px; font-weight:bold; color:#31a517; position:relative; float:left; letter-spacing: -1px;}
+.product-price {font-size:20px; font-weight:bold; color:#769b16; position:relative; float:left; letter-spacing: -1px;}
 .product-old-price {font-size:15px; font-weight:bold; color:#769b16; text-decoration:line-through; position:absolute; left:-11px; top:-13px;}
 
 .catalog .product-item .product-footer {height:40px; width:100%; position:relative; top:-16px;  background:-moz-linear-gradient(center top , rgba(255, 255, 255, 0), #fff 40%, #fff 60%, rgba(255, 255, 255, 0));}
@@ -66,9 +66,9 @@ article.product .common-info .attrs {width:100%; font-size:15px; padding:15px 0p
 article.product .tabs {width:100%;}
 article.product .tabs {width:100%; position:relative;}
 article.product .tabs header {padding:0px 30px;}
-article.product .tabs .tab-switcher {padding:5px 15px; margin:0px 2px; font-size:15px; color:#777; border:1px solid #329a1c; border-bottom:none; border-radius:5px 5px 0px 0px; float:left; background:#fff; z-index:999; cursor:pointer;}
-article.product .tabs .tab-switcher.active {color:#fafafa; background:#329a1c;}
-article.product .tabs .tab {padding:2% 3%; border-top:3px solid #329a1c; display:none; z-index:1; line-height:25px;}
+article.product .tabs .tab-switcher {padding:5px 15px; margin:0px 2px; font-size:15px; color:#777; border:1px solid #769b16; border-bottom:none; border-radius:5px 5px 0px 0px; float:left; background:#fff; z-index:999; cursor:pointer;}
+article.product .tabs .tab-switcher.active {color:#fafafa; background:#769b16;}
+article.product .tabs .tab {padding:2% 3%; border-top:3px solid #769b16; display:none; z-index:1; line-height:25px;}
 article.product .tabs .tab.active {display:block;}
 
 article.product .characteristics-of {min-width:20%; float:left;}
