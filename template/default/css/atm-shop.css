@@ -7,6 +7,7 @@
 
 .atm-shop input[type="text"], .atm-shop select, .atm-shop textarea {color:#777; border: 1px solid #aaa; border-radius:4px; box-shadow: inset 0 1px 1px #ccc; -webkit-box-shadow: inset 0 1px 1px #ccc; padding:0px 5px; font-size:15px; font-style:italic; font-family:ArialNarrow,Arial,sans-serif; letter-spacing:1px;}
 .atm-shop textarea {padding:5px;}
+.atm-shop input[name="search"] {border:none; box-shadow:none;}
 
 /* Mini cart */
 .mini-basket {height:28px; text-align:left; display:inline-block; position:relative;}

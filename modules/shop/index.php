@@ -414,11 +414,11 @@ Class ShopModule extends Module {
 			$user = $_SESSION['user'];
 			
 			if (!empty($user['first_name'])) 
-				$fields['first_name'] = $user['first_name'];
+				$fields['first_name']['value'] = $user['first_name'];
 			if (!empty($user['last_name'])) 
-				$fields['last_name'] = $user['last_name'];
+				$fields['last_name']['value'] = $user['last_name'];
 			if (!empty($user['telephone'])) 
-				$fields['telephone'] = $user['telephone'];
+				$fields['telephone']['value'] = $user['telephone'];
 		}
         
 		

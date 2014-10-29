@@ -27,7 +27,7 @@ class Fps_Viewer_FunctionsStorage
                 . htmlspecialchars($name) . '" doesn\'t registered.');
 
         try {
-            call_user_func_array(self::$storage[$name], $args);
+            return call_user_func_array(self::$storage[$name], $args);
         } catch (Exception $e) {
             throw new BadFunctionCallException($e->getMessage());
         }

@@ -422,12 +422,18 @@ class Validate {
 	private function getErrorMessage($type, $params, $title) {
 		$publicTitle = (!empty($params['title'])) ? $params['title'] : $title;
 		
+		// Try to translate title
+		$publicTitle_ = __($publicTitle);
+		if ($publicTitle_ === $publicTitle && $this->module) {
+			$publicTitle = __($publicTitle, $this->module);
+		}
+		
 		if (array_key_exists($type . '_error', $params)) return $this->completeErrorMessage($params[$type . '_error']);
 		
 		switch ($type) {
 		
 			case 'required':
-				$message = sprintf(__('Empty field "%s"'), $title);
+				$message = sprintf(__('Empty field "%s"'), $publicTitle);
 				break;
 				
 			case 'max_lenght':
@@ -451,7 +457,7 @@ class Validate {
 				break;
 				
 			case 'max_size':
-				$message = sprintf(__('Very big file'), $title, round(($params['max_size'] / 1000), 1));
+				$message = sprintf(__('Very big file'), $publicTitle, round(($params['max_size'] / 1000), 1));
 				break;
 		}
 		
