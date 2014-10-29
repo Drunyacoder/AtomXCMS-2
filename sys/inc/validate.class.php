@@ -159,7 +159,7 @@ class Validate {
 
 		$Register = Register::getInstance();
 		$request = $_POST;
-		$errors = '';
+		$errors = array();
 		
 		
 		foreach ($rules as $title_ => $params) {
@@ -188,14 +188,15 @@ class Validate {
 				if (substr($field, 0, 7) != 'files__') {
 					// required
 					if (!empty($params['required']) && $params['required'] === true) {
-						if (empty($request[$title])) $errors .= $this->getErrorMessage('required', $params, $title);
+						if (empty($request[$title])) 
+							$errors[] = $this->getErrorMessage('required', $params, $title);
 						
 						
 					} else if (!empty($params['required']) && $params['required'] === 'editable') {
 						$fields_settings = $Register['Config']->read('fields', $this->module);
 						
 						if (empty($_POST[$title]) && in_array($title, $fields_settings)) { 
-							$errors .= $this->getErrorMessage('required', $params, $title);
+							$errors[] = $this->getErrorMessage('required', $params, $title);
 							continue;
 						}
 					}
@@ -204,31 +205,31 @@ class Validate {
 					// max length
 					if (!empty($params['max_lenght'])) {
 						if (!empty($request[$title]) && mb_strlen($request[$title]) > $params['max_lenght']) 
-							$errors .= $this->getErrorMessage('max_lenght', $params, $title);
+							$errors[] = $this->getErrorMessage('max_lenght', $params, $title);
 					}
 
 					// min length
 					if (!empty($params['min_lenght'])) {
 						if (!empty($request[$title]) && mb_strlen($request[$title]) < $params['min_lenght']) 
-							$errors .= $this->getErrorMessage('min_lenght', $params, $title);
+							$errors[] = $this->getErrorMessage('min_lenght', $params, $title);
 					}
 
 					// compare
 					if (!empty($params['compare'])) {
 						if (!empty($request[$title]) && $request[$title] != @$_POST[$params['compare']]) 
-							$errors .= $this->getErrorMessage('compare', $params, $title);
+							$errors[] = $this->getErrorMessage('compare', $params, $title);
 					}					
 					
 					// pattern
 					if (!empty($params['pattern'])) {
 						if (!empty($request[$title]) && !$this->cha_val($request[$title], $params['pattern'])) 
-							$errors .= $this->getErrorMessage('pattern', $params, $title);
+							$errors[] = $this->getErrorMessage('pattern', $params, $title);
 					}
 					
 					// user function
 					if (!empty($params['function'])) {
 						if (!empty($request[$title]) && is_callable($params['function'])) 
-							$errors .= $params['function']($errors);
+							$errors[] = $params['function']($errors);
 					}
 					
 				
@@ -237,14 +238,15 @@ class Validate {
 					
 					// required
 					if (!empty($params['required']) && $params['required'] === true) {
-						if (empty($_FILES[$title]) || empty($_FILES[$title]['name'])) $errors .= $this->getErrorMessage('required', $params, $title);
+						if (empty($_FILES[$title]) || empty($_FILES[$title]['name'])) 
+							$errors[] = $this->getErrorMessage('required', $params, $title);
 						
 						
 					} else if (!empty($params['required']) && $params['required'] === 'editable') {
 						$fields_settings = $Register['Config']->read('fields', $this->module);
 						
 						if ((empty($_FILES[$title]) || empty($_FILES[$title]['name'])) && in_array($title, $fields_settings)) 
-							$errors .= $this->getErrorMessage('required', $params, $title);
+							$errors[] = $this->getErrorMessage('required', $params, $title);
 					}
 					
 					
@@ -265,14 +267,15 @@ class Validate {
 								&& $_FILES[$title]['type'] != 'image/gif'
 								&& $_FILES[$title]['type'] != 'image/png')
 								|| !in_array(strtolower($ext), $img_extentions)) {
-									$errors .= $this->getErrorMessage('type', $params, $title);
+									$errors[] = $this->getErrorMessage('type', $params, $title);
 								}
 								break;
 								
 							// other files (for example loads module attaches)	
 							case 'file':
 								$denied_exts = array('.php', '.phtml', '.php3', '.html', '.htm', '.pl', 'js');
-								if (in_array(strtolower($ext), $denied_exts)) $errors .= $this->getErrorMessage('type', $params, $title);
+								if (in_array(strtolower($ext), $denied_exts)) 
+									$errors[] = $this->getErrorMessage('type', $params, $title);
 								break;
 						}
 					}
@@ -281,7 +284,7 @@ class Validate {
 					if (!empty($params['max_size'])) {
 						//pr($title);
 						if ($_FILES[$title]['size'] > $params['max_size']) {
-							$errors .= $this->getErrorMessage('max_size', $params, $title);
+							$errors[] = $this->getErrorMessage('max_size', $params, $title);
 						}
 					}
 				}
@@ -384,24 +387,16 @@ class Validate {
 
         if ($fields_meta === true) {
             foreach ($fields as $k => $value) {
-                $fields[$k] = array(
-                    'value' => $value,
-                    'label' => $rules[$k]['title'],
-					'input_type' => (!empty($rules[$k]['input_type'])) ? $rules[$k]['input_type'] : '',
-                );
+				$fields[$k] = $rules[$k];
+				$fields[$k]['value'] = $value;
 				
-				// Dataset is array with possible values
-				if (isset($rules[$k]['dataset'])) {
-					$fields[$k]['dataset'] = (is_callable($rules[$k]['dataset'])) 
-						? call_user_func($rules[$k]['dataset'])
-						: $rules[$k]['dataset'];
+				// Dataset is array with possible values.
+				// It may be a function whitch returns the array.
+				if (isset($fields[$k]['dataset'])) {
+					$fields[$k]['dataset'] = (is_callable($fields[$k]['dataset'])) 
+						? call_user_func($fields[$k]['dataset'])
+						: $fields[$k]['dataset'];
 				}
-				
-				$field_data = $rules[$k];
-				$fields[$k]['getFunc'] = function() use ($field_data, $k) {
-					return '<input type="' . ($field_data['input_type'] ? $field_data['input_type'] : 'text') 
-						. '" name="' . $k . '" value="1" />';
-				};
             }
         }
 		
@@ -463,8 +458,8 @@ class Validate {
 	}
 	
 	
-	
 	private function completeErrorMessage($message) {
+		return $message;
 		return "<li>$message</li>\n";
 	}
 

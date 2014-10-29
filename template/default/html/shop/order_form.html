@@ -24,7 +24,7 @@ More details & documentation are located at http://atomx.net/stat/category/27/.
     {% if context.entities %}
 		<table class="products">
         {% for entity in context.entities %}
-			<tr>
+			<tr id="basket-product-{{ entity.id }}">
 				<td class="image">
 					{% if entity.attaches|count > 0 %}
 					<img src="/image/shop/{{ entity.attaches[0].filename }}/100/" title="{{ entity.title|escape }}" />
@@ -42,7 +42,7 @@ More details & documentation are located at http://atomx.net/stat/category/27/.
 					{% endif %}
 					&nbsp;x&nbsp; {{ entity.quantity }}
 				</td>
-				<td><button>{{ 'Delete'|lang }}</button></td>
+				<td><button data-id="{{ entity.id }}" class="atm_shop-remove_from_basket">{{ 'Delete'|lang }}</button></td>
 			</tr>
         {% endfor %}
 		</table>
@@ -51,16 +51,25 @@ More details & documentation are located at http://atomx.net/stat/category/27/.
 		
 		<section class="order-fields">
 			<h3>{{ 'Please fill in fields for create order' }}</h3>
-			{#{{ context.fields|show }}#}
+			{# {{ context.fields|show }} #}
 			{% for name, params in context.fields %}
 			<div class="field">
-				{{ params.func }}
-				<label for="{{ params.label|escape }}">{{ params.label|lang('shop')|escape }}</label>
-				{% if params.type == '' %}
-				<input id="{{ params.label|escape }}" type="text" name="{{ name|escape }}" value="{{ params.value|escape }}" />
-				{% elseif params.type == 'textarea' %}
-				
-				{% elseif params.type == 'select' %}
+				<label for="{{ params.title|escape }}">{{ params.title|lang('shop')|escape }}</label>
+				{% if params.input_type == '' %}
+					<input 
+						id="{{ params.title|escape }}" 
+						placeholder="{{ params.title|lang('shop')|escape }}" 
+						type="text" 
+						name="{{ name|escape }}" 
+						value="{{ params.value|escape }}" 
+					/>
+				{% elseif params.input_type == 'textarea' %}
+					<textarea 
+						id="{{ params.title|escape }}" 
+						placeholder="{{ params.title|lang('shop')|escape }}" 
+						name="{{ name|escape }}"
+					>{{ params.value|escape }}</textarea>
+				{% elseif params.input_type == 'select' %}
 				
 				{% endif %}
 			</div>

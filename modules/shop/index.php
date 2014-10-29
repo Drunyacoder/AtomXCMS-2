@@ -268,6 +268,7 @@ Class ShopModule extends Module {
         $id = intval($id);
 		$push = true;
         $quantity = (intval($quantity) >= 1) ? intval($quantity) : 0;
+
         if (empty($id) || $id < 1) 
 			$this->showInfoMessage(__('Wrong parameters'), $this->getModuleURL());
 			
@@ -289,28 +290,17 @@ Class ShopModule extends Module {
         $basket = &$this->storage['basket'];
         if (count($basket['products'])) {
 		
-            foreach ($basket['products'] as $k => &$product) {
-                if ($product['id'] == $id) {
+            foreach ($basket['products'] as $k => $product) {
+                if (intval($product['id']) == $id) {
 					$push = false;
 					
                     if ($quantity == 0) {
                         unset($basket['products'][$k]);
                     } else {
-                        $product['quantity'] = $quantity;
+                        $basket['products'][$k]['quantity'] = $quantity;
                     }
                 }
             }
-			
-			
-			// Recount totaled values. May be collisions.
-			$total = 0;
-			$total_products = 0;
-            foreach ($basket['products'] as $product) {
-				$total_products += $product['quantity'];
-				$total += $entity->getFinal_price() * $product['quantity'];
-            }
-			$basket['total'] = $total;
-			$basket['total_products'] = $total_products;
         }
 		
 		
@@ -321,10 +311,19 @@ Class ShopModule extends Module {
 				'price' => $entity->getFinal_price(),
 				'quantity' => $quantity,
 			));
-			$basket['total'] += $entity->getFinal_price() * $quantity;
-			$basket['total_products'] += $quantity;
 		}
+		
+		
 
+		// Recount totaled values. May be collisions.
+		$total = 0;
+		$total_products = 0;
+		foreach ($basket['products'] as $product) {
+			$total_products += $product['quantity'];
+			$total += $product['price'] * $product['quantity'];
+		}
+		$basket['total'] = $total;
+		$basket['total_products'] = $total_products;
 
         $this->showAjaxResponse(array(
             'result' => 1,
@@ -338,7 +337,7 @@ Class ShopModule extends Module {
         //turn access
         $this->ACL->turn(array($this->module, 'buy_product'));
 
-
+		
         $navi = array();
         $navi['navigation'] = $this->_buildBreadCrumbs();
         $this->_globalize($navi);
@@ -356,7 +355,7 @@ Class ShopModule extends Module {
         $this->Model->bindModel('attaches');
 
 
-        $errors = null;
+        $errors = array();
         $entities = array();
         $total = 0;
         $basket = array();
@@ -367,8 +366,22 @@ Class ShopModule extends Module {
         if (is_array($basket) && !empty($basket['products']) && count($basket['products'])) {
             $_total = 0;
 
-            foreach ($basket['products'] as $basket_row) {
-                $product = $this->Model->getById($basket_row['id']);
+            foreach ($basket['products'] as $k => $basket_row) {
+				if ($basket_row['quantity'] == 0) {
+					unset($basket['products'][$K]);
+				}
+			
+                
+				$product = $this->Model->getById($basket_row['id']);
+				if (!$product) {
+					$basket['total'] -= $basket_row['price'] * $basket_row['quantity'];
+					unset($basket['products'][$K]);
+					
+					$errors[] = __('Can\'t find the product, it might had been deleted', $this->module);
+					continue;
+				}
+				
+				
                 $_total += $product->getFinal_price() * $basket_row['quantity'];
                 $product->setQuantity($basket_row['quantity']);
                 $entities[] = $product;
@@ -377,16 +390,21 @@ Class ShopModule extends Module {
             // Price might changed while user choosing a products
             if ($_total != $basket['total']) {
                 $basket['total'] = $_total;
-                $errors .= $this->Register['DocParser']->wrapErrors(__('Price of some products was changed', $this->module), true);
+                $errors[] = __('Price of some products was changed', $this->module);
             }
             $total = $_total;
         }
-
-
+		
         $fields = $this->Register['Validate']->getAndMergeFormPost($this->Register['action'], array(), true, true);
-        $errors .= $this->Register['Validate']->getErrors();
+        
+		
+		if (!empty($errors)) 
+			$errors = $this->Register['DocParser']->wrapErrors($errors);
+		else
+			$errors = $this->Register['Validate']->getErrors();
         if (isset($_SESSION['FpsForm'])) unset($_SESSION['FpsForm']);
 
+		
         $deliveryTypesModel = $this->Register['ModManager']->getModelInstance('shopDeliveryTypes');
         $delivery_types = $deliveryTypesModel->getCollection();
 
@@ -411,12 +429,12 @@ Class ShopModule extends Module {
 
         $this->Model->bindModel('category');
         $basket = &$this->storage['basket'];
-        $fields = Validate::getAndMergeFormPost($this->Register['action'], array(), true);
-        $errors = null;
+        $fields = $this->Register['Validate']->getAndMergeFormPost($this->Register['action'], array(), true);
+        $errors = array();
 
 
         if (!$basket['products']) {
-            $errors .= $this->Register['Validate']->completeErrorMessage(__('You have to select at least one product', $this->module));
+            $errors[] = __('You have to select at least one product', $this->module);
 
         } else {
             // Check if something was changed in the selected products
@@ -425,30 +443,25 @@ Class ShopModule extends Module {
                 $product = $this->Model->getById($row['id']);
 
                 if (!$product || $product->getQuantity() < $row['quantity']) {
-                    $errors .= $this->Register['Validate']
-                        ->completeErrorMessage(sprintf(__('Not enough quantity of "%s"', $this->module), h($row['title'])));
+                    $errors[] = sprintf(__('Not enough quantity of "%s"', $this->module), h($row['title']));
                     continue;
                 }
 
                 if ($product->getAvailable() == 0 || !$this->ACL->checkCategoryAccess($product->getCategory()->getNo_access()))
-                    $errors .= $this->Register['Validate']
-                        ->completeErrorMessage(sprintf(__('"%s" have been disabled for selling', $this->module), h($row['title'])));
+                    $errors[] = sprintf(__('"%s" have been disabled for selling', $this->module), h($row['title']));
 
                 $_total += $product->getFinal_price() * $row['quantity'];
             }
 
-            if (!errors && $_total != $basket['total']) {
-                $errors .= $this->Register['Validate']
-                    ->completeErrorMessage(__('Total price does not match. Some products might change the price.', $this->module));
+            if (!$errors && $_total != $basket['total']) {
+                $errors[] = __('Total price does not match. Some products might change the price.', $this->module);
             }
         }
 
-        if (!empty($errors))
-            $errors = $this->Register['DocParser']->wrapErrors($errors);
-        else
+        if (empty($errors))
             $errors = $this->Register['Validate']->check($this->Register['action']);
 
-
+		
         if ($errors) {
             $_SESSION['FpsForm'] = $fields;
             $_SESSION['FpsForm']['errors'] = $errors;
@@ -820,7 +833,7 @@ Class ShopModule extends Module {
 		$Register = $this->Register;
 		
 		$rules = array(
-			'create_order_form' => array(
+			'create_order' => array(
 				'name' => array(
 					'required' => true,
 					'max_lenght' => 50,

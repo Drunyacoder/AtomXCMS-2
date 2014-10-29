@@ -14,7 +14,9 @@ $(document).ready(function() {
 	$(this).parent('.shop-modal-window').hide();
   });
   
-  $('.atm_shop-put_to_basket').on('click', function(event) {
+  $('.atm_shop-put_to_basket').on('click', function(e) {
+	e.preventDefault();
+	
     var formContainer = $(this).parent('.shop-modal-window');
     var productId = $(this).data('product-id');
     var quantity = formContainer.find('input[name="quantity"]').val();
@@ -22,7 +24,7 @@ $(document).ready(function() {
       quantity = 1;
 
     $.ajax({
-      url: '/' + AtomX.module + '/edit_basket/' + productId + '/' + quantity + '/',
+      url: '/' + AtomX.module + '/edit_basket/' + productId + '/' + quantity + '/?ajax',
       type: 'GET',
       dataType: 'json',
       beforeSend: function() {
@@ -55,6 +57,54 @@ $(document).ready(function() {
     });
   });
 
+  $('.atm_shop-remove_from_basket').on('click', function(e) {
+    e.preventDefault();
+	
+	var productId = $(this).data('id');
+
+    $.ajax({
+      url: '/' + AtomX.module + '/edit_basket/' + productId + '/0/?ajax',
+      type: 'GET',
+      dataType: 'json',
+      beforeSend: function() {
+        $('#main-overlay').show();
+      },
+      success: function(data){
+        if (data.errors && data.errors.length) {
+          fpsWnd("atm-shop-cart-error", AtomX.messages.error, data.errors);
+          $('#main-overlay').hide();
+          return false;
+        }
+		
+		if ($('#basket-product-' + productId)) {
+			$('#basket-product-' + productId).hide(1000, function() {
+			
+			});
+			$('#basket-product-' + productId).promise().done(function(){
+				$(this).remove();
+			});
+		}
+
+        data = data.data;
+
+        if (data.total > 0)
+          $('#mini-basket').addClass('active');
+        else
+          $('#mini-basket').removeClass('active');
+		  
+        $('#mini-basket #products-cnt').html(parseInt(data.total_products, 10));
+        $('#mini-basket .total .sum').html(data.total.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,"));
+        if ($('.order-form .total-sum .sum'))
+			$('.order-form .total-sum .sum').html(data.total.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,"));
+        $('#main-overlay').hide();
+      },
+      error: errorHandler = function() {
+        $('#main-overlay').hide();
+        fpsWnd("atm-shop-cart-error", AtomX.messages.error, AtomX.messages.add_to_basket_error);
+      }
+    });
+  });
+
   $('.tab-switcher').on('click', function() {
     var tabId = 'tab-' + $(this).data('tab');
 
@@ -66,5 +116,4 @@ $(document).ready(function() {
     $('#' + tabId).addClass('active');
     $(this).addClass('active');
   });
-  
 });

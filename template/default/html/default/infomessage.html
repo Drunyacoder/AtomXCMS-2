@@ -4,7 +4,15 @@
 </tr>
 <tr>
   <td style="text-align:center;">
-  {{ info_message }}
+  {% if info_message|typeof  == 'array' %}
+	<ul>
+	{% for error in info_message %}
+		<li>{{ error }}</li>
+	{% endfor %}
+	</ul>
+  {% else %}
+	{{ info_message }}
+  {% endif %}
   </td>
 </tr>
 </table>
