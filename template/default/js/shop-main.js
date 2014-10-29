@@ -116,4 +116,17 @@ $(document).ready(function() {
     $('#' + tabId).addClass('active');
     $(this).addClass('active');
   });
+  
+  $('.atm_shop-delivery_type_selector').on('change', function() {
+    var tabId = 'tab-' + $(this).data('tab');
+
+    $('.tab').hide();
+    $('.tab').removeClass('active');
+    $('.tab-switcher').removeClass('active');
+
+    $('#' + tabId).show();
+    $('#' + tabId).addClass('active');
+    $(this).addClass('active');
+  });
+  
 });

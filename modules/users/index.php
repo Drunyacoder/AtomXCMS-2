@@ -2,12 +2,12 @@
 /*---------------------------------------------\
 |											   |
 | @Author:       Andrey Brykin (Drunya)        |
-| @Version:      1.6.1                         |
+| @Version:      1.6.2                         |
 | @Project:      CMS                           |
 | @Package       AtomX CMS                     |
 | @subpackege    Users Module                  |
 | @copyright     ©Andrey Brykin 2010-2014      |
-| @last mod      2014/01/13                    |
+| @last mod      2014/10/29                    |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
@@ -2804,9 +2804,9 @@ Class UsersModule extends Module {
 				'password' => array(
 					'min_lenght' => Config::read('min_password_lenght'),
 					'required' => true,
-                    'function' => function($errors) use ($Register){
+                    'function' => function($errors) use ($Register) {
                         if ( md5($_POST['password']) != $_SESSION['user']['passw'] )
-                            return '<li>' . __('Wrong current pass') . '</li>'."\n";
+                            return __('Wrong current pass');
                     },
 				),
 				'confirm' => array(

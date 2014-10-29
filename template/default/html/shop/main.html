@@ -184,10 +184,17 @@ AtomX.messages = {
             {{ content }}
 		</div>
 		<div class="rightbloks">
+			{% if action != 'create_order_form' and action != 'complete_order' %}
 			<div class="block">
-			  <div class="blockstop">{{ 'Product filters'|lang }}</div>
+			  <div class="blockstop">{{ 'Product filters'|lang('shop') }}</div>
 			  <div class="blokscontent products_filters">{{ products_filters }}</div>
 			</div>
+			{% else %}
+			<div class="block">
+			  <div class="blockstop">{{ 'Features products'|lang('shop') }}</div>
+			  <div class="blokscontent products_filters">{{ 'Features products'|lang('shop') }}</div>
+			</div>
+			{% endif %}
 		</div>
 		<div class="clear"></div>
 		<div class="paginator"><div class="pages">{{ pagination }}</div></div>

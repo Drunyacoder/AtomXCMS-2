@@ -31,6 +31,7 @@ abstract class Fps_Viewer_Template
         $Register = Register::getInstance();
         $Viewer = clone $Register['Viewer'];
 		$Viewer->setDefaultLayout('');
+		$Viewer->setLayout('');
 
 		echo $Viewer->view($path, $context);
 	}

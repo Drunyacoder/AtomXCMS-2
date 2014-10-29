@@ -52,27 +52,8 @@ More details & documentation are located at http://atomx.net/stat/category/27/.
 		<section class="order-fields">
 			<h3>{{ 'Please fill in fields for create order' }}</h3>
 			{# {{ context.fields|show }} #}
-			{% for name, params in context.fields %}
-			<div class="field">
-				<label for="{{ params.title|escape }}">{{ params.title|lang('shop')|escape }}</label>
-				{% if params.input_type == '' %}
-					<input 
-						id="{{ params.title|escape }}" 
-						placeholder="{{ params.title|lang('shop')|escape }}" 
-						type="text" 
-						name="{{ name|escape }}" 
-						value="{{ params.value|escape }}" 
-					/>
-				{% elseif params.input_type == 'textarea' %}
-					<textarea 
-						id="{{ params.title|escape }}" 
-						placeholder="{{ params.title|lang('shop')|escape }}" 
-						name="{{ name|escape }}"
-					>{{ params.value|escape }}</textarea>
-				{% elseif params.input_type == 'select' %}
-				
-				{% endif %}
-			</div>
+			{% for name, field in context.fields %}
+				{% include '/shop/input.html' %}
 			{% endfor %}
 			<div class="clear"></div>
 			<input type="submit" name="send" value="{{ 'Buy'|lang('shop') }}">

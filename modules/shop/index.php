@@ -420,7 +420,7 @@ Class ShopModule extends Module {
 			if (!empty($user['telephone'])) 
 				$fields['telephone']['value'] = $user['telephone'];
 		}
-        
+
 		
 		if (!empty($errors)) 
 			$errors = $this->Register['DocParser']->wrapErrors($errors);
@@ -886,6 +886,7 @@ Class ShopModule extends Module {
 						
 						return $delivery_types;
 					},
+					'input_type' => 'select',
 				),
                 'address' => array(
                     'required' => true,

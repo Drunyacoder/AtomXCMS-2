@@ -73,7 +73,7 @@ class Fps_Viewer_Manager
 
     public function setDefaultLayout($layout)
     {
-        $this->defaulLayout = trim($layout);
+        $this->defaultLayout = trim($layout);
     }
 
 

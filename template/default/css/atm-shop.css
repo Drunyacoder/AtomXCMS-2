@@ -89,6 +89,7 @@ article.product .comments .comment-block {margin:20px 0px !important;}
 .order-form .field {clear:both; padding:10px 0px;}
 .order-form .field label {float:left;}
 .order-form .field input, .order-form .field textarea, .order-form .field select {float:right; width:50%;}
+.order-form .field select {width:52%;}
 
 /* Modal window & product rows */
 .shop-modal-window {width:50%; padding:15px; height:auto; background:#fff; border:3px solid #769B16; border-radius:10px; position:fixed; top:15%; left:0px; right:0px; margin:0px auto; z-index:9999;}
