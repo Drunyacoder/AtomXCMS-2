@@ -2,11 +2,11 @@
 /*---------------------------------------------\
 |											   |
 | @Author:       Andrey Brykin (Drunya)        |
-| @Version:      1.1                           |
+| @Version:      1.2                           |
 | @Project:      CMS                           |
 | @Package       AtomX CMS                     |
 | @subpackege    Users Entity                  |
-| @copyright     ©Andrey Brykin 2010-2013      |
+| @copyright     ©Andrey Brykin 2010-2014      |
 | @last mod      2013/04/03                    |
 |----------------------------------------------|
 |											   |
@@ -29,6 +29,8 @@ class UsersEntity extends FpsEntity
 	
 	protected $id;
 	protected $name;
+	protected $first_name;
+	protected $last_name;
 	protected $passw;
 	protected $email;
 	protected $color;
@@ -65,6 +67,8 @@ class UsersEntity extends FpsEntity
     {
         $params = array(
             'name' => $this->name,
+            'first_name' => $this->first_name,
+            'last_name' => $this->last_name,
             'passw' => $this->passw,
             'email' => $this->email,
             'color' => $this->color ? $this->color : '',
@@ -96,9 +100,8 @@ class UsersEntity extends FpsEntity
         );
 		
         if ($this->id) $params['id'] = $this->id;
-        $Register = Register::getInstance();
 		
-        return $Register['DB']->save('users', $params);
+        return parent::save('users', $params);
     }
 	
 

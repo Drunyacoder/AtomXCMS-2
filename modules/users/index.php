@@ -2708,6 +2708,18 @@ Class UsersModule extends Module {
 					'min_lenght' => 3,
 					'pattern' => V_LOGIN,
 				),
+				'first_name' => array(
+					'required' => 'editable',
+					'max_lenght' => 20,
+					'min_lenght' => 3,
+					'pattern' => V_LOGIN,
+				),
+				'last_name' => array(
+					'required' => 'editable',
+					'max_lenght' => 20,
+					'min_lenght' => 3,
+					'pattern' => V_LOGIN,
+				),
 				'password' => array(
 					'min_lenght' => Config::read('min_password_lenght'),
 					'required' => true,
@@ -2777,6 +2789,18 @@ Class UsersModule extends Module {
 				),
 			),
 			'update' => array(
+				'first_name' => array(
+					'required' => 'editable',
+					'max_lenght' => 20,
+					'min_lenght' => 3,
+					'pattern' => V_LOGIN,
+				),
+				'last_name' => array(
+					'required' => 'editable',
+					'max_lenght' => 20,
+					'min_lenght' => 3,
+					'pattern' => V_LOGIN,
+				),
 				'password' => array(
 					'min_lenght' => Config::read('min_password_lenght'),
 					'required' => true,
@@ -2848,6 +2872,18 @@ Class UsersModule extends Module {
 			'update_by_admin' => array(
 				'name' => array(
 					'required' => true,
+					'max_lenght' => 20,
+					'min_lenght' => 3,
+					'pattern' => V_LOGIN,
+				),
+				'first_name' => array(
+					'required' => 'editable',
+					'max_lenght' => 20,
+					'min_lenght' => 3,
+					'pattern' => V_LOGIN,
+				),
+				'last_name' => array(
+					'required' => 'editable',
 					'max_lenght' => 20,
 					'min_lenght' => 3,
 					'pattern' => V_LOGIN,

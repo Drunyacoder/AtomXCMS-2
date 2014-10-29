@@ -55,8 +55,8 @@ class ShopOrdersEntity extends FpsEntity
 			'last_name' => (string)$this->last_name,
 		);
 		if ($this->id) $params['id'] = $this->id;
-		$Register = Register::getInstance();
-		return $Register['DB']->save('shop_orders', $params);
+
+		return parent::save('shop_orders', $params);
 	}
 	
 	

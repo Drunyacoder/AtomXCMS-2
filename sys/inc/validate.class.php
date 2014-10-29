@@ -193,7 +193,8 @@ class Validate {
 						
 						
 					} else if (!empty($params['required']) && $params['required'] === 'editable') {
-						$fields_settings = $Register['Config']->read('fields', $this->module);
+						$fields_settings = Config::read('fields', $this->module);
+						if (!$fields_settings) $fields_settings = array();
 						
 						if (empty($_POST[$title]) && in_array($title, $fields_settings)) { 
 							$errors[] = $this->getErrorMessage('required', $params, $title);

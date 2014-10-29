@@ -113,6 +113,20 @@ $settingsInfo = array(
             'checked' => 'checked',
         ),
     ),
+    'sub_first_name' => array(
+        'type' => 'checkbox',
+        'title' => __('First name'),
+        'fields' => 'fields',
+        'value' => 'first_name',
+        'checked' => '1',
+    ),
+    'sub_last_name' => array(
+        'type' => 'checkbox',
+        'title' => __('Last name'),
+        'fields' => 'fields',
+        'value' => 'last_name',
+        'checked' => '1',
+    ),
     'sub_keystring' => array(
         'type' => 'checkbox',
         'title' => __('Keystring (captcha)'),

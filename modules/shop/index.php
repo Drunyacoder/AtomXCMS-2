@@ -297,6 +297,12 @@ Class ShopModule extends Module {
                     if ($quantity == 0) {
                         unset($basket['products'][$k]);
                     } else {
+						if ($entity->getQuantity() < $quantity) {
+							$this->showInfoMessage(
+								sprintf(__('Not enough quantity of "%s"', $this->module), h($entity->getTitle())), 
+								$this->getModuleURL()
+							);
+						}
                         $basket['products'][$k]['quantity'] = $quantity;
                     }
                 }
@@ -305,6 +311,13 @@ Class ShopModule extends Module {
 		
 		
         if ($push && $quantity > 0) {
+			if ($entity->getQuantity() < $quantity) {
+				$this->showInfoMessage(
+					sprintf(__('Not enough quantity of "%s"', $this->module), h($entity->getTitle())), 
+					$this->getModuleURL()
+				);
+			}
+		
             array_push($basket['products'], array(
 				'id' => $entity->getId(),
 				'title' => $entity->getTitle(),
@@ -395,7 +408,18 @@ Class ShopModule extends Module {
             $total = $_total;
         }
 		
+		
         $fields = $this->Register['Validate']->getAndMergeFormPost($this->Register['action'], array(), true, true);
+		if (!empty($_SESSION['user'])) {
+			$user = $_SESSION['user'];
+			
+			if (!empty($user['first_name'])) 
+				$fields['first_name'] = $user['first_name'];
+			if (!empty($user['last_name'])) 
+				$fields['last_name'] = $user['last_name'];
+			if (!empty($user['telephone'])) 
+				$fields['telephone'] = $user['telephone'];
+		}
         
 		
 		if (!empty($errors)) 
@@ -834,10 +858,15 @@ Class ShopModule extends Module {
 		
 		$rules = array(
 			'create_order' => array(
-				'name' => array(
+				'first_name' => array(
 					'required' => true,
-					'max_lenght' => 50,
-					'title' => 'Name',
+					'max_lenght' => 30,
+					'title' => 'First name',
+				),
+				'last_name' => array(
+					'required' => true,
+					'max_lenght' => 30,
+					'title' => 'Last name',
 				),
 				'telephone' => array(
 					'required' => true,

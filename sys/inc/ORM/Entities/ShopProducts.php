@@ -77,9 +77,8 @@ class ShopProductsEntity extends FpsEntity
 			'quantity' => intval($this->quantity),
 		);
 		if ($this->id) $params['id'] = $this->id;
-		$Register = Register::getInstance();
-		$self_id = $Register['DB']->save('shop_products', $params);
-		if (!$this->id) $this->id = intval($self_id);
+
+		parent::save('shop_products', $params);
 		
 		if ($full === true) $this->__saveAttributes();
 		return $this->id;
