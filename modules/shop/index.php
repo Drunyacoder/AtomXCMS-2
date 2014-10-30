@@ -505,11 +505,12 @@ Class ShopModule extends Module {
                 'delivery_address' => $fields['address'],
                 'delivery_type_id' => $fields['delivery_type'],
                 'telephone' => $fields['telephone'],
-                'first_name' => trim(strstr($fields['name'], ' ', true)),
-                'last_name' => trim(strstr($fields['name'], ' ')),
+                'first_name' => trim($fields['first_name']),
+                'last_name' => trim($fields['last_name']),
             );
             $order_id = $ordersEntity($order_data)->save();
-
+		
+		
             foreach ($basket['products'] as $row) {
                 $ordersProductsEntity(array(
                     'order_id' => $order_id,
@@ -518,6 +519,7 @@ Class ShopModule extends Module {
                 ))->save();
             }
 
+			
             // Clear basket
             $basket['total'] = 0;
             $basket['products'] = array();

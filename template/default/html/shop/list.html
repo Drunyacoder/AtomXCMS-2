@@ -25,15 +25,29 @@ Current context:
 					{% endif %}
 				</div>
 				<a class="title" href="{{ entity.entry_url }}"><h2>{{ entity.title|escape }}</h2></a>
-				<div class="product-price">
+				
+				<div class="{% if entity.final_price != entity.price %}outdent{% endif %}">
+					{% set price_class = '' %}
+					{% if entity.quantity == 0 %}
+						<div class="not-available">{{ 'Not available'|lang('shop') }}</div>
+						{% set price_class = 'na' %}
+					{% elseif entity.quantity <= 3 %}
+						<div class="last-products">{{ 'Last products'|lang('shop') }}</div>
+						{% set price_class = 'lp' %}
+					{% endif %}
+				</div>
+				
+				<div class="product-price {{ price_class }}">
 					{% if entity.final_price != entity.price %}
 						<span class="product-new-price">{{ entity.final_price|num_format(2, ',', ' ') }}</span>
 						<span class="product-old-price">{{ entity.price|num_format(2, ',', ' ') }}</span>
 					{% else %}
-						<span class="">{{ entity.final_price|num_format(2, ',', ' ') }}</span>
+						<span class="product-plain-price">{{ entity.final_price|num_format(2, ',', ' ') }}</span>
 					{% endif %}
 				</div>
-				<button class="buy-button atm_shop-add_to_basket">{{ 'Add to basket'|lang('shop') }}</button>
+				
+				{% if entity.quantity >= 1 %}
+				<button class="buy-button atm_shop-add_to_basket">{{ 'Buy'|lang('shop') }}</button>
                 <!--Add to basket modal window-->
                 <section class="shop-modal-window" style="display:none;">
                     <header>
@@ -65,7 +79,8 @@ Current context:
                     <button class="button atm_shop-cancel_basket">{{ 'Cancel'|lang }}</button>
                 </section>
                 <!--/Add to basket modal window-->
-
+				{% endif %}
+				
 				<div class="clear"></div>
 				<div class="product-description">
 				{% for attr in entity.attributes %}

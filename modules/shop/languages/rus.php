@@ -70,6 +70,9 @@ return array(
         'Products in the basket' => 'Товаров в корзине',
         'color' 			=> 'Цвет',
         'size' 				=> 'Размер',
+        'Last products' 	=> 'Товар заканчивается',
+        'Buy' 				=> 'Купить',
+        'Not available' 	=> 'Нет в наличии',
     ),
 );
 
