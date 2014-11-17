@@ -403,6 +403,7 @@ $array[] = "DROP TABLE IF EXISTS `{$set['db']['prefix']}foto`";
 $array[] = "CREATE TABLE `{$set['db']['prefix']}foto` (
   `id` int(11) NOT NULL auto_increment,
   `title` varchar(255) character set utf8 NOT NULL,
+  `clean_url_title` varchar(255) DEFAULT '' NOT NULL,
   `description` TEXT character set utf8 NOT NULL,
   `filename` VARCHAR( 255 ) NOT NULL,
   `views` int(11) default '0',

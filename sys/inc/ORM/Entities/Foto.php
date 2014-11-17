@@ -29,6 +29,7 @@ class FotoEntity extends FpsEntity
 	
 	protected $id;
 	protected $title;
+	protected $clean_url_title;
 	protected $description;
 	protected $views;
 	protected $date;
@@ -46,6 +47,7 @@ class FotoEntity extends FpsEntity
 	{
 		$params = array(
 			'title' => $this->title,
+			'clean_url_title' => $this->clean_url_title,
 			'description' => $this->description,
 			'views' => intval($this->views),
 			'date' => $this->date,
@@ -73,36 +75,19 @@ class FotoEntity extends FpsEntity
 	}
 
 
-    /**
-     * @param $author
-     */
-    public function setAuthor($author)
-   	{
-   		$this->author = $author;
-   	}
-
 
 
     /**
-     * @return object
+     * @param string $title
      */
-	public function getAuthor()
-	{
-        if (!$this->checkProperty('author')) {
-            $Model = new FotoModel('foto');
-            $this->author = $Model->getAuthorByEntity($this); // TODO (function is not exists)
+	public function setTitle($title)
+    {
+        $Register = Register::getInstance();
+        if (!empty($this->title) && $this->title !== $title) {
+            $Register['URL']->saveOldEntryUrl($this, 'news', $title);
         }
-		return $this->author;
-	}
-	
-	
-
-    /**
-     * @param $category
-     */
-    public function setCategory($category)
-   	{
-   		$this->category = $category;
-   	}
+        $this->title = $title;
+        $this->clean_url_title = $Register['URL']->getUrlByTitle($title, false);
+    }
 
 }

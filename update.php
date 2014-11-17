@@ -15,6 +15,7 @@ $Register['DB']->query("ALTER TABLE news ADD clean_url_title VARCHAR(255) DEFAUL
 $Register['DB']->query("ALTER TABLE stat ADD clean_url_title VARCHAR(255) DEFAULT '' NOT NULL");
 $Register['DB']->query("ALTER TABLE loads ADD clean_url_title VARCHAR(255) DEFAULT '' NOT NULL");
 $Register['DB']->query("ALTER TABLE themes ADD clean_url_title VARCHAR(255) DEFAULT '' NOT NULL");
+$Register['DB']->query("ALTER TABLE foto ADD clean_url_title VARCHAR(255) DEFAULT '' NOT NULL");
 
 
 // Add indexes
