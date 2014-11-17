@@ -32,6 +32,7 @@ class ShopProductsEntity extends FpsEntity
 	protected $stock_description;
 	protected $attributes_group_id;
 	protected $title;
+	protected $clean_url_title;
 	protected $description;
 	protected $category_id;
 	protected $vendor_id;
@@ -57,6 +58,7 @@ class ShopProductsEntity extends FpsEntity
 			'stock_description' => (string)$this->stock_description,
 			'attributes_group_id' => intval($this->attributes_group_id),
 			'title' => (string)$this->title,
+			'clean_url_title' => (string)$this->clean_url_title,
 			'description' => (string)$this->description,
 			'category_id' => intval($this->category_id),
 			'vendor_id' => intval($this->vendor_id),
@@ -75,9 +77,8 @@ class ShopProductsEntity extends FpsEntity
 			'quantity' => intval($this->quantity),
 		);
 		if ($this->id) $params['id'] = $this->id;
-		$Register = Register::getInstance();
-		$self_id = $Register['DB']->save('shop_products', $params);
-		if (!$this->id) $this->id = intval($self_id);
+
+		parent::save('shop_products', $params);
 		
 		if ($full === true) $this->__saveAttributes();
 		return $this->id;
@@ -128,6 +129,10 @@ class ShopProductsEntity extends FpsEntity
 			? $this->vendor->getDiscount() : 0;
 		$category_discount = (!empty($this->category) && is_object($this->category))
 			? $this->category->getDiscount() : 0;
+			
+		$discounts_array = array($discount);
+		if ($vendor_discount) $discounts_array[] = $discounts_array;
+		if ($category_discount) $discounts_array[] = $category_discount;
 		
 		$algorithm = Config::read('shop.discount_algorithm');
 		switch ($algorithm) {
@@ -148,10 +153,10 @@ class ShopProductsEntity extends FpsEntity
 				break;
 			default:
 			case 4:
-				$discount = max($discount, $vendor_discount, $category_discount);
+				$discount = max($discounts_array);
 				break;
 			case 5:
-				$discount = min($discount, $vendor_discount, $category_discount);
+				$discount = min($discounts_array);
 				break;
 		}
 		

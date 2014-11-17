@@ -138,6 +138,8 @@ $allowedTemplateFiles = array(
     'main',
     'list',
     'material',
-    'cart',
-    'order',
+    'order_form',
+    'filters',
+    'complete_order',
+    'input',
 );

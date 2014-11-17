@@ -18,20 +18,8 @@
 <link type="text/css" rel="StyleSheet" href="{{ template_path }}/css/atm-shop.css" />
 <script language="JavaScript" type="text/javascript" src="{{ www_root }}/sys/js/jquery.js"></script>
 <script language="JavaScript" type="text/javascript" src="{{ www_root }}/sys/js/send_message.js"></script>
-<!--<script src="{{ www_root }}/sys/js/jquery.form.min.js"></script>-->
 {{ editor_head }}
-<!-- <script language="JavaScript" type="text/javascript" src="{{ www_root }}/sys/js/textarearesizer.js"></script> -->
-<script type="text/javascript">
-{% if fps_user_id %}
-	check_pm('{{ fps_user_id }}');
-{% endif %}
 
-/*
-$(document).ready(function() {
-$('textarea.text-area:not(.processed)').TextAreaResizer();
-});
-*/
-</script>
 <!-- FancyBOX -->
 <link type="text/css" rel="StyleSheet" href="{{ www_root }}/sys/js/fancybox/css/fancy.css" />
 <script type="text/javascript" src="{{ www_root }}/sys/js/fancybox/jquery.fancybox.js"></script>
@@ -41,10 +29,23 @@ $(document).ready(function() {
 });
 </script>
 <!--/FancyBOX -->
+
+<!--Shop module scripts-->
+<script type="text/javascript">
+// Set up some variables to make them available within the included script
+AtomX = AtomX || {};
+AtomX.module = "{{ module }}";
+AtomX.messages = {
+    error: "{{ 'Error'|lang }}",
+    add_to_basket_error: "{{ 'Some error during the adding product to basket'|lang('shop') }}"
+};
+</script>
+<script language="JavaScript" type="text/javascript" src="{{ template_path }}/js/shop-main.js"></script>
+<!--/Shop module scripts-->
 </head>
 
 
-<body>
+<body class="atm-shop">
 <div class="headpanel">
  <div class="linksap">
 <div class="activewindow">
@@ -64,37 +65,46 @@ $(document).ready(function() {
 <div><a href="http://atomx.net/users/info/1/">{{ 'Contacts'|lang }}</a></div>
 <div><a href="https://github.com/Drunyacoder/AtomXCMS-2">GitHub</a></div>
 <div><a href="http://atomx.net/forum/">{{ 'Support'|lang }}</a></div></div>
- <div class="userlinksap">
-{% if fps_user_id %}
-<div><a href="{{ get_url('/users/pm/') }}">{{ 'Message'|lang }}</a></div>
-<div class="activewindow"><a href="{{ personal_page_link }}">{{ fps_user_name }}</a><div class="miniprofileadm" style="width: 300px;padding: 10px;{% if fps_admin_access == 1 %}height:150px;{% endif %}">
-    <span class="avatarminpro"><img class="avatar" src="{{ getAvatar(fps_user.id) }}"></span>
-    <span class="uslinkminpro">
-        <a href="{{ personal_page_link }}">{{ 'Profile'|lang }}</a>
-        <a href="{{ get_url('/users/pm_send_form/') }}">{{ 'Send a message'|lang }}</a>
-		<a href="{{ get_url('/users/pm/') }}">{{ 'Message'|lang }}</a>
-		<a href="{{ get_url('/users/edit_form/' ~ fps_user_id) }}">{{ 'Edit profile'|lang }}</a>
-        {% if fps_admin_access == 1 %}
-		<a href="{{ get_url('/admin/', false, false) }}" target="_blank">{{ 'panel'|lang }}</a>
-		{% endif %}
-    </span>
-</div></div>
-<div><a href="{{ get_url('/users/logout/') }}">{{ 'Exit'|lang }}</a></div>
-{% else %}
-<div><a href="{{ get_url('/users/add_form/') }}">{{ 'Registration'|lang }}</a></div>
-<div class="activewindow login"><a href="{{ get_url('/users/login_form/') }}">{{ 'Enter'|lang }}</a>
-<div style="width: 258px;"><span>
-<form id="mloginForm"  action="{{ get_url('/users/login/?ajax') }}" method="post">
-	{{ 'Login'|lang }}: <input type="text" class="loginad" name="username">
-	{{ 'Password'|lang }}: <input type="password" class="passad" name="password">
-	{{ 'The autologin'|lang }}: <input type="checkbox" name="autologin" value="1">
-	<button type="submit" onclick="sendu('mloginForm'); return false" class="buttonadm">{{ 'Enter'|lang }}</button>
-	<input type="hidden" value="submit" name="submitForm">
-</form>
-</span></div></div>
-{% endif %}
-<div><a href="{{ get_url('/users/') }}">{{ 'Users'|lang }}</a></div>
- </div>
+<div class="userlinksap">
+    <section id="mini-basket" class="mini-basket{% if shop_basket.total > 0 %} active{% endif %}">
+		<a class="atm_shop-create_order" href="javascript:void(0)">{{ 'Basket'|lang('shop') }}</a>
+        <div class="wrapper">
+			<header>
+				{{ 'Products in the basket'|lang('shop') }}:
+				<span id="products-cnt">{{ shop_basket.total_products }}</span>
+			</header>
+			<div class="total">{{ 'Bill'|lang('shop') }}: <span class="sum">{{ shop_basket.total|num_format(2, ',', ' ') }}</span></div>
+			<button onClick="window.location.href='{{ www_root }}/{{ module }}/create_order_form/'" class="buy-button">{{ 'Create order'|lang('shop') }}</button>
+        </div>
+    </section>
+    {% if fps_user_id %}
+        <div class="activewindow"><a href="{{ personal_page_link }}">{{ fps_user_name }}</a>
+            <div class="miniprofileadm" style="width: 300px;padding: 10px;{% if fps_admin_access == 1 %}height:150px;{% endif %}">
+                <span class="avatarminpro"><img class="avatar" src="{{ getAvatar(fps_user.id) }}"></span>
+                <span class="uslinkminpro">
+                    <a href="{{ personal_page_link }}">{{ 'Profile'|lang }}</a>
+                    <a href="{{ get_url('/users/edit_form/' ~ fps_user_id) }}">{{ 'Edit profile'|lang }}</a>
+                    {% if fps_admin_access == 1 %}
+                    <a href="{{ get_url('/admin/', false, false) }}" target="_blank">{{ 'panel'|lang }}</a>
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+        <div><a href="{{ get_url('/users/logout/') }}">{{ 'Exit'|lang }}</a></div>
+    {% else %}
+        <div><a href="{{ get_url('/users/add_form/') }}">{{ 'Registration'|lang }}</a></div>
+        <div class="activewindow login"><a href="{{ get_url('/users/login_form/') }}">{{ 'Enter'|lang }}</a>
+        <div style="width: 258px;"><span>
+        <form id="mloginForm"  action="{{ get_url('/users/login/?ajax') }}" method="post">
+            {{ 'Login'|lang }}: <input type="text" class="loginad" name="username">
+            {{ 'Password'|lang }}: <input type="password" class="passad" name="password">
+            {{ 'The autologin'|lang }}: <input type="checkbox" name="autologin" value="1">
+            <button type="submit" onclick="sendu('mloginForm'); return false" class="buttonadm">{{ 'Enter'|lang }}</button>
+            <input type="hidden" value="submit" name="submitForm">
+        </form>
+        </span></div></div>
+    {% endif %}
+</div>
 </div>
 <div class="global">
 <div class="header">
@@ -150,7 +160,7 @@ $(document).ready(function() {
        </form> 
 	  </div>
 	</div>
-	<!-----------------------------------------CONTENT/---------------------------------------------------------->
+	<!------------------------------------CONTENT/--------------------------------------->
     <div class="content">
 	<div class="spedbar">
 		<div>
@@ -172,46 +182,28 @@ $(document).ready(function() {
 			{% if pagination %}<div class="mezdyblock"><span class="meta">{{ meta }}</span><div class="paginator">
 			<div class="pages">{{ 'Pages:'|lang }} {{ pagination }}</div></div></div>{% endif %}
             {{ content }}
-			<div class="paginator"><div class="pages">{{ comments_pagination }}</div></div>
-			{{ comments }}
-			<div class="paginator"><div class="pages">{{ comments_pagination }}</div></div>
-			{{ comments_form }}
 		</div>
 		<div class="rightbloks">
+			{% if action != 'create_order_form' and action != 'complete_order' %}
 			<div class="block">
-			  <div class="blockstop">{{ 'Product filters'|lang }}</div>
+			  <div class="blockstop">{{ 'Product filters'|lang('shop') }}</div>
 			  <div class="blokscontent products_filters">{{ products_filters }}</div>
 			</div>
-			<!--<div class="block">
-			  <div class="blockstop">{{ 'Voting'|lang }}</div>
-			  <div class="blokscontent"><ul class="mini_list">{{ pl_votes }}</ul></div>
-			</div>
+			{% else %}
 			<div class="block">
-			  <div class="blockstop">{{ 'Top news'|lang }}</div>
-			  <div class="blokscontent"><ul class="mini_list">{{ pop_news }}</ul></div>
+			  <div class="blockstop">{{ 'Features products'|lang('shop') }}</div>
+			  <div class="blokscontent products_filters">{{ 'Features products'|lang('shop') }}</div>
 			</div>
-			<div class="block">
-			  <div class="blockstop">{{ 'Recent comments'|lang }}</div>
-			  <div class="blokscontent last_comments">{{ last_comments }}</div>
-			</div>
-			<div class="block">
-			  <div class="blockstop">{{ 'Top users'|lang }}</div>
-			  <div class="blokscontent users_rating">{{ users_rating }}</div>
-			</div>-->
+			{% endif %}
 		</div>
 		<div class="clear"></div>
 		<div class="paginator"><div class="pages">{{ pagination }}</div></div>
 	</div>
 	<div class="clear"></div>
-	
-	<div class="material">
-           <div class="inftitle">{{ 'Now online:'|lang }} {{ all_online }}.{{ 'Registered:'|lang }} {{ users_online }}. {{ 'Guests:'|lang }} {{ guests_online }}. </div>
-	       <div class="infcont">{{ online_users_list }}</div>
-	    </div>
-	</div>
-	<!---------------------------------------------------------------------------/CONTENT----------------------------------------------------------------------------------------------->
+
+	<!-----------------------/CONTENT-------------------------------------------------------->
 </div>
-<!--------------------------------------------------------CHAT----------------------------------------------------------------------------------------------------------------------------->
+<!-----------------------------CHAT---------------------------------------------------------->
 {% if fps_chat %}
 <div class="footerbottom">
   <div class="butofooter"><a class="buttonfutokno" onclick="if($('#ochat').css('display') == 'none'){$('#ochat').show();}else{$('#ochat').hide();}">{{ 'General chat'|lang }}</a>
@@ -223,7 +215,7 @@ $(document).ready(function() {
   </div>
 </div>
 {% endif %}
-<!--------------------------------------------------------FOOTER-BUTTONS------------------------------------------------------------------>
+<!----------------------------------------FOOTER-BUTTONS-------------------------------------->
 <div class="footer">
 <div class="people"><span>{{ 'Community'|lang }}</span>
 <a href="{{ get_url('/') }}">{{ 'Home'|lang }}</a>
@@ -253,7 +245,6 @@ $(document).ready(function() {
 <!--<a href="#" class="goplus" title="Google Plus"></a>-->
 <a href="https://github.com/Drunyacoder/AtomXCMS-2" class="github" title="GitHub"></a>
 <a href="http://www.youtube.com/watch?v=7GYpzleSWUU" class="youtube" title="YouTube"></a>
-<!--<a href="#" class="skype" title="Skype"></a>-->
 <a href="{{ www_root }}/news/rss/" class="rss" title="RSS"></a>
 </div>
 <div>Generated by {{ powered_by }} {{ fps_year }}</div>
@@ -264,5 +255,6 @@ $(document).ready(function() {
 <audio id="pm-sound-notification"> 
   <source src="{{ template_path }}/sound_notify.mp3"> 
 </audio>
+<div id="main-overlay"><span id="loader"><img src="{{ www_root }}/sys/img/ajaxload.gif" alt="loading"></span></div>
 </body>
 </html>

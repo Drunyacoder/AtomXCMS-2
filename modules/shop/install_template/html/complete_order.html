@@ -12,9 +12,4 @@ Current context:
 #}-->
 
 <h1>{{ 'Congratulation! Your order have been complete. Our manager will contact with you soon.'|lang('shop') }}</h1>
-<h3>{{ 'Order info'|lang('shop') }}:</h3>
-{% for key, value in context.order %}
-    <div>
-        <span>{{ key }}: </span>{{ value|escape }}
-    </div>
-{% endfor %}
+<h3>{{ 'Order info'|lang('shop') }}: {{ context.order.id }}</h3>

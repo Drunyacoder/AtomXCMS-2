@@ -12,29 +12,54 @@ More details & documentation are located at http://atomx.net/stat/category/27/.
 - - fields (array)
 - - delivery_types (array)
 - - errors (string)
+- - action (string)
 #}-->
 
 {{ context.errors }}
-<div class="catalog">
-    <form action="">
+<section class="order-form">
+	<header>
+		<h1>{{ 'Completing order'|lang('shop') }}</h1>
+	</header>
+    <form action="{{ context.action }}" method="POST">
     {% if context.entities %}
-
+		<table class="products">
         {% for entity in context.entities %}
-            <div class="product-item">
-                <h4>{{ entity.title|escape }} ({{ entity.quantity }})</h4>
-                <div class="product-image">{{ entity.price }}({{ entity.price * entity.quantity }})</div>
-            </div>
+			<tr id="basket-product-{{ entity.id }}">
+				<td class="image">
+					{% if entity.attaches|count > 0 %}
+					<img src="/image/shop/{{ entity.attaches[0].filename }}/100/" title="{{ entity.title|escape }}" />
+					{% else %}
+					<img src="{{ www_root }}/sys/img/noimage.jpg" title="No image" />
+					{% endif %}
+				</td>
+				<td class="title">{{ entity.title|escape }}</td>
+				<td class="product-price">
+					{% if entity.final_price != entity.price %}
+					<span class="product-new-price">{{ entity.final_price|num_format(2, ',', ' ') }}</span>
+					<span class="product-old-price">{{ entity.price|num_format(2, ',', ' ') }}</span>
+					{% else %}
+					<span>{{ entity.final_price|num_format(2, ',', ' ') }}</span>
+					{% endif %}
+					&nbsp;x&nbsp; {{ entity.quantity }}
+				</td>
+				<td><button data-id="{{ entity.id }}" class="atm_shop-remove_from_basket">{{ 'Delete'|lang }}</button></td>
+			</tr>
         {% endfor %}
-        <h3>{{ context.total }}</h3>
+		</table>
+        <h3 class="total-sum">{{ 'Total sum'|lang('shop') }}: <span class="sum">{{ context.total }}</span></h3>
 
-        {% for name, params in context.fields %}
-        <div class="product-item">
-            {{ params.label|lang('shop')|escape }}<input type="text" name="{{ name|escape }}" value="{{ params.value|escape }}" /><br />
-        </div>
-        {% endfor %}
-        <input type="submit" name="send" value="{{ 'Buy'|lang('shop') }}">
+		
+		<section class="order-fields">
+			<h3>{{ 'Please fill in fields for create order' }}</h3>
+			{# {{ context.fields|show }} #}
+			{% for name, field in context.fields %}
+				{% include '/shop/input.html' %}
+			{% endfor %}
+			<div class="clear"></div>
+			<input type="submit" name="send" value="{{ 'Buy'|lang('shop') }}">
+		</section>
     {% else %}
         {{ 'Basket is empty'|lang('shop') }}
     {% endif %}
     </form>
-</div>
+</section>
