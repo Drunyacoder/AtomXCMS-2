@@ -7,7 +7,7 @@
 				 <li>{{ user.edit_profile_link }}</li>
 				 {% endif %}
 				 {% if checkAccess(['users', 'edit_users']) %}
-				 <li><a href="{{ www_root }}/users/edit_form_by_admin/{{ user.id }}">{{ __('Edit profile') }}</a></li>
+				 <li><a href="{{ www_root }}/users/edit_form_by_admin/{{ user.id }}">{{ 'Edit profile'|lang }}</a></li>
 				 {% endif %}
 				 {% if fps_user_id == user.id %}
 				 <li><a href="{{ www_root }}/users/pm/">{{ 'Private messages'|lang }}</a></li>
