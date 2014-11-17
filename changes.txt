@@ -1,5 +1,5 @@
 **************************
-v2.6 RC3            	 *☢☠
+v2.7.0 Beta            	 *☢☠
 **************************
 Фиксы
 1. Небольшой фикс валидатора.
@@ -50,10 +50,6 @@ v2.6 RC3            	 *☢☠
 3. Значительно улучшен драйвер PDO и система ORM в целом. Значительно сокращается кол-во запросов. При биндинге моделей, система сама генерирует один сложный запрос, вместо отдельных как было раньше. У нас и так меньше запросов чем где бы то ни было, а теперь мы можем бить все рекорды)).
 4. Оптимизированы некоторые запросы.
 5. Переименованы таблицы module_sections в module_categories. Модели и сущности тоже заменены.
-	RENAME TABLE `news_sections` TO `news_categories`;
-	RENAME TABLE `foto_sections` TO `foto_categories`;
-	RENAME TABLE `loads_sections` TO `loads_categories`;
-	RENAME TABLE `stat_sections` TO `stat_categories`;
 6. Переделана функция getOrderParam для поддержки импорта настроек сортировки из инсталируемых модулей.
 7. getOrderParam перенесена в модель и поддерживает сортировку по вложенным сущностям, например comments.title.
 8. Глобальная функция getOrderParam при этом удалена за ненадобностью.
@@ -70,35 +66,12 @@ v2.6 RC3            	 *☢☠
 19. добавлена поддержка отрицательных чисел(Например {{ 'string'|substr(0, -4) }}).
 20. Переделана работа ЧПУ, добавленна поддержка старых УРЛ(например после изменения заголовка материала, меняется его УРЛ, раньше бы старые ссылки перестали работать, теперь будет происходить редирект(301)).
 В том числе появилась поддержка русскоязычных ЧПУ(/news/Бесплатная_Сисстема_Управления_Контентом.html).
-	ALTER TABLE news ADD clean_url_title VARCHAR(255) DEFAULT '' NOT NULL;
-	ALTER TABLE stat ADD clean_url_title VARCHAR(255) DEFAULT '' NOT NULL;
-	ALTER TABLE loads ADD clean_url_title VARCHAR(255) DEFAULT '' NOT NULL;
-	ALTER TABLE themes ADD clean_url_title VARCHAR(255) DEFAULT '' NOT NULL;
 21. Добавлен фильтр append.
 22. Добавлена возможность настройки мета-тегов title, description и keywords, испульзуя набор параметров(entity_title, category_title, module, page). Есть поддерка условного оператора IF.
 23. Добавлены ЧПУ для форума. Теперь ссылка на просмотр темы будет выглядеть так же как ссылка на новость, например(при включенной поддержке ЧПУ).
 24. Добавлена защита от ошибок синтаксиса в мета тегах. Если парсер не может разобрать синтаксис, просто вырезаются все управляющие конструкции и тег показывается без них. В противном случае это приводило бы к падению скрипта.
 25. Добавлен тип поля texarea в на страницах настроек в админке. Теперь такие настройки как title, description и некоторые другие имеют этот тип поля.
 26. Добавлены индексы в таблицы БД. Значительный прирост скорости при средних и больших размерах базы.
-	ALTER TABLE `forums` ADD INDEX (`in_cat`);
-	ALTER TABLE `loads` ADD INDEX (`category_id`, `author_id`);
-	ALTER TABLE `foto` ADD INDEX (`category_id`, `author_id`);
-	ALTER TABLE `news` ADD INDEX (`category_id`, `author_id`);
-	ALTER TABLE `stat` ADD INDEX (`category_id`, `author_id`);
-	ALTER TABLE `comments` ADD INDEX (`entity_id`, `user_id`);
-	ALTER TABLE `messages` ADD INDEX (`to_user`, `from_user`);
-	ALTER TABLE `posts` ADD INDEX (`id_theme`);
-	ALTER TABLE `themes` ADD INDEX (`id_forum`);
-	ALTER TABLE `users_votes` ADD INDEX (`from_user`, `to_user`);
-	ALTER TABLE `loads_add_content` ADD INDEX (`field_id`, `entity_id`);
-	ALTER TABLE `news_add_content` ADD INDEX (`field_id`, `entity_id`);
-	ALTER TABLE `stat_add_content` ADD INDEX (`field_id`, `entity_id`);
-	ALTER TABLE `users_add_content` ADD INDEX (`field_id`, `entity_id`);
-	ALTER TABLE `users_warnings` ADD INDEX (`user_id`, `admin_id`);
-	ALTER TABLE `loads_attaches` ADD INDEX (`user_id`);
-	ALTER TABLE `news_attaches` ADD INDEX (`user_id`);
-	ALTER TABLE `stat_attaches` ADD INDEX (`user_id`);
-	ALTER TABLE `forum_attaches` ADD INDEX (`post_id`, `user_id`);
 27. Добавлено автоопределение подкаталога, в который происходит установка(если она, конечно, происходит в подкаталоге).
 28. Добавлен фильтр num_format аналог number_format в PHP.
 29. Добавлена возможность делать подписи к изображениям-аттачам и в бб-коде img.
