@@ -532,7 +532,7 @@ Class FotoModule extends Module {
 		$catModel = new $className;
 		$sql = $catModel->getCollection(array('id' => $in_cat));
 
-		if (empty($sql)) $errors .= '<li>'.__('Can not find category').'</li>'."\n";
+		if (empty($sql)) $errors[] = '<li>'.__('Can not find category').'</li>'."\n";
 		
 
 		// errors
@@ -729,7 +729,7 @@ Class FotoModule extends Module {
 		$className = $this->Register['ModManager']->getModelNameFromModule($this->module . 'Categories');
 		$catModel = new $className;
 		$cats = $catModel->getById($in_cat);	
-		if (!$cats) $errors .= '<li>' . __('Can not find category') .'</li>'."\n";
+		if (!$cats) $errors[] = '<li>' . __('Can not find category') .'</li>'."\n";
 
 		
 		// errors

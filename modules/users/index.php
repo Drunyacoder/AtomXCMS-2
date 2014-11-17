@@ -289,14 +289,14 @@ Class UsersModule extends Module {
 		// Additional fields checker
 		if (is_object($this->AddFields)) {
 			$_addFields = $this->AddFields->checkFields();
-			if (is_string($_addFields)) $errors .= $_addFields; 
+			if (is_string($_addFields)) $errors[] = $_addFields;
 		}
 
 	
 		// Проверяем поле "код"
 		if (!empty($keystring)) {									
 			if (!$this->Register['Protector']->checkCaptcha('reguser', $keystring))
-				$errors .= '<li>' . __('Wrong protection code') . '</li>'."\n";
+				$errors[] = '<li>' . __('Wrong protection code') . '</li>'."\n";
 		}
 		$this->Register['Protector']->cleanCaptcha('reguser');
 
@@ -305,7 +305,7 @@ Class UsersModule extends Module {
 		$new_name = preg_replace( "#[^- _0-9a-zА-Яа-я]#i", "", $name );
 		// Формируем SQL-запрос
         $res = $this->Model->getSameNics($new_name);
-		if ($res) $errors .= '<li>' . sprintf(__('Name already exists'), $new_name) . '</li>'."\n";
+		if ($res) $errors[] = '<li>' . sprintf(__('Name already exists'), $new_name) . '</li>'."\n";
 		
 		
 		/* check avatar */
@@ -318,7 +318,7 @@ Class UsersModule extends Module {
 				@$sizes = resampleImage($path, $path, 100);
 				if (!$sizes) {
 					@unlink($path);
-					$errors .= '<li>' . __('Some error in avatar') . '</li>'."\n";
+					$errors[] = '<li>' . __('Some error in avatar') . '</li>'."\n";
 				}
 			}
 		}
@@ -785,7 +785,7 @@ Class UsersModule extends Module {
         }
 		
 		
-		$errors .= $this->Register['Validate']->check($this->Register['action']);
+		$errors = $this->Register['Validate']->check($this->Register['action']);
 		
 		
 		$tmp_key = rand(0, 9999999);
@@ -800,10 +800,10 @@ Class UsersModule extends Module {
 				@$sizes = resampleImage($path, $path, 100);
 				if (!$sizes) {
 					@unlink($path);
-					$errors .= '<li>' . __('Some error in avatar') . '</li>'."\n";
+					$errors[] = '<li>' . __('Some error in avatar') . '</li>'."\n";
 				}
 			} else {
-				$errors .= '<li>' . __('Some error in avatar') . '</li>'."\n";
+				$errors[] = '<li>' . __('Some error in avatar') . '</li>'."\n";
 			}
 		}
 
@@ -1033,7 +1033,6 @@ Class UsersModule extends Module {
         }
 
 
-		$errors = '';
 		$fields = array('name', 'email', 'oldEmail', 'icq', 'jabber', 'pol', 'city', 
 			'telephone', 'byear', 'bmonth', 'bday', 'url', 'about', 'signature');
 		
@@ -1070,12 +1069,15 @@ Class UsersModule extends Module {
 		$url          = mb_substr($url, 0, 60);
 		$about        = mb_substr($about, 0, 1000);
 		$signature    = mb_substr($signature, 0, 500);
-		
+
+
+        $errors = $this->Register['Validate']->check($this->Register['action']);
+
 
 		// Additional fields
 		if (is_object($this->AddFields)) {
 			$_addFields = $this->AddFields->checkFields();
-			if (is_string($_addFields)) $errors .= $_addFields; 
+			if (is_string($_addFields)) $errors[] = $_addFields;
 		}
 		
 		
@@ -1098,9 +1100,6 @@ Class UsersModule extends Module {
 		}
 		
 		
-		$errors .= $this->Register['Validate']->check($this->Register['action']);
-		
-		
 		$tmp_key = rand(0, 9999999);
 		if (!empty($_FILES['avatar']['name'])) {
 		
@@ -1113,10 +1112,10 @@ Class UsersModule extends Module {
 				@$sizes = resampleImage($path, $path, 100);
 				if (!$sizes) {
 					@unlink($path);
-					$errors .= '<li>' . __('Some error in avatar') . '</li>'."\n";
+					$errors[] = '<li>' . __('Some error in avatar') . '</li>'."\n";
 				}
 			} else {
-				$errors .= '<li>' . __('Some error in avatar') . '</li>'."\n";
+				$errors[] = '<li>' . __('Some error in avatar') . '</li>'."\n";
 			}
 		}
 
@@ -1434,9 +1433,9 @@ Class UsersModule extends Module {
 
 
 			if (empty($res[0]))
-				$errors .= '<li>' . sprintf(__('No user with this name'), $to) . '</li>'."\n";
+				$errors[] = '<li>' . sprintf(__('No user with this name'), $to) . '</li>'."\n";
 			if ((count($res) && is_array($res)) && ($res[0]->getId() == $_SESSION['user']['id']) )
-				$errors .= '<li>' . __('You can not send message to yourself') . '</li>'."\n";
+				$errors[] = '<li>' . __('You can not send message to yourself') . '</li>'."\n";
 
 
 			//chek max count messages
@@ -1460,10 +1459,10 @@ Class UsersModule extends Module {
 
 
 				if (!empty($cnt_to) && $cnt_to >= Config::read('max_count_mess', 'users')) {
-					$errors .= '<li>' . __('This user has full  messagebox') . '</li>'."\n";
+					$errors[] = '<li>' . __('This user has full  messagebox') . '</li>'."\n";
 				}
 				if (!empty($cnt_from) && $cnt_from >= Config::read('max_count_mess', 'users')) {
-					$errors .= '<li>' . __('You have full  messagebox') . '</li>'."\n";
+					$errors[] = '<li>' . __('You have full  messagebox') . '</li>'."\n";
 				}
 			}
 		}
@@ -1892,7 +1891,7 @@ Class UsersModule extends Module {
 			$to = preg_replace("#[^- _0-9a-zа-яА-Я]#ui", '', $toUser);
 			$user = $this->Model->getByName($to);
 			if (empty($user))				
-				$errors .= '<li>' . sprintf(__('No user with this name'), $to) . '</li>'."\n";
+				$errors[] = '<li>' . sprintf(__('No user with this name'), $to) . '</li>'."\n";
 		}
 		
 		// Если были допущены ошибки при заполнении формы -
@@ -1999,7 +1998,7 @@ Class UsersModule extends Module {
 		
 		// Защита от перебора пароля - при каждой неудачной попытке время задержки увеличивается
 		if (isset($_SESSION['FpsForm']['count']) && $_SESSION['FpsForm']['count'] > time()) {
-			$errors .= '<li>' . sprintf(__('You must wait'), ($_SESSION['FpsForm']['count'] - time())) . '</li>';
+			$errors[] = '<li>' . sprintf(__('You must wait'), ($_SESSION['FpsForm']['count'] - time())) . '</li>';
 		}
 
 		// Обрезаем лишние пробелы
@@ -2011,7 +2010,7 @@ Class UsersModule extends Module {
 		// случае, если поля не пустые и не содержат недопустимых символов
 		if (empty($errors)) {
 			$user = $this->Model->getByNamePass($name, $password);
-			if (empty($user)) $errors .= '<li>' . __('Wrong login or pass') . '</li>'."\n";
+			if (empty($user)) $errors[] = '<li>' . __('Wrong login or pass') . '</li>'."\n";
 		}
 
 		

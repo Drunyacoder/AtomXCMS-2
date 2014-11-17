@@ -624,17 +624,17 @@ Class LoadsModule extends Module {
     {
 		//turn access
 		$this->ACL->turn(array($this->module, 'add_materials'));
-		$errors  = '';
+
+
+        $errors = $this->Register['Validate']->check($this->Register['action']);
 
 
         // Check additional fields if an exists.
         // This must be doing after define $error variable.
         if (is_object($this->AddFields)) {
             $_addFields = $this->AddFields->checkFields();
-            if (is_string($_addFields)) $errors .= $_addFields;
+            if (is_string($_addFields)) $errors[] = $_addFields;
         }
-		
-		$errors .= $this->Register['Validate']->check($this->Register['action']);
 
 
 		$fields = array('description', 'tags', 'sourse', 'sourse_email', 'sourse_site', 'download_url', 'download_url_size');
@@ -681,7 +681,7 @@ Class LoadsModule extends Module {
 
         $sectionModel = $this->Register['ModManager']->getModelInstance($this->module . 'Categories');
         $section = $sectionModel->getById($in_cat);
-        if (!$section) $errors .= '<li>' . __('Can not find category') . '</li>' . "\n";
+        if (!$section) $errors[] = '<li>' . __('Can not find category') . '</li>' . "\n";
 		
 		
 
@@ -901,7 +901,6 @@ Class LoadsModule extends Module {
     {
 		$id = (int)$id;
 		if ( $id < 1 ) redirect('/' . $this->module . '/');
-        $errors = '';
 
         $target = $this->Model->getById($id);
         if (!$target) redirect('/' . $this->module . '/');
@@ -915,14 +914,15 @@ Class LoadsModule extends Module {
         }
 
 
+        $errors = $this->Register['Validate']->check($this->Register['action']);
+
+
         // Check additional fields if an exists.
         // This must be doing after define $error variable.
         if (is_object($this->AddFields)) {
             $_addFields = $this->AddFields->checkFields();
-            if (is_string($_addFields)) $errors .= $_addFields;
+            if (is_string($_addFields)) $errors[] = $_addFields;
         }
-
-		$errors .= $this->Register['Validate']->check($this->Register['action']);
 		
 		
 		$valobj = $this->Register['Validate'];
@@ -960,7 +960,7 @@ Class LoadsModule extends Module {
 		if (!empty($in_cat)) {
 			$sectionsModel = $this->Register['ModManager']->getModelInstance($this->module . 'Categories');
 			$category = $sectionsModel->getById($in_cat);
-			if (!$category) $errors .= '<li>' . __('Can not find category') . '</li>' . "\n";
+			if (!$category) $errors[] = '<li>' . __('Can not find category') . '</li>' . "\n";
 		}
 		
 		

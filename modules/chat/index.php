@@ -124,12 +124,12 @@ class ChatModule extends Module {
 		
 		
 		// Check fields
-		$errors = '';
+        $errors = $this->Register['Validate']->check($this->Register['action']);
 		
 		
 		$valobj = $this->Register['Validate'];
 		if (!empty($name) && !$valobj->cha_val($name, V_TITLE))  
-			$errors .= '<li>' . __('Wrong chars in field "login"') . '</li>' . "\n";
+			$errors[] = '<li>' . __('Wrong chars in field "login"') . '</li>' . "\n";
 			
 			
 		// Check captcha if need exists	 
@@ -137,15 +137,13 @@ class ChatModule extends Module {
 			// Проверяем поле "код"
 			if (!empty($keystring)) {				
 				if (!$this->Register['Protector']->checkCaptcha('chatsend', $keystring))
-					$errors .= '<li>' . __('Wrong protection code') . '</li>' . "\n";
+					$errors[] = '<li>' . __('Wrong protection code') . '</li>' . "\n";
 			}
 			$this->Register['Protector']->cleanCaptcha('chatsend');
 		} else {
 			$this->Register['Validate']->disableFieldCheck('keystring');
 		}
-		
-		$errors .= $this->Register['Validate']->check($this->Register['action']);
-		
+
 		
 		/* remember name */
 		$_SESSION['chat_name'] = $name;

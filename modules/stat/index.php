@@ -588,18 +588,19 @@ Class StatModule extends Module {
 		//turn access
 		$this->ACL->turn(array($this->module, 'add_materials'));
 		$errors  = '';
-		
-		
+
+
+        $errors = $this->Register['Validate']->check($this->Register['action']);
+        $form_fields = $this->Register['Validate']->getFormFields($this->Register['action']);
+
+
 		// Check additional fields if an exists.
 		// This must be doing after define $error variable.
 		if (is_object($this->AddFields)) {
 			$_addFields = $this->AddFields->checkFields();
-			if (is_string($_addFields)) $errors .= $_addFields; 
+			if (is_string($_addFields)) $errors[] = $_addFields;
 		}
-		
-		
-		$errors .= $this->Register['Validate']->check($this->Register['action']);
-		$form_fields = $this->Register['Validate']->getFormFields($this->Register['action']);
+
 
 		// Если пользователь хочет посмотреть на сообщение перед отправкой
 		if ( isset( $_POST['viewMessage'] ) ) {
@@ -610,7 +611,7 @@ Class StatModule extends Module {
 		if (!empty($_POST['cats_selector'])) {
 			$categoryModel = $this->Register['ModManager']->getModelInstance($this->module . 'Categories');
 			$cat = $categoryModel->getById($_POST['cats_selector']);
-			if (empty($cat)) $errors .= '<li>' . __('Can not find category') . '</li>'."\n";
+			if (empty($cat)) $errors[] = '<li>' . __('Can not find category') . '</li>'."\n";
 		}
 
 
@@ -837,17 +838,18 @@ Class StatModule extends Module {
 		&& $this->ACL->turn(array($this->module, 'edit_mine_materials'), false)) === false) {
 			return $this->showInfoMessage(__('Permission denied'), '/' . $this->module . '/');
 		}
-		
-		
+
+
+        $errors .= $this->Register['Validate']->check($this->Register['action']);
+
+
 		// Check additional fields if an exists.
 		// This must be doing after define $error variable.
 		if (is_object($this->AddFields)) {
 			$_addFields = $this->AddFields->checkFields();
-			if (is_string($_addFields)) $errors .= $_addFields; 
+			if (is_string($_addFields)) $errors[] = $_addFields;
 		}
-		
-		
-		$errors .= $this->Register['Validate']->check($this->Register['action']);
+
 		
 		
 		$fields = array('description', 'tags', 'sourse', 'sourse_email', 'sourse_site');
@@ -881,7 +883,7 @@ Class StatModule extends Module {
 		if (!empty($in_cat)) {
 			$catModel = $this->Register['ModManager']->getModelInstance($this->module . 'Categories');
 			$category = $catModel->getById($in_cat);
-			if (!$category) $errors = $errors . '<li>' . __('Can not find category') . '</li>' . "\n";
+			if (!$category) $errors[] = '<li>' . __('Can not find category') . '</li>' . "\n";
 		}
 		
 	
