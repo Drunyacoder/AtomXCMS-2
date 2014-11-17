@@ -176,6 +176,36 @@ class AtmTemplateFunctions
 
             return '<a href="' . $url . 'order=' . $new_order . ($asc ? '' : '&asc=1') . '">' . $params[1] . ($active ? ' ' . ($asc ? '↑' : '↓') : '') . '</a>';
         };
+		
+		
+		/**
+		 * Checks is an user online or not.
+		 *
+		 * @param $user_id int
+		 */
+        $functions['CheckUserOnline'] = function($user_id)
+        {
+			$users = getOnlineUsers();
+			return array_key_exists($user_id, $users);
+        };
+		
+		
+		/**
+		 * Returns user rank img such as Stars or Progressbar
+		 *
+		 * @param $user_id int
+		 */
+        $functions['getUserRatingImg'] = function($user_id)
+        {
+			$Register = Register::getInstance();
+			$settingsModel = $Register['ModManager']->getModelInstance('UsersSettings');
+			$rating_settings = $settingsModel->getCollection(array('type' => 'rating'));
+			$rating_settings = (count($rating_settings) > 0) ? $rating_settings[0]->getValues() : ''; 
+			
+			$rank = getUserRating($rating, $rating_settings);
+			return $rank['img'];
+        };
+
 
 
         return $functions;

@@ -23,7 +23,7 @@
 
 class Protect
 {
-	private $phpErrorsLogMaxSize = 10500000;
+	private $phpErrorsLogMaxSize = 1000000;
 
 	public function __construct()
 	{

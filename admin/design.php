@@ -289,7 +289,7 @@ echo '<form action="' . $_SERVER['REQUEST_URI'] . '" method="POST">';
 			<?php foreach ($allowedFiles as $mod => $files):
 				$title = ('default' == $mod)
                     ? __('Default')
-                    : ((Config::read('title', $mod)) ? Config::read('title', $mod) : __(ucfirst($mod)));
+                    : __(ucfirst($mod));
 
                 if (!empty($title)):
 			?>

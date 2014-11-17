@@ -484,12 +484,6 @@ function createOptionsFromParams($offset, $limit, $selected = false) {
 }
 
 
-
-function CheckUserOnline($user_id) {
-	$users = getOnlineUsers();
-	return array_key_exists($user_id, $users);
-}
-
 /*
 * return who online
 * also we have analog in statistic module
