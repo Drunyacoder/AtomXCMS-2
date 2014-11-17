@@ -327,11 +327,12 @@ function __($key, $context = false) {
     }
 
 
-    if ($context && is_string($context)) {
+    if ($context && is_string($context) && is_array($lang[$context])) {
         if (array_key_exists($context, $lang) && array_key_exists($key, $lang[$context])) {
             return $lang[$context][$key];
         }
     }
+
     if (array_key_exists($key, $lang)) return $lang[$key];
     return $key;
 }

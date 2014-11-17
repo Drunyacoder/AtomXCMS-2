@@ -568,7 +568,7 @@ Class StatModule extends Module {
 		$navi['navigation'] = $this->_buildBreadCrumbs();
 		$this->_globalize($navi);
 		
-		
+		pr($data); die();
 		$source = $this->render('addform.html', array('context' => $data));
 		return $this->_view($source);
 	}
@@ -618,7 +618,7 @@ Class StatModule extends Module {
 		// Errors
 		if (!empty($errors)) {
 			$_SESSION['FpsForm'] = array_merge($form_fields, $_POST);
-			$_SESSION['FpsForm']['errors'] = $this->Register['DocParser']->wrapErrors($errors);
+			$_SESSION['FpsForm']['errors'] = $errors;
 			redirect('/' . $this->module . '/add_form/');
 		}
 			
