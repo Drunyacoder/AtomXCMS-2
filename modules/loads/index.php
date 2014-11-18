@@ -632,8 +632,11 @@ Class LoadsModule extends Module {
         // Check additional fields if an exists.
         // This must be doing after define $error variable.
         if (is_object($this->AddFields)) {
-            $_addFields = $this->AddFields->checkFields();
-            if (is_string($_addFields)) $errors[] = $_addFields;
+            try {
+                $_addFields = $this->AddFields->checkFields();
+            } catch (Exception $e) {
+                $errors[] = $this->AddFields->getErrors();
+            }
         }
 
 
@@ -681,7 +684,7 @@ Class LoadsModule extends Module {
 
         $sectionModel = $this->Register['ModManager']->getModelInstance($this->module . 'Categories');
         $section = $sectionModel->getById($in_cat);
-        if (!$section) $errors[] = '<li>' . __('Can not find category') . '</li>' . "\n";
+        if (!$section) $errors[] = __('Can not find category');
 		
 		
 
@@ -700,7 +703,7 @@ Class LoadsModule extends Module {
 			'download_url_size' => null, 
 			'commented' => null, 
 			'available' => null), $_POST);
-			$_SESSION['FpsForm']['errors'] = $this->Register['DocParser']->wrapErrors($errors);;
+			$_SESSION['FpsForm']['errors'] = $errors;
 			redirect('/' . $this->module . '/add_form/');
 		}
 
@@ -920,8 +923,11 @@ Class LoadsModule extends Module {
         // Check additional fields if an exists.
         // This must be doing after define $error variable.
         if (is_object($this->AddFields)) {
-            $_addFields = $this->AddFields->checkFields();
-            if (is_string($_addFields)) $errors[] = $_addFields;
+            try {
+                $_addFields = $this->AddFields->checkFields();
+            } catch (Exception $e) {
+                $errors[] = $this->AddFields->getErrors();
+            }
         }
 		
 		
@@ -960,7 +966,7 @@ Class LoadsModule extends Module {
 		if (!empty($in_cat)) {
 			$sectionsModel = $this->Register['ModManager']->getModelInstance($this->module . 'Categories');
 			$category = $sectionsModel->getById($in_cat);
-			if (!$category) $errors[] = '<li>' . __('Can not find category') . '</li>' . "\n";
+			if (!$category) $errors[] = __('Can not find category');
 		}
 		
 		
@@ -978,7 +984,7 @@ Class LoadsModule extends Module {
 			$_SESSION['FpsForm'] = array_merge(array('title' => null, 'mainText' => null, 
 				'description' => null, 'tags' => null, 'sourse' => null, 'sourse_email' => null, 'in_cat' => $in_cat,
 				'sourse_site' => null, 'download_url' => null, 'download_url_size' => null, 'commented' => null, 'available' => null), $_POST);
-			$_SESSION['FpsForm']['errors'] = $this->Register['DocParser']->wrapErrors($errors);
+			$_SESSION['FpsForm']['errors'] = $errors;
 			redirect('/' . $this->module . '/edit_form/' . $id );
 		}
 		

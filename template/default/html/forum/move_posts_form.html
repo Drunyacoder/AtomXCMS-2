@@ -1,3 +1,24 @@
+<!--{#
+For inspect an any variable use "show" filter as shown below:
+{{ context.entity|show }}
+
+It represents a variable the same way as the "var_dump" function in PHP.
+
+More details & documentation are located at http://atomx.net/stat/category/27/.
+
+Current context:
+- context (array)
+- - posts (array)
+- - theme (object)
+- - theme2 (array)
+- - action (string)
+- - errors (array)
+- - options (string)
+- - gr_access (array)
+#}-->
+
+
+
 <script type="text/javascript">
 $(function() {
     var AtomX = window.AtomX || {};
@@ -23,10 +44,14 @@ $(function() {
     return;
 });
 </script>
+
+
 {{ context.errors }}
+
+
 <form name='editThemeForm' action="{{ context.action }}" method="POST">
 <div class="forumblock">
-	  <div class="forumtitle">{{ 'The division of topic'|lang }}: {{ theme.title }}</div> 
+	  <div class="forumtitle">{{ 'The division of topic'|lang }}: {{ context.theme.title }}</div>
 	  <div class="mat-content">
           <ul class="spisok-all">
 
@@ -36,7 +61,7 @@ $(function() {
 				{{ 'Search by name'|lang }}
 			</span>
 			<span class="siu_data">
-				<input type="text" name="theme" maxlength="55" list="findthemes" value="{{ context.theme }}" />
+				<input type="text" name="theme" maxlength="55" list="findthemes" value="{{ context.theme2.theme }}" />
 				<datalist id="findthemes"></datalist>
 			</span>
 		  </li>
@@ -51,11 +76,11 @@ $(function() {
 			  </li>
 			  <li>
 				<span class="siu_title"><strong>{{ 'The title of the new topic'|lang }}:</strong></span>
-				<span class="siu_data"><input type="text" name="title" maxlength="55" value="{{ context.theme }}" /></span>
+				<span class="siu_data"><input type="text" name="title" maxlength="55" value="{{ context.theme2.theme }}" /></span>
 			  </li>
 			  <li>
 				<span class="siu_title"><strong>{{ 'Description of a new topic'|lang }}:</strong></span>
-				<span class="siu_data"><input type="text" name="description" maxlength="128" value="{{ context.description }}" /></span>
+				<span class="siu_data"><input type="text" name="description" maxlength="128" value="{{ context.theme2.description }}" /></span>
 			  </li>
 			  <li>
 				<span class="siu_title"><strong>{{ 'To close access'|lang }}:</strong></span>
@@ -67,12 +92,12 @@ $(function() {
 			  </li>
 			  <li>
 				<span class="siu_title"><strong>{{ 'To fix the first message of the topic'|lang }}:</strong></span>
-				<span class="siu_data"><input type="checkbox" name="first_top" {% if context.first_top %} checked="checked" {% endif %} /></span>
+				<span class="siu_data"><input type="checkbox" name="first_top" {% if context.theme2.first_top %} checked="checked" {% endif %} /></span>
 			  </li>
 			  {% if checkAccess([module,'close_themes']) %}
 			  <li>
 				<span class="siu_title"><strong>{{ 'To close the topic'|lang }}:</strong>{{ 'Avoid adding messages in the topic'|lang }}</span>
-				<span class="siu_data"><input type="checkbox" name="locked" {% if context.locked %} checked="checked" {% endif %} /></span>
+				<span class="siu_data"><input type="checkbox" name="locked" {% if context.theme2.locked %} checked="checked" {% endif %} /></span>
 			  </li>
 			  {% endif %}
 

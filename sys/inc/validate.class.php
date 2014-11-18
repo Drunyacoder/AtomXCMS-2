@@ -302,8 +302,8 @@ class Validate {
 	
     /**
      * Merge entity with form session(viewMessage|FpsForm).
-     * Geting [object|array] entity and array pattern. Fill entity from session by pattern.
-     * Geting array entity and nothing pattern. Pattern = entity and fill entity from session by pattern
+     * 1. Geting [object|array] entity and array pattern. Fill entity from session by pattern.
+     * 2. Geting array entity and nothing pattern. Pattern = entity and fill entity from session by pattern
      *
      * @param $entity
      * @param array $pattern
@@ -345,7 +345,7 @@ class Validate {
 	
 	
 	/**
-	 * @param $rules array
+	 * @param $action string
 	 */
 	public function getFormFields($action)
 	{
@@ -367,14 +367,16 @@ class Validate {
 
         return $outputContent;
 	}
-	
-	
-	
-	/**
-	 * @param $rules array
-	 * @param $additional_fields array
-	 */
-	public function getAndMergeFormPost($action = null, $additional_fields = array(), $correct = false, $fields_meta = false)
+
+
+    /**
+     * @param null $action
+     * @param array $additional_fields
+     * @param bool $correct
+     * @param bool $fields_meta
+     * @return array
+     */
+    public function getAndMergeFormPost($action, $additional_fields = array(), $correct = false, $fields_meta = false)
 	{
 		$rules = $this->prepareRules($action);
 		$pattern = array_fill_keys(array_keys($rules), null);

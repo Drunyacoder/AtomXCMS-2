@@ -478,10 +478,8 @@ Class FotoModule extends Module {
         $data = Validate::getCurrentInputsValues($data);
 
 
-		$html = '';
         $errors = $this->Register['Validate']->getErrors();
         if (isset($_SESSION['FpsForm'])) unset($_SESSION['FpsForm']);
-        if (!empty($errors)) $html = $errors;
 
 		
 		//categories list
@@ -492,6 +490,7 @@ Class FotoModule extends Module {
 		
 
 		$markers = array();
+		$markers['errors'] = $errors;
 		$markers['action'] = get_url('/foto/add/');
 		$markers['cats_selector'] = $cats_change;
 		$markers['title'] = (!empty($title)) ? $title : '';
@@ -506,7 +505,7 @@ Class FotoModule extends Module {
 		
 		$source = $this->render('addform.html', array('context' => $markers));
 		
-		return $this->_view($html . $source);
+		return $this->_view($source);
 	}
 
 
@@ -532,14 +531,14 @@ Class FotoModule extends Module {
 		$catModel = new $className;
 		$sql = $catModel->getCollection(array('id' => $in_cat));
 
-		if (empty($sql)) $errors[] = '<li>'.__('Can not find category').'</li>'."\n";
+		if (empty($sql)) $errors[] = __('Can not find category');
 		
 
 		// errors
 		if (!empty($errors)) {
 			$data = array('title' => null, 'description' => $description, 'in_cat' => $in_cat);
 			$data = array_merge($data, $_POST);
-			$data['errors'] = $this->Register['DocParser']->wrapErrors($errors);
+			$data['errors'] = $errors;
 			$_SESSION['FpsForm'] = $data;
 			redirect('/foto/add_form/');
 		}
@@ -647,11 +646,7 @@ Class FotoModule extends Module {
 		|| !$this->ACL->turn(array('foto', 'edit_mine_materials'), false))) {
 			return $this->showInfoMessage(__('Permission denied'), '/foto/' );
 		}
-		
-		
-		$this->Register['current_vars'] = $entity;
-		$html = '';
-		
+
 		//формируем блок со списком  разделов
 		$this->_getCatsTree($entity->getCategory_id());
 		
@@ -669,7 +664,6 @@ Class FotoModule extends Module {
 	
         $errors = $this->Register['Validate']->getErrors();
         if (isset($_SESSION['FpsForm'])) unset($_SESSION['FpsForm']);
-        if (!empty($errors)) $html = $errors . $html;
 	
 	
 		//categories list
@@ -680,6 +674,7 @@ Class FotoModule extends Module {
 		$cats_change = $this->_buildSelector($cats, $selectedCatId);
 		
 		
+		$data->setErrors($errors);
 		$data->setAction(get_url('/foto/update/' . $id));
 		$data->setCats_selector($cats_change);
 		$data->setMainText($this->Textarier->parseBBCodes($data->getDescription(), $data));
@@ -687,7 +682,7 @@ Class FotoModule extends Module {
 		
 		$source = $this->render('editform.html', array('data' => $data));
 		
-		return $this->_view($html . $source);
+		return $this->_view($source);
 	}
 
 
@@ -723,19 +718,19 @@ Class FotoModule extends Module {
 		$title       = trim(mb_substr($_POST['title'], 0, 128));
 		$description = trim($_POST['mainText']);
 		$in_cat		 = intval($_POST['cats_selector']);
-		if (empty($in_cat)) $in_cat = $foto['category_id'];
+		if (empty($in_cat)) $in_cat = $entity->getCategory_id();
 			
 			
 		$className = $this->Register['ModManager']->getModelNameFromModule($this->module . 'Categories');
 		$catModel = new $className;
 		$cats = $catModel->getById($in_cat);	
-		if (!$cats) $errors[] = '<li>' . __('Can not find category') .'</li>'."\n";
+		if (!$cats) $errors[] = __('Can not find category');
 
 		
 		// errors
 		if (!empty( $errors )) {
 			$data = array('title' => $title, 'description' => $description, 'in_cat' => $in_cat);
-			$data['errors'] = $this->Register['DocParser']->wrapErrors($errors);
+			$data['errors'] = $errors;
 			$_SESSION['FpsForm'] = $data;
 			redirect('/foto/edit_form/' . $id );
 		}

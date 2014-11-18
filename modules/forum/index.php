@@ -1277,12 +1277,11 @@ Class ForumModule extends Module {
 		//check access
 		$this->ACL->turn(array('forum', 'edit_forums'));
 		if (!isset($_SESSION['user'])) redirect('/forum/');
+
 		$id_forum = intval($id_forum);
 		if (empty($id_forum) || $id_forum < 1) redirect('/forum/');
 
-		
-		
-		$html = '';
+
 		// Получаем из БД информацию о форуме
 		$forum = $this->Model->getById($id_forum);
 		$action = get_url('/forum/update_forum/' . $id_forum);
@@ -1290,12 +1289,7 @@ Class ForumModule extends Module {
 		
 		// Если при заполнении формы были допущены ошибки
 		if (isset($_SESSION['FpsForm'])) {
-			$info        = $this->render('infomessage.html', array(
-				'context' => array(
-					'info_message' => $_SESSION['FpsForm']['errors'],
-				),
-			));
-			$html        = $html . $info . "\n";
+			$errors      = $this->Register['Validate']->getErrors();
 			$title       = h($_SESSION['FpsForm']['title']);
 			$description = h($_SESSION['FpsForm']['description']);
 			unset($_SESSION['FpsForm']);
@@ -1309,6 +1303,7 @@ Class ForumModule extends Module {
 		// содержащего форму для редактирования форума
 		$source = $this->render('editforumform.html', array(
 			'context' => array(
+				'errors' => $errors,
 				'action' => $action,
 				'title' => $title,
 				'description' => $description,
@@ -1318,13 +1313,13 @@ Class ForumModule extends Module {
 		
 		// nav block
 		$navi = array(
-			'navigation' => get_link(__('Forums list'), '/forum/') . __('Separator') . __('Edit forum'),
+			'navigation' => get_link(__('Forums list'), '/forum/')
+                . __('Separator') . __('Edit forum'),
 		);
 		$this->_globalize($navi);
-		
-		
-		$html = $html . $source;
-		return $this->_view($html);
+
+
+		return $this->_view($source);
 	}
 
 
@@ -1336,6 +1331,7 @@ Class ForumModule extends Module {
 		//check access
 		$this->ACL->turn(array('forum', 'edit_forums'));
 		if (!isset($_SESSION['user']))  redirect('/forum/');
+
 		$id_forum = intval($id_forum);
 		if (empty($id_forum) || $id_forum < 1) redirect('/forum/');
 
@@ -1352,18 +1348,13 @@ Class ForumModule extends Module {
 
 		
 		// Check fields fo empty values and valid chars
-		$errors = '';
-		$valobj = $this->Register['Validate'];
-		if (empty($title))                          
-			$errors = $errors .'<li>'. __('Empty field "forum name"') .'</li>'. "\n";
-		elseif (!$valobj->cha_val($title, V_TITLE)) 
-			$errors = $errors .'<li>'. __('Wrong chars in "forum name"') .'</li>'. "\n";
+        $errors = $this->Register['Validate']->check($this->Register['action']);
 
 
 		// if an errors
 		if (!empty($errors)) {
 			$_SESSION['FpsForm'] = array();
-			$_SESSION['FpsForm']['errors'] = $this->Register['DocParser']->wrapErrors($errors);;
+			$_SESSION['FpsForm']['errors'] = $errors;
 			$_SESSION['FpsForm']['title'] = $title;
 			$_SESSION['FpsForm']['description'] = $description;
 			
@@ -1546,17 +1537,16 @@ Class ForumModule extends Module {
 	public function add_theme_form($id_forum = null) {
 		//check access
 		$this->ACL->turn(array('forum', 'add_themes'));
+
 		$id_forum = intval($id_forum);
 		if (empty($id_forum) || $id_forum < 1) redirect('/forum/');
 		$writer_status = (!empty($_SESSION['user']['status'])) ? $_SESSION['user']['status'] : 0;
 
-		
-		
+
 		$forum = $this->Model->getById($id_forum);
 		if (!$forum) redirect('/forum/');
 
-		
-		
+
 		// Check access to this forum. May be locked by pass or posts count
 		$this->__checkForumAccess($forum);
 		
@@ -1565,14 +1555,8 @@ Class ForumModule extends Module {
 		
 		// preview
 		if (isset($_SESSION['viewMessage']) and !empty($_SESSION['viewMessage']['message'])) {
-			$view = $this->render('previewmessage.html', array(
-				'context' => array(
-					'message' => $this->Textarier->parseBBCodes(
-						$_SESSION['viewMessage']['message'], 
-						array('status' => $writer_status)),
-				),
-			));
-			$html = $html . $view . "\n";
+			$preview = $this->Parser->getPreview($_SESSION['viewMessage']['message']);
+
 			$theme = h($_SESSION['viewMessage']['theme']);
 			$description = h($_SESSION['viewMessage']['description']);
 			$message = $_SESSION['viewMessage']['message'];
@@ -1583,12 +1567,8 @@ Class ForumModule extends Module {
 
 		// errors
 		if (isset($_SESSION['FpsForm'])) {
-			
-			$info = $this->render('infomessage.html', array(
-				'info_message' => $_SESSION['FpsForm']['errors'],
-			));
-			
-			$html    = $html . $info . "\n";
+			$errors = $this->Register['Validate']->getErrors();
+
 			$theme   = h($_SESSION['FpsForm']['theme']);
 			$description = h($_SESSION['FpsForm']['description']);
 			$message = $_SESSION['FpsForm']['message'];
@@ -1599,7 +1579,8 @@ Class ForumModule extends Module {
 		
 		
 		$markers = array(
-			'errors' => $html,
+			'errors' => $errors,
+			'preview' => $preview,
 			'action' => get_url('/forum/add_theme/' . $id_forum),
 			'theme' => (!empty($theme)) ? $theme : '',
 			'description' => (!empty($description)) ? $description : '',
@@ -1635,9 +1616,12 @@ Class ForumModule extends Module {
 	{
 		//check access
 		$this->ACL->turn(array('forum', 'add_themes'));
-		if (!isset($id_forum) || !isset($_POST['theme']) || !isset($_POST['mainText'])) redirect('/forum/');
+		if (!isset($id_forum) || !isset($_POST['theme']) || !isset($_POST['mainText']))
+            redirect('/forum/');
+
 		$id_forum = intval($id_forum);
-		if (empty($id_forum) || $id_forum < 1) redirect('/forum/');
+		if (empty($id_forum) || $id_forum < 1)
+            redirect('/forum/');
 		
 
 		$forum = $this->Model->getById($id_forum);
@@ -1679,7 +1663,7 @@ Class ForumModule extends Module {
 		// errors
 		if (!empty($errors)) {
 			$_SESSION['FpsForm'] = array();
-			$_SESSION['FpsForm']['errors'] = $this->Register['DocParser']->wrapErrors($errors);;
+			$_SESSION['FpsForm']['errors'] = $errors;
 			$_SESSION['FpsForm']['theme'] = $theme;
 			$_SESSION['FpsForm']['description'] = $description;
 			$_SESSION['FpsForm']['message'] = $message;
@@ -1827,7 +1811,6 @@ Class ForumModule extends Module {
 		
 		
 		$id_forum = $theme->getId_forum();
-		$html = '';
 		
 		
 		//check access
@@ -1840,16 +1823,16 @@ Class ForumModule extends Module {
 		
 		// Если при заполнении формы были допущены ошибки
 		if (isset($_SESSION['FpsForm'])) {
-			$info = $this->render('infomessage.html', array(
-				'info_message' => $_SESSION['FpsForm']['errors'],
-			));
-			$html    = $info . $html . "\n";
+			$errors = $this->Register['Validate']->getErrors();
+
 			$name = h($_SESSION['FpsForm']['theme']);
 			$description = h($_SESSION['FpsForm']['description']);
 			$gr_access = $_SESSION['FpsForm']['gr_access'];
 			$first_top = $_SESSION['FpsForm']['first_top'];
 			unset($_SESSION['FpsForm']);
-		} else {
+
+        } else {
+
 			$name = h($theme->getTitle());
 			$description = h($theme->getDescription()); 
 			$gr_access = $theme->getGroup_access(); 
@@ -1873,7 +1856,7 @@ Class ForumModule extends Module {
 
 		$author_name = ($theme->getId_author()) ? h($theme->getAuthor()->getName()) : __('Guest');
 		$data = array(
-			'errors' => $html,
+			'errors' => $errors,
 			'action' => get_url('/forum/update_theme/' . $id_theme),
 			'theme' => $name,
 			'description' => $description,
@@ -1887,7 +1870,8 @@ Class ForumModule extends Module {
 		
 		// nav block
 		$navi = array();
-		$navi['navigation'] = get_link(__('Forums list'), '/forum/') . __('Separator') . __('Edit theme');
+		$navi['navigation'] = get_link(__('Forums list'), '/forum/')
+            . __('Separator') . __('Edit theme');
 		$this->_globalize($navi);
 		
 		
@@ -1911,6 +1895,7 @@ Class ForumModule extends Module {
 		if (!isset($id_theme) || !isset($_POST['id_forum']) || !isset($_POST['theme'])) {
 			redirect('/forum/');
 		}
+
 		$id_theme = (int)$id_theme;
 		$id_forum = (int)$_POST['id_forum'];
 		if ($id_theme < 1) redirect('/forum/');
@@ -1919,6 +1904,7 @@ Class ForumModule extends Module {
 		$themeModel = $this->Register['ModManager']->getModelInstance('Themes');
 		$theme = $themeModel->getById($id_theme);
 		if (!$theme) return $this->showInfoMessage(__('Theme does not exists'), '/forum/' );
+
 
 		if (!empty($_POST['unite_theme'])) {
 			$this->Register['Validate']->disableFieldCheck(array('theme', 'description', 'first_top'));
@@ -1945,7 +1931,7 @@ Class ForumModule extends Module {
 		// errors
 		if (!empty($errors)) {
 			$_SESSION['FpsForm'] = array();
-			$_SESSION['FpsForm']['errors'] = $this->Register['DocParser']->wrapErrors($errors);;
+			$_SESSION['FpsForm']['errors'] = $errors;
 			$_SESSION['FpsForm']['theme'] = $name;
 			$_SESSION['FpsForm']['description'] = $description;
 			$_SESSION['FpsForm']['gr_access'] = $gr_access;
@@ -2200,66 +2186,54 @@ Class ForumModule extends Module {
 	 *
 	 * @param array $theme Theme info
 	 * @return string HTML reply form
-	 */ 
-	private function add_post_form($theme = null) {
-		if (empty($theme)) return null;
-		$id_theme = (int)$theme->getId();
-		if ($id_theme < 1) return null;
-		$writer_status = (!empty($_SESSION['user']['status'])) ? $_SESSION['user']['status'] : 0;
+	 */
+    private function add_post_form($theme = null) {
+        if (empty($theme)) return null;
 
-		
-		if ($this->ACL->turn(array('forum', 'add_posts', $theme->getId_forum()), false)) {
-			if ($theme->getLocked() == 1) {
-				$html = '<div class="not-auth-mess">' . __('Theme is locked') . '</div>';
-			} else {
+        $id_theme = (int)$theme->getId();
+        if ($id_theme < 1) return null;
 
 
-				$message = '';
-				$html = '';
-				if (isset($_SESSION['viewMessage']) and !empty($_SESSION['viewMessage'])) {
-					$view = $this->render('previewmessage.html', array(
-						'context' => array(
-							'message' => $this->Textarier->parseBBCodes(
-								$_SESSION['viewMessage'], 
-								array('status' => $writer_status)),
-						),
-					));
-					$html    = $html . $view . "<script>window.location.href=\"#preview\";</script>\n";
-					$message = h($_SESSION['viewMessage']);
-					unset($_SESSION['viewMessage']);
-				}
+        /** Turn a user access in template such as this function
+         * calls as part of another action(For example: view_theme).
+         *
+         * $this->ACL->turn(array('forum', 'add_posts', $theme->getId_forum()));
+         */
 
-				
-				// Если при заполнении формы были допущены ошибки
-				if (isset($_SESSION['FpsForm'])) {
-					$info = $this->render('infomessage.html', array(
-						'info_message' => $_SESSION['FpsForm']['errors'],
-					));
-					$html    = $html . $info . "\n";
-					$message = h($_SESSION['FpsForm']['message']);
-					unset($_SESSION['FpsForm']);
-				}
 
-				
-				$source = $this->render('replyform.html', array(
-					'context' => array(
-						'action' => get_url('/forum/add_post/' . $id_theme),
-						'message' => $message,
-					),
-				));
-				$html = $html . $source;
-			}
-			
-			
-		} else {
-			if (isset($_SESSION['user']))
-				$html = '<div class="not-auth-mess">' . __('Dont have permission to write post') . '</div>';
-			else
-				$html = '<div class="not-auth-mess">' . __('Guests cant write posts') . '</div>';
-		}
-		
-		return $html;
-	}
+        $message = '';
+
+        if (isset($_SESSION['viewMessage']) and !empty($_SESSION['viewMessage'])) {
+            $preview = $this->Parser->getPreview($_SESSION['viewMessage']);
+            $preview .= "<script>window.location.href=\"#preview\";</script>\n";
+
+            $message = h($_SESSION['viewMessage']);
+            unset($_SESSION['viewMessage']);
+        }
+
+
+        // Если при заполнении формы были допущены ошибки
+        if (isset($_SESSION['FpsForm'])) {
+            $errors = $this->Register['Validate']->getErrors();
+
+            $message = h($_SESSION['FpsForm']['message']);
+            unset($_SESSION['FpsForm']);
+        }
+
+
+        $source = $this->render('replyform.html', array(
+            'context' => array(
+                'action' => get_url('/forum/add_post/' . $id_theme),
+                'message' => $message,
+                'theme' => $theme,
+                'errors' => $errors,
+                'preview' => $preview,
+            ),
+        ));
+
+
+        return $source;
+    }
 
 	
 	
@@ -2314,7 +2288,7 @@ Class ForumModule extends Module {
 		// errors
 		if (!empty($errors)) {
 			$_SESSION['FpsForm'] = array();
-			$_SESSION['FpsForm']['errors'] = $this->Register['DocParser']->wrapErrors($errors);
+			$_SESSION['FpsForm']['errors'] = $errors;
 			$_SESSION['FpsForm']['message'] = $message;
 			redirect('/forum/view_theme/' . $id_theme . '#bottom');
 		}		
@@ -2476,7 +2450,7 @@ Class ForumModule extends Module {
 		
 		if ($gluing === false) {
 			if ($this->Log) $this->Log->write('adding post', 'post id(' . $post_id . '), theme id(' . $id_theme . ')');
-			return $this->showInfoMessage(__('Your message has been added'), '/forum/view_theme/' 
+			return $this->showInfoMessage(__('Your message has been added'), '/forum/view_theme/'
 			. $id_theme . '?page=999#post' . $cnt_posts_from_theme );
 		} else {
 			if ($this->Log) $this->Log->write('adding post', 'post id(*gluing), theme id(' . $id_theme . ')');
@@ -2524,38 +2498,28 @@ Class ForumModule extends Module {
 
 		
 		$message = $post->getMessage();
-		$html    = '';
 		
 		//if user vant preview message
 		if (isset($_SESSION['viewMessage']) and !empty($_SESSION['viewMessage'])) {
-			$view = $tis->render('previewmessage.html', array(
-				'context' => array(
-					'message' => $this->Textarier->parseBBCodes(
-						$_SESSION['viewMessage'], 
-						array('status' => $writer_status)),
-				),
-			));
-			$html    = $html . $view . "\n";
+			$preview = $this->Parser->getPreview($_SESSION['viewMessage']);
 			$message = $_SESSION['viewMessage'];
 			unset($_SESSION['viewMessage']);
 		}
 
+
 		// errors
 		if (isset($_SESSION['FpsForm'])) {
-			$info = $tis->render('infomessage.html', array(
-				'info_message' => $_SESSION['FpsForm']['errors'],
-			));
-			$html    = $info . $html . "\n";
+			$errors = $this->Register['Validate']->getErrors();
 			$message = $_SESSION['FpsForm']['message'];
 			unset($_SESSION['FpsForm']);
 		}
 
 		
-		
 		$markers = array(
-			'errors' => $html,
+			'errors' => $errors,
+			'preview' => $preview,
 			'action' => get_url('/forum/update_post/' . $id),
-			'main_text' => h($message),
+			'message' => h($message),
 		);
 		
 		
@@ -2599,6 +2563,7 @@ Class ForumModule extends Module {
 	public function update_post($id = null) {
 		// Если не переданы данные формы - значит функция была вызвана по ошибке
 		if (empty($id) || !isset($_POST['mainText'])) redirect('/forum/');
+
 		$id = (int)$id;
 		if ($id < 1) redirect('/forum/');
 
@@ -2626,9 +2591,11 @@ Class ForumModule extends Module {
 		
 		
 		$errors = $this->Register['Validate']->check($this->Register['action']);
-		
+
+
 		// Обрезаем сообщение до длины $set['forum']['max_post_lenght']
 		$message = trim($_POST['mainText']);
+        $user_id = (!empty($_SESSION['user'])) ? $_SESSION['user']['id'] : 0;
 
 		// Preview
 		if (isset($_POST['viewMessage'])) {
@@ -2640,15 +2607,12 @@ Class ForumModule extends Module {
 		/* if an error */
 		if (!empty($errors)) {
 			$_SESSION['FpsForm'] = array();
-			$_SESSION['FpsForm']['errors'] = $this->Register['DocParser']->wrapErrors($errors);;
+			$_SESSION['FpsForm']['errors'] = $errors;
 			$_SESSION['FpsForm']['message'] = $message;
 			redirect('/forum/edit_post_form/' . $id);
 		}
-		
-		
-		$user_id = (!empty($_SESSION['user'])) ? $_SESSION['user']['id'] : 0;
 
-		
+
 		
 		/*****   ATTACH   *****/
 		// Массив недопустимых расширений файла вложения
@@ -3320,7 +3284,7 @@ Class ForumModule extends Module {
         if (!empty($errors)) {
             $_SESSION['FpsForm'] = array_merge(array('title' => null, 'description' => null, 'forum_id' => null,
                 'theme' => null, 'locked' => null, 'first_top' => null), $_POST);
-            $_SESSION['FpsForm']['errors'] = $this->Register['DocParser']->wrapErrors($errors);;
+            $_SESSION['FpsForm']['errors'] = $errors;
             redirect('/' . $this->module . '/move_posts_form/' . $id_theme);
         }
 
@@ -3421,6 +3385,7 @@ Class ForumModule extends Module {
 
         $id_theme = intval($id_theme);
         if ($id_theme < 1 || empty($_POST['ids'])) redirect('/' . $this->module . '/');
+
         $ids = array_filter($_POST['ids'], function(&$r){
             return ($r = intval($r)) > 0;
         });
@@ -3429,6 +3394,7 @@ Class ForumModule extends Module {
         $themeModel = $this->Register['ModManager']->getModelInstance('Themes');
         $themeModel->bindModel('forum');
         $theme = $themeModel->getById($id_theme);
+
         if (empty($theme) || !$theme->getForum())
             return $this->showInfoMessage(__('Topic not found'), '/' . $this->module . '/');
 		if ($theme->getPosts() == 0)
@@ -3440,6 +3406,7 @@ Class ForumModule extends Module {
         $forums = $this->Model->getCollection(array(), array('order' => 'pos'));
         if (!$forums)
             return $this->showInfoMessage(__('Can not find forum'), '/' . $this->module . '/');
+
 
         $options = '';
         foreach ($forums as $forum) {
@@ -3470,7 +3437,7 @@ Class ForumModule extends Module {
         $data = array('title' => null, 'description' => null, 'forum_id' => null,
             'locked' => null, 'first_top' => null, 'new_theme' => null, 'theme' => null, 'posts_ids' => null);
         $data = Validate::getCurrentInputsValues($data);
-        $data['errors'] = $this->Register['Validate']->getErrors();
+        $errors = $this->Register['Validate']->getErrors();
         if (isset($_SESSION['FpsForm'])) unset($_SESSION['FpsForm']);
 
 
@@ -3501,12 +3468,16 @@ Class ForumModule extends Module {
         }
 
 
-        $data = array(
+        $context = array(
+            'posts' => $posts,
+            'theme' => $theme,
+            'theme2' => $data,
             'action' => get_url('/' . $this->module . '/move_posts/' . $id_theme),
+            'errors' => $errors,
             'options' => $options,
             'gr_access' => $gr_access,
         );
-        $source = $this->render('move_posts_form.html', array('posts' => $posts, 'theme' => $theme, 'context' => $data));
+        $source = $this->render('move_posts_form.html', array('context' => $context));
 
         return $this->_view($source);
     }
@@ -3591,6 +3562,17 @@ Class ForumModule extends Module {
 		if (empty($max_attach) || !is_numeric($max_attach)) $max_attach = 5;
 		
 		$rules = array(
+			'update_forum' => array(
+                'title' => array(
+                    'required' => true,
+                    'max_lenght' => 150,
+                    'pattern' => V_TITLE,
+                ),
+                'description' => array(
+                    'required' => false,
+                    'max_lenght' => 250,
+                ),
+            ),
 			'move_posts' => array(
 				'theme' => array(
 					'required' => true,

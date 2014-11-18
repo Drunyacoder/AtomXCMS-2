@@ -541,7 +541,7 @@ Class NewsModule extends Module {
         $data['errors'] = $this->Register['Validate']->getErrors();
         if (isset($_SESSION['viewMessage'])) unset($_SESSION['viewMessage']);
         if (isset($_SESSION['FpsForm'])) unset($_SESSION['FpsForm']);
-		pr($data['errors']); die();
+
 		
 		$SectionsModel = $this->Register['ModManager']->getModelInstance($this->module . 'Categories');
 		$sql = $SectionsModel->getCollection();
@@ -565,7 +565,7 @@ Class NewsModule extends Module {
 		$navi['navigation'] = $this->_buildBreadCrumbs();
 		$this->_globalize($navi);
 		
-		pr($data); die();
+
 		$source = $this->render('addform.html', array('context' => $data));
 		return $this->_view($source);
 	}
@@ -593,9 +593,12 @@ Class NewsModule extends Module {
 		// Check additional fields if an exists.
 		// This must be doing after define $error variable.
 		if (is_object($this->AddFields)) {
-			$_addFields = $this->AddFields->checkFields();
-			if (is_string($_addFields)) $errors[] = $_addFields;
-		}
+            try {
+                $_addFields = $this->AddFields->checkFields();
+            } catch (Exception $e) {
+                $errors[] = $this->AddFields->getErrors();
+            }
+        }
 
 
 		// Если пользователь хочет посмотреть на сообщение перед отправкой
@@ -733,9 +736,6 @@ Class NewsModule extends Module {
 		&& $this->ACL->turn(array($this->module, 'edit_mine_materials'), false)) === false) {
 			return $this->showInfoMessage(__('Permission denied'), '/' . $this->module . '/');
 		}
-
-		
-		$this->Register['current_vars'] = $entity;
 		
 		//forming categories list
 		$this->_getCatsTree($entity->getCategory()->getId());
@@ -743,7 +743,7 @@ Class NewsModule extends Module {
 
         $data = array(
 			'title' 		=> '', 
-			'main_text' 		=> $entity->getMain(), 
+			'main_text' 	=> $entity->getMain(),
 			'in_cat' 		=> $entity->getCategory_id(), 
 			'description' 	=> '', 
 			'tags' 			=> '', 
@@ -841,9 +841,12 @@ Class NewsModule extends Module {
 		// Check additional fields if an exists.
 		// This must be doing after define $error variable.
 		if (is_object($this->AddFields)) {
-			$_addFields = $this->AddFields->checkFields();
-			if (is_string($_addFields)) $errors[] = $_addFields;
-		}
+            try {
+                $_addFields = $this->AddFields->checkFields();
+            } catch (Exception $e) {
+                $errors[] = $this->AddFields->getErrors();
+            }
+        }
 		
 		
 

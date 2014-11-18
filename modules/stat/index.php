@@ -587,7 +587,6 @@ Class StatModule extends Module {
     {
 		//turn access
 		$this->ACL->turn(array($this->module, 'add_materials'));
-		$errors  = '';
 
 
         $errors = $this->Register['Validate']->check($this->Register['action']);
@@ -597,9 +596,12 @@ Class StatModule extends Module {
 		// Check additional fields if an exists.
 		// This must be doing after define $error variable.
 		if (is_object($this->AddFields)) {
-			$_addFields = $this->AddFields->checkFields();
-			if (is_string($_addFields)) $errors[] = $_addFields;
-		}
+            try {
+                $_addFields = $this->AddFields->checkFields();
+            } catch (Exception $e) {
+                $errors[] = $this->AddFields->getErrors();
+            }
+        }
 
 
 		// Если пользователь хочет посмотреть на сообщение перед отправкой
@@ -739,8 +741,6 @@ Class StatModule extends Module {
 		}
 
 		
-		$this->Register['current_vars'] = $entity;
-		
 		//forming categories list
 		$this->_getCatsTree($entity->getCategory()->getId());
 		
@@ -825,7 +825,6 @@ Class StatModule extends Module {
     {
 		$id = (int)$id;
 		if ($id < 1) redirect('/' . $this->module . '/');
-		$errors = '';
 		
 
 		$target = $this->Model->getById($id);
@@ -840,14 +839,17 @@ Class StatModule extends Module {
 		}
 
 
-        $errors .= $this->Register['Validate']->check($this->Register['action']);
+        $errors = $this->Register['Validate']->check($this->Register['action']);
 
 
 		// Check additional fields if an exists.
 		// This must be doing after define $error variable.
 		if (is_object($this->AddFields)) {
-			$_addFields = $this->AddFields->checkFields();
-			if (is_string($_addFields)) $errors[] = $_addFields;
+            try {
+                $_addFields = $this->AddFields->checkFields();
+            } catch (Exception $e) {
+                $errors[] = $this->AddFields->getErrors();
+            }
 		}
 
 		
@@ -893,7 +895,7 @@ Class StatModule extends Module {
 			$_SESSION['FpsForm'] = array_merge(array('title' => null, 'main_text' => null, 'in_cat' => $in_cat, 
 				'description' => null, 'tags' => null, 'sourse' => null, 'sourse_email' => null, 
 				'sourse_site' => null, 'commented' => null, 'available' => null), $_POST);
-			$_SESSION['FpsForm']['errors'] = $this->Register['DocParser']->wrapErrors($errors);
+			$_SESSION['FpsForm']['errors'] = $errors;
 			redirect('/' . $this->module . '/edit_form/' . $id);
 		}
 		

@@ -33,6 +33,11 @@ class FpsAdditionalFields {
  
 	
 	public $module;
+
+    /**
+     * @var array
+     */
+    private $errors;
 	
 	
 	public function __construct() {
@@ -236,16 +241,14 @@ class FpsAdditionalFields {
 		
 		
 		$_addFields = array();
-		$error = null;
+		$errors = array();
 		
 		
 		if (!empty($addFields)) {
 			foreach($addFields as $key => $field) {
 				$params = $field->getParams();
-				$params = (!empty($params)) 
-				? unserialize($params) : array();
+				$params = (!empty($params)) ? unserialize($params) : array();
 				$field_name = 'add_field_' . $field->getId();
-				$value = '';
 				$array = array('field_id' => $field->getId());
 				
 				
@@ -253,10 +256,10 @@ class FpsAdditionalFields {
 					case 'textarea':
 					case 'text':
 						if (!empty($params['required']) && empty($_POST[$field_name])) 
-							$error = $error . '<li>Поле "' . $field->getLabel() . '" не заполнено</li>';
+							$errors[] = 'Поле "' . $field->getLabel() . '" не заполнено';
 						if (!empty($_POST[$field_name]) && mb_strlen($_POST[$field_name]) > (int)$field->getSize()) 
-							$error = $error . '<li>Поле "' . $field->getLabel() . '" превышает ' 
-							. $field->getSize() . ' символов</li>';
+							$errors[] = 'Поле "' . $field->getLabel() . '" превышает '
+							. $field->getSize() . ' символов';
 						$array['content'] = (!empty($_POST[$field_name])) ? $_POST[$field_name] : '';
 						break;
 					case 'checkbox':
@@ -269,8 +272,15 @@ class FpsAdditionalFields {
 				$_addFields[] = $array;
 			}
 		}
-		
-		return (!empty($error)) ? $error : $_addFields;
+
+        // Should be catched above
+        if (!empty($error)) {
+            $this->errors = $errors;
+            throw new Exception('Errors are found in additional fields');
+        }
+
+
+		return $_addFields;
 	}
 	
 	
@@ -308,5 +318,7 @@ class FpsAdditionalFields {
 	
 	
 	
-	
+	public function getErrors() {
+        return (array)$this->errors;
+    }
 }

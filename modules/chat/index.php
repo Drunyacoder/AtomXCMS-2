@@ -104,7 +104,6 @@ class ChatModule extends Module {
 	* @return  none
 	*/
 	public function add() {
-		$Parser = $this->Register['DocParser'];
 		$ACL = $this->Register['ACL'];
 	
 		if (!$ACL->turn(array('chat', 'add_materials'), false)) {
@@ -129,7 +128,7 @@ class ChatModule extends Module {
 		
 		$valobj = $this->Register['Validate'];
 		if (!empty($name) && !$valobj->cha_val($name, V_TITLE))  
-			$errors[] = '<li>' . __('Wrong chars in field "login"') . '</li>' . "\n";
+			$errors[] = __('Wrong chars in field "login"');
 			
 			
 		// Check captcha if need exists	 
@@ -137,7 +136,7 @@ class ChatModule extends Module {
 			// Проверяем поле "код"
 			if (!empty($keystring)) {				
 				if (!$this->Register['Protector']->checkCaptcha('chatsend', $keystring))
-					$errors[] = '<li>' . __('Wrong protection code') . '</li>' . "\n";
+					$errors[] = __('Wrong protection code');
 			}
 			$this->Register['Protector']->cleanCaptcha('chatsend');
 		} else {
