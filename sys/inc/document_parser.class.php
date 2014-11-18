@@ -80,16 +80,17 @@ class Document_Parser {
 
     /**
      * @param $message
+     * @param $entity (object|array)
      * @return mixed|string
      */
-    public function getPreview($message)
+    public function getPreview($message, $entity = false)
     {
         $outputContent = '';
 		
 		if (!empty($_SESSION['viewMessage'])) {
 			$viewer = $this->Register['Viewer'];
 			$context = array(
-				'message' => $this->Register['PrintText']->parseBBCodes($message),
+				'message' => $this->Register['PrintText']->parseBBCodes($message, $entity),
 			);
 			$outputContent = $viewer->view('previewmessage.html', $context);
 		}

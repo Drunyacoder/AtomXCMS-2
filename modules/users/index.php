@@ -205,13 +205,11 @@ Class UsersModule extends Module {
 		list ($captcha, $captcha_text) = $this->Register['Protector']->getCaptcha('reguser');
         $markers['captcha'] = $captcha;
         $markers['captcha_text'] = $captcha_text;
-        $markers['name']    = $data['name'];
-        $markers['fpol']  	= (!empty($data['pol']) && $data['pol'] === 'f') ? ' checked="checked"' : '';
-        $markers['mpol']  	= (!empty($data['pol']) && $data['pol'] === 'm') ? ' checked="checked"' : '';
+        $data['name']    = $data['name'];
+        $data['fpol']  	= (!empty($data['pol']) && $data['pol'] === 'f') ? ' checked="checked"' : '';
+        $data['mpol']  	= (!empty($data['pol']) && $data['pol'] === 'm') ? ' checked="checked"' : '';
 
 
-
-        $markers['keystring'] = '';
         $options = '';
         for ( $i = -12; $i <= 12; $i++ ) {
             if ( $i < 1 )
@@ -228,11 +226,10 @@ Class UsersModule extends Module {
         $markers['action']  = get_url('/users/add/');
 
 
-        $markers['byears_selector'] = createOptionsFromParams(1970, 2008, $data['byear']);
-        $markers['bmonth_selector'] = createOptionsFromParams(1, 12, $data['bmonth']);
-        $markers['bday_selector'] = createOptionsFromParams(1, 31, $data['bday']);
-        $markers = array_merge($data, $markers);
-
+        $data['byears_selector'] = createOptionsFromParams(1970, 2008, $data['byear']);
+        $data['bmonth_selector'] = createOptionsFromParams(1, 12, $data['bmonth']);
+        $data['bday_selector'] = createOptionsFromParams(1, 31, $data['bday']);
+        $markers['user'] = $data;
 
         $source = $this->render('addnewuserform.html', array('context' => $markers));
 		return $this->_view($source);
@@ -284,19 +281,23 @@ Class UsersModule extends Module {
 
 
 		$errors = $this->Register['Validate']->check($this->Register['action']);
-		
+
+
 		// Проверяем, заполнены ли обязательные поля
 		// Additional fields checker
 		if (is_object($this->AddFields)) {
-			$_addFields = $this->AddFields->checkFields();
-			if (is_string($_addFields)) $errors[] = $_addFields;
+            try {
+                $_addFields = $this->AddFields->checkFields();
+            } catch (Exception $e) {
+                $errors[] = $this->AddFields->getErrors();
+            }
 		}
 
 	
 		// Проверяем поле "код"
 		if (!empty($keystring)) {									
 			if (!$this->Register['Protector']->checkCaptcha('reguser', $keystring))
-				$errors[] = '<li>' . __('Wrong protection code') . '</li>'."\n";
+				$errors[] = __('Wrong protection code');
 		}
 		$this->Register['Protector']->cleanCaptcha('reguser');
 
@@ -305,7 +306,7 @@ Class UsersModule extends Module {
 		$new_name = preg_replace( "#[^- _0-9a-zА-Яа-я]#i", "", $name );
 		// Формируем SQL-запрос
         $res = $this->Model->getSameNics($new_name);
-		if ($res) $errors[] = '<li>' . sprintf(__('Name already exists'), $new_name) . '</li>'."\n";
+		if ($res) $errors[] = sprintf(__('Name already exists'), $new_name);
 		
 		
 		/* check avatar */
@@ -318,7 +319,7 @@ Class UsersModule extends Module {
 				@$sizes = resampleImage($path, $path, 100);
 				if (!$sizes) {
 					@unlink($path);
-					$errors[] = '<li>' . __('Some error in avatar') . '</li>'."\n";
+					$errors[] = __('Some error in avatar');
 				}
 			}
 		}
@@ -333,7 +334,7 @@ Class UsersModule extends Module {
 			$_SESSION['FpsForm'] = array_merge(array('name' => null, 'email'=> null, 'timezone' => null, 'icq' => null,
                 'url' => null, 'about' => null, 'signature' => null, 'pol' => $pol, 'telephone' => null, 'city' => null,
                 'jabber' => null, 'byear' => null, 'bmonth' => null, 'bday' => null), $_POST);
-			$_SESSION['FpsForm']['errors'] = $this->Register['DocParser']->wrapErrors($errors);
+			$_SESSION['FpsForm']['errors'] = $errors;
 			redirect('/users/add_form/yes');
 		}
 		
@@ -492,7 +493,7 @@ Class UsersModule extends Module {
 		$errors = $this->Register['Validate']->check($this->Register['action']);
 		if (!empty($errors)) {
 			$_SESSION['FpsForm'] = array();
-			$_SESSION['FpsForm']['errors'] = $this->Register['DocParser']->wrapErrors($errors);
+			$_SESSION['FpsForm']['errors'] = $errors;
 			redirect('/users/new_password_form/');
 		}
 		
@@ -505,7 +506,7 @@ Class UsersModule extends Module {
 		
 		if (empty($res)) {
 			$_SESSION['FpsForm'] = array();
-			$_SESSION['FpsForm']['errors'] = $this->Register['DocParser']->wrapErrors('<li>' . __('Wrong login or email') . '</li>');
+			$_SESSION['FpsForm']['errors'] = array(__('Wrong login or email'));
 			redirect('/users/new_password_form/');
 		}
 
@@ -634,14 +635,16 @@ Class UsersModule extends Module {
 		$user->setStatistic($this->Model->getFullUserStatistic($_SESSION['user']['id']));
 
 
+
         // Check for preview or errors
         $data = array('email' => null, 'timezone' => null, 'icq' => null, 'jabber' => null, 'pol' => null, 'city' => null, 'telephone' => null, 'byear' => null, 'bmonth' => null, 'bday' => null, 'url' => null, 'about' => null, 'signature' => null, 'email_notification' => null);
         //$data = array_merge($data, $user);
         $data = Validate::getCurrentInputsValues($user, $data);
+        $markers = array();
 
-        $errors = $this->Register['Validate']->getErrors();
+
+        $markers['errors'] = $this->Register['Validate']->getErrors();
         if (isset($_SESSION['FpsForm'])) unset($_SESSION['FpsForm']);
-        if (!empty($errors)) $data->setErrors($errors);
 
 
 	
@@ -651,7 +654,7 @@ Class UsersModule extends Module {
         $data->setMpol($mpol);
 		
 		
-        $data->setAction(get_url('/users/update/'));
+        $markers['action'] = get_url('/users/update/');
         if ($data->getPol() === 'f') $data->setPol(__('f'));
         else if ($data->getPol() === 'm') $data->setPol(__('m'));
         else $data->setPol(__('no gender'));
@@ -676,8 +679,8 @@ Class UsersModule extends Module {
             else
                 $options = $options . '<option value="'.$i.'">'.$value.'</option>'."\n";
         }
-        $data->setOptions($options);
-        $data->setServertime(date( "d.m.Y H:i:s" ));
+        $markers['options'] = $options;
+        $markers['servertime'] = date( "d.m.Y H:i:s" );
         $data->setByears_selector(createOptionsFromParams(1950, 2008, $data->getByear()));
         $data->setBmonth_selector(createOptionsFromParams(1, 12, $data->getBmonth()));
         $data->setBday_selector(createOptionsFromParams(1, 31, $data->getBday()));
@@ -688,10 +691,11 @@ Class UsersModule extends Module {
             $unlinkfile = '<input type="checkbox" name="unlink" value="1" />'
                 . __('Are you want delete file') . "\n";
         }
-        $data->setUnlinkfile($unlinkfile);
+        $markers['unlinkfile'] = $unlinkfile;
+        $markers['user'] = $data;
        
 		
-        $source = $this->render('edituserform.html', array('context' => $data, 'user' => $user));
+        $source = $this->render('edituserform.html', array('context' => $markers));
 
 		
 		// Navigation Panel
@@ -715,12 +719,11 @@ Class UsersModule extends Module {
 		//turn access
 		$this->ACL->turn(array('users', 'edit_mine'));
 
-		$errors= '';
+
         $markers = array();
 		
 		$fields = array('email', 'icq', 'jabber', 'pol', 'city', 'telephone', 'byear', 
 			'bmonth', 'bday', 'url', 'about', 'signature', 'email_notification', 'summer_time');
-		
 		$fields_settings = (array)$this->Register['Config']->read('fields', 'users');
 		$fields_settings = array_merge($fields_settings, array('email'));
 		
@@ -761,33 +764,36 @@ Class UsersModule extends Module {
 		$summer_time = intval($summer_time);
 
 
-		// Additional fields
-		if (is_object($this->AddFields)) {
-			$_addFields = $this->AddFields->checkFields();
-			if (is_string($_addFields)) $markers['errors'] = $_addFields;
-		}
-		
-		
-		// Если заполнено поле "Текущий пароль" - значит пользователь
-		// хочет изменить его или поменять свой e-mail
-		$changePassword = false;
-		$changeEmail = false;
+        // Если заполнено поле "Текущий пароль" - значит пользователь
+        // хочет изменить его или поменять свой e-mail
+        $changePassword = false;
+        $changeEmail = false;
 
 
-		// if new and old emails are equal, we needn't check password
-		if (empty($newpassword) && $email == $_SESSION['user']['email']) {
-			$this->Register['Validate']->disableFieldCheck('password');
-		} else {
+        // if new and old emails are equal, we needn't check password
+        if (empty($newpassword) && $email == $_SESSION['user']['email']) {
+            $this->Register['Validate']->disableFieldCheck('password');
+        } else {
             // want to change password
             if (!empty($newpassword)) $changePassword = true;
             // user want to change email
             if ($email != $_SESSION['user']['email']) $changeEmail = true;
         }
+
+
+        $errors = $this->Register['Validate']->check($this->Register['action']);
+
+
+		// Additional fields
+		if (is_object($this->AddFields)) {
+            try {
+                $_addFields = $this->AddFields->checkFields();
+            } catch (Exception $e) {
+                $errors[] = $this->AddFields->getErrors();
+            }
+		}
 		
-		
-		$errors = $this->Register['Validate']->check($this->Register['action']);
-		
-		
+
 		$tmp_key = rand(0, 9999999);
 		if (!empty($_FILES['avatar']['name'])) {
 		
@@ -800,10 +806,10 @@ Class UsersModule extends Module {
 				@$sizes = resampleImage($path, $path, 100);
 				if (!$sizes) {
 					@unlink($path);
-					$errors[] = '<li>' . __('Some error in avatar') . '</li>'."\n";
+					$errors[] = __('Some error in avatar');
 				}
 			} else {
-				$errors[] = '<li>' . __('Some error in avatar') . '</li>'."\n";
+				$errors[] = __('Some error in avatar');
 			}
 		}
 
@@ -817,7 +823,7 @@ Class UsersModule extends Module {
 			'icq' => null, 'url' => null, 'about' => null, 'signature' => null, 'pol' => $pol, 
 			'telephone' => null, 'city' => null, 'jabber' => null, 'byear' => null, 
 			'bmonth' => null, 'bday' => null, 'email_notification' => null, 'summer_time' => null), $_POST);
-			$_SESSION['FpsForm']['errors'] = $this->Register['DocParser']->wrapErrors($errors);
+			$_SESSION['FpsForm']['errors'] = $errors;
 			redirect('/users/edit_form/');
 		}
 
@@ -899,6 +905,7 @@ Class UsersModule extends Module {
 		if ( $id < 1 ) redirect('/users/');
 		if (!isset($_SESSION['user'])) redirect('/');
 
+
 		$statusArray = $this->Register['ACL']->get_group_info();
 		if (!empty($statusArray)) unset($statusArray[0]);
 		$markers = array();
@@ -920,9 +927,8 @@ Class UsersModule extends Module {
         $data = Validate::getCurrentInputsValues($user, $data);
 
 
-        $errors = $this->Register['Validate']->getErrors();
+        $markers['errors'] = $this->Register['Validate']->getErrors();
         if (isset($_SESSION['FpsForm'])) unset($_SESSION['FpsForm']);
-        if (!empty($errors)) $data->setErrors($errors);
 
 
 
@@ -933,7 +939,7 @@ Class UsersModule extends Module {
         $data->setMpol($mpol);
 		
 		
-        $data->setAction(get_url('/users/update_by_admin/' . $id));
+        $markers['action'] = get_url('/users/update_by_admin/' . $id);
         if ($data->getPol() === 'f') $data->setPol(__('f'));
         else if ($data->getPol() === 'm') $data->setPol(__('m'));
         else $data->setPol(__('no gender'));
@@ -962,8 +968,8 @@ Class UsersModule extends Module {
                 $options = $options . '<option value="' . $i . '">' . $value . '</option>' . "\n";
         }
 		
-        $data->setOptions($options);
-        $data->setServertime(date( "d.m.Y H:i:s" ));
+        $markers['options'] = $options;
+        $markers['servertime'] = date( "d.m.Y H:i:s" );
 		
 		
         $data->setByears_selector(createOptionsFromParams(1950, 2008, $data->getByear()));
@@ -976,7 +982,7 @@ Class UsersModule extends Module {
             $unlinkfile = '<input type="checkbox" name="unlink" value="1" />'
                 . __('Are you want delete file') . "\n";
         }
-        $data->setUnlinkfile($unlinkfile);
+        $markers['unlinkfile'] = $unlinkfile;
 
 
         $userStatus = '<select name="status">'."\n";
@@ -1002,8 +1008,9 @@ Class UsersModule extends Module {
 			. get_link(h($this->module_title), '/users/') . __('Separator') . __('Editing');
 		$this->_globalize($nav);
 
-		
-        $source = $this->render('edituserformbyadmin.html', array('context' => $data));
+
+        $markers['user'] = $data;
+        $source = $this->render('edituserformbyadmin.html', array('context' => $markers));
 		
 		return $this->_view($source);
 	}
@@ -1016,6 +1023,8 @@ Class UsersModule extends Module {
 		//turn access
 		$this->ACL->turn(array('users', 'edit_users'));
 		$id = (int)$id;
+
+
 		// ID зарегистрированного пользователя не может быть меньше
 		// единицы - значит функция вызвана по ошибке
 		if ($id < 1) redirect('/users/' );
@@ -1035,10 +1044,11 @@ Class UsersModule extends Module {
 
 		$fields = array('name', 'email', 'oldEmail', 'icq', 'jabber', 'pol', 'city', 
 			'telephone', 'byear', 'bmonth', 'bday', 'url', 'about', 'signature');
-		
+
 		$fields_settings = (array)Config::read('fields', 'users');
 		$fields_settings = array_merge($fields_settings, array('email'));
-		
+
+
 		foreach ($fields as $field) {
 			$$field = (isset($_POST[$field])) ? trim($_POST[$field]) : '';
 		}
@@ -1076,8 +1086,11 @@ Class UsersModule extends Module {
 
 		// Additional fields
 		if (is_object($this->AddFields)) {
-			$_addFields = $this->AddFields->checkFields();
-			if (is_string($_addFields)) $errors[] = $_addFields;
+            try {
+                $_addFields = $this->AddFields->checkFields();
+            } catch (Exception $e) {
+                $errors[] = $this->AddFields->getErrors();
+            }
 		}
 		
 		
@@ -1112,10 +1125,10 @@ Class UsersModule extends Module {
 				@$sizes = resampleImage($path, $path, 100);
 				if (!$sizes) {
 					@unlink($path);
-					$errors[] = '<li>' . __('Some error in avatar') . '</li>'."\n";
+					$errors[] = __('Some error in avatar');
 				}
 			} else {
-				$errors[] = '<li>' . __('Some error in avatar') . '</li>'."\n";
+				$errors[] = __('Some error in avatar');
 			}
 		}
 
@@ -1123,6 +1136,7 @@ Class UsersModule extends Module {
 		$status = (int)$_POST['status'];
 		$timezone = (int)$_POST['timezone'];
 		if ( $timezone < -12 or $timezone > 12 ) $timezone = 0;
+
 
 		// Errors
 		if (!empty($errors)) {
@@ -1145,9 +1159,10 @@ Class UsersModule extends Module {
                     'bday' => null),
                 $_POST
             );
-			$_SESSION['FpsForm']['errors'] = $this->Register['DocParser']->wrapErrors($errors);
+			$_SESSION['FpsForm']['errors'] = $errors;
 			redirect('/users/edit_form_by_admin/' . $id );
 		}
+
 
 		// Если выставлен флажок "Удалить загруженный ранее файл"
 		if (isset($_POST['unlink']) and is_file(ROOT . '/sys/avatars/' . $id . '.jpg')) {
@@ -1348,23 +1363,25 @@ Class UsersModule extends Module {
 		}
 		$message = ''; // TODO
 		
-	
+
+
 		if (isset($_SESSION['viewMessage']) && !empty($_SESSION['viewMessage']['message'])) {
-			$prevMessage = $this->Textarier->parseBBCodes(
-				$_SESSION['viewMessage']['message'], 
-				array('status' => $writer_status));
-            $prevSource = $this->render('previewmessage.html', array('message' => $prevMessage));
+            $prevMessage = $this->Parser->getPreview(
+                $_SESSION['viewMessage']['message'],
+                array('status' => $writer_status));
+
 			$toUser  = h($_SESSION['viewMessage']['toUser']);
 			$subject = h($_SESSION['viewMessage']['subject']);
 			$message = h($_SESSION['viewMessage']['message']);
 			unset($_SESSION['viewMessage']);
 		}
 
+
 		$action = get_url('/users/pm_send');
-        $error = '';
+        $errors = '';
 		// Если при заполнении формы были допущены ошибки
 		if (isset($_SESSION['FpsForm'])) {
-			$error = $this->render('infomessage.html', array('info_message' => $_SESSION['FpsForm']['errors']));
+			$errors = $this->Register['Validate']->getErrors();
 			$toUser  = h( $_SESSION['FpsForm']['toUser'] );
 			$subject = h( $_SESSION['FpsForm']['subject'] );
 			$message = h( $_SESSION['FpsForm']['message'] );
@@ -1374,7 +1391,7 @@ Class UsersModule extends Module {
 
 		$markers = array();
 		$markers['to_user_id'] = $id;
-		$markers['errors'] = $error;
+		$markers['errors'] = $errors;
 		$markers['action'] = $action;
 		$markers['touser'] = $toUser;
 		$markers['subject'] = $subject;
@@ -1433,9 +1450,9 @@ Class UsersModule extends Module {
 
 
 			if (empty($res[0]))
-				$errors[] = '<li>' . sprintf(__('No user with this name'), $to) . '</li>'."\n";
+				$errors[] = sprintf(__('No user with this name'), $to);
 			if ((count($res) && is_array($res)) && ($res[0]->getId() == $_SESSION['user']['id']) )
-				$errors[] = '<li>' . __('You can not send message to yourself') . '</li>'."\n";
+				$errors[] = __('You can not send message to yourself');
 
 
 			//chek max count messages
@@ -1459,10 +1476,10 @@ Class UsersModule extends Module {
 
 
 				if (!empty($cnt_to) && $cnt_to >= Config::read('max_count_mess', 'users')) {
-					$errors[] = '<li>' . __('This user has full  messagebox') . '</li>'."\n";
+					$errors[] = __('This user has full  messagebox');
 				}
 				if (!empty($cnt_from) && $cnt_from >= Config::read('max_count_mess', 'users')) {
-					$errors[] = '<li>' . __('You have full  messagebox') . '</li>'."\n";
+					$errors[] = __('You have full  messagebox');
 				}
 			}
 		}
@@ -1472,7 +1489,7 @@ Class UsersModule extends Module {
 		// Errors
 		if (!empty($errors )) {
 			$_SESSION['FpsForm'] = array();
-			$_SESSION['FpsForm']['errors'] = $this->Register['DocParser']->wrapErrors($errors);
+			$_SESSION['FpsForm']['errors'] = $errors;
 			$_SESSION['FpsForm']['toUser'] = $toUser;
 			$_SESSION['FpsForm']['subject'] = $subject;
 			$_SESSION['FpsForm']['message'] = $message;
@@ -1523,11 +1540,15 @@ Class UsersModule extends Module {
 		/* clean DB cache */
 		$this->Register['DB']->cleanSqlCache();
 		if ($this->Log) $this->Log->write('adding pm message', 'message id(' . $last_id . ')');
+
+
         if (isset($_REQUEST['ajax'])) {
 			$message = $this->Model->getDialog($from, $to, array("`id` < '" . $last_id . "'"));
 			$id = (!empty($message[0])) ? $message[0]->getId() : $last_id;
 			$this->pm_view_update($id);
 		}
+
+
 		return $this->showInfoMessage(__('Message successfully send'), '/' . $this->module . '/pm_view/' . $to);
 	}
 
@@ -1847,15 +1868,13 @@ Class UsersModule extends Module {
 			'subject' => '',
 			'action' => get_url('/users/send_mail/'),
 			'to_user' => $toUser,
-			'error' => '',
+			'errors' => '',
 		);
 		
 		
 		// Если при заполнении формы были допущены ошибки
 		if (isset($_SESSION['FpsForm'])) {
-			$markers['errors'] = $this->render('infomessage.html', array(
-				'info_message' => $_SESSION['FpsForm']['errors']
-			));
+			$markers['errors'] = $this->Register['Validate']->getErrors();
 			$markers['to_user']  = $_SESSION['FpsForm']['toUser'];
 			$markers['subject'] = $_SESSION['FpsForm']['subject'];
 			$markers['message'] = $_SESSION['FpsForm']['message'];
@@ -1891,26 +1910,26 @@ Class UsersModule extends Module {
 			$to = preg_replace("#[^- _0-9a-zа-яА-Я]#ui", '', $toUser);
 			$user = $this->Model->getByName($to);
 			if (empty($user))				
-				$errors[] = '<li>' . sprintf(__('No user with this name'), $to) . '</li>'."\n";
+				$errors[] = sprintf(__('No user with this name'), $to);
 		}
 		
 		// Если были допущены ошибки при заполнении формы -
 		// перенаправляем посетителя для исправления ошибок
 		if (!empty($errors)) {
 			$_SESSION['FpsForm'] = array();
-			$_SESSION['FpsForm']['errors'] = $this->Register['DocParser']->wrapErrors($errors);
+			$_SESSION['FpsForm']['errors'] = $errors;
 			$_SESSION['FpsForm']['toUser']  = $toUser;
 			$_SESSION['FpsForm']['subject'] = $subject;
 			$_SESSION['FpsForm']['message'] = $message;
 			redirect('/users/send_mail_form/' . $user->getId());
 		}
-		
+
+
 		$toUser = $user;
 		$fromUser = $_SESSION['user']['name'];
-
-		
 		$message = 'ОТ: '.$fromUser."\n".'ТЕМА: '.$subject."\n\n".$message;
-		
+
+
 		/* clean DB cache */
 		$this->DB->cleanSqlCache();
 		// формируем заголовки письма
@@ -1918,7 +1937,9 @@ Class UsersModule extends Module {
 		$headers = $headers."Content-type: text/html; charset=\"utf-8\"\n";
 		$headers = $headers."Return-path: <" . $this->Register['Config']->read('admin_email') . ">\n";
 		$subject = 'Письмо с форума '.$_SERVER['SERVER_NAME'].' от '.$fromUser;
-		if (mail($toUser->getEmail(), $subject, $message, $headers))
+
+
+        if (mail($toUser->getEmail(), $subject, $message, $headers))
 			return $this->showInfoMessage(__('Operation is successful'), '/');
 		else
 			return $this->showInfoMessage(__('Some error occurred'), '/');
@@ -1944,9 +1965,7 @@ Class UsersModule extends Module {
 
 
 		if (isset($_SESSION['FpsForm']['errors'])) {
-			$errors = $this->render('infomessage.html', array(
-				'info_message' => $_SESSION['FpsForm']['errors']
-			));
+			$errors = $this->Register['Validate']->getErrors();
 			unset($_SESSION['FpsForm']['errors']);
 		}
 		
@@ -1958,13 +1977,14 @@ Class UsersModule extends Module {
 			'new_password' => get_link('Забыли пароль?', '/users/new_password_form/'),
 			'errors' => (!empty($errors)) ? $errors : '',
 		);
+
+
 		if ($this->Register['Config']->read('autorization_protected_key', 'secure') === 1) {
 			$_SESSION['form_key_mine'] = rand(1000, 9999);
 			$form_key = rand(1000, 9999);
 			$_SESSION['form_hash'] = md5($form_key . $_SESSION['form_key_mine']);
 			$markers['form_key'] = '<input type="hidden" name="form_key" value="' . $form_key . '" />';
 		}
-
 
 		
 		// Navigation Panel
@@ -1998,7 +2018,7 @@ Class UsersModule extends Module {
 		
 		// Защита от перебора пароля - при каждой неудачной попытке время задержки увеличивается
 		if (isset($_SESSION['FpsForm']['count']) && $_SESSION['FpsForm']['count'] > time()) {
-			$errors[] = '<li>' . sprintf(__('You must wait'), ($_SESSION['FpsForm']['count'] - time())) . '</li>';
+			$errors[] = sprintf(__('You must wait'), ($_SESSION['FpsForm']['count'] - time()));
 		}
 
 		// Обрезаем лишние пробелы
@@ -2010,7 +2030,7 @@ Class UsersModule extends Module {
 		// случае, если поля не пустые и не содержат недопустимых символов
 		if (empty($errors)) {
 			$user = $this->Model->getByNamePass($name, $password);
-			if (empty($user)) $errors[] = '<li>' . __('Wrong login or pass') . '</li>'."\n";
+			if (empty($user)) $errors[] = __('Wrong login or pass');
 		}
 
 		
@@ -2021,8 +2041,7 @@ Class UsersModule extends Module {
   			else if ($_SESSION['FpsForm']['count'] < time()) $_SESSION['FpsForm']['count'] = time() + 10;
 			else $_SESSION['FpsForm']['count'] = $_SESSION['FpsForm']['count'] + 10;
 			
-			$_SESSION['FpsForm']['errors'] = '<p class="errorMsg">' . __('Some error in form') . '</p>'.
-			"\n".'<ul class="errorMsg">'."\n".$errors.'</ul>'."\n";
+			$_SESSION['FpsForm']['errors'] = $errors;
 			
 			
 			if (isset($_GET['ajax'])) {
@@ -2040,6 +2059,7 @@ Class UsersModule extends Module {
 
 		if ($user->getActivation()) return $this->showInfoMessage(__('Your account not activated'), '/');
 
+
 		// Если пользователь заблокирован
 		if ($user->getLocked()) return redirect('/users/baned/');
 		$_SESSION['user'] = $user->asArray();
@@ -2047,6 +2067,7 @@ Class UsersModule extends Module {
 		// Функция getNewThemes() помещает в массив $_SESSION['newThemes'] ID тем,
 		// в которых были новые сообщения со времени последнего посещения пользователя
 		$this->Register['UserAuth']->getNewThemes();
+
 
 		// Выставляем cookie, если пользователь хочет входить на форум автоматически
 		if ( isset ( $_POST['autologin'] ) ) {
@@ -2657,14 +2678,19 @@ Class UsersModule extends Module {
 		}
         $this->addToPageMetaContext('entity_title', $title);
 
-		$navi = array();
-		$navi['add_link'] = ($this->ACL->turn(array($this->module, 'add_materials'), false)) ? get_link(__('Add material'), $this->getModuleURL('add_form/')) : '';
-		$navi['module_url'] = get_url($this->getModuleURL());
-		$navi['category_url'] = get_url($this->getModuleURL('comments/' . ($id ? $id : '')));
-		$navi['category_name'] = $title;
-		$navi['navigation'] = get_link(__('Home'), '/') . __('Separator')
-		. get_link(h($this->module_title), $this->getModuleURL()) . __('Separator') . $title;
+
+		$navi = array(
+            'add_link'      => ($this->ACL->turn(array($this->module, 'add_materials'), false))
+                ? get_link(__('Add material'), $this->getModuleURL('add_form/')) : '',
+            'module_url'    => get_url($this->getModuleURL()),
+            'category_url'  => get_url($this->getModuleURL('comments/' . ($id ? $id : ''))),
+            'category_name' => $title,
+            'navigation'    => get_link(__('Home'), '/') . __('Separator')
+                . get_link(h($this->module_title), $this->getModuleURL()) . __('Separator')
+                . $title,
+        );
 		$this->_globalize($navi);
+
 
 		return $this->_view('');
 	}
