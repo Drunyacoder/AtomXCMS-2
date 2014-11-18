@@ -343,7 +343,7 @@ $array[] = "DROP TABLE IF EXISTS `{$set['db']['prefix']}users`";
 $array[] = "CREATE TABLE `{$set['db']['prefix']}users` (
 	`id` int(6) NOT NULL auto_increment,
 	`name` varchar(32) character set utf8 NOT NULL,
-	`firt_name` varchar(32) character set utf8 NOT NULL default '',
+	`first_name` varchar(32) character set utf8 NOT NULL default '',
 	`last_name` varchar(32) character set utf8 NOT NULL default '',
 	`passw` varchar(255) character set utf8 NOT NULL,
 	`email` varchar(64) character set utf8 NOT NULL default '',
