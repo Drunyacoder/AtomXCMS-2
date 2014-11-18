@@ -350,6 +350,7 @@ class FpsPDO {
 
 
             foreach (array_keys($affected_rows) as $affected_table) {
+                $params = array();
                 foreach ($model_conf as  $t => $p) {
                     if (array_key_exists($affected_table, $p)) {
                         $params = $p[$affected_table];
@@ -358,25 +359,29 @@ class FpsPDO {
                 }
 				
                 $affect_t = $$affected_table;
-                if (!empty($params) &&
-                    $params['type'] === 'has_many' &&
-                    array_key_exists($params['foreignKey'], $affect_t)
-                ) { // has many
-                    if (!array_key_exists($affect_t[$params['foreignKey']], $affected_rows[$affected_table]))
-                        $affected_rows[$affected_table][$affect_t[$params['foreignKey']]] = array();
-                    $affected_rows[$affected_table][$affect_t[$params['foreignKey']]][$affect_t['id']] = $affect_t;
-				} else if (!empty($params) &&
-                    $params['type'] === 'has_many_through' &&
-                    array_key_exists($params['foreignKey'], $affect_t)
-				) { // has_many_through
-					if (!array_key_exists($affected_table, $model_conf) || 
-					$model_conf[$affected_table][key($model_conf[$affected_table])]['type'] !== 'has_many_through') {
-						if (!array_key_exists($affect_t[$params['foreignKey']], $affected_rows[$affected_table]))
-							$affected_rows[$affected_table][$affect_t[$params['foreignKey']]] = array();
-						$affected_rows[$affected_table][$affect_t[$params['foreignKey']]][$affect_t['id']] = $affect_t;
-					}
+
+                if (!empty($params) && $params['type'] === 'has_many') { // has many
+                    if (array_key_exists($params['foreignKey'], $affect_t) &&
+                        !empty($affect_t[$params['foreignKey']])
+                    ) {
+                        if (!array_key_exists($affect_t[$params['foreignKey']], $affected_rows[$affected_table]))
+                            $affected_rows[$affected_table][$affect_t[$params['foreignKey']]] = array();
+                        $affected_rows[$affected_table][$affect_t[$params['foreignKey']]][$affect_t['id']] = $affect_t;
+                    }
+
+				} else if (!empty($params) && $params['type'] === 'has_many_through') { // has_many_through
+                    if (array_key_exists($params['foreignKey'], $affect_t) &&
+                        !empty($affect_t[$params['foreignKey']])
+				    ) {
+                        if (!array_key_exists($affected_table, $model_conf) ||
+                        $model_conf[$affected_table][key($model_conf[$affected_table])]['type'] !== 'has_many_through') {
+                            if (!array_key_exists($affect_t[$params['foreignKey']], $affected_rows[$affected_table]))
+                                $affected_rows[$affected_table][$affect_t[$params['foreignKey']]] = array();
+                            $affected_rows[$affected_table][$affect_t[$params['foreignKey']]][$affect_t['id']] = $affect_t;
+                        }
+                    }
                 } else {
-                    if (array_key_exists('id', $affect_t))
+                    if (array_key_exists('id', $affect_t) && !empty($affect_t['id']))
                         $affected_rows[$affected_table][$affect_t['id']] = $affect_t;
                     else
                         $affected_rows[$affected_table][] = $affect_t;
