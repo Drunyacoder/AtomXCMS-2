@@ -210,8 +210,9 @@ $array[] = "CREATE TABLE `{$set['db']['prefix']}news` (
   INDEX (`category_id`, `author_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
 $array[] = "INSERT INTO `{$set['db']['prefix']}news` 
-	(`title`, `main`, `date`, `category_id`, `author_id`, `tags`, `description`, `sourse`, `sourse_email`, `sourse_site`) VALUES 
-	('Моя первая новость', 
+	(`title`, `clean_url_title`, `main`, `date`, `category_id`, `author_id`, `tags`, `description`, `sourse`, `sourse_email`, `sourse_site`) VALUES
+	('Моя первая новость',
+	 'моя_первая_новость.htm',
 	'Теперь сайт установлен и готов к работе.
 	По любым вопросам Вы можете обращаться на сайт [url=http://atomx.net]AtomX[/url].
 

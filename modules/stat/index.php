@@ -568,7 +568,7 @@ Class StatModule extends Module {
 		$navi['navigation'] = $this->_buildBreadCrumbs();
 		$this->_globalize($navi);
 
-        
+
 		$source = $this->render('addform.html', array('context' => $data));
 		return $this->_view($source);
 	}

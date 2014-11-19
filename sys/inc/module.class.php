@@ -665,14 +665,14 @@ class Module {
 		if (!$this->ACL->turn(array($this->module, $key), false) ||
 		!$this->ACL->turn(array($this->module, 'use_attaches'), false)) {
 			$this->showAjaxResponse(array(
-				'errors' => __('Permission denied'), 
+				'errors' => $this->Register['DocParser']->wrapErrors(__('Permission denied')),
 				'result' => '0'
 			));
 		}
 		
 		
 		$attachModel = $this->Register['ModManager']->getModelInstance($this->module . 'Attaches');
-		$errors = '';
+        $errors = $this->Register['Validate']->check($this->Register['action']);
 		
 		if (!empty($_FILES) && is_array($_FILES)) {
 			$cnt = 0;
@@ -685,7 +685,7 @@ class Module {
 			}
 		}
 		if ($cnt > Config::read('max_attaches', $this->module))
-			$errors .= '<li>' . sprintf(__('You can upload only %s file(s)'), Config::read('max_attaches', $this->module)) . '</li>';
+			$errors[] = sprintf(__('You can upload only %s file(s)'), Config::read('max_attaches', $this->module));
 		
 		if (!empty($_SESSION['user']['id'])) {
 			$old_files_size = $attachModel->getUserOveralFilesSize($_SESSION['user']['id']);
@@ -697,10 +697,9 @@ class Module {
 		}
 		
 		if ($overal_files_size > $max_overal_size)
-			$errors .= '<li>' . sprintf(__('Max overal files size is %s Mb'), $max_overal_size / 1024 / 1024) . '</li>';
+			$errors[] = sprintf(__('Max overal files size is %s Mb'), $max_overal_size / 1024 / 1024);
 		
-		
-		$errors .= $this->Register['Validate']->check($this->Register['action']);
+
 		if (!empty($errors)) $this->showAjaxResponse(array(
 			'errors' => $this->Register['DocParser']->wrapErrors($errors),
 			'result' => '0'

@@ -1303,7 +1303,7 @@ Class ForumModule extends Module {
 		// содержащего форму для редактирования форума
 		$source = $this->render('editforumform.html', array(
 			'context' => array(
-				'errors' => $errors,
+				'errors' => !empty($errors) ? $errors : '',
 				'action' => $action,
 				'title' => $title,
 				'description' => $description,
@@ -1579,8 +1579,8 @@ Class ForumModule extends Module {
 		
 		
 		$markers = array(
-			'errors' => $errors,
-			'preview' => $preview,
+			'errors' => !empty($errors) ? $errors : '',
+			'preview' => !empty($preview) ? $preview : '',
 			'action' => get_url('/forum/add_theme/' . $id_forum),
 			'theme' => (!empty($theme)) ? $theme : '',
 			'description' => (!empty($description)) ? $description : '',
@@ -1856,7 +1856,7 @@ Class ForumModule extends Module {
 
 		$author_name = ($theme->getId_author()) ? h($theme->getAuthor()->getName()) : __('Guest');
 		$data = array(
-			'errors' => $errors,
+			'errors' => !empty($errors) ? $errors : '',
 			'action' => get_url('/forum/update_theme/' . $id_theme),
 			'theme' => $name,
 			'description' => $description,
@@ -2226,8 +2226,8 @@ Class ForumModule extends Module {
                 'action' => get_url('/forum/add_post/' . $id_theme),
                 'message' => $message,
                 'theme' => $theme,
-                'errors' => $errors,
-                'preview' => $preview,
+                'errors' => !empty($errors) ? $errors : '',
+                'preview' => !empty($preview) ? $preview : '',
             ),
         ));
 
@@ -2516,8 +2516,8 @@ Class ForumModule extends Module {
 
 		
 		$markers = array(
-			'errors' => $errors,
-			'preview' => $preview,
+			'errors' => !empty($errors) ? $errors : '',
+			'preview' => !empty($preview) ? $preview : '',
 			'action' => get_url('/forum/update_post/' . $id),
 			'message' => h($message),
 		);
@@ -3473,7 +3473,7 @@ Class ForumModule extends Module {
             'theme' => $theme,
             'theme2' => $data,
             'action' => get_url('/' . $this->module . '/move_posts/' . $id_theme),
-            'errors' => $errors,
+            'errors' => !empty($errors) ? $errors : '',
             'options' => $options,
             'gr_access' => $gr_access,
         );

@@ -122,10 +122,6 @@ class ChatModule extends Module {
 		$keystring = (isset($_POST['keystring'])) ? trim($_POST['keystring']) : '';
 		
 		
-		// Check fields
-        $errors = $this->Register['Validate']->check($this->Register['action']);
-		
-		
 		$valobj = $this->Register['Validate'];
 		if (!empty($name) && !$valobj->cha_val($name, V_TITLE))  
 			$errors[] = __('Wrong chars in field "login"');
@@ -142,6 +138,11 @@ class ChatModule extends Module {
 		} else {
 			$this->Register['Validate']->disableFieldCheck('keystring');
 		}
+
+
+        // Check fields
+        $errors_ = $this->Register['Validate']->check($this->Register['action']);
+        $errors = array_merge($errors, $errors_);
 
 		
 		/* remember name */
@@ -251,6 +252,7 @@ class ChatModule extends Module {
 				'keystring' => array(
 					'required' => true,
 					'pattern' => V_CAPTCHA,
+                    'title' => 'Keystring (captcha)',
 				),
 			),
 		);

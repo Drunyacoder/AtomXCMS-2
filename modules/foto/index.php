@@ -494,7 +494,7 @@ Class FotoModule extends Module {
 		$markers['action'] = get_url('/foto/add/');
 		$markers['cats_selector'] = $cats_change;
 		$markers['title'] = (!empty($title)) ? $title : '';
-		$markers['mainText'] = (!empty($data['description'])) ? $data['description'] : '';
+		$markers['main_text'] = (!empty($data['description'])) ? $data['description'] : '';
 		
 		
 		// Navigation Panel
@@ -677,10 +677,10 @@ Class FotoModule extends Module {
 		$data->setErrors($errors);
 		$data->setAction(get_url('/foto/update/' . $id));
 		$data->setCats_selector($cats_change);
-		$data->setMainText($this->Textarier->parseBBCodes($data->getDescription(), $data));
+		$data->setMain_text($this->Textarier->parseBBCodes($data->getDescription(), $data));
 		
 		
-		$source = $this->render('editform.html', array('data' => $data));
+		$source = $this->render('editform.html', array('context' => $data));
 		
 		return $this->_view($source);
 	}
@@ -716,7 +716,7 @@ Class FotoModule extends Module {
 		
 		// Обрезаем переменные до длины, указанной в параметре maxlength тега input
 		$title       = trim(mb_substr($_POST['title'], 0, 128));
-		$description = trim($_POST['mainText']);
+		$description = trim($_POST['main_text']);
 		$in_cat		 = intval($_POST['cats_selector']);
 		if (empty($in_cat)) $in_cat = $entity->getCategory_id();
 			
@@ -846,18 +846,13 @@ Class FotoModule extends Module {
 					'max_lenght' => 250,
 					'title' => 'Title',
 				),
-				'mainText' => array(
-					'required' => true,
-					'max_lenght' => Config::read('max_lenght', $this->module),
-					'title' => 'Text',
-				),
 				'cats_selector' => array(
 					'required' => true,
 					'pattern' => V_INT,
 					'max_lenght' => 11,
 					'title' => 'Category',
 				),
-				'mainText' => array(
+				'main_text' => array(
 					'required' => 'editable',
 					'max_lenght' => Config::read('description_lenght', 'foto'),
 				),
@@ -873,20 +868,16 @@ Class FotoModule extends Module {
 					'max_lenght' => 250,
 					'title' => 'Title',
 				),
-				'mainText' => array(
-					'required' => true,
-					'max_lenght' => Config::read('max_lenght', $this->module),
-					'title' => 'Text',
-				),
 				'cats_selector' => array(
 					'required' => true,
 					'pattern' => V_INT,
 					'max_lenght' => 11,
 					'title' => 'Category',
 				),
-				'mainText' => array(
+				'main_text' => array(
 					'required' => 'editable',
 					'max_lenght' => Config::read('description_lenght', 'foto'),
+                    'title' => 'Description',
 				),
 				'files__foto' => array(
 					'required' => true,
