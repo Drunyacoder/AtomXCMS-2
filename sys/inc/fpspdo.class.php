@@ -641,10 +641,11 @@ class FpsPDO {
 			 */
             if ($this->__limit($params['limit'], $params['offset'])/* && false*/) {
                 $cond = array();
+
 				// Replace conditions for first table to subquery
                 if (!empty($params['cond']) && is_array($params['cond'])) {
-                    
 					foreach ($params['cond'] as $k => $v) {
+
                         if (is_numeric($k) || !strstr($k, '.')) {
 							if (is_array($v)) {
 								foreach ($v as $vk => $vv) {
@@ -663,13 +664,27 @@ class FpsPDO {
                         }
                     }
                 }
+
+
+                // If ordering by the main table is exists - copy he to subquery
+                if (!empty($params['order'])) {
+                    $odr = explode('.', $params['order']);
+                    if ($odr && count($odr) > 1) {
+                        if ($odr[0] === $params['alias'] || $odr[0] === "`" . $params['alias'] . "`") {
+                            $order = $params['order'];
+                        }
+                    } else {
+                        $order = $params['order'];
+                    }
+                }
+
 				
                 $params_ = array(
                     'table' => $this->__name($this->getFullTableName($table)),
                     'limit' => $params['limit'],
                     'offset' => $params['offset'],
                     'cond' => $cond,
-                    //'cond' => $params['cond'],
+                    'order' => !empty($order) ? $order : '',
                 );
                 $sub_query = $this->__buildQuery($params_, $table);
                 $params['limit'] = null;
@@ -698,6 +713,7 @@ class FpsPDO {
         $params = array_merge(array(
             'cond' => array(),
             'limit' => null,
+            'offset' => null,
             'page' => null,
             'fields' => null,
             'order' => null,
@@ -706,15 +722,24 @@ class FpsPDO {
             'joins' => array()), $params);
 
 
-        if (!is_numeric($params['page']) || intval($params['page']) < 1) {
-            $params['page'] = 1;
+        // If offset is exists the page isn't necessary
+        if (!empty($params['offset']) && intval($params['offset']) > 1) {
+            $params['offset'] = intval($params['offset']);
+            $params['page'] = null;
+
+        } else {
+
+            // If we have page & limit we could calculate the offset
+            if (!empty($params['page'])
+                && intval($params['page']) > 1
+                && !empty($params['limit'])
+            ) {
+                $params['offset'] = ($params['page'] - 1) * $params['limit'];
+            } else {
+                $params['offset'] = 0;
+            }
         }
 
-        if ($params['page'] > 1 && !empty($params['limit'])) {
-            $params['offset'] = ($params['page'] - 1) * $params['limit'];
-        } else {
-            $params['offset'] = 0;
-        }
         return $params;
     }
 	

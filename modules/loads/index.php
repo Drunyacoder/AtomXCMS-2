@@ -124,7 +124,7 @@ Class LoadsModule extends Module {
         $this->Model->bindModel('category');
         $params = array(
             'page' => $page,
-            'limit' => $this->Register['Config']->read('per_page', $this->module),
+            'limit' => Config::read('per_page', $this->module),
             'order' => $this->Model->getOrderParam(),
         );
         $records = $this->Model->getCollection($where, $params);
