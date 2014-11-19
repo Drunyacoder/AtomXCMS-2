@@ -686,8 +686,8 @@ Class ForumModule extends Module {
 
 
 			// Заголовок страницы (содержимое тега title)
-            $this->addToPageTitleContext('entity_title', h($theme->getTitle()));
-            $this->addToPageTitleContext('category_title', h($theme->getForum()->getTitle()));
+            $this->addToPageMetaContext('entity_title', h($theme->getTitle()));
+            $this->addToPageMetaContext('category_title', h($theme->getForum()->getTitle()));
 
 			$markers = array();
 			$markers['navigation'] = get_link(__('Forums list'), '/forum/') . __('Separator') . get_link($theme->getForum()->getTitle(), 
@@ -708,7 +708,7 @@ Class ForumModule extends Module {
 			}
             list($pages, $page) = pagination($total, $this->Register['Config']->read('posts_per_page', 'forum'), '/forum/view_theme/' . $id_theme );
             $markers['pagination'] = $pages;
-            $this->addToPageTitleContext('page', $page);
+            $this->addToPageMetaContext('page', $page);
 			
 			
 			// SELECT posts
