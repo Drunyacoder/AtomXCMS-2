@@ -134,7 +134,24 @@ class AtmUrl {
     public function getEntryUrl($material, $module){
         if (Config::read('hlu') == 1) {
             $pattern = '/' . $module . '/%s';
-            $title = $this->getUrlByTitle($material->getTitle());
+
+
+            $title = $material->getClean_url_title();
+
+            if (!$title) {
+                // When we save title the clean_url_title will be set automatically
+                $material->setTitle($material->getTitle());
+                $title = $material->getClean_url_title();
+
+                if ($title) {
+                    $material->save();
+
+                } else { // Paranoia mode enable
+                    $title = $this->getUrlByTitle($material->getTitle());
+                }
+            }
+
+
             $url = h(sprintf($pattern, $title));
         } else {
             $url = '/' . $module . '/' .
@@ -156,7 +173,7 @@ class AtmUrl {
 		//$title = $this->translit($title);
 		$title = strtolower(preg_replace('#[^0-9a-zА-Я]#ui', '_', $title));
 		$hlu_extention = Config::read('hlu_extention');
-		return ($use_extention === true) ? $title . $hlu_extention : $title;
+		return ($use_extention == 1) ? $title . $hlu_extention : $title;
 	}
 	
 	
