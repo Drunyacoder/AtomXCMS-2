@@ -787,7 +787,7 @@ class Module {
 	public function getTmpPath($file = null)
 	{
 		$path = '/sys/tmp/' . $this->module . '/' . (!empty($file) ? $file : '');
-		return $path;
+		return ROOT . $path;
 	}
 	
 	

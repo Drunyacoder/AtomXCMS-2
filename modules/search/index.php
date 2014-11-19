@@ -209,7 +209,7 @@ class SearchModule extends Module {
 	 * @return boolean
 	 */
 	private function __checkIndex() {
-		$meta_file = ROOT . $this->getTmpPath('meta.dat');
+		$meta_file = $this->getTmpPath('meta.dat');
 		if (file_exists($meta_file) && is_readable($meta_file)) {
 			$meta = unserialize(file_get_contents($meta_file));
 			if (!empty($meta['expire']) && $meta['expire'] > time()) {
@@ -218,7 +218,7 @@ class SearchModule extends Module {
 				$this->__createIndex();
 			}
 		} else {
-			touchDir(ROOT . $this->getTmpPath());
+			touchDir($this->getTmpPath());
 			$this->__createIndex();
 		}
 
@@ -263,6 +263,12 @@ class SearchModule extends Module {
 	 * Create index for search engine
 	 */
 	private function __createIndex() {
+        $lock_file = $this->getTmpPath('lock.dat');
+
+        if (file_exists($lock_file)) return false;
+        file_put_contents($lock_file, '');
+
+
 		if (function_exists('ignore_user_abort'))
 			ignore_user_abort();
 		if (function_exists('set_time_limit'))
@@ -274,7 +280,7 @@ class SearchModule extends Module {
 			$className = $this->Register['ModManager']->getModelNameFromModule($table);
 			$Model = new $className;
 			
-			for ($i = 0; $i < 10000; $i++) {
+			for ($i = 1; $i < 10000; $i++) {
 				$records = $Model->getCollection(array(), array('limit' => 100, 'page' => $i));
 				if (empty($records)) break;
 
@@ -330,6 +336,8 @@ class SearchModule extends Module {
 				}
 			}
 		}
+
+        unlink($lock_file);
 	}
 
 	/**
