@@ -143,7 +143,7 @@ function downloadAtomAttaches($module, $entity_id = '') {
 			$filename = getSecureFilename($_FILES[$attach_name]['name'], $files_dir);
 			$ext = strrchr($_FILES[$attach_name]['name'], ".");
 
-			$is_image = isImageFile($_FILES[$attach_name]['type'], $ext) ? 1 : 0;
+			$is_image = isImageFile($_FILES[$attach_name]['type'], $ext);
 
 			// Перемещаем файл из временной директории сервера в директорию files
 			if (move_uploaded_file($_FILES[$attach_name]['tmp_name'], $files_dir . $filename)) {
@@ -228,7 +228,7 @@ function isPermittedFile($ext) {
 	/**
 	 * Wrong extention for download files
 	 */
-	$deny_extentions = array('.php', '.phtml', '.php3', '.html', '.htm', '.pl', '.js', '.png', '.jpg', '.gif', '.jpeg');
+	$deny_extentions = array('.php', '.phtml', '.php3', '.html', '.htm', '.pl', '.js');
 	
 	return !(empty($ext) || in_array(strtolower($ext), $deny_extentions));
 }
