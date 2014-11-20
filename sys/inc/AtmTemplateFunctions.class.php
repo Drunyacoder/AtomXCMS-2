@@ -193,9 +193,9 @@ class AtmTemplateFunctions
 		/**
 		 * Returns user rank img such as Stars or Progressbar
 		 *
-		 * @param $user_id int
+		 * @param $rating int
 		 */
-        $functions['getUserRatingImg'] = function($user_id)
+        $functions['getUserRatingImg'] = function($rating)
         {
 			$Register = Register::getInstance();
 			$settingsModel = $Register['ModManager']->getModelInstance('UsersSettings');
