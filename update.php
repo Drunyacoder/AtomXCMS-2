@@ -38,3 +38,6 @@ $Register['DB']->query("ALTER TABLE `loads_attaches` ADD INDEX (`user_id`)");
 $Register['DB']->query("ALTER TABLE `news_attaches` ADD INDEX (`user_id`)");
 $Register['DB']->query("ALTER TABLE `stat_attaches` ADD INDEX (`user_id`)");
 $Register['DB']->query("ALTER TABLE `forum_attaches` ADD INDEX (`post_id`, `user_id`)");
+
+
+die(__('Operation is successful'));
