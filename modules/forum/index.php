@@ -782,7 +782,8 @@ Class ForumModule extends Module {
 
 					// Статус пользователя
 					$status = $this->ACL->get_group_info();
-					$user_status = $status[$postAuthor->getStatus()];
+					$user_status = (array_key_exists($postAuthor->getStatus(), $status))
+                        ? $status[$postAuthor->getStatus()] : $status[0];
 					$postAuthor->setStatus_title($user_status['title']);
 					
 
@@ -969,7 +970,6 @@ Class ForumModule extends Module {
 				'reply_form' => $this->add_post_form($theme),
 			);
 			$this->_globalize($markers);
-			
 			
 			$source = $this->render('posts_list.html', array(
 				'posts' => $posts,
