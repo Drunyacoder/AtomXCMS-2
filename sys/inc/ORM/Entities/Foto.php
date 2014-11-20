@@ -58,8 +58,8 @@ class FotoEntity extends FpsEntity
 			'rating' => intval($this->rating),
 		);
 		if ($this->id) $params['id'] = $this->id;
-		$Register = Register::getInstance();
-		return $Register['DB']->save('foto', $params);
+
+        return parent::save('foto', $params);
 	}
 	
 	
@@ -67,10 +67,8 @@ class FotoEntity extends FpsEntity
 	public function delete()
 	{ 
 		$Register = Register::getInstance();
-		$path = ROOT . '/sys/files/foto/full/' . $this->filename;
-		$path2 = ROOT . '/sys/files/foto/preview/' . $this->filename;
+		$path = ROOT . '/sys/files/foto/' . $this->filename;
 		if (file_exists($path)) unlink($path);
-		if (file_exists($path2)) unlink($path2);
 		$Register['DB']->delete('foto', array('id' => $this->id));
 	}
 
@@ -84,7 +82,7 @@ class FotoEntity extends FpsEntity
     {
         $Register = Register::getInstance();
         if (!empty($this->title) && $this->title !== $title) {
-            $Register['URL']->saveOldEntryUrl($this, 'news', $title);
+            $Register['URL']->saveOldEntryUrl($this, 'foto', $title);
         }
         $this->title = $title;
         $this->clean_url_title = $Register['URL']->getUrlByTitle($title, false);

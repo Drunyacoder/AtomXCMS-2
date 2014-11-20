@@ -16,6 +16,10 @@
 		  <li class="margin">
             <textarea {{ editor_text }} class="text-area" name="main_text">{{ context.main_text }}</textarea>
           </li>
+          <li>
+              <span class="siu_title"><strong>{{ 'Image'|lang }}:</strong></span>
+              <span class="siu_data"><input type="file" name="foto" size="25" /></span>
+          </li>
 		  {% if checkAccess([module,'record_comments_management']) %}
 		  <li>
             <span class="siu_title"><strong>{{ 'Comments'|lang }}:</strong></span>

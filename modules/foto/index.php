@@ -43,11 +43,6 @@ Class FotoModule extends Module {
 	* @module module indentifier
 	*/
 	public $module = 'foto';
-	
-	/**
-	 * Wrong extention for download files
-	 */
-	private $allowedExtentions = array('.png', '.jpg', '.gif');
 
 
 	
@@ -116,7 +111,6 @@ Class FotoModule extends Module {
 			$_addParams['moder_panel'] = $this->_getAdminBar($result);
 			$entry_url = entryUrl($result, $this->module);
 			$_addParams['entry_url'] = $entry_url;
-			$_addParams['preview_foto'] = get_url('/sys/files/foto/preview/' . $result->getFilename());
 			$_addParams['foto_alt'] = h(preg_replace('#[^\w\d ]+#ui', ' ', $result->getTitle()));
 			
 			
@@ -224,9 +218,6 @@ Class FotoModule extends Module {
 			$_addParams['moder_panel'] = $this->_getAdminBar($result);
 			$entry_url = entryUrl($result, $this->module);
 			$_addParams['entry_url'] = $entry_url;
-			//$_addParams['entry_url'] = get_url('/foto/view/' . $result->getId());
-			
-			$_addParams['preview_foto'] = get_url('/sys/files/foto/preview/' . $result->getFilename());
 			$_addParams['foto_alt'] = h(preg_replace('#[^\w\d ]+#ui', ' ', $result->getTitle()));
 			
 			
@@ -306,7 +297,6 @@ Class FotoModule extends Module {
 		$markers['profile_url'] = getProfileUrl($entity->getAuthor()->getId());
 		
 		$markers['moder_panel'] = $this->_getAdminBar($entity);
-		$markers['main'] = get_url('/sys/files/foto/full/' . $entity->getFilename());
 		$markers['foto_alt'] = h(preg_replace('#[^\w\d ]+#ui', ' ', $entity->getTitle()));
 		$markers['description'] = $this->Textarier->parseBBCodes($entity->getDescription(), $entity);
 		
@@ -423,8 +413,6 @@ Class FotoModule extends Module {
 			$markers['moder_panel'] = $this->_getAdminBar($entity);
 			$entry_url = entryUrl($entity, $this->module);
 			$markers['entry_url'] = $entry_url;
-
-			$markers['preview_foto'] = get_url('/sys/files/foto/preview/' . $entity->getFilename());
 			$markers['foto_alt'] = h(preg_replace('#[^\w\d ]+#ui', ' ', $entity->getTitle()));
 
 
@@ -560,49 +548,32 @@ Class FotoModule extends Module {
 			'category_id'  => $in_cat,
 			'filename'  => '',
 		);
-		
-		$entity = new FotoEntity($res);
-		$id = $entity->save();
-		
-	
-		$entity->setId($id);
-		$entity->save();
- 
- 
-		/* save full and resample images */
-		$ext = strtolower(strchr($_FILES['foto']['name'], '.'));
-		$save_path = ROOT . '/sys/files/foto/full/' . $id . $ext;
-		$save_sempl_path = ROOT . '/sys/files/foto/preview/' . $id . $ext;
-		
-		$entity->setFilename($id . $ext);
-		$entity->save();
-		
-		if (!move_uploaded_file($_FILES['foto']['tmp_name'], $save_path)) $error_flag = true;
-		if (!chmod($save_path, 0644)) $error_flag = true; 
-		
-		
-		/* if an error when coping */
-		if (!empty($error_flag)) {
-			$entity->delete();
-			
-			$data = array('title' => null, 'description' => null, 'in_cat' => $in_cat);
-			$data = array_merge($data, $_POST);
-			$data['errors'] = $this->Register['DocParser']->wrapErrors(__('Some error occurred'), true);
-			$_SESSION['FpsForm'] = $data;
-			redirect('/foto/add_form/');
-		}
-		
-		
-		// Create watermark and resample image
-		$watermark_path = ROOT . '/sys/img/' . (Config::read('watermark_type') == '1' ? 'watermark_text.png' : Config::read('watermark_img'));
-		if ($this->Register['Config']->read('use_watermarks') && !empty($watermark_path) && file_exists($watermark_path)) {
-			$waterObj = new FpsImg;
-			$waterObj->createWaterMark($save_path, $watermark_path);
-		}
 
-		
-		$resample = resampleImage($save_path, $save_sempl_path, 150);
-		if ($resample) chmod($save_sempl_path, 0644);
+
+        try {
+            $entity = new FotoEntity($res);
+            $id = $entity->save();
+            if (!$id)
+                throw new Exception('ERROR: SAVE_ERR');
+
+
+            $filename = $this->__saveFile($_FILES['foto'], $id);
+            if (!$filename)
+                throw new Exception('ERROR: FILE_UPL');
+
+
+		    $entity->setFilename($filename)->save();
+
+        } catch (Exception $e) {
+            $entity->delete();
+
+            $data = array('title' => null, 'description' => null, 'in_cat' => $in_cat);
+            $data = array_merge($data, $_POST);
+            $data['errors'] = array(__('Some error occurred'));
+            $_SESSION['FpsForm'] = $data;
+            redirect('/foto/add_form/');
+        }
+
 		
 		
 		// hook for plugins
@@ -610,10 +581,12 @@ Class FotoModule extends Module {
 			'entity' => $entity,
 			'module' => $this->module,
 		));
-		
+
+
 		//clean cache
 		$this->Cache->clean(CACHE_MATCHING_TAG, array('module_foto'));
 		$this->DB->cleanSqlCache();
+
 		if ($this->Log) $this->Log->write('adding foto', 'foto id(' . $id . ')');
 		return $this->showInfoMessage(__('Material successfully added'), '/foto/' );		  
 	}
@@ -740,6 +713,25 @@ Class FotoModule extends Module {
 		$entity->setDescription($description);
 		$entity->setCategory_id($in_cat);
 		$entity->save();
+
+
+        if (!empty($_FILES['foto']['name'])) {
+            try {
+                $filename = $this->__saveFile($_FILES['foto'], $id);
+                if (!$filename)
+                    throw new Exception('ERROR: FILE_UPL');
+
+
+                $entity->setFilename($filename)->save();
+
+            } catch (Exception $e) {
+                $data = array('title' => null, 'description' => null, 'in_cat' => $in_cat);
+                $data = array_merge($data, $_POST);
+                $data['errors'] = array(__('Some error occurred'));
+                $_SESSION['FpsForm'] = $data;
+                redirect('/foto/edit_form/');
+            }
+        }
 
 		
 		//clean cache
@@ -880,7 +872,7 @@ Class FotoModule extends Module {
                     'title' => 'Description',
 				),
 				'files__foto' => array(
-					'required' => true,
+					'required' => false,
 					'type' => 'image',
 					'max_size' => Config::read('max_file_size', 'foto'),
 				),
@@ -888,10 +880,51 @@ Class FotoModule extends Module {
 		);
 		
 		return $rules;
-	}	
+	}
 
 
-	
+    /**
+     * Try to save file
+     *
+     * @param $file array (From POST request)
+     */
+    private function __saveFile($file, $id)
+    {
+        /**
+         * We doesn't check an file extension here
+         * because it was doing above in the Validator.
+         * That's why we could be sure that $file is image.
+         */
+
+        $ext = strtolower(strchr($file['name'], '.'));
+        $file_name = $id . $ext;
+
+        $files_dir = ROOT . '/sys/files/' . $this->module . '/';
+        $path = getSecureFilename($file_name, $files_dir);
+
+
+        // Перемещаем файл из временной директории сервера в директорию files
+        if (move_uploaded_file($file['tmp_name'], $files_dir . $path)) {
+            chmod( $files_dir . $path, 0644 );
+
+
+            // Create watermark and resample image
+            $watermark_path = ROOT . '/sys/img/' .
+                (Config::read('watermark_type') == '1'
+                    ? 'watermark_text.png' : Config::read('watermark_img'));
+
+            if (Config::read('use_watermarks') && !empty($watermark_path) && file_exists($watermark_path)) {
+                $waterObj = new FpsImg;
+                $waterObj->createWaterMark($files_dir . $path, $watermark_path);
+            }
+
+            return $path;
+        }
+
+        return false;
+    }
+
+
 	public function set_rating($id = null)
     {
 		include_once(ROOT . '/sys/inc/includes/set_rating.php');

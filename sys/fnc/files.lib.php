@@ -189,15 +189,15 @@ function downloadAtomAttaches($module, $entity_id = '') {
  */
 function getSecureFilename($filename, $dirToCheck) {
 	if (empty($filename) || !is_string($filename)) {
-		return md5(microtime().rand(0, 99999)) . '-' . date("Y-m-d-H-i-s");
+        $filename = md5(microtime().rand(0, 99999)) . '-' . date("Y-m-d-H-i-s") . '.txt';
 	}
 	
 	
 	$ext = strrchr($filename, ".");
-	$ext = (isPermittedFile($ext)) ? $ext : '.txt';
+	$ext = (isPermittedFile($ext)) ? strtolower($ext) : '.txt';
 
 	
-	$filename = preg_replace('#[^a-z\d_\-]+#iu', 'x', mb_substr($filename, 0, mb_strlen($filename) - mb_strlen($ext)));
+	$filename = preg_replace('#[^a-z\d_\-]+#iu', 'x', mb_substr($filename, 0, -mb_strlen($ext)));
 	while (file_exists($dirToCheck . $filename . $ext)) {
 		$filename .= rand(0, 999);
 		clearstatcache();
@@ -228,7 +228,7 @@ function isPermittedFile($ext) {
 	/**
 	 * Wrong extention for download files
 	 */
-	$deny_extentions = array('.php', '.phtml', '.php3', '.html', '.htm', '.pl', '.js');
+	$deny_extentions = array('.php', '.phtml', '.php3', '.html', '.htm', '.pl', '.js', '.png', '.jpg', '.gif', '.jpeg');
 	
 	return !(empty($ext) || in_array(strtolower($ext), $deny_extentions));
 }

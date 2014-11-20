@@ -4,7 +4,7 @@
       {% for entity in entities %}
 	  <div class="photo_row"><div class="cont">
           <a href="{{ entity.add_markers.entry_url }}" class="img_link" >
-		      <img alt="{{ entity.add_markers.foto_alt }}" src="{{ entity.add_markers.preview_foto }}" />
+		      <img alt="{{ entity.add_markers.foto_alt }}" src="{{ get_url('/image/' ~ module ~ '/' ~ entity.filename ~ '/200/') }}" />
 			  <div class="photo_album_info">
 				 <b>{{ 'Author'|lang }}: 
 				 <a href="{{ entity.add_markers.profile_url }}">{{ entity.author.name }}</a>

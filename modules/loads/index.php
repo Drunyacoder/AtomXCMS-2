@@ -41,15 +41,9 @@ Class LoadsModule extends Module {
 	public $premoder_types = array('rejected', 'confirmed');
 	
 	/**
-	* @module module indentifier
+	* @var string - path do files upload
 	*/
-	public $attached_files_path = 'loads';
-
-    /**
-     * Wrong extention for download files
-     */
-    private $denyExtentions = array('.php', '.phtml', '.php3', '.html', '.htm', '.pl', '.PHP', '.PHTML', '.PHP3', '.HTML', '.HTM', '.PL', '.js', '.JS');
-
+	public $attached_files_path = '';
 
 
 
@@ -1444,36 +1438,22 @@ Class LoadsModule extends Module {
 
 	
 	/**
-	 * Try Save file
+	 * Try to save file
 	 * 
 	 * @param array $file (From POST request)
 	 */
 	private function __saveFile($file)
     {
-		// Массив недопустимых расширений файла вложения
-		$extentions = $this->denyExtentions;
-		// Извлекаем из имени файла расширение
-		$ext = strrchr( $file['name'], "." );
-		
-		
-		// Формируем путь к файлу
-		if (in_array(strtolower($ext), $extentions)) {
-			$path = date("YmdHis", time()) . '.txt';
-		} else {
-			$path = date("YmdHis", time()) . $ext;
-		}
-		
-		
-		$files_dir = ROOT . '/sys/files/' . $this->module . '/';
-		$path = getSecureFilename($file['name'] . '_' . $path, $files_dir);
+		$path = getSecureFilename($file['name'], $this->attached_files_path);
 		
 		
 		// Перемещаем файл из временной директории сервера в директорию files
-		if (move_uploaded_file($file['tmp_name'], ROOT . '/sys/files/' . $this->module . '/' . $path)) {
-			chmod( ROOT . '/sys/files/' . $this->module . '/' . $path, 0644 );
+		if (move_uploaded_file($file['tmp_name'], $this->attached_files_path . $path)) {
+			chmod( $this->attached_files_path . $path, 0644 );
+            return $path;
 		}
 		
-		return $path;
+		return false;
 	}
 	
 
