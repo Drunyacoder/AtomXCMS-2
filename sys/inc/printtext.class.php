@@ -434,9 +434,9 @@ class PrintText {
 				$floats[$id] = (!empty($matches[5][$key])) ? 'float:' . $matches[5][$key] . ';' : false;
 				$descriptions[$id] = (!empty($matches[7][$key])) ? $matches[7][$key] : false;
 			}
-			
 
-			$attaches = $entity->getAttaches();
+
+            $attaches = ($module == 'forum') ? $entity->getAttacheslist() : $entity->getAttaches();
 			if ($attaches) {
 				foreach ($attaches as $attach) {
 					
