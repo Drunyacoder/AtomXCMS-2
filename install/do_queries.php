@@ -212,7 +212,7 @@ $array[] = "CREATE TABLE `{$set['db']['prefix']}news` (
 $array[] = "INSERT INTO `{$set['db']['prefix']}news` 
 	(`title`, `clean_url_title`, `main`, `date`, `category_id`, `author_id`, `tags`, `description`, `sourse`, `sourse_email`, `sourse_site`) VALUES
 	('Моя первая новость',
-	 'моя_первая_новость.htm',
+	 'моя_первая_новость',
 	'Теперь сайт установлен и готов к работе.
 	По любым вопросам Вы можете обращаться на сайт [url=http://atomx.net]AtomX[/url].
 
