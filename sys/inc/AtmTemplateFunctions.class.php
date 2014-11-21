@@ -207,7 +207,26 @@ class AtmTemplateFunctions
         };
 
 
+        $custom_functions = self::loadCustomTemplateFunctions();
+        if (is_array($custom_functions))
+            $functions = array_merge($functions, $custom_functions);
+
 
         return $functions;
+    }
+
+
+    public static function loadCustomTemplateFunctions()
+    {
+        $path = ROOT . '/template/' . getTemplateName() . '/customize/AtmCustomTemplateFunctions.class.php';
+        if (file_exists($path) && is_readable($path)) {
+            include_once $path;
+
+            if (class_exists('AtmCustomTemplateFunctions')) {
+                return AtmCustomTemplateFunctions::get();
+            }
+        }
+
+        return array();
     }
 }

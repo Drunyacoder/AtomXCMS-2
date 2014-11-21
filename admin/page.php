@@ -372,19 +372,6 @@ $pageNav = $pageTitle;
 $pageNavr = __('Pages') . ' &raquo; [' . __('Editing') . ']';
 
 
-$page = array(
-	'name' => '',
-	'id' => '',
-	'url' => '',
-	'visible' => '',
-	'parent_id' => '',
-	'meta_keywords' => '',
-	'meta_description' => '',
-	'content' => '',
-	'template' => '',
-	'visible' => '',
-);
-
 
 include_once ROOT . '/admin/template/header.php';
 ?>
