@@ -179,7 +179,7 @@ class FpsAdditionalFields {
         $ModelName = $Register['ModManager']->getModelName(ucfirst($module) . 'AddFields');
         $Model = new $ModelName();
 
-        $Model->bindModel(ucfirst($module) . 'AddContent');
+        $Model->bindModel('content');
 		if (!empty($records)) $addFields = $records;
 		else $addFields = $Model->getCollection();
 		

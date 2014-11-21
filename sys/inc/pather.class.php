@@ -93,7 +93,7 @@ Class Pather {
 	function parsePath($url) {
 		$url = (!empty($url)) ? $this->decodeUrl($url) : '';
         $Register = Register::getInstance();
-        $pathParams = array();
+
 
 		$fixed_url = $Register['URL']->checkAndRepair($_SERVER['REQUEST_URI']);
 		if (!empty($url) && $_SERVER['REQUEST_METHOD'] == 'GET'
@@ -102,23 +102,30 @@ Class Pather {
 		
 
 		$url = rtrim($url, '/');
-		if (empty($url)) {
-			if ($this->Register['Config']->read('start_mod')) {
-				$start_mod = $this->Register['Config']->read('start_mod');
-				$pathParams = $this->parsePath($start_mod);
-				return $pathParams;
-			}
-		} else {
-			if ($this->Register['Config']->read('start_mod') && $url === $this->Register['Config']->read('start_mod')) {
-				$this->Register['is_home_page'] = true;
-			}
-			
-			$pathParams = explode('/', $url);
-		}
-		$this->getLang($pathParams);
-		
-		
+        $pathParams = explode('/', $url);
+        $pathParams = array_filter($pathParams);
+
+
+        $start_mod = Config::read('start_mod');
+        if ($start_mod) {
+            if  (rtrim($start_mod, '/') != $url) {
+                $this->getLang($pathParams);
+
+                if (!$pathParams || count($pathParams) < 1) {
+                    $pathParams_ = $this->parsePath($start_mod);
+                    $pathParams = $pathParams_;
+                }
+
+            } else {
+                $this->Register['is_home_page'] = true;
+            }
+        } else {
+            $this->getLang($pathParams);
+        }
+
 		if (empty($pathParams)) {
+            $this->Register['is_home_page'] = true;
+
 			$pathParams = array(
 				'pages',
 				'index',
@@ -152,12 +159,14 @@ Class Pather {
 				if (!empty($pathParams[0]) && $pathParams[0] === $lang) {
 					$_SESSION['lang'] = $lang;
 					unset($pathParams[0]);
-					
+
+
+                    $tmpArr = array();
 					if (count($pathParams) > 0) {
-						$tmpArr = array();
-						foreach ($pathParams as $param) $tmpArr[] = $param;
-						$pathParams = $tmpArr;
+						foreach ($pathParams as $param)
+                            $tmpArr[] = $param;
 					}
+                    $pathParams = $tmpArr;
 					
 					return;
 				}

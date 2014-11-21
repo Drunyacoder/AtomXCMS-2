@@ -109,9 +109,7 @@ class ChatModule extends Module {
 		if (!$ACL->turn(array('chat', 'add_materials'), false)) {
 			return;
 		}
-		if (!isset($_POST['message'])) {
-			die(__('Needed fields are empty'));
-		}
+
 		
 		/* cut and trim values */
 		$name    = (!empty($_SESSION['user'])) ? h($_SESSION['user']['name']) : __('Guest');
@@ -120,9 +118,11 @@ class ChatModule extends Module {
 		$message = trim($message);
 		$ip      = (!empty($_SERVER['REMOTE_ADDR'])) ? $_SERVER['REMOTE_ADDR'] : '';
 		$keystring = (isset($_POST['keystring'])) ? trim($_POST['keystring']) : '';
-		
-		
+
+
+		$errors = array();
 		$valobj = $this->Register['Validate'];
+
 		if (!empty($name) && !$valobj->cha_val($name, V_TITLE))  
 			$errors[] = __('Wrong chars in field "login"');
 			
