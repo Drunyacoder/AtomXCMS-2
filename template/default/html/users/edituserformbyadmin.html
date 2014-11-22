@@ -143,6 +143,10 @@ Current context:
                             <span class="siu_title"><strong>{{ 'Get notified by Email'|lang }}:</strong></span>
                             <span class="siu_data"><input type="checkbox" {% if context.user.email_notification %}checked="checked"{% endif %} name="email_notification" value="1" /></span>
                         </li>
+                      <li>
+                            <span class="siu_title"><strong>{{ 'Status'|lang }}:</strong></span>
+                            <span class="siu_data">{{ context.user.status }}</span>
+                        </li>
                         <li>
                             <input type="submit" name="submitForm" value="{{ 'Save'|lang }}" />
                         </li>
