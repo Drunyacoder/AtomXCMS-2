@@ -25,7 +25,8 @@ if ($comment->getUser_id() > 0) {
 	// for validation
 	$_POST['login'] = $name;
 } else {
-	$name = mb_substr($_POST['login'], 0, 70);
+	$name = (!empty($_POST['login']))
+		? mb_substr($_POST['login'], 0, 70) : $comment->getName();
 	$name = trim($name);
 }
 
@@ -34,13 +35,13 @@ if (!$comment->getUser_id()) {
 	$this->Register['Validate']->disableFieldCheck('login');
 }
 
-$errors .= $this->Register['Validate']->check($this->Register['action']);
+$errors = $this->Register['Validate']->check($this->Register['action']);
 
 	
 /* if an error */
 if (!empty( $errors )) {
 	$_SESSION['FpsForm'] = array();
-	$_SESSION['FpsForm']['errors'] = $this->Register['DocParser']->wrapErrors($errors);
+	$_SESSION['FpsForm']['errors'] = $errors;
 	$_SESSION['FpsForm']['message'] = $message;
 	$_SESSION['FpsForm']['name'] = $name;
 	redirect('/' . $this->module . '/edit_comment_form/' . $id );
