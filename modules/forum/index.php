@@ -1715,8 +1715,8 @@ Class ForumModule extends Module {
 		// Массив недопустимых расширений файла вложения
 		$extentions = $this->denyExtentions;
 		$img_extentions = array('.png','.jpg','.gif','.jpeg', '.PNG','.JPG','.GIF','.JPEG');
-		/* delete collizions if exists */
-		$this->deleteCollizions($post, true);
+
+		
 		for ($i = 1; $i < 6; $i++) {
 			$attach_name = 'attach' . $i;
 			if (!empty($_FILES[$attach_name]['name'])) {
@@ -2362,8 +2362,7 @@ Class ForumModule extends Module {
 			$img_extentions = array('.png','.jpg','.gif','.jpeg', '.PNG','.JPG','.GIF','.JPEG');
 			$file_types = array('image/jpeg','image/jpg','image/gif','image/png');
 			
-			/* delete collizions if exists */
-			$this->deleteCollizions($post, true);
+
 			for ($i = 1; $i < 6; $i++) {
 			
 				$attach_name = 'attach' . $i;
@@ -2619,14 +2618,16 @@ Class ForumModule extends Module {
 		$extentions = array('.php', '.phtml', '.php3', '.html', '.htm', '.pl');
 		$allowed_types = array('image/jpeg','image/jpg','image/gif','image/png');
 		$attachModel = $this->Register['ModManager']->getModelInstance('ForumAttaches');
+		
+		
 		for ($i = 1; $i <= 5; $i++) {
 			if (!empty($_POST['unlink' . $i]) || !empty($_FILES['attach' . $i]['name'])) {
 				$unlink_file = $attachModel->getCollection(array(
 					'post_id' => $id,
 					'attach_number' => $i,
 				), array('limit' => 1));
-				/* may be collizions */
-				if (count($unlink_file) > 1) $this->deleteCollizions($post, true);
+
+				
 				if (!empty($unlink_file) && file_exists(ROOT . '/sys/files/forum/' . $unlink_file[0]->getFilename())) {
 					if(unlink(ROOT . '/sys/files/forum/' . $unlink_file[0]->getFilename())) {	
 						$unlink_file->delete(); 
@@ -3082,72 +3083,6 @@ Class ForumModule extends Module {
 		return $this->showInfoMessage(__('Operation is successful'), '/forum/view_forum/' . $theme->getId_forum());
 	}
 	
-	
-	
-	/**
-	* deleting attaches  collizion 
-	*
-	* @post (array)   reply data
-	* @clean(boolean) clean all or only collizions
-	* @return         none
-	*/
-	private function deleteCollizions($post, $clean = false) {
-		/* DB has file */
-		$attachModel = $this->Register['ModManager']->getModelInstance('ForumAttaches');
-		$attachments = $attachModel->getCollection(array('post_id' => $post->getId()));
-		if ($clean === true) {
-			if (count($attachments) && is_array($attachments))
-				foreach ($attachments as $attach)
-					$attach->delete();
-					
-					
-		} else {
-			if (count($attachments) && is_array($attachments)) {
-				foreach ($attachments as $key => $attach) {
-					if (file_exists(ROOT . '/sys/files/forum/' . $attach->getFilename())) {
-						clearstatcache();
-						continue;
-					}
-					$attach->delete();
-					unset($attachments[$key]);
-				}
-			}
-		}
-		
-		
-		/* File has DB record */
-		$attach_files = glob(ROOT . '/sys/files/forum/' . $post->getId() . '-*');
-		if (!empty($attach_files)) {
-			foreach ($attach_files as $_key => $attach_file) {
-				if ($clean === true) {
-					@unlink($attach_file);
-					continue;
-				}
-				$record_exists = false;
-				if (count($attachments) && is_array($attachments)) {
-					foreach ($attachments as $attach) {
-						if (strrchr($attach_file, '/') == $attach->getFilename()) {
-							$record_exists = true;
-							break;
-						}
-					}
-				}
-				if ($record_exists === false) {
-					unset($attach_files[$_key]);
-					@unlink($attach_file);
-				}
-			}
-		}
-		if ($clean === true) return;
-		/* posts.attaches flag */
-		$flag = (!empty($attach_files) && !empty($attachments)) ? '1' : '0';
-		if ($flag != $post->getAttaches()) {
-			$post->setAttaches($flag);
-			$post->save();
-		}
-		return;
-	}
-
 
 	
 	//delete theme
