@@ -291,7 +291,7 @@
 
 		['<?php echo __('Help'); ?>',
 		  [
-		  '<a href="http://fapos.net" target="_blank"><?php echo __('AtomX CMS Community'); ?></a>',
+		  '<a href="http://atomx.net" target="_blank"><?php echo __('AtomX CMS Community'); ?></a>',
 		  '<a href="faq.php"><?php echo __('FAQ'); ?></a>',
 		  'sep',
 		  '<a href="authors.php"><?php echo __('Dev. Team'); ?></a>',
