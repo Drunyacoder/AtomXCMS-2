@@ -722,3 +722,27 @@ function getDirFiles($path)
 function memoryUsage($base_memory_usage) {
     printf("Bytes diff: %s<br />\n", getSimpleFileSize(memory_get_usage() - $base_memory_usage));
 }
+
+
+
+/**
+ * Create order link with a right URL params & title.
+ * The title will be with an arrows 
+ * which indicates the order direction.
+ */
+function getOrderLink($params) {
+	if (!$params || !is_array($params) || count($params) < 2) return '';
+	$order = (!empty($_GET['order'])) ? strtolower(trim($_GET['order'])) : '';
+	$new_order = strtolower($params[0]);
+	$active = ($order === $new_order);
+	$asc = ($active && isset($_GET['asc']));
+
+
+	$url = $_SERVER['REQUEST_URI'];
+	$url = preg_replace('#(order=[^&]*[&]?)|(asc=[^&]*[&]?)#i', '', $url);
+	if (substr($url, -1) !== '&' && substr($url, -1) !== '?') {
+		$url .= (!strstr($url, '?')) ? '?' : '&';
+	}
+
+	return '<a href="' . $url . 'order=' . $new_order . ($asc ? '' : '&asc=1') . '">' . $params[1] . ($active ? ' ' . ($asc ? '↑' : '↓') : '') . '</a>';
+}
