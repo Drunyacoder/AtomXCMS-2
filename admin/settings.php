@@ -287,7 +287,7 @@ if (count($settingsInfo)) {
 				break;
 
             case 'textarea':
-                $output_ = '<textarea name="' . h($fname) . '"' . $attr . '>' . $currValue . 'sds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas dsds d dasdas d' . '</textarea>';
+                $output_ = '<textarea name="' . h($fname) . '"' . $attr . '>' . $currValue . '</textarea>';
                 break;
 				
 			case 'checkbox':
