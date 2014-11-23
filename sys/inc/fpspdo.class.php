@@ -69,6 +69,8 @@ class FpsPDO {
 	private $dbh;
 
     private $table_alias;
+    
+	private $useTableAlias = true;
 	
 	private $queryParams = array();
 
@@ -306,7 +308,9 @@ class FpsPDO {
 		$this->queryParams = array();
 		$this->DB_TYPE = 'DB_ALL';
 
-        if (!empty($params['alias'])) $this->table_alias = $this->__name($params['alias']);
+        if (!empty($params['alias'])) 
+			$this->table_alias = $this->__name($params['alias']);
+			
 		$query = $this->__buildQuery($params, $table);
 		
 		return $this->getQueryDump($query);
@@ -624,9 +628,9 @@ class FpsPDO {
 	 * Prepare SQL query uses params and table
 	 */
 	private function __buildQuery($params, $table) {
-        if ($this->DB_TYPE === 'DB_FIRST') $params['limit'] = 1;
+		if ($this->DB_TYPE === 'DB_FIRST') $params['limit'] = 1;
         $params = $this->repairParams($params);
-
+		
 		if (!empty($params['joins'])) {
 			$count = count($params['joins']);
 			for ($i = 0; $i < $count; $i++) {
@@ -665,7 +669,7 @@ class FpsPDO {
                     }
                 }
 
-
+				
                 // If ordering by the main table is exists - copy he to subquery
                 if (!empty($params['order'])) {
                     $odr = explode('.', $params['order']);
@@ -686,13 +690,14 @@ class FpsPDO {
                     'cond' => $cond,
                     'order' => !empty($order) ? $order : '',
                 );
-                $sub_query = $this->__buildQuery($params_, $table);
+
+                $sub_query = $this->aliasOff()->__buildQuery($params_, $table);
+				$this->aliasOn();
                 $params['limit'] = null;
                 $params['offset'] = null;
                 //$params['cond'] = null;
             }
 		}
-
 
 		return $this->__renderQuery('select', array(
 			'conditions' => $this->__conditions($params['cond'], true, true),
@@ -707,7 +712,24 @@ class FpsPDO {
 			'group' => $this->__group($params['group'])
 		));
 	}
+	
+	
+	private function aliasOff() {
+		$this->useTableAlias = false;
+		return $this;
+	}
+	
+	
+	private function aliasOn() {
+		$this->useTableAlias = true;
+		return $this;
+	}
 
+	
+	private function useAlias() {
+		return $this->useTableAlias;
+	}
+	
 
     private function repairParams($params) {
         $params = array_merge(array(
@@ -1126,7 +1148,7 @@ class FpsPDO {
 		if ($data === '*') {
 			return '*';
 		}
-
+		
 		if (is_array($data)) {
 			foreach ($data as $i => $dataItem) {
 				$data[$i] = $this->__name($dataItem, $alias);
@@ -1142,7 +1164,7 @@ class FpsPDO {
 				. $this->endQuote;
 			}
 
-			return ((!empty($this->table_alias) && $use_alias === true)
+			return ((!empty($this->table_alias) && $use_alias === true && $this->useAlias())
                     ? $this->table_alias . '.' : '')
                 . $this->startQuote . $data . $this->endQuote;
 		}
@@ -1152,7 +1174,14 @@ class FpsPDO {
 		if (preg_match('/^([\w-]+)\((.*)\)$/', $data, $matches)) { // Functions
 			return $matches[1] . '(' . $this->__name($matches[2]) . ')';
 		}
-		if (preg_match('/^(`?([\w-]+)`? ([\w]+ .+))$/iu', $data, $matches)) {
+		
+		/**
+		 * TODO
+		 * These two regexp are duplicates particulary.
+		 * And need be rewrited. 
+		 * 
+		 */
+		if (preg_match('/^(`?([\w-]+)`? ([\w]+( .+)?))$/iu', $data, $matches)) {
 			return $this->__name($matches[2], true) . ' ' . $matches[3];
 		}
 
@@ -1160,6 +1189,7 @@ class FpsPDO {
 		 * "DISTINCT (field)" is not matched
 		 */
 		if (preg_match('/^([\w_-]+(\.[\w_-]+)?)(\s([!=\>\<a-z]{2,4}\s+(\(.*\)|\d+)|[\s\w_-]+)+)$/i', $data, $matches)) {
+			
 			return $this->__name($matches[1], true) . $matches[3];
 		}
 		return $data;
