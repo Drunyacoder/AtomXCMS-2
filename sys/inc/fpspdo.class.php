@@ -522,7 +522,7 @@ class FpsPDO {
 		
 		if (empty($rows)) return;
         foreach ($model_conf[$table1] as $table2 => $params) {
-			if (empty($affected_rows[$table2])) continue;
+			//if (empty($affected_rows[$table2])) continue;
             $rows = $mergeRows($rows, $table1, $table2, $root_record_id);
         }
     }
