@@ -193,7 +193,9 @@ if (isset($_POST['send'])) {
 			
 			if (!empty($params['onsave']['func'])
 			&& function_exists((string)$params['onsave']['func'])) {
-				call_user_func((string)$params['onsave']['func'], $tmpSet);
+				$tmpSet_ = call_user_func((string)$params['onsave']['func'], $tmpSet);
+				if (!empty($tmpSet_) && is_array($tmpSet_))
+					$tmpSet = $tmpSet_;
 				continue;
 			}
 			

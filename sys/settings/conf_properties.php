@@ -621,6 +621,7 @@ if (!function_exists('saveWaterMarkImage')) {
 				$settings['watermark_img'] = 'watermark'.$ext;
 			}
 		}
+		return $settings;
 	}
 }
 
