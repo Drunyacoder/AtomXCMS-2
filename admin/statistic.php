@@ -50,7 +50,7 @@ $all = $Model->getCollection(array(
 
 $interval = 2592000;
 $i = 0;
-while (count($all) < 2 && empty($_POST['grfrom']) && empty($_POST['grto'])) {
+while ($i < 6 && count($all) < 2 && empty($_POST['grfrom']) && empty($_POST['grto'])) {
 	if ($i < 5) {
 		$interval += 2592000;
 		$graph_from = date("Y-m-d", time() - $interval);
