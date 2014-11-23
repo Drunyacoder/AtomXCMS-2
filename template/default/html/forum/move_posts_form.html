@@ -108,7 +108,7 @@ $(function() {
 		  </li>
 		  </ul>
 	  </div>
-{% for post in posts %}
+{% for post in context.posts %}
 <input type="hidden" name="posts_ids[]" value="{{ post.id }}" />
 <div class="forumpost" id="post{{ post.id }}">
 <div class="poststarterinfo">

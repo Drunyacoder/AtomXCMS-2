@@ -3478,7 +3478,7 @@ Class ForumModule extends Module {
 		
 		$themesModel = $this->Register['ModManager']->getModelInstance('Themes');
         $entitys = $themesModel->getCollection($params, array('limit' => 20));
-		
+
         if (is_array($entitys) && count($entitys))
             $result = array_map(function($row){
                 return array(

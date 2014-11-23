@@ -1141,6 +1141,7 @@ class FpsPDO {
 				return $this->startQuote . implode($this->endQuote . '.' . $this->startQuote, $items) 
 				. $this->endQuote;
 			}
+
 			return ((!empty($this->table_alias) && $use_alias === true)
                     ? $this->table_alias . '.' : '')
                 . $this->startQuote . $data . $this->endQuote;
@@ -1151,11 +1152,8 @@ class FpsPDO {
 		if (preg_match('/^([\w-]+)\((.*)\)$/', $data, $matches)) { // Functions
 			return $matches[1] . '(' . $this->__name($matches[2]) . ')';
 		}
-		if (preg_match('/^([\w-]+(\.[\w-]+|\(.*\))*)\s+' . preg_quote($this->alias) 
-		. '\s*([\w-]+)$/iu', $data, $matches)) {
-			
-			return preg_replace('/\s{2,}/', ' ', $this->__name($matches[1]) . ' '
-			. $this->alias . ' ' . $this->__name($matches[3]));
+		if (preg_match('/^(`?([\w-]+)`? ([\w]+ .+))$/iu', $data, $matches)) {
+			return $this->__name($matches[2], true) . ' ' . $matches[3];
 		}
 
 		/** "id DESC", "id in (1, 2...)" 
