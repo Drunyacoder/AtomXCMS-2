@@ -506,7 +506,7 @@ Class FotoModule extends Module {
 
 		// Обрезаем переменные до длины, указанной в параметре maxlength тега input
 		$title   	 = trim(mb_substr( $_POST['title'], 0, 128 ));
-		$description = trim($_POST['mainText']);
+		$description = trim($_POST['main_text']);
 		$in_cat 	 = intval($_POST['cats_selector']);
 
 
