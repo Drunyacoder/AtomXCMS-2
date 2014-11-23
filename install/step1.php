@@ -29,6 +29,7 @@ if (isset($_POST['send'])) {
 		$settings['db']['user']   = $_POST['user'];
 		$settings['db']['pass']   = $_POST['pass'];
 		$settings['db']['prefix'] = $_POST['prefix'];
+		$settings['admin_email'] = $_POST['adm_email'];
 
 		Config::write($settings);
 
