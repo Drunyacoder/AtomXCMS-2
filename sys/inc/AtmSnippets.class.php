@@ -4,18 +4,18 @@
 | Author:       Andrey Brykin (Drunya)         |
 | Version:      1.2                            |
 | Project:      CMS                            |
-| package       CMS Fapos                      |
+| package       CMS AtomX                      |
 | subpackege    AtmSnippets class              |
 | copyright     ©Andrey Brykin 2010-2014       |
 | last mod.     2014/04/21                     |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
-| CMS Fapos,without the consent of the         |
+| CMS AtomX,without the consent of the         |
 | author, is illegal                           |
 |----------------------------------------------|
 | Любое распространение                        |
-| CMS Fapos или ее частей,                     |
+| CMS AtomX или ее частей,                     |
 | без согласия автора, является не законным    |
 \---------------------------------------------*/
 

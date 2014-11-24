@@ -4,7 +4,7 @@
 ## @Author:       Andrey Brykin (Drunya)        ##
 ## @Version:      1.3                           ##
 ## @Project:      CMS                           ##
-## @package       CMS Fapos                     ##
+## @package       CMS AtomX                     ##
 ## @subpackege    Admin module                  ##
 ## @copyright     ©Andrey Brykin 2010-2014      ##
 ## @Last mod.     2014/01/10                    ##
@@ -14,11 +14,11 @@
 ##################################################
 ##												##
 ## any partial or not partial extension         ##
-## CMS Fapos,without the consent of the         ##
+## CMS AtomX,without the consent of the         ##
 ## author, is illegal                           ##
 ##################################################
 ## Любое распространение                        ##
-## CMS Fapos или ее частей,                     ##
+## CMS AtomX или ее частей,                     ##
 ## без согласия автора, является не законным    ##
 ##################################################
 
@@ -95,7 +95,7 @@ if (!isset($_SESSION['adm_panel_authorize']) || $_SESSION['adm_panel_authorize']
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>Fapos Admin Panel Authorization</title>
+	<title>AtomX Admin Panel Authorization</title>
 	<meta name="description" content="" />
 	<meta name="keywords" content="" />
 	<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />

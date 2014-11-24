@@ -4,18 +4,18 @@
 | Author:       Andrey Brykin (Drunya)         |
 | Version:      1.7.3                          |
 | Project:      CMS                            |
-| package       CMS Fapos                      |
+| package       CMS AtomX                      |
 | subpackege    Helpers library                |
 | copyright     ©Andrey Brykin 2010-2014       |
 | last mod.     2014/10/24                     |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
-| CMS Fapos,without the consent of the         |
+| CMS AtomX,without the consent of the         |
 | author, is illegal                           |
 |----------------------------------------------|
 | Любое распространение                        |
-| CMS Fapos или ее частей,                     |
+| CMS AtomX или ее частей,                     |
 | без согласия автора, является не законным    |
 \---------------------------------------------*/
 
@@ -378,7 +378,7 @@ function getPermittedLangs() {
  * Uses for valid create HTML tag IMG
  * and fill into him correctly url.
  * When you use this function you
- * mustn't wory obout Fapos install
+ * mustn't wory obout AtomX install
  * into subdir or SUBDIRS.
  * ALso if we wont change class of IMG or etc,
  * we change this only here and this changes apply
@@ -403,7 +403,7 @@ function get_img($url, $params = array(), $notRoot = false) {
 /**
  * Uses for valid create url.
  * When you use this function you
- * mustn't wory obout the Fapos install
+ * mustn't wory obout the AtomX install
  * into subdir or SUBDIRS.
  * This function return url only from root (/)
  * But you can send $notRoot as true and get relative URL.
@@ -424,7 +424,7 @@ function get_url($url, $notRoot = false, $useLang = true)
  * Uses for valid create HTML tag A
  * and fill into him correctli url.
  * When you use this function you
- * mustn't wory obout Fapos install
+ * mustn't wory obout AtomX install
  * into subdri or SUBDIRS.
  * ALso if we wont change class of A or etc,
  * we change this only here and this changes apply

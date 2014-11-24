@@ -11,11 +11,11 @@
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
-| CMS Fapos,without the consent of the         |
+| CMS AtomX,without the consent of the         |
 | author, is illegal                           |
 |----------------------------------------------|
 | Любое распространение                        |
-| CMS Fapos или ее частей,                     |
+| CMS AtomX или ее частей,                     |
 | без согласия автора, является не законным    |
 \---------------------------------------------*/
 if (function_exists('set_time_limit')) @set_time_limit(0);
@@ -28,8 +28,8 @@ if (function_exists('ignor_user_abort')) @ignor_user_abort();
 /**
  * @author      Andrey Brykin
  * @year        2011
- * @url         http://fapos.net
- * @package     Fapos CMS
+ * @url         http://atomx.net
+ * @package     AtomX CMS
  * @subpackage  Sitemap Generator
  * @copyright   ©Andrey Brykin
  */

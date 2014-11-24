@@ -5,7 +5,7 @@
 ## Author:       Andrey Brykin (Drunya)         ##
 ## Version:      1.7.5                          ##
 ## Project:      CMS                            ##
-## package       CMS Fapos                      ##
+## package       CMS AtomX                      ##
 ## subpackege    Document parser library        ##
 ## copyright     ©Andrey Brykin 2010-2014       ##
 ## last mod.     2014/02/21                     ##
@@ -15,11 +15,11 @@
 ##################################################
 ##												##
 ## any partial or not partial extension         ##
-## CMS Fapos,without the consent of the         ##
+## CMS AtomX,without the consent of the         ##
 ## author, is illegal                           ##
 ##################################################
 ## Любое распространение                        ##
-## CMS Fapos или ее частей,                     ##
+## CMS AtomX или ее частей,                     ##
 ## без согласия автора, является не законным    ##
 ##################################################
 
@@ -30,9 +30,9 @@
 * Quote/unquote global tags.
 *
 * @author        Andrey Brykin
-* @package       CMS Fapos
+* @package       CMS AtomX
 * @subpackage    Document parser
-* @link          http://fapos.net
+* @link          http://atomx.net
 */
 class Document_Parser {
 

@@ -4,17 +4,17 @@
 |  @Author:       Andrey Brykin (Drunya)         |
 |  @Version:      1.7.1                          |
 |  @Project:      CMS                            |
-|  @package       CMS Fapos                      |
+|  @package       CMS AtomX                      |
 |  @subpackege    Forum Module                   |
 |  @copyright     ©Andrey Brykin                 |
 |  @last mod.     2014/03/13                     |
 |------------------------------------------------|
 |  any partial or not partial extension          |
-|  CMS Fapos,without the consent of the          |
+|  CMS AtomX,without the consent of the          |
 |  author, is illegal                            |
 |------------------------------------------------|
 |  Любое распространение                         |
-|  CMS Fapos или ее частей,                      |
+|  CMS AtomX или ее частей,                      |
 |  без согласия автора, является не законным     |
 \-----------------------------------------------*/
 
@@ -23,7 +23,7 @@
 * forum functionaly
 *
 * @author      Andrey Brykin 
-* @package     CMS Fapos
+* @package     CMS AtomX
 * @subpackage  Forum module
 * @link        http://cms.develdo.com
 */

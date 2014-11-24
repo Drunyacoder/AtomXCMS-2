@@ -17,8 +17,8 @@ define ('R', dirname(dirname(__FILE__)) . DS);
 
 
 /**
- * If we uses Fapos from subdir or subdirs
- * we must set this variable, because Fapos
+ * If we uses AtomX from subdir or subdirs
+ * we must set this variable, because AtomX
  * must know this for good work.
  */
 $diff = array_diff_assoc(

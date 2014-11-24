@@ -11,11 +11,11 @@
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
-| CMS Fapos,without the consent of the         |
+| CMS AtomX,without the consent of the         |
 | author, is illegal                           |
 |----------------------------------------------|
 | Любое распространение                        |
-| CMS Fapos или ее частей,                     |
+| CMS AtomX или ее частей,                     |
 | без согласия автора, является не законным    |
 \---------------------------------------------*/
 
@@ -28,7 +28,7 @@ if (!defined('DB_COUNT')) define ('DB_COUNT', 'DB_COUNT');
 /**
  * @version       1.0.0
  * @author        Andrey Brykin
- * @url           http://fapos.net
+ * @url           http://atomx.net
  */
 class FpsPDO {
 

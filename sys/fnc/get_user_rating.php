@@ -4,21 +4,21 @@
 ## Author:       Andrey Brykin (Drunya)         ##
 ## Version:      0.7                            ##
 ## Project:      CMS                            ##
-## package       CMS Fapos                      ##
+## package       CMS AtomX                      ##
 ## subpackege    Geting user rating function    ##
-## copyright     ©Andrey Brykin 2010-2011       ##
+## copyright     пїЅAndrey Brykin 2010-2011       ##
 ##################################################
 
 
 ##################################################
 ##												##
 ## any partial or not partial extension         ##
-## CMS Fapos,without the consent of the         ##
+## CMS AtomX,without the consent of the         ##
 ## author, is illegal                           ##
 ##################################################
-## Любое распространение                        ##
-## CMS Fapos или ее частей,                     ##
-## без согласия автора, является не законным    ##
+## пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                        ##
+## CMS Fapos пїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ,                     ##
+## пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ    ##
 ##################################################
 
 /**

@@ -4,7 +4,7 @@
 ## Author:       Andrey Brykin (Drunya)         ##
 ## Version:      0.9                            ##
 ## Project:      CMS                            ##
-## package       CMS Fapos                      ##
+## package       CMS AtomX                      ##
 ## subpackege    Admin Panel module             ##
 ## copyright     ©Andrey Brykin 2010-2014       ##
 ##################################################
@@ -13,11 +13,11 @@
 ##################################################
 ##												##
 ## any partial or not partial extension         ##
-## CMS Fapos,without the consent of the         ##
+## CMS AtomX,without the consent of the         ##
 ## author, is illegal                           ##
 ##################################################
 ## Любое распространение                        ##
-## CMS Fapos или ее частей,                     ##
+## CMS AtomX или ее частей,                     ##
 ## без согласия автора, является не законным    ##
 ##################################################
 

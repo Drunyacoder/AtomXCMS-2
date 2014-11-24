@@ -11,11 +11,11 @@
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
-| CMS Fapos,without the consent of the         |
+| CMS AtomX,without the consent of the         |
 | author, is illegal                           |
 |----------------------------------------------|
 | Любое распространение                        |
-| CMS Fapos или ее частей,                     |
+| CMS AtomX или ее частей,                     |
 | без согласия автора, является не законным    |
 \---------------------------------------------*/
 
@@ -30,8 +30,8 @@
  *
  * @version      0.1
  * @author       Andrey Brykin
- * @package      CMS Fapos
- * @url          fapos.net (fapos project)
+ * @package      CMS AtomX
+ * @url          atomx.net (atomx project)
  */
 class PrintText {
 

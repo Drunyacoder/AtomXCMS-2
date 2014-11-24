@@ -4,7 +4,7 @@
 ## Author:       Andrey Brykin (Drunya)         ##
 ## Version:      1.6.1                          ##
 ## Project:      CMS                            ##
-## package       CMS Fapos                      ##
+## package       CMS AtomX                      ##
 ## subpackege    Admin Panel module             ##
 ## copyright     ©Andrey Brykin 2010-2013       ##
 ## @last mod.     2013/07/20                    ##
@@ -14,11 +14,11 @@
 ##################################################
 ##												##
 ## any partial or not partial extension         ##
-## CMS Fapos,without the consent of the         ##
+## CMS AtomX,without the consent of the         ##
 ## author, is illegal                           ##
 ##################################################
 ## Любое распространение                        ##
-## CMS Fapos или ее частей,                     ##
+## CMS AtomX или ее частей,                     ##
 ## без согласия автора, является не законным    ##
 ##################################################
 
@@ -935,9 +935,9 @@ function submitForm(){
 	<li><div class="global-marks">{{ fps_user_name }}</div> - Ник текущего пользователя (Для не авторизованного - Гость)</li>
 	<li><div class="global-marks">{{ fps_user_group }}</div> - Группа текущего пользователя (Для не авторизованного - Гости)</li>
 	<li><div class="global-marks">{{ categories }}</div> - Список категорий раздела</li>
-	<li><div class="global-marks">{{ counter }}</div> - Встроенный счетчик посещаемости CMS Fapos</li>
+	<li><div class="global-marks">{{ counter }}</div> - Встроенный счетчик посещаемости AtomX</li>
 	<li><div class="global-marks">{{ fps_year }}</div> - Год</li>
-	<li><div class="global-marks">{{ powered_by }}</div> - CMS Fapos</li>
+	<li><div class="global-marks">{{ powered_by }}</div> - AtomX CMS</li>
 	<li><div class="global-marks">{{ comments }}</div> - Комментарии к материалу и форма добавления комментариев <b>(если предусмотренно)</b></li>
 	<li><div class="global-marks">{{ personal_page_link }}</div> - URL на свою персональную страницу или на страницу регистрации, если не авторизован</li>
 </ul>

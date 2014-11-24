@@ -3,10 +3,10 @@
 | 												 |
 |  @Author:       Andrey Brykin (Drunya)         |
 |  @Email:        drunyacoder@gmail.com          |
-|  @Site:         http://fapos.net			     |
+|  @Site:         http://atomx.net			     |
 |  @Version:      1.6.2                          |
 |  @Project:      CMS                            |
-|  @Package       CMS Fapos                      |
+|  @package       CMS AtomX                      |
 |  @Subpackege    Module Class                   |
 |  @Copyright     ©Andrey Brykin 		         |
 |  @Last mod.     2014/03/14                     |
@@ -15,11 +15,11 @@
 /*-----------------------------------------------\
 | 												 |
 |  any partial or not partial extension          |
-|  CMS Fapos,without the consent of the          |
+|  CMS AtomX,without the consent of the          |
 |  author, is illegal                            |
 |------------------------------------------------|
 |  Любое распространение                         |
-|  CMS Fapos или ее частей,                      |
+|  CMS AtomX или ее частей,                      |
 |  без согласия автора, является не законным     |
 \-----------------------------------------------*/
 
