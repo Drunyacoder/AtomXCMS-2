@@ -152,15 +152,16 @@ Class ForumModule extends Module {
 			}
 		}
 		
-		
-		//write to cache ( only if records detected )
-		if ($this->cached)
-			$this->Cache->write($html, $this->cacheKey, $this->cacheTags);		
-
-	
 
 		$source = $this->render('catlist.html', array('forum_cats' => $categories));
 		$source .= $this->_get_stat();
+		
+		
+		//write to cache ( only if records detected )
+		if ($this->cached)
+			$this->Cache->write($source, $this->cacheKey, $this->cacheTags);	
+		
+		
 		return $this->_view($source);
 	}
 
