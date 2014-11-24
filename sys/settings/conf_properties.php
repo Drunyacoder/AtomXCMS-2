@@ -634,7 +634,7 @@ if (!function_exists('showWaterMarkImage')) {
 
 		if (!empty($settings['watermark_img']) 
 		&& file_exists(ROOT . '/sys/img/' . $settings['watermark_img'])) {
-			return get_img('/sys/img/' . $settings['watermark_img'], $params);
+			return get_img('/sys/img/' . $settings['watermark_img'] . '?rand=' . rand(0,9999999), $params);
 		}
 		return '';
 	}
