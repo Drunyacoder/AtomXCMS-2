@@ -97,10 +97,13 @@ table.side-separator, table.side-separator tr td {vertical-align:top; min-height
 .crumbs {padding-left:260px;}
 
 #content-wrapper {padding:15px 15px 70px 15px; position:relative;}
-.warning {padding:15px 15px 15px 70px; background:#f4f2f2 url('../img/warning-icon.png') 14px center no-repeat; position:relative; -moz-border-radius:3px; -webkit-border-radius:3px; border-radius:3px; color:#a1a1a1; font-size:12px; margin-bottom:10px;}
-.warning.ok {background:#cbff81 url('../img/warning-icon.png') 14px center no-repeat; color:#777;}
-.warning.error {background:#f4cccc url('../img/warning-icon.png') 14px center no-repeat; color:#777;}
+.warning {padding:15px 15px 15px 70px; background:#f4f2f2; position:relative; -moz-border-radius:3px; -webkit-border-radius:3px; border-radius:3px; color:#a1a1a1; font-size:12px; margin-bottom:10px;}
+.warning.ok {background:#cbff81; color:#777;}
+.warning.ok > i {color:#9bbf41;}
+.warning.error {background:#f4cccc; color:#777;}
+.warning.error > i {color:#dd6050;}
 .warning.clean {background-image:none; padding:15px;}
+.warning > i {left:10px; bottom:0px; top:0px; margin:auto; position:absolute; height:30px; width:25px; color:#f4bc00;}
 
 .list {position:relative; margin:10px 0px; background:#fff; -moz-border-radius:3px; -webkit-border-radius:3px; border-radius:3px; overflow: hidden;}
 .list > .title {height:17px; padding:12px 20px; color:#96c703; font-size:15px; font-weight:bold; background:url('../img/list-title-bg.png') repeat-x; border-bottom:1px solid #8e8e8e; -moz-border-radius: 4px 4px 0 0; -webkit-border-radius: 4px 4px 0 0; border-radius: 4px 4px 0 0;}

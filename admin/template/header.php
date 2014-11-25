@@ -23,6 +23,7 @@
 	<link type="text/css" rel="StyleSheet" href="<?php echo WWW_ROOT ?>/sys/js/fancybox/css/fancy.css" />
 	
 	<link rel="StyleSheet" type="text/css" href="<?php echo WWW_ROOT ?>/admin/template/css/style.css" />
+	<link rel="StyleSheet" href="<?php echo WWW_ROOT ?>/admin/template/css/font-awesome.min.css" />
 	
 	<script type="text/javascript">
 	
@@ -310,8 +311,12 @@
 					<td style="position:relative;">
 						<div id="content-wrapper">
 <?php if (!empty($_SESSION['message'])): ?>
-    <div class="warning ok"><?php echo $_SESSION['message'] ?></div>
+    <div class="warning ok"><i class="fa fa-check fa-3x"></i>
+		<?php echo $_SESSION['message'] ?>
+	</div>
     <?php unset($_SESSION['message']); ?>
 <?php elseif (!empty($_SESSION['errors'])): ?>
-    <div class="warning error"><?php echo $_SESSION['errors'] ?></div>
+    <div class="warning error"><i class="fa fa-warning fa-3x"></i>
+		<?php echo $_SESSION['errors'] ?>
+	</div>
 <?php unset($_SESSION['errors']); endif; ?>

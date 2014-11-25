@@ -160,7 +160,7 @@ include_once ROOT . '/admin/template/header.php';
 */ ?>
 
 
-<div class="warning">
+<div class="warning"><i class="fa fa-info-circle fa-3x"></i>
 	<span class="greytxt"><?php echo __('Available emails') ?>:</span> <?php echo $all_users_cnt; ?><br /><br />
 
 

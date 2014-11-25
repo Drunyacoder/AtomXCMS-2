@@ -128,7 +128,7 @@ include_once ROOT . '/admin/template/header.php';
 
 
 
-<div class="warning">
+<div class="warning"><i class="fa fa-info-circle fa-3x"></i>
 <?php echo __('If you delete a category, all the materials in it will be removed') ?><br /><br />
 </div>
 <?php

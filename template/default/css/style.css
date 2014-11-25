@@ -15,7 +15,8 @@
     font-family: 'IcoMoon';
     src: url('/template/default/fonts/icomoon.eot');
     src: url('/template/default/fonts/icomoon.eot?#iefix') format('embedded-opentype'),
-        url('/template/default/fonts/icomoon.svg#IcoMoon') format('svg'),                                              /* For CSSLOADER*/
+        url('/template/default/fonts/icomoon.svg#IcoMoon') format('svg'),                                              
+		/* For CSSLOADER*/
         url('/template/default/fonts/icomoon.woff') format('woff'),
         url('/template/default/fonts/icomoon.ttf') format('truetype');
     font-weight: normal;

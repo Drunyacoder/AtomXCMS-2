@@ -272,7 +272,9 @@ echo '<form action="' . $_SERVER['REQUEST_URI'] . '" method="POST">';
 
 
 
-<div class="warning"><?php echo __('Change template and save') ?></div>
+<div class="warning"><i class="fa fa-info-circle fa-3x"></i>
+	<?php echo __('Change template and save') ?>
+</div>
 
 <div class="white">
 	<div class="pages-tree">

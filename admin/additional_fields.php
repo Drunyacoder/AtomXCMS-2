@@ -256,7 +256,7 @@ if ($_GET['ac'] == 'index'):
 	
 
 
-	
+<?php if (!empty($fields)): ?>
 <div class="list">
 	<div class="title">Дополнительные поля</div>
 	<div onclick="openPopup('addCat');" class="add-cat-butt"><div class="add"></div><?php echo __('Add') ?></div>
@@ -271,7 +271,7 @@ if ($_GET['ac'] == 'index'):
 			<th style="width:160px;">Действия</th>
 		</tr>
 	
-	<?php if (!empty($fields)): ?>
+
 	<?php foreach($fields as $field): ?>
 		<?php
 			$params = (!empty($field['params'])) ? unserialize($field['params']) : array();
@@ -299,15 +299,15 @@ if ($_GET['ac'] == 'index'):
 				</tr>
 
 	<?php endforeach; ?>
-	<?php else: ?>
-	<div class="fps-win"><div class="h3"><?php echo __('Additional fields not found') ?></div></div>
-	<?php endif; ?>
 	</table>
 </div>
-			
-	
-	
-	
+<?php else: ?>
+
+<div class="warning ok"><i class="fa fa-check fa-3x"></i>
+	<div class="h3"><?php echo __('Additional fields not found') ?></div>
+</div>
+<input type="button" value="<?php echo __('Add') ?>" onclick="openPopup('addCat');" class="save-button" />
+<?php endif; ?>			
 	
 	
 	<?php if (!empty($_SESSION['FpsForm']['errors'])): ?>
