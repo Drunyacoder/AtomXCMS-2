@@ -12,6 +12,9 @@ h1, h2, h3, h4 {color:#555;}
 .red {color:#f10000;}
 .top-index {font-size:11px; position:relative; top:-6px; margin-left:2px;}
 
+.atm-flex-box {display:flex; flex-flow:row wrap; justify-content: space-between; align-content: space-between;}
+.atm-flex-box .atm-flex-child {flex:2 3 auto; margin:0px 10px;}
+
 /* pagination */
 .pagination {color:#fff;}
 .pagination a.pages, .pagination strong {margin-right:5px;}

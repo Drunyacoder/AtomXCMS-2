@@ -105,7 +105,8 @@ endif;
 
 
 
-
+<div class="atm-flex-box">
+	<div class="atm-flex-child">
 <!--************ GENERAL **********-->							
 <div class="list">
 	<div class="title"><?php echo __('Common settings') ?></div>
@@ -159,7 +160,8 @@ endif;
 		</div>
 	</div>
 </div>
-
+	</div>
+	<div class="atm-flex-child">
 <!--************ MATERIALS **********-->							
 <div class="list">
 	<div class="title"><?php echo __('Materials') ?></div>
@@ -220,6 +222,8 @@ endif;
 		</div>
 	</div>
 </div>							
+	</div>
+	<div class="atm-flex-child">
 
 <!--************ USERS **********-->							
 <div class="list">
@@ -264,6 +268,8 @@ endif;
 		</div>
 	</div>
 </div>
+	</div>
+	<div class="atm-flex-child">
 
 
 <!--************ STATISTIC **********-->							
@@ -312,6 +318,8 @@ endif;
 		</div>
 	</div>
 </div>
+	</div>
+	<div class="atm-flex-child">
 
 
 
@@ -354,6 +362,8 @@ endif;
 	</div>
 </div>
 
+	</div>
+</div>
 
 <?php
 include_once 'template/footer.php';
