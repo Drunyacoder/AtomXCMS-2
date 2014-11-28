@@ -2548,7 +2548,7 @@ Class ForumModule extends Module {
 		
 		
 		setReferer();
-		$source = $html . $this->render('editpostform.html', array('context' => $markers));
+		$source = $this->render('editpostform.html', array('context' => $markers));
 		
 		return $this->_view($source);
 	}
