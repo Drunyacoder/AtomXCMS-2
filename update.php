@@ -17,6 +17,10 @@ $Register['DB']->query("ALTER TABLE loads ADD clean_url_title VARCHAR(255) DEFAU
 $Register['DB']->query("ALTER TABLE themes ADD clean_url_title VARCHAR(255) DEFAULT '' NOT NULL");
 $Register['DB']->query("ALTER TABLE foto ADD clean_url_title VARCHAR(255) DEFAULT '' NOT NULL");
 
+// Update users
+$Register['DB']->query("ALTER TABLE `users` ADD `first_name` VARCHAR(32) character set utf8 NOT NULL default ''");
+$Register['DB']->query("ALTER TABLE `users` ADD `last_name` VARCHAR(32) character set utf8 NOT NULL default ''");
+
 
 // Add indexes
 $Register['DB']->query("ALTER TABLE `forums` ADD INDEX (`in_cat`)");
