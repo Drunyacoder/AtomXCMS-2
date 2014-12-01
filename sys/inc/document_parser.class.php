@@ -113,6 +113,12 @@ class Document_Parser {
     }
 
 
+    /**
+     * Displays HTTP error page & sends the HTTP headers
+     * with error code.
+     *
+     * @param int $code
+     */
     public function showHttpError($code = 404)
     {
         $headers = array(
@@ -126,14 +132,16 @@ class Document_Parser {
         }
 
 
-        $markers = array(
+        // Set a markers collection used globalMarkers & addition key - "code"
+        // which displays HTTP error code.
+        $markers = array_merge(array(
             'code' => (string)$code,
-        );
+        ), (array)$this->getGlobalMarkers());
 
-        $markers = array_merge($markers, $this->getGlobalMarkers());
 
         $viewer = $this->Register['Viewer'];
         $output = $viewer->view('error.html', array('context' => $markers));
+
         die($output);
     }
 
