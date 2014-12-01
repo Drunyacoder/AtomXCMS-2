@@ -44,8 +44,8 @@ h1, h2, h3, h4 {color:#555;}
 .headmenu .menu > ul > li {padding:6px 0px; height:16px; line-height:16px; float:left; position:relative;}
 .headmenu .menu > ul > li:hover {-moz-border-radius:4px; -webkit-border-radius:4px; border-radius:4px; background:url('../img/headmenu-hover-bg.png') repeat-x; -moz-box-shadow:inset 0px 1px 1px #000; -webkit-box-shadow:inset 0px 1px 1px #000; box-shadow:inset 0px 1px 1px #000; border-bottom:1px solid #848484;}
 .headmenu .menu > ul > li > a {display:block; padding:0px 15px; color:#ddd; text-decoration:none; -moz-text-shadow:0px -1px 2px #000; -webkit-text-shadow:0px -1px 2px #000; text-shadow:0px -1px 2px #000;}
-.headmenu .menu ul li .sub {display:none; width:200px; border-bottom:1px solid #8E8E8E; background:url("../img/sidemenu-bg.png") repeat; position:absolute; z-index:1; top:41px; -moz-box-shadow:0px 6px 9px #000; -webkit-box-shadow:0px 6px 9px #000; box-shadow:0px 6px 9px #000; overflow:hidden; z-index:99999;}
-.headmenu .menu ul li .sub .shadow {padding:10px 10px 10px 30px; box-shadow:inset 0px 3px 12px #000; width:180px; margin-left:-10px;}
+.headmenu .menu ul li .sub {display:none; width:220px; border-bottom:1px solid #8E8E8E; background:url("../img/sidemenu-bg.png") repeat; position:absolute; z-index:1; top:41px; -moz-box-shadow:0px 6px 9px #000; -webkit-box-shadow:0px 6px 9px #000; box-shadow:0px 6px 9px #000; overflow:hidden; z-index:99999;}
+.headmenu .menu ul li .sub .shadow {padding:10px 10px 10px 30px; box-shadow:inset 0px 3px 12px #000; margin-left:-10px;}
 .headmenu .menu ul li .sub li {padding:3px 0px; text-align:left;}
 .headmenu .menu ul li .sub li a {color:#96C703; text-decoration:underline;}
 .headmenu .menu ul li .sub li a:hover {text-decoration:none;}

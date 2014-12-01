@@ -114,11 +114,15 @@
 				
 				}
 
-                $context  = stream_context_create(array('http' => array('method'  => 'GET', 'timeout' => 2)));
-				$new_ver = @file_get_contents('http://home.develdo.com/cdn/versions.txt', null, $context);
-				$new_ver = (!empty($new_ver) && $new_ver != FPS_VERSION) 
-				? '<a href="https://github.com/Drunyacoder/AtomXCMS-2/releases" title="Last version">' . h($new_ver) . '</a>'
-				: '';
+
+                // Used below
+                $serverMessage = AtmApiService::getServerMessage();
+
+
+				$new_ver = AtmApiService::getLastVersion();
+				$new_ver = ($new_ver)
+                    ? '<a href="https://github.com/Drunyacoder/AtomXCMS-2/releases" title="Last version">' . h($new_ver) . '</a>'
+                    : '';
 				
 				$group_info = $Register['ACL']->get_user_group($_SESSION['user']['status']);
 				$group_title = $group_info['title'];
@@ -312,6 +316,13 @@
 					</td>
 					<td style="position:relative;">
 						<div id="content-wrapper">
+
+
+<?php if (!empty($serverMessage)): ?>
+    <div class="warning error"><i class="fa fa-warning fa-3x"></i>
+        <?php echo $serverMessage ?>
+    </div>
+<?php endif  ?>
 <?php if (!empty($_SESSION['message'])): ?>
     <div class="warning ok"><i class="fa fa-check fa-3x"></i>
 		<?php echo $_SESSION['message'] ?>

@@ -1,6 +1,6 @@
 <?php 
 $set = array (
-  'cache' => 0,
+  'cache' => 1,
   'language' => 'rus',
   'permitted_languages' => 'rus,eng',
   'cache_querys' => 0,
@@ -47,7 +47,8 @@ $set = array (
   'url_delay' => '5',
   'use_pdo' => 1,
   'new_pm_mail' => 1,
-  'latest_on_home' => 
+  'allow_server_messages' => 1,
+  'latest_on_home' =>
   array (
     'news' => 'news',
     'stat' => 'stat',
