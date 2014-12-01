@@ -157,8 +157,9 @@
 		?>	
 		
 			<li>
-				<div class="icon new-module"></div><a href="#"><?php echo $mk; ?></a>
-				<div class="sub-opener" onClick="subMenu('sub<?php echo $mk; ?>')"></div>
+				<div class="icon new-module"></div>
+                <div class="sub-opener" onClick="subMenu('sub<?php echo $mk; ?>')"></div>
+                <a href="#"><?php echo $mk; ?></a>
 				<div class="clear"></div>
 				<div id="sub<?php echo $mk; ?>" class="sub">
 					<div class="shadow">
@@ -182,8 +183,9 @@
 		?>
 		
 			<li>
-				<div class="icon <?php echo $modKey ?>"></div><a href="<?php echo $modData['url']; ?>"><?php echo $modData['ankor']; ?></a>
-				<div class="sub-opener" onClick="subMenu('sub<?php echo $modKey ?>')"></div>
+				<div class="icon <?php echo $modKey ?>"></div>
+                <div class="sub-opener" onClick="subMenu('sub<?php echo $modKey ?>')"></div>
+                <a href="<?php echo $modData['url']; ?>"><?php echo $modData['ankor']; ?></a>
 				<div class="clear"></div>
 				<div id="sub<?php echo $modKey ?>" class="sub">
 					<div class="shadow">
