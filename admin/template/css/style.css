@@ -1,19 +1,28 @@
 html, body, img, ul {border:0px; margin:0px; padding:0px; font:12px Arial;}
 html {height:100%;}
 body {background:url('../img/body-bg.png') repeat !important; min-height:100%; min-width:100%; position:relative;}
+
+
+/* GENERAL */
 #overlay {position:absolute; top:0px; left:0px; width:100%; height:100%; background:url('../img/overlay-bg.png') repeat; display:none;}
 .clear {clear:both;}
 a {color:#96C703;}
 .comment {display:block; color:#939393; padding:5px 0px; font-size:11px; font-style:italic; -moz-text-shadow:none; -webkit-text-shadow:none; text-shadow:none; max-width:500px;}
 h1, h2, h3, h4 {color:#555;}
 
-/* general */
 .green {color:#96c71e;}
 .red {color:#f10000;}
 .top-index {font-size:11px; position:relative; top:-6px; margin-left:2px;}
 
+/* Flexbox */
 .atm-flex-box {display:flex; flex-flow:row wrap; justify-content: space-between; align-content: space-between;}
-.atm-flex-box .atm-flex-child {flex:2 3 auto; margin:0px 10px;}
+.atm-flex-box .atm-flex-child {flex:2 3 auto; margin:10px;}
+.atm-flex-box .atm-flex-child > .list {height:100%;}
+.atm-flex-box .atm-flex-child > .list .level1 {height: calc(100% - 51px);}
+.atm-flex-box .atm-flex-child > .list .level1 .items {display:flex; flex-flow: column nowrap; align-content: stretch; align-items: stretch; height: calc(100% - 53px);}
+.atm-flex-box .atm-flex-child > .list .level1 .items .setting-item {flex: 1 2 auto;}
+.atm-flex-box .atm-flex-child > .list .level1 .items .setting-item .right {height:100%;}
+
 
 /* pagination */
 .pagination {color:#fff;}
@@ -118,8 +127,8 @@ table.side-separator, table.side-separator tr td {vertical-align:top; min-height
 .list .add-cat-butt select, .list .add-cat-butt input {width:160px;}
 
 .list > .level1 {border-top:1px solid #000;}
-.list > .level1 > .head {height:53px; color:#717171; font-size:13px; font-weight:bold; border-bottom:1px solid #c7c7c7; -moz-background:linear-gradient(#c2c1c1, #ececec); -ms-background:linear-gradient(#c2c1c1, #ececec); -webkit-background:linear-gradient(#c2c1c1, #ececec); background:linear-gradient(#c2c1c1, #ececec);}
-.list > .level1 > .head .title {height:13px; padding:20px; color:#717171; font-size:13px; font-weight:bold; float:left; -moz-text-shadow:0px 1px 1px #fff; -webkit-text-shadow:0px 1px 1px #fff; text-shadow:0px 1px 1px #fff;}
+.list > .level1 > .head {height:53px; color:#717171; font-size:13px; font-weight:bold; border-bottom:1px solid #c7c7c7; -moz-background:linear-gradient(#c2c1c1, #ececec); -ms-background:linear-gradient(#c2c1c1, #ececec); -webkit-background:linear-gradient(#c2c1c1, #ececec); background:linear-gradient(#c2c1c1, #ececec); display:flex; flex-flow:row nowrap;}
+.list > .level1 > .head .title {height:13px; padding:20px; color:#717171; font-size:13px; font-weight:bold; float:left; -moz-text-shadow:0px 1px 1px #fff; -webkit-text-shadow:0px 1px 1px #fff; text-shadow:0px 1px 1px #fff; flex:0 0 auto;}
 .list > .level1 > .head > .buttons, .list > .title ~ .title > .buttons, .list .level1 > .title > .buttons {height:13px; padding:20px 10px; float:right; border-left:1px solid #bebdbd; text-align:center; background:url('../img/1px-list-buttons-border.png') left repeat-y;}
 .list > .level1 > .head > .buttons.long, .list > .title ~ .title > .buttons.long, .list .level1 > .title > .buttons.long {width:auto; padding:6px 30px; background:none; border:none;}
 .buttons.long label {color:#555; font-size:14px;}
@@ -140,7 +149,7 @@ table.side-separator, table.side-separator tr td {vertical-align:top; min-height
 
 /* Settings list */
 .list > .level1 > .head .title.settings {width:23%; border-right:1px solid #bebdbd;}
-.list > .level1 > .head .title-r {height:13px; padding:20px; float:left; border-left:1px solid #e2e1e1; -moz-text-shadow:0px 1px 1px #fff; -webkit-text-shadow:0px 1px 1px #fff; text-shadow:0px 1px 1px #fff;}
+.list > .level1 > .head .title-r {height:13px; padding:20px; float:left; border-left:1px solid #e2e1e1; -moz-text-shadow:0px 1px 1px #fff; -webkit-text-shadow:0px 1px 1px #fff; text-shadow:0px 1px 1px #fff; overflow:hidden; text-overflow:ellipsis; word-wrap:normal; white-space:nowrap; flex:0 2 auto;}
 .list > .level1 > .items > .setting-item:nth-child(2n) {background:#f4f2f2;}
 .list > .level1 > .items > .setting-item.highlight:nth-child(2n) {background:#dfffd0;}
 .list > .level1 > .items > .setting-item.highlight {background:#efffe0;}

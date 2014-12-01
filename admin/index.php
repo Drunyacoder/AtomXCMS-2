@@ -168,7 +168,7 @@ endif;
 	<div class="level1">
 		<div class="head">
 			<div class="title settings"><?php echo __('Material') ?></div>
-			<div class="title-r"><?php echo __('Quantity') . ' / ' . __('Pending moderation materials') . ' / ' . __('Pending moderation comments') ?></div>
+			<div class="title-r"><?php echo __('Quantity') . ' / ' . __('Pending moderation materials') . ' / ' . __('Comments') ?></div>
 			<div class="clear"></div>
 		</div>
 		<div class="items">
