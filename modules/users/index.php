@@ -1986,6 +1986,9 @@ Class UsersModule extends Module {
 			$markers['form_key'] = '<input type="hidden" name="form_key" value="' . $form_key . '" />';
 		}
 
+
+        $this->addToPageMetaContext('entity_title', __('Authorization'));
+
 		
 		// Navigation Panel
 		$nav = array();

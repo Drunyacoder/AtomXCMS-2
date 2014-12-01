@@ -78,8 +78,8 @@ table.side-separator, table.side-separator tr td {vertical-align:top; min-height
 .side-menu li:hover {background:url('../img/sidemenu-point-bg.png') 210px 0px no-repeat;}
 .side-menu li:last-child {border-bottom:none;}
 .side-menu li div.icon {width:50px; height:30px; float:left; background:url('../img/sidemenu-icons-sprite.png') no-repeat; background-position:0px 100px; margin-left: 10px;}
-.side-menu li a {height:16px; display:inline-block; float:left; padding-top:10px; color:#fff; text-transform:uppercase; -moz-text-shadow:0px -2px 1px #000; -webkit-text-shadow:0px -2px 1px #000; text-shadow:0px -2px 1px #000; text-decoration:none; font-size:12px; z-index:99;}
-.side-menu li .sub-opener {width:35px; height:30px; position:absolute; right:0px; top:3px; cursor:pointer; z-index:1;}
+.side-menu li a {height:16px; display:inline-block; float:left; padding-top:10px; color:#fff; text-transform:uppercase; -moz-text-shadow:0px -2px 1px #000; -webkit-text-shadow:0px -2px 1px #000; text-shadow:0px -2px 1px #000; text-decoration:none; font-size:12px; z-index:99; position:relative;}
+.side-menu li .sub-opener {width:235px; height:30px; position:absolute; right:0px; top:3px; cursor:pointer; z-index:1;}
 .side-menu li div.sub {position:relative; background:url('../img/sidemenu-sub-bg.png') repeat; border-top:1px solid #272728; overflow:hidden; display:none;}
 .side-menu li div.sub .shadow {width:235px; padding:0px 20px; margin-left:-20px; -moz-box-shadow:inset 0px 0px 20px #000; -webkit-box-shadow:inset 0px 0px 20px #000; box-shadow:inset 0px 0px 20px #000;}
 .side-menu li div.sub ul, .side-menu li div.sub li {border:none; background:none;}
@@ -176,15 +176,6 @@ table.side-separator, table.side-separator tr td {vertical-align:top; min-height
 
 
 /* Checkboxs and radio customization */
-/*
-.setting-item .right input[type="checkbox"], .setting-item .right input[type="radio"] {display:none;}
-.setting-item .right input[type="checkbox"]+label, .setting-item .right input[type="radio"]+label {display:block;}
-.setting-item .right input[type="checkbox"]+label::before {content:""; display:inline-block; height:18px; width:18px; margin: 0 5px 0 0; background: url('../img/inputs-sprite.png') -38px -260px no-repeat;}
-.setting-item .right input[type="radio"]+label::before {content:""; display:inline-block; height:18px; width:18px; margin: 0 5px 0 0; background: url('../img/inputs-sprite.png') 0px -279px no-repeat;}
-.setting-item .right input[type="checkbox"]:checked + label::before {background-position: -114px -260px;}
-.setting-item .right input[type="radio"]:checked + label::before {background-position: -108px -279px;}
-.setting-item .right input[type="radio"]+label::before, .setting-item .right input[type="checkbox"]+label::before {margin:10px; margin-bottom:-4px;}
-*/
 .right input[type="checkbox"], .right input[type="radio"] {display:none;}
 .right input[type="checkbox"]+label, .right input[type="radio"]+label {display:block;}
 .right input[type="checkbox"]+label::before {content:""; display:inline-block; height:18px; width:18px; margin: 0 5px 0 0; background: url('../img/inputs-sprite.png') -38px -260px no-repeat;}
@@ -359,20 +350,6 @@ table.grid ul li div.item {/*background:#aaa;*/ border:1px dashed #aaa; padding:
 
 /* Footer */
 .footer {width:94%; color:#a1a1a1; font-size:13px; font-style:italic; text-align:center; padding:30px 0px; position:absolute; bottom:0px; z-index:0px;}
-
-
-
-
-
-
-
-/*
-background:linear-gradient(#c2c1c1, #ececec);
-*/
-
-
-
-
 
 
 
