@@ -181,7 +181,7 @@ Class NewsModule extends Module {
 		$SectionsModel = $this->Register['ModManager']->getModelInstance($this->module . 'Categories');
 		$category = $SectionsModel->getById($id);
 		if (!$category)
-			return $this->showInfoMessage(__('Can not find category'), '/' . $this->module . '/');
+			$this->Parser->showHttpError();
 		if (!$this->ACL->checkCategoryAccess($category->getNo_access())) 
 			return $this->showInfoMessage(__('Permission denied'), '/' . $this->module . '/');
 		
@@ -317,7 +317,7 @@ Class NewsModule extends Module {
 		$entity = $this->Model->getById($id);
 
 		
-		if (empty($entity)) redirect('/error.php?ac=404');
+		if (empty($entity)) $this->Parser->showHttpError();
 		if ($entity->getAvailable() == 0 && !$this->ACL->turn(array('other', 'can_see_hidden'), false)) 
 			return $this->showInfoMessage(__('Permission denied'), '/' . $this->module . '/');
 		if (!$this->ACL->checkCategoryAccess($entity->getCategory()->getNo_access())) 

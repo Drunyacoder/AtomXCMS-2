@@ -203,8 +203,7 @@ class Module {
 		$this->_beforeRender();
 		
 		if ($this->Register['Config']->read('active', $params[0]) == 0) {
-			if ('chat' === $params[0]) die('Этот модуль отключен');
-			return $this->showInfoMessage('Этот модуль отключен', '/');
+            $this->Parser->showHttpError();
 		}
 		
 		$this->page_title = ($this->Register['Config']->read('title', $this->module))
@@ -302,7 +301,7 @@ class Module {
 	* @param string $content  data for parse and view
 	* @access   protected
 	*/
-	public function _view($content)
+	protected function _view($content)
     {
         $Register = Register::getInstance();
 
@@ -341,8 +340,9 @@ class Module {
 		if (Config::read('debug_mode') == 1) {
             echo AtmDebug::getBody();
 		}
+        die();
 	}
-	
+
 
 	public function render($fileName, array $markers = array())
 	{

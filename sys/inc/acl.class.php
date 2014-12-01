@@ -144,7 +144,8 @@ class ACL {
 		
 	
 		if (empty($access) && $redirect) {
-			redirect('/error.php?ac=403');
+            $Register = Register::getInstance();
+            $Register['DocParser']->showHttpError();
 		} else {
 			return $access;
 		}

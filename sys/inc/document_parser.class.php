@@ -113,6 +113,31 @@ class Document_Parser {
     }
 
 
+    public function showHttpError($code = 404)
+    {
+        $headers = array(
+            '404' => "HTTP/1.0 404 Not Found",
+            '403' => "HTTP/1.0 403 Forbidden You don't have permission to access / on this server.",
+            'ban' => "HTTP/1.0 403 Forbidden You don't have permission to access / on this server.",
+            'hack' => "HTTP/1.0 403 Forbidden You don't have permission to access / on this server.",
+        );
+        if (!empty($headers[$code])) {
+            header($headers[$code]);
+        }
+
+
+        $markers = array(
+            'code' => (string)$code,
+        );
+
+        $markers = array_merge($markers, $this->getGlobalMarkers());
+
+        $viewer = $this->Register['Viewer'];
+        $output = $viewer->view('error.html', array('context' => $markers));
+        die($output);
+    }
+
+
 	/**
 	 * Parse snippets in template
 	 * Examples:

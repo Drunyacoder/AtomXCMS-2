@@ -266,7 +266,7 @@ Class FotoModule extends Module {
 		$entity = $this->Model->getById($id);
 		
 		
-		if (!$entity) redirect('/error.php?ac=404');
+		if (!$entity) $this->Parser->showHttpError();
 		if (!$this->ACL->checkCategoryAccess($entity->getCategory()->getNo_access())) 
 			return $this->showInfoMessage(__('Permission denied'), '/foto/');
 		

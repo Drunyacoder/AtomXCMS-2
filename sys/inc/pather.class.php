@@ -197,8 +197,7 @@ Class Pather {
 		include_once ROOT . '/modules/' . strtolower($params[0]) . '/index.php';
 		$module = ucfirst($params[0]) . 'Module';
 		if (!class_exists($module))  {
-			$_GET['ac'] = 404;
-			include_once ROOT . '/error.php';
+            $this->Register['DocParser']->showHttpError();
 		}
 
 
@@ -227,8 +226,7 @@ Class Pather {
 		// Parse second argument
 		if (count($params) > 1) {
 			if (preg_match('#^_+#', $params[1])) {
-				$_GET['ac'] = 404;
-				include_once ROOT . '/error.php';
+                $this->Register['DocParser']->showHttpError();
 			}
 			if (!method_exists($this->module, $params[1])) {
                 if (method_exists($this->module, ($params[0] === 'forum') ? 'view_theme' : 'view')) {
@@ -236,8 +234,7 @@ Class Pather {
                     $params[2] = $this->module->getEntryId($params[1]);
                     $params[1] = ($params[0] === 'forum') ? 'view_theme' : 'view';
                 } else {
-                    $_GET['ac'] = 404;
-                    include_once ROOT . '/error.php';
+                    $this->Register['DocParser']->showHttpError();
                 }
 			}
 		}
