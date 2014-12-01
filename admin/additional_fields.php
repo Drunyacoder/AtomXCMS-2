@@ -236,7 +236,7 @@ if ($_GET['ac'] == 'index'):
 			<div class="item submit">
 				<div class="left"></div>
 				<div class="right" style="float:left;">
-					<input type="submit" value="Сохранить" name="send" class="save-button" />
+					<input type="submit" value="<?php echo __('Save') ?>" name="send" class="save-button" />
 				</div>
 				<div class="clear"></div>
 			</div>
@@ -258,7 +258,7 @@ if ($_GET['ac'] == 'index'):
 
 <?php if (!empty($fields)): ?>
 <div class="list">
-	<div class="title">Дополнительные поля</div>
+	<div class="title"><?php echo __('Additional fields') ?></div>
 	<div onclick="openPopup('addCat');" class="add-cat-butt"><div class="add"></div><?php echo __('Add') ?></div>
 	<table class="grid" cellspacing="0" style="width:100%;">
 		<tr>
@@ -268,7 +268,7 @@ if ($_GET['ac'] == 'index'):
 			<th><?php echo __('Params') ?></th>
 			<th><?php echo __('Required field') ?></th>
 			<th><?php echo __('Marker of field') ?></th>
-			<th style="width:160px;">Действия</th>
+			<th style="width:160px;"><?php echo __('Actions') ?></th>
 		</tr>
 	
 
@@ -303,7 +303,7 @@ if ($_GET['ac'] == 'index'):
 </div>
 <?php else: ?>
 
-<div class="warning ok"><i class="fa fa-check fa-3x"></i>
+<div class="warning"><i class="fa fa-check fa-3x"></i>
 	<div class="h3"><?php echo __('Additional fields not found') ?></div>
 </div>
 <input type="button" value="<?php echo __('Add') ?>" onclick="openPopup('addCat');" class="save-button" />

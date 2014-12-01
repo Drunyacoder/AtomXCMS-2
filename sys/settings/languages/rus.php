@@ -392,6 +392,7 @@ return array(
 	'Security'                      => 'Безопасность',
 	'Security settings'             => 'Параметры безопасности',
 	'Action log'                    => 'Лог действий',
+	'Errors log'                    => 'Лог ошибок',
 	'Bans by IP'                    => 'Баны по IP',
 	'Backup control'                => 'Управление Бекапами',
 	'Additional'                    => 'Дополнительно',

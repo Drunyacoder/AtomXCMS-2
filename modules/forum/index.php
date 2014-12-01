@@ -1637,7 +1637,7 @@ Class ForumModule extends Module {
 		
 		// cut lenght
 		$theme   = mb_substr($_POST['theme'], 0, 55);
-		$message = $_POST['mainText'];
+		$message = $_POST['main_text'];
 		$theme   = trim($theme);
 		$description = trim(mb_substr($_POST['description'], 0, 128)); 
 		$message = trim($message);
@@ -1673,7 +1673,7 @@ Class ForumModule extends Module {
 			redirect('/forum/add_theme_form/' . $id_forum );
 		}
 		
-		$message = mb_substr($message, 0, $this->Register['Config']->read('max_post_lenght', 'forum'));
+		$message = mb_substr($message, 0, Config::read('max_post_lenght', 'forum'));
 		
 		
 		$user_id = (!empty($_SESSION['user'])) ? $_SESSION['user']['id'] : 0;
@@ -2594,7 +2594,7 @@ Class ForumModule extends Module {
 
 
 		// Обрезаем сообщение до длины $set['forum']['max_post_lenght']
-		$message = trim($_POST['mainText']);
+		$message = trim($_POST['main_text']);
         $user_id = (!empty($_SESSION['user'])) ? $_SESSION['user']['id'] : 0;
 
 		// Preview
@@ -3541,6 +3541,9 @@ Class ForumModule extends Module {
 				'description' => array(
 					'max_lenght' => 200,
 				),
+                'first_top' => array(
+                    'pattern' => V_INT,
+                ),
 				'files__attach' => array(
 					'for' => array(
 						'from' => 1,

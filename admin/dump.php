@@ -151,7 +151,7 @@ include_once ROOT . '/admin/template/header.php';
 
 ?>
 
-<div class="warning ok"><i class="fa fa-check fa-3x"></i>
+<div class="warning"><i class="fa fa-check fa-3x"></i>
 <?php echo __('DB backup is cool') ?>
 </div>
 

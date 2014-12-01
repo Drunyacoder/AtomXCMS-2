@@ -48,7 +48,7 @@ $data = (file_exists($log_path) || is_readable($log_path))
 	: '';
 
 
-$pageTitle = __('Action log');
+$pageTitle = __('Errors log');
 $pageNav = $pageTitle;
 $pageNavr = '';
 include_once ROOT . '/admin/template/header.php';

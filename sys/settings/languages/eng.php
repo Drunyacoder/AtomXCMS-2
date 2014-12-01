@@ -360,6 +360,7 @@ return array(
 	'Security'                      => 'Security',
 	'Security settings'             => 'Security settings',
 	'Action log'                    => 'Action log',
+    'Errors log'                    => 'Errors log',
 	'Bans by IP'                    => 'Blocking by IP',
 	'Backup control'                => 'Backup control',
 	'Additional'                    => 'Additionally',

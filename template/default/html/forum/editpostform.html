@@ -27,7 +27,7 @@ Current context:
 	  <div class="mat-title">{{ 'Edit message'|lang }}</div>
 	  <div class="mat-content">
 		<ul class="spisok-all">
-		  <li><textarea {{ editor_text }} class="text-area" id="editor" name="mainText">{{ context.message }}</textarea></li>
+		  <li><textarea {{ editor_text }} class="text-area" id="editor" name="main_text">{{ context.message }}</textarea></li>
 		  
 			{% if checkAccess([module,'edit_posts']) %}
 			<li>
