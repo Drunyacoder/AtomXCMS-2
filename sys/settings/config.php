@@ -47,7 +47,7 @@ $set = array (
   'url_delay' => '5',
   'use_pdo' => 1,
   'new_pm_mail' => 1,
-  'allow_server_notifycations' => 1,
+  'allow_server_notifications' => 1,
   'latest_on_home' =>
   array (
     'news' => 'news',
@@ -208,9 +208,9 @@ $set = array (
   'db' => 
   array (
     'host' => 'localhost',
-      'name' => '',
-      'user' => '',
-      'pass' => '',
+    'name' => '',
+    'user' => '',
+    'pass' => '',
     'prefix' => '',
   ),
   'news_on_home' => 1,
