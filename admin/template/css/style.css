@@ -117,7 +117,7 @@ table.side-separator, table.side-separator tr td {vertical-align:top; min-height
 .warning.clean {background-image:none; padding:15px;}
 .warning > i {left:10px; bottom:0px; top:0px; margin:auto; position:absolute; height:30px; width:25px; color:#f4bc00;}
 
-.list {position:relative; margin:10px 0px; background:#fff; -moz-border-radius:3px; -webkit-border-radius:3px; border-radius:3px; overflow: hidden;}
+.list {position:relative; margin:10px 0px; background:linear-gradient(#000, #fff 5%, #fff); -moz-border-radius:3px; -webkit-border-radius:3px; border-radius:3px; overflow: hidden;}
 .list > .title {height:17px; padding:12px 20px; color:#96c703; font-size:15px; font-weight:bold; background:url('../img/list-title-bg.png') repeat-x; border-bottom:1px solid #8e8e8e; -moz-border-radius: 4px 4px 0 0; -webkit-border-radius: 4px 4px 0 0; border-radius: 4px 4px 0 0;}
 .list > .title ~ .title, .list .level1 > .title {height:47px; padding:20px 20px 20px 100px; background:#f1f1f1; color:#3a3a3a; font-size:17px; border:none; font-weight:normal; margin-top:50px; box-shadow:0px 2px 2px #777 inset;}
 .list > .title ~ .title > .descr, .list .level1 > .title > .descr {padding:5px 0px; color:#939393; font-size:12px; max-width:50%;}
