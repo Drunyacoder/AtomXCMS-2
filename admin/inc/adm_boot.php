@@ -179,10 +179,16 @@ if (!isset($_SESSION['adm_panel_authorize']) || $_SESSION['adm_panel_authorize']
 }
 
 
-
-
-
-
+/**
+ * Install new a modules.
+ * If you has put a new module files to modules directory,
+ * you can find that module in the left-side menu.
+ * Choose "install" in the module dropdown menu to start install process.
+ *
+ * During the installation process a some files and settings will be import
+ * to the Atom.
+ * For more information see FpsModuleInstaller class.
+ */
 if (!empty($_GET['install'])) {
 	$instMod = (string)$_GET['install'];
 	if (!empty($instMod) && preg_match('#^[a-z]+$#i', $instMod)) {

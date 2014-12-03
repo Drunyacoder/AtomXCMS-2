@@ -28,6 +28,7 @@ include_once ROOT . '/admin/inc/adm_boot.php';
 
 $Register = Register::getInstance();
 $FpsDB = $Register['DB'];
+$isMainPage = true;
 
 
 $pageTitle = __('Admin Panel');
@@ -93,15 +94,6 @@ $all_hosts[0]['hosts_cnt'] += $today_hosts;
 include 'template/header.php';
 ?>
 
-
-<?php
-if (!empty($_SESSION['clean_cache'])):
-?>
-<script type="text/javascript">showHelpWin('<?php echo __('Cache is cleared'); ?>', '<?php echo __('Message') ?>');</script>
-<?php
-	unset($_SESSION['clean_cache']);
-endif;
-?>
 
 
 

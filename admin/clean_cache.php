@@ -25,7 +25,7 @@
 include_once '../sys/boot.php';
 include_once ROOT . '/admin/inc/adm_boot.php';
 
-$_SESSION['clean_cache'] = true;
+$_SESSION['message'] = __('Cache is cleared');
 $Register['Cache']->clean();
 $Snippets = new AtmSnippets;
 $Snippets->cleanCahe();

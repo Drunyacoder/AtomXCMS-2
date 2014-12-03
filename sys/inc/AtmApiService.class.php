@@ -47,7 +47,7 @@ class AtmApiService {
         $context  = stream_context_create(array('http' => array('method'  => 'GET', 'timeout' => 2)));
         $message = @file_get_contents(self::$apiUrl . 'cdn/message.php?v=' . FPS_VERSION, null, $context);
         return (!empty($message))
-            ? $message : '';
+            ? json_decode($message, true) : array();
     }
 }
 

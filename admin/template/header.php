@@ -116,7 +116,8 @@
 
 
                 // Used below
-                $serverMessage = AtmApiService::getServerMessage();
+                $serverMessage = (!empty($isMainPage))
+                    ? AtmApiService::getServerMessage() : '';
 
 
 				$new_ver = AtmApiService::getLastVersion();
@@ -319,9 +320,11 @@
 
 
 <?php if (!empty($serverMessage)): ?>
-    <div class="warning error"><i class="fa fa-warning fa-3x"></i>
-        <?php echo $serverMessage ?>
+    <!-- AtomX Server Notification -->
+    <div class="warning <?php echo $serverMessage['type'] ?>"><i class="fa fa-warning fa-3x"></i>
+        <?php echo $serverMessage['message'] ?>
     </div>
+    <!-- /AtomX Server Notification -->
 <?php endif  ?>
 <?php if (!empty($_SESSION['message'])): ?>
     <div class="warning ok"><i class="fa fa-check fa-3x"></i>

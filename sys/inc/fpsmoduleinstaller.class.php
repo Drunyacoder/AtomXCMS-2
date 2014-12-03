@@ -96,7 +96,16 @@ class FpsModuleInstaller
 
 
     /**
+     * Install new a modules.
+     * If you has put a new module files to modules directory,
+     * you can find that module in the left-side menu.
+     * Choose "install" in the module dropdown menu to start install process.
      *
+     * During the installation process a some files and settings will be import
+     * to the Atom.
+     * Files:
+     * @module/install_template/html -> @atomx_root/template/@current_template/html/@module
+     * @module/install_template/css -> @atomx_root/template/@current_template/css
      */
     public function installModule($module)
     {
