@@ -96,7 +96,24 @@ include 'template/header.php';
 
 
 
+<script type="text/javascript">
+    $(document).ready(function() {
+        var resizeHandler = function() {
+            if (/chrome/i.test(navigator.userAgent)) {
+                $('.atm-flex-box .atm-flex-child > .list').each(function(index, element) {
+                    $(element).css('height', function() {
+                        return $(element).parent().height()
+                            - ($(element).outerHeight(true) - $(element).innerHeight());
+                    });
+                });
 
+                $('.atm-flex-box .atm-flex-child > .list .setting-item').css('height', '100%');
+            }
+        };
+        $(window).resize(resizeHandler);
+        resizeHandler();
+    });
+</script>
 <div class="atm-flex-box">
 	<div class="atm-flex-child">
 <!--************ GENERAL **********-->							
@@ -213,7 +230,7 @@ include 'template/header.php';
 			</div>
 		</div>
 	</div>
-</div>							
+</div>
 	</div>
 	<div class="atm-flex-child">
 
