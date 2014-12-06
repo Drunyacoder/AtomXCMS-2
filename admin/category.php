@@ -128,8 +128,8 @@ include_once ROOT . '/admin/template/header.php';
 
 
 
-<div class="warning"><i class="fa fa-info-circle fa-3x"></i>
-<?php echo __('If you delete a category, all the materials in it will be removed') ?><br /><br />
+<div class="warning">
+<?php echo __('If you delete a category, all the materials in it will be removed') ?>
 </div>
 <?php
 
@@ -208,17 +208,19 @@ function buildCatsList($catsTree, $catsList, $indent = '') {
 
 		if (getCurrMod() != 'foto') {
 			if ($cat['view_on_home'] == 1) {
-				$out .=  '<a class="off-home" title="Top off" href="?ac=off_home&id=' . $cat['id'] . '&mod='.getCurrMod().'" onClick="return _confirm();">'
-					. '</a>';
+				$out .=  '<a class="off-home" title="' . __('View on home') . '" href="?ac=off_home&id=' 
+					. $cat['id'] . '&mod='.getCurrMod().'" onClick="return _confirm();"></a>';
 			} else {
-				$out .=  '<a class="on-home" title="On top" href="?ac=on_home&id=' . $cat['id'] . '&mod='.getCurrMod().'" onClick="return _confirm();">'
-					. '</a>';
+				$out .=  '<a class="on-home" title="' . __('View on home') . '" href="?ac=on_home&id=' 
+					. $cat['id'] . '&mod='.getCurrMod().'" onClick="return _confirm();"></a>';
 			}
 		}
 			
 			
-		$out .= '<a href="javascript://" class="edit" title="Edit" onClick="openPopup(\'' . $cat['id'] . '_cat\');"></a>
-				 <a title="Delete" href="?ac=del&id=' . $cat['id'] . '&mod='.getCurrMod().'" class="delete" onClick="return _confirm();"></a>
+		$out .= '<a href="javascript://" class="edit" title="' . __('Edit') . '" ' 
+			. 'onClick="openPopup(\'' . $cat['id'] . '_cat\');"></a>' 
+			. '<a title="' . __('Delete') . '" href="?ac=del&id=' . $cat['id'] 
+			. '&mod='.getCurrMod().'" class="delete" onClick="return _confirm();"></a>
 				</div>
 			<div class="posts">' . $cat['cnt'] . '</div>
 		</div>';

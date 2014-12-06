@@ -66,7 +66,7 @@ include_once ROOT . '/admin/template/header.php';
  ?>
 
 
-<div class="warning"><i class="fa fa-info-circle fa-3x"></i>
+<div class="warning">
 <?php echo __('If you delete a category, all the materials in it will be removed') ?><br /><br />
 <?php echo __('Each forum should be inherited from the section') ?>
 </div>

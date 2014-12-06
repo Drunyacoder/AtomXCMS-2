@@ -303,7 +303,7 @@ if ($_GET['ac'] == 'index'):
 </div>
 <?php else: ?>
 
-<div class="warning"><i class="fa fa-check fa-3x"></i>
+<div class="warning">
 	<div class="h3"><?php echo __('Additional fields not found') ?></div>
 </div>
 <input type="button" value="<?php echo __('Add') ?>" onclick="openPopup('addCat');" class="save-button" />

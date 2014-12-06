@@ -143,7 +143,7 @@ include 'template/header.php';
 ?>
 
 
-<div class="warning"><i class="fa fa-info-circle fa-3x"></i>
+<div class="warning">
 <?php echo __('Plugins instruction') ?>
 </div>
 
@@ -222,7 +222,7 @@ include 'template/header.php';
 	</div>
 </div>
 <?php else: ?>
-<div class="warning error"><i class="fa fa-warning fa-3x"></i>
+<div class="warning error">
 	<?php echo __('Records not found') ?>
 </div>
 <?php endif; ?>
