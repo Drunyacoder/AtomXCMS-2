@@ -4,7 +4,7 @@
 |  Author:       Andrey Brykin (Drunya)          |
 |  Version:      1.5.2                           |
 |  Project:      CMS                             |
-|  package       CMS Fapos                       |
+|  package       CMS AtomX                       |
 |  subpackege    Admin Panel module              |
 |  copyright     ©Andrey Brykin 2010-2012        |
 |  Last mod.     2012/07/08                      |
@@ -13,11 +13,11 @@
 /*-----------------------------------------------\
 | 												 |
 |  any partial or not partial extension          |
-|  CMS Fapos,without the consent of the          |
+|  CMS AtomX,without the consent of the          |
 |  author, is illegal                            |
 |------------------------------------------------|
 |  Любое распространение                         |
-|  CMS Fapos или ее частей,                      |
+|  CMS AtomX или ее частей,                      |
 |  без согласия автора, является не законным     |
 \-----------------------------------------------*/
 
@@ -193,18 +193,3 @@ function offPlugin() {
 		file_put_contents($conf_pach, json_encode($history));
 		redirect('../admin/plugins.php');
 }
-
-
-
-
-
-?>
-
-<?php
-if (!empty($_SESSION['info_message'])):
-?>
-<script type="text/javascript">showHelpWin('<?php echo h($_SESSION['info_message']) ?>', '<?php echo __('Message') ?>');</script>
-<?php
-	unset($_SESSION['info_message']);
-endif;
-?>

@@ -15,26 +15,26 @@
 	<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/redactor/redactor.js"></script>
 	<link type="text/css" rel="StyleSheet" href="<?php echo WWW_ROOT ?>/sys/js/redactor/css/redactor.css" />
 	
-
-	
-	
 	<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jquery.cookie.js"></script>
 	<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jquery.hotkeys.js"></script>
 	<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jstree/jstree.min.js"></script>
 	
-
+	<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/fancybox/jquery.fancybox.js"></script>
+	<link type="text/css" rel="StyleSheet" href="<?php echo WWW_ROOT ?>/sys/js/fancybox/css/fancy.css" />
 	
 	<link rel="StyleSheet" type="text/css" href="<?php echo WWW_ROOT ?>/admin/template/css/style.css" />
+	<link rel="StyleSheet" href="<?php echo WWW_ROOT ?>/admin/template/css/font-awesome.min.css" />
 	
 	<script type="text/javascript">
 	
 	
 	$(document).ready(function(){
+		$("a.gallery").fancybox();
 		//setTimeout(function(){
 		//	$('#overlay').height($('#wrapper').height());
 		//}, 2000);
-		
-		$('#wrapper').css('min-height', ($('body').height() - 136));
+		$('#wrapper').css('min-height', ($('body').height() - 136)); // 136 - top+bottom wrapper padding
+		$('body').height($('#wrapper').outerHeight() - 55); // 55 - side menu top indent
 		
 		
 		
@@ -114,11 +114,16 @@
 				
 				}
 
-                $context  = stream_context_create(array('http' => array('method'  => 'GET', 'timeout' => 2)));
-				$new_ver = @file_get_contents('http://home.develdo.com/cdn/versions.txt', null, $context);
-				$new_ver = (!empty($new_ver) && $new_ver != FPS_VERSION) 
-				? '<a href="https://github.com/Drunyacoder/AtomXCMS-2/releases" title="Last version">' . h($new_ver) . '</a>'
-				: '';
+
+                // Used below
+                $serverMessage = (!empty($isMainPage))
+                    ? AtmApiService::getServerMessage() : '';
+
+
+				$new_ver = AtmApiService::getLastVersion();
+				$new_ver = ($new_ver)
+                    ? '<a href="https://github.com/Drunyacoder/AtomXCMS-2/releases" title="Last version">' . h($new_ver) . '</a>'
+                    : '';
 				
 				$group_info = $Register['ACL']->get_user_group($_SESSION['user']['status']);
 				$group_title = $group_info['title'];
@@ -157,8 +162,9 @@
 		?>	
 		
 			<li>
-				<div class="icon new-module"></div><a href="#"><?php echo $mk; ?></a>
-				<div class="sub-opener" onClick="subMenu('sub<?php echo $mk; ?>')"></div>
+				<div class="icon new-module"></div>
+                <div class="sub-opener" onClick="subMenu('sub<?php echo $mk; ?>')"></div>
+                <a href="#"><?php echo $mk; ?></a>
 				<div class="clear"></div>
 				<div id="sub<?php echo $mk; ?>" class="sub">
 					<div class="shadow">
@@ -182,14 +188,15 @@
 		?>
 		
 			<li>
-				<div class="icon <?php echo $modKey ?>"></div><a href="<?php echo $modData['url']; ?>"><?php echo $modData['ankor']; ?></a>
-				<div class="sub-opener" onClick="subMenu('sub<?php echo $modKey ?>')"></div>
+				<div class="icon <?php echo $modKey ?>"></div>
+                <div class="sub-opener" onClick="subMenu('sub<?php echo $modKey ?>')"></div>
+                <a href="<?php echo $modData['url']; ?>"><?php echo $modData['ankor']; ?></a>
 				<div class="clear"></div>
 				<div id="sub<?php echo $modKey ?>" class="sub">
 					<div class="shadow">
 						<ul>
 							<?php foreach ($modData['sub'] as $url => $ankor): ?>
-							<li><a href="<?php echo $url; ?>"><?php echo $ankor; ?></a></li>
+							<li><a href="<?php echo get_url('/admin/' . $url); ?>"><?php echo $ankor; ?></a></li>
 							<?php endforeach; ?>
 						</ul>
 					</div>
@@ -228,21 +235,18 @@
 		  [
 		  '<a href="/admin"><?php echo __('Main page'); ?></a>',
 		  'sep',
-		  '<span><?php echo __('Version of Fapos'); ?> [ <b><?php echo FPS_VERSION ?></b> ]</span>',
+		  '<span><?php echo __('Version of AtomX'); ?> [ <b><?php echo FPS_VERSION ?></b> ]</span>',
 		  <?php if ($new_ver): ?>
-		  'sep',
-		  '<span><?php echo __('New version of Fapos'); ?> [ <?php echo $new_ver; ?> ]</span>',
+		  '<span><?php echo __('New version of AtomX'); ?> [ <?php echo $new_ver; ?> ]</span>',
 		  <?php endif; ?>
 		  'sep',
 		  '<a href="/admin/settings.php?m=sys"><?php echo __('Common settings'); ?></a>',
-		  'sep',
 		  '<a href="/admin/clean_cache.php"><?php echo __('Clean cache'); ?></a>'
 		  ]],
 
 		['<?php echo __('Plugins'); ?>',
 		  [
 		  '<a href="/admin/plugins.php"><?php echo __('List'); ?></a>',
-		  'sep',
 		  '<a href="/admin/get_plugins.php?a=ed">Установка</a>'
 		  ]],
 
@@ -251,7 +255,6 @@
 		['<?php echo __('Snippets'); ?>',
 		  [
 		  '<a href="/admin/snippets.php"><?php echo __('Create'); ?></a>',
-		  'sep',
 		  '<a href="/admin/snippets.php?a=ed"><?php echo __('Edit'); ?></a>'
 		  ]],
 
@@ -260,7 +263,6 @@
 		['<?php echo __('Design'); ?>',
 		  [
 		  '<a href="design.php?d=default&t=main"><?php echo __('General design and css'); ?></a>',
-		  'sep',
 		  '<a href="menu_editor.php"><?php echo __('Menu editor'); ?></a>'
 		  ]],
 		  
@@ -268,7 +270,6 @@
 		['<?php echo __('Statistic'); ?>',
 		  [
 		  '<a href="/admin/statistic.php"><?php echo __('View'); ?></a>',
-		  'sep',
 		  '<a href="/admin/settings.php?m=statistics"><?php echo __('Settings of module'); ?></a>'
 		  ]],
 
@@ -277,12 +278,11 @@
 		['<?php echo __('Security'); ?>',
 		  [
 		  '<a href="settings.php?m=secure"><?php echo __('Security settings'); ?></a>',
+		  '<a href="ip_ban.php"><?php echo __('Bans by IP'); ?></a>',
+		  '<a href="dump.php"><?php echo __('Backup control'); ?></a>',
 		  'sep',
 		  '<a href="system_log.php"><?php echo __('Action log'); ?></a>',
-		  'sep',
-		  '<a href="ip_ban.php"><?php echo __('Bans by IP'); ?></a>',
-		  'sep',
-		  '<a href="dump.php"><?php echo __('Backup control'); ?></a>'
+		  '<a href="errors_log.php"><?php echo __('Errors log'); ?></a>'
 		  ]],
 		  
 		  
@@ -299,7 +299,7 @@
 
 		['<?php echo __('Help'); ?>',
 		  [
-		  '<a href="http://fapos.net" target="_blank"><?php echo __('Fapos CMS Community'); ?></a>',
+		  '<a href="http://atomx.net" target="_blank"><?php echo __('AtomX CMS Community'); ?></a>',
 		  '<a href="faq.php"><?php echo __('FAQ'); ?></a>',
 		  'sep',
 		  '<a href="authors.php"><?php echo __('Dev. Team'); ?></a>',
@@ -311,36 +311,27 @@
 		
 		
 		<div class="center-wrapper">
-		
 			<table class="side-separator" cellpadding="0" cellspacing="0" width="100%" >
 				<tr>
 					<td id="side-menu-td" width="237" min-height="100%">
-
 					</td>
 					<td style="position:relative;">
-
-
 						<div id="content-wrapper">
 
-
-
-
-
-
-<?php /*
-<!-- navi -->
-<div class="topnav">
-<div class="left"><?php echo $pageNav; ?><div class="right"><?php echo $pageNavl; ?></div></div>
-</div>
-<!-- /navi -->
-*/ ?>
-
-
-
-
-
-
-
-
-
-
+<?php if (!empty($serverMessage)): ?>
+    <!-- AtomX Server Notification -->
+    <div class="warning <?php echo $serverMessage['type'] ?>">
+        <?php echo $serverMessage['message'] ?>
+    </div>
+    <!-- /AtomX Server Notification -->
+<?php endif  ?>
+<?php if (!empty($_SESSION['message'])): ?>
+    <div class="warning ok">
+		<?php echo $_SESSION['message'] ?>
+	</div>
+    <?php unset($_SESSION['message']); ?>
+<?php endif; if (!empty($_SESSION['errors'])): ?>
+    <div class="warning error">
+		<?php echo $_SESSION['errors'] ?>
+	</div>
+<?php unset($_SESSION['errors']); endif; ?>

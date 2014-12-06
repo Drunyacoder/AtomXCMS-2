@@ -3,10 +3,10 @@
 | 												 |
 |  @Author:       Andrey Brykin (Drunya)         |
 |  @Email:        drunyacoder@gmail.com          |
-|  @Site:         http://fapos.net			     |
+|  @Site:         http://atomx.net			     |
 |  @Version:      1.6.2                          |
 |  @Project:      CMS                            |
-|  @Package       CMS Fapos                      |
+|  @package       CMS AtomX                      |
 |  @Subpackege    Module Class                   |
 |  @Copyright     ©Andrey Brykin 		         |
 |  @Last mod.     2014/03/14                     |
@@ -15,11 +15,11 @@
 /*-----------------------------------------------\
 | 												 |
 |  any partial or not partial extension          |
-|  CMS Fapos,without the consent of the          |
+|  CMS AtomX,without the consent of the          |
 |  author, is illegal                            |
 |------------------------------------------------|
 |  Любое распространение                         |
-|  CMS Fapos или ее частей,                      |
+|  CMS AtomX или ее частей,                      |
 |  без согласия автора, является не законным     |
 \-----------------------------------------------*/
 
@@ -130,6 +130,16 @@ class Module {
 	 * @var object
 	 */
 	public $Model;
+
+    /**
+     * @var array
+     */
+    private $pageMetaContext = array(
+        'module' => '',
+        'category_title' => '',
+        'entity_title' => '',
+        'page' => '',
+    );
 	 
 	
 	
@@ -157,22 +167,23 @@ class Module {
 	 *
 	 * Initialize needed objects adn set needed variables
 	 */
-	function __construct($params)
+    public function __construct($params)
     {
         $this->Register = Register::getInstance();
         $this->Register['module'] = $params[0];
         $this->Register['action'] = $params[1];
         $this->Register['params'] = $params;
 		
-		
-		$this->Register['Validate']->setPathParams($this->Register['module'], $this->Register['action']);
+		if (is_callable(array($this, '_getValidateRules')))
+			$this->Register['Validate']->setRules($this->_getValidateRules());
+		$this->Register['Validate']->setModule($this->module);
         $this->setModel();
-
+		
         //init needed objects. Core...
 		// Use for templater (layout)
 		$this->template = $this->module;
-        $viewerLoader = new Fps_Viewer_Loader(array('layout' => $this->template));
-		$this->View = new Fps_Viewer_Manager($viewerLoader);
+		$this->View = clone $this->Register['Viewer'];
+		$this->View->setLayout($this->template);
 		$this->Parser = new Document_Parser;
 		$this->Parser->templateDir = $this->template;
 		
@@ -189,15 +200,14 @@ class Module {
 		
 		//init Access Control List
 		$this->ACL = $this->Register['ACL'];
-		$this->beforeRender();
+		$this->_beforeRender();
 		
 		if ($this->Register['Config']->read('active', $params[0]) == 0) {
-			if ('chat' === $params[0]) die('Этот модуль отключен');
-			return $this->showInfoMessage('Этот модуль отключен', '/');
+            $this->Parser->showHttpError();
 		}
 		
 		$this->page_title = ($this->Register['Config']->read('title', $this->module))
-            ? h($this->Register['Config']->read('title', $this->module)) : h($this->module);
+            ? h(Config::read('title', $this->module)) : h(Config::read('title'));
 		$this->params = $params;
 		
 		//cache
@@ -228,7 +238,7 @@ class Module {
 	protected function setModel()
 	{
 		$class = ucfirst($this->module) . 'Model';
-		$this->Model = new $class();
+		if (class_exists($class)) $this->Model = new $class();
 	}
 	
 	
@@ -239,8 +249,18 @@ class Module {
 	 *
 	 * @return none
 	 */
-	protected function beforeRender()
+	protected function _beforeRender()
     {
+        $this->addToPageMetaContext('module', ucfirst($this->module));
+
+        if (
+            (!empty($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST')
+            || substr($_SERVER['PHP_SELF'], 1, 5) === 'admin'
+            || in_array($this->module, array('chat', 'rating'))
+        ) {
+            $this->counter = false;
+        }
+
 		if (isset($_SESSION['page'])) unset($_SESSION['page']);
 		if (isset($_SESSION['pagecnt'])) unset($_SESSION['pagecnt']);
 	}
@@ -253,7 +273,7 @@ class Module {
 	 *
 	 * @return none
 	 */
-	protected function afterRender()
+	protected function _afterRender()
     {
 		// Cron
 		if (Config::read('auto_sitemap')) {
@@ -263,19 +283,17 @@ class Module {
 		
 		/*
 		* counter ( if active )
-		* and if we not in admin panel
+		* and if we not in admin panel (see _beforeRender())
 		*/
-		if (in_array($this->module, array('chat', 'rating'))) return;
 		if ($this->counter === false) return;
 		
-		if (substr($_SERVER['PHP_SELF'], 1, 5) != 'admin') {
-			include_once ROOT . '/modules/statistics/index.php';
-			if (Config::read('active', 'statistics') == 1) {
-				StatisticsModule::index();
-			} else {
-				StatisticsModule::viewOffCounter();
-			}
-		}
+
+        include_once ROOT . '/modules/statistics/index.php';
+        if (Config::read('active', 'statistics') == 1) {
+            StatisticsModule::index();
+        } else {
+            StatisticsModule::viewOffCounter();
+        }
 	}
 	
 
@@ -283,10 +301,10 @@ class Module {
 	* @param string $content  data for parse and view
 	* @access   protected
 	*/
-	public function _view($content)
+	protected function _view($content)
     {
         $Register = Register::getInstance();
-		
+
 		if (!empty($this->template) && $this->wrap == true) {
             Plugins::intercept('before_parse_layout', $this);
 			
@@ -310,20 +328,21 @@ class Module {
 			
 			$boot_time = round(getMicroTime() - $Register['fps_boot_start_time'], 4);
 			$markers = array_merge($markers, array('boot_time' => $boot_time));
-			
+
 			$output = $this->render('main.html', $markers);
 		} else {
             $output = $content;
 		}
 
-		$this->afterRender();
+		$this->_afterRender();
 		echo $output;
 
 		if (Config::read('debug_mode') == 1) {
             echo AtmDebug::getBody();
 		}
+        die();
 	}
-	
+
 
 	public function render($fileName, array $markers = array())
 	{
@@ -351,10 +370,10 @@ class Module {
             'module' => $this->module,
             'action' => $Register['action'],
             'params' => $Register['params'],
-            'title' => $this->page_title,
-            'meta_title' => $this->page_title,
-            'meta_description' => $this->page_meta_description,
-            'meta_keywords' => $this->page_meta_keywords,
+            'title' => $this->getCompleteMetaTag($this->page_title),
+            'meta_title' => $this->getCompleteMetaTag($this->page_title),
+            'meta_description' => $this->getCompleteMetaTag($this->page_meta_description),
+            'meta_keywords' => $this->getCompleteMetaTag($this->page_meta_keywords),
             'module_title' => $this->module_title,
             'categories' => $this->categories,
             'comments' => $this->comments,
@@ -365,6 +384,7 @@ class Module {
 			'is_home_page' => $Register['is_home_page'] ? true : false,
         );
 		$markers = array_merge($markers1, $markers2);
+        //pr($markers);
         return $markers;
     }
 
@@ -473,7 +493,7 @@ class Module {
 				case 'category':
 				case 'view':
 					$conditions = array('parent_id' => intval($id));
-					$cats = $this->DB->select($this->module . '_sections', DB_ALL, 
+					$cats = $this->DB->select($this->module . '_categories', DB_ALL,
 					array('cond' => $conditions));
 					break;
 				default:
@@ -481,19 +501,21 @@ class Module {
 			}
 		}
 		if (empty($cats)) {
-			$current_cat = $this->DB->select($this->module . '_sections', DB_ALL, array(
-				'cond' => array(
-					'id' => $id,
-				),
-			));
-			if ($current_cat) {
-				$cats = $this->DB->select($this->module . '_sections', DB_ALL, array(
+            if ($id) {
+                $current_cat = $this->DB->select($this->module . '_categories', DB_ALL, array(
+                    'cond' => array(
+                        'id' => $id,
+                    ),
+                ));
+            }
+			if (!empty($current_cat[0])) {
+				$cats = $this->DB->select($this->module . '_categories', DB_ALL, array(
 					'cond' => array(
 						'parent_id' => $current_cat[0]['parent_id'],
 					),
 				));
 			} else {
-				$cats = $this->DB->select($this->module . '_sections', DB_ALL, array(
+				$cats = $this->DB->select($this->module . '_categories', DB_ALL, array(
 					'cond' => array(
 						'parent_id = 0 OR parent_id IS NULL',
 					),
@@ -530,7 +552,7 @@ class Module {
 			$tree = json_decode($tree, true);
 			return $tree;
 		} else {
-			$tree = $this->DB->select($this->module . '_sections', DB_ALL);
+			$tree = $this->DB->select($this->module . '_categories', DB_ALL);
 			
 			if ($this->cached)
 				$this->Cache->write(json_encode($this->categories), 'category_tree_' . $this->cacheKey
@@ -615,9 +637,9 @@ class Module {
 		
 		return $out;
 	}
-	
-	
-	function showInfoMessage($message, $queryString = null, $requestIsOk = false) 
+
+
+    public function showInfoMessage($message, $queryString = null, $requestIsOk = false)
 	{
 		// AJAX request
 		if (isset($_GET['ajax'])) {
@@ -643,14 +665,14 @@ class Module {
 		if (!$this->ACL->turn(array($this->module, $key), false) ||
 		!$this->ACL->turn(array($this->module, 'use_attaches'), false)) {
 			$this->showAjaxResponse(array(
-				'errors' => __('Permission denied'), 
+				'errors' => $this->Register['DocParser']->wrapErrors(__('Permission denied')),
 				'result' => '0'
 			));
 		}
 		
 		
 		$attachModel = $this->Register['ModManager']->getModelInstance($this->module . 'Attaches');
-		$errors = '';
+        $errors = $this->Register['Validate']->check($this->Register['action']);
 		
 		if (!empty($_FILES) && is_array($_FILES)) {
 			$cnt = 0;
@@ -663,7 +685,7 @@ class Module {
 			}
 		}
 		if ($cnt > Config::read('max_attaches', $this->module))
-			$errors .= '<li>' . sprintf(__('You can upload only %s file(s)'), Config::read('max_attaches', $this->module)) . '</li>';
+			$errors[] = sprintf(__('You can upload only %s file(s)'), Config::read('max_attaches', $this->module));
 		
 		if (!empty($_SESSION['user']['id'])) {
 			$old_files_size = $attachModel->getUserOveralFilesSize($_SESSION['user']['id']);
@@ -675,12 +697,11 @@ class Module {
 		}
 		
 		if ($overal_files_size > $max_overal_size)
-			$errors .= '<li>' . sprintf(__('Max overal files size is %s Mb'), $max_overal_size / 1024 / 1024) . '</li>';
+			$errors[] = sprintf(__('Max overal files size is %s Mb'), $max_overal_size / 1024 / 1024);
 		
-		
-		$errors .= $this->Register['Validate']->check($this->getValidateRules());
+
 		if (!empty($errors)) $this->showAjaxResponse(array(
-			'errors' => $this->Register['Validate']->wrapErrors($errors), 
+			'errors' => $this->Register['DocParser']->wrapErrors($errors),
 			'result' => '0'
 		));
 		
@@ -736,7 +757,7 @@ class Module {
 		if (!empty($errors)) {
 			$this->showAjaxResponse(array(
 				'result' => '0', 
-				'errors' => $this->Register['Validate']->wrapErrors($errors),
+				'errors' => $this->Register['DocParser']->wrapErrors($errors),
 			));
 		}
 			
@@ -752,109 +773,21 @@ class Module {
 	
 	
 	
-	/**
-	 * Replace image marker
-	 */
-	public function insertImageAttach($entity, $announce, $module = null)
-	{
-		$attachment = null;
-		$module = (!empty($module)) ? $module : $this->module;
-       
-		$sizex = $this->Register['Config']->read('img_size_x', $module);
-		$sizey = $this->Register['Config']->read('img_size_y', $module);
-		$sizex = intval($sizex);
-		$sizey = intval($sizey);
-		$style = ' style="max-width:' . $sizex . 'px; max-height:' . $sizey . 'px;"';
-	   
-        $attaches = ($module == 'forum') ? $entity->getAttacheslist() : $entity->getAttaches();
-		
-
-        if (!empty($attaches) && count($attaches) > 0) {
-            $attachDir = ROOT . '/sys/files/' . $module . '/';
-			
-            foreach ($attaches as $attach) {
-				if (file_exists($attachDir . $attach->getFilename())) {
-				
-				
-					if ($attach->getIs_image() == 1) {
-						$announce = str_replace('{IMAGE' . $attach->getAttach_number() . '}'
-							, '<a class="gallery" href="' . get_url('/sys/files/' . $module . '/' . $attach->getFilename()) 
-							. '"><img' . $style . ' alt="' . h($entity->getTitle()) . '" title="' . h($entity->getTitle()) 
-							. '" title="" src="' . get_url('/image/' . $module . '/' . $attach->getFilename()) . '" /></a>'
-							, $announce);
-							
-							
-					} else {
-						$attachment .= __('Attachment') . $attach->getAttach_number() 
-							. ': ' . get_img('/sys/img/file.gif', array('alt' => __('Open file'), 'title' => __('Open file'))) 
-							. '&nbsp;' . get_link(($attach->getSize() / 1000) .' Kb', '/forum/download_file/' 
-							. $attach->getFilename(), array('target' => '_blank')) . '<br />';
-					}
-				}
-            }
-        }
-		
-		if (!empty($attachment)) $entity->setAttachment($attachment);
-		
-		if (preg_match_all('#\{ATTACH(\d+)(\|(\d+))?\}#', $announce, $matches)) {
-			$ids = array();
-			$sizes = array();
-			foreach ($matches[1] as $key => $id) {
-				$ids[] = $id;
-				$sizes[$id] = (!empty($matches[3][$key])) ? intval($matches[3][$key]) : false;
-			}
-			$ids = implode(', ', $ids);
-			
-			//$attachesModel = $this->Register['ModManager']->getModelInstance($module . 'Attaches');
-			//$attaches = $attachesModel->getCollection(array("`id` IN ($ids)"));
-			$attaches = $entity->getAttaches();
-			if ($attaches) {
-				foreach ($attaches as $attach) {
-					if ($attach->getIs_image() == 1) {
-						$style_ = (array_key_exists($attach->getId(), $sizes) && !empty($sizes[$attach->getId()])) 
-							? ' style="width:' . $sizes[$attach->getId()] . 'px;"'
-							: $style;
-						$size = (array_key_exists($attach->getId(), $sizes) && !empty($sizes[$attach->getId()]))
-							? '/' . $sizes[$attach->getId()]
-							: '';
-						
-						$announce = preg_replace('#\{ATTACH' . $attach->getId() . '[^\}]*\}#', 
-							'<a class="gallery" href="' . get_url('/sys/files/' . $module . '/' . $attach->getFilename()) 
-							. '"><img' . $style_ . ' alt="' . h($entity->getTitle()) . '" title="' . h($entity->getTitle()) 
-							. '" title="" src="' . get_url('/image/' . $module . '/' . $attach->getFilename()) . $size . '" /></a>',
-							$announce);
-					} else {
-						$announce = preg_replace('#\{ATTACH' . $attach->getId() . '[^\}]*\}#', 
-							__('Attachment') . $attach->getAttach_number() 
-							. ': ' . get_img('/sys/img/file.gif', array('alt' => __('Open file'), 'title' => __('Open file'))) 
-							. '&nbsp;' . get_link(($attach->getSize() / 1000) .' Kb', '/forum/download_file/' 
-							. $attach->getFilename(), array('target' => '_blank')) . '<br />',
-							$announce);
-					}
-				}
-			}
-		}
-	
-		return $announce;
-	}
-	
-	
-	
 	// Функция возвращает путь к модулю
-	function getModuleURL($page = null)
+    public function getModuleURL($page = null)
 	{
-		$url = '/' . $this->module . '/' . $page;
-		$url = str_replace('//', '/', $url);
+		$url = '/' . $this->module . '/' . $page . '/';
+		$url = get_url($url);
 		return $url;
 	}
 	
 	
 	
 	// get path to tmp files of current module
-	function getTmpPath($file = null)
+	public function getTmpPath($file = null)
 	{
 		$path = '/sys/tmp/' . $this->module . '/' . (!empty($file) ? $file : '');
-		return $path;
+		return ROOT . $path;
 	}
 	
 	
@@ -864,14 +797,34 @@ class Module {
         header('Content-type: application/json');
 		echo json_encode($array); die();
 	}
+
+
+    public function getEntryId($id)
+    {
+        // HLU title of the entity
+        if (!is_numeric($id)) {
+            $clean_url_extention = Config::read('hlu_extention');
+            $id = $this->Model->getIdByHluTitle(str_replace($clean_url_extention, '', $id));
+        }
+        return intval($id);
+    }
 	
 	
-	
-	public function getDeniSectionsCond($group = null)
+	protected function _getDeniSectionsCond($categoryId = null, $group = null)
 	{
-		$group = (!empty($_SESSION['user']['status'])) ? $_SESSION['user']['status'] : 0;
-		$sectionModel = $this->Register['ModManager']->getModelInstance($this->module . 'Sections');
-		$deni_sections = $sectionModel->getCollection(array("CONCAT(',', `no_access`, ',') NOT LIKE '%,$group,%'"));
+		$group = (!$group && !empty($_SESSION['user']['status'])) ? $_SESSION['user']['status'] : 0;
+		$sectionModel = $this->Register['ModManager']->getModelInstance($this->module . 'Categories');
+		
+		$where = array("CONCAT(',', `no_access`, ',') NOT LIKE '%,$group,%'");
+		if (intval($categoryId) > 0) {
+			$where['OR'] = array(
+				"CONCAT('.', `path`) LIKE '%." . intval($categoryId) . ".%'",
+				'id' => intval($categoryId),
+			);
+		}
+		
+		$deni_sections = $sectionModel->getCollection($where);
+
 		$ids = array();
 		if ($deni_sections) {
 			foreach ($deni_sections as $deni_section) {
@@ -881,4 +834,22 @@ class Module {
 		$ids = (count($ids)) ? implode(', ', $ids) : 'NULL';
 		return "`category_id` IN ({$ids})";
 	}
+	
+
+    protected function addToPageMetaContext($key, $value)
+    {
+        if (array_key_exists($key, $this->pageMetaContext))
+            $this->pageMetaContext[$key] = $value;
+    }
+
+
+    protected function getCompleteMetaTag($tag)
+    {
+        try {
+            $tag = $this->View->parseTemplate($tag, $this->pageMetaContext);
+        } catch (Exception $e) {
+            $tag = preg_replace('#(\{.*\})#i', '', $tag);
+        }
+        return $tag;
+    }
 }

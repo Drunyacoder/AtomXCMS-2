@@ -4,7 +4,7 @@
 ## @Author:       Andrey Brykin (Drunya)        ##
 ## @Version:      1.2                           ##
 ## @Project:      CMS                           ##
-## @package       CMS Fapos                     ##
+## @package       CMS AtomX                     ##
 ## @subpackege    Admin module                  ##
 ## @copyright     ©Andrey Brykin 2010-2014      ##
 ## @last mod.     2014/01/13                    ##
@@ -14,11 +14,11 @@
 ##################################################
 ##												##
 ## any partial or not partial extension         ##
-## CMS Fapos,without the consent of the         ##
+## CMS AtomX,without the consent of the         ##
 ## author, is illegal                           ##
 ##################################################
 ## Любое распространение                        ##
-## CMS Fapos или ее частей,                     ##
+## CMS AtomX или ее частей,                     ##
 ## без согласия автора, является не законным    ##
 ##################################################
 include_once '../sys/boot.php';
@@ -36,10 +36,9 @@ if ($_date == date("Y-m-d")) {
 }
 
 
-if (!empty($_POST['grfrom'])) $_POST['grfrom'] = preg_replace('#^(\d{1,2})/(\d{1,2})/(\d{4})$#', '$3-$1-$2', $_POST['grfrom']);
-if (!empty($_POST['grto'])) $_POST['grto'] = preg_replace('#^(\d{1,2})/(\d{1,2})/(\d{4})$#', '$3-$1-$2', $_POST['grto']);
-$graph_from = (!empty($_POST['grfrom']) && preg_match('#^\d{4}-\d{2}-\d{2}$#', $_POST['grfrom'])) ? $_POST['grfrom'] : date("Y-m-d", time() - 2592000);
-$graph_to = (!empty($_POST['grto']) && preg_match('#^\d{4}-\d{2}-\d{2}$#', $_POST['grto'])) ? $_POST['grto'] : date("Y-m-d");
+
+$graph_from = (!empty($_POST['grfrom'])) ? date("Y-m-d", strtotime($_POST['grfrom'])) : date("Y-m-d", time() - 2592000);
+$graph_to = (!empty($_POST['grto'])) ? date("Y-m-d", strtotime($_POST['grto'])) : date("Y-m-d");
 
 
 $UsersModel = $Register['ModManager']->getModelInstance('Users');
@@ -51,7 +50,7 @@ $all = $Model->getCollection(array(
 
 $interval = 2592000;
 $i = 0;
-while (count($all) < 2 && empty($_POST['grfrom']) && empty($_POST['grto'])) {
+while ($i < 6 && count($all) < 2 && empty($_POST['grfrom']) && empty($_POST['grto'])) {
 	if ($i < 5) {
 		$interval += 2592000;
 		$graph_from = date("Y-m-d", time() - $interval);
@@ -123,13 +122,13 @@ $json_data = json_encode(array(
 //pr($json_data); die();
 $pageTitle = 'Статистика';
 $pageNav = $pageTitle;
-$pageNavl = '';
+$pageNavr = '';
 include_once ROOT . '/admin/template/header.php';
 
 ?>
 
 
-
+<div id="chart2"></div>
 <div class="list">
 	<div class="title">
 		<table cellspacing="0" width="100%">
@@ -200,11 +199,22 @@ include_once ROOT . '/admin/template/header.php';
 		<?php if(!empty($json_data)): ?>
 		<tr>
 			<td colspan="2">
-		<link type="text/css" rel="StyleSheet" href="template/css/tcal.css" />
-		<script type="text/javascript" src="../sys/js/graphlib.js"></script>
-		<script type="text/javascript" src="../sys/js/tcal.js"></script>
+		
+		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jqplot/graphlib.js"></script>
+		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jqplot/plugins/jqplot.canvasTextRenderer.min.js"></script>
+		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jqplot/plugins/jqplot.canvasAxisLabelRenderer.min.js"></script>
+		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jqplot/plugins/jqplot.dateAxisRenderer.min.js"></script>
+		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/jqplot/plugins/jqplot.highlighter.min.js"></script>
+		<link href="<?php echo WWW_ROOT ?>/sys/js/jqplot/style.css" type="text/css" rel="stylesheet">
+		<script type="text/javascript" src="<?php echo WWW_ROOT ?>/sys/js/datepicker/datepicker.js"></script>
+		<link type="text/css" rel="StyleSheet" href="<?php echo WWW_ROOT ?>/sys/js/datepicker/datepicker.css" />
 		<script type="text/javascript">
 		$(document).ready(function(){
+			$('.tcal').datetimepicker({
+				timepicker:false,
+				format:'Y/m/d',
+				closeOnDateSelect: true
+			});
 			var data = '<?php echo $json_data; ?>';
 			data = eval(data);
 			if (!data[0].length || !data[1].length) {
@@ -237,7 +247,8 @@ include_once ROOT . '/admin/template/header.php';
 				  }
 				},
 				yaxis: {
-				  label: "Y Axis"
+				  label: "Quantity",
+				  labelRenderer: $.jqplot.CanvasAxisLabelRenderer
 				}
 			  },
 			  highlighter: {
@@ -271,11 +282,11 @@ include_once ROOT . '/admin/template/header.php';
 			],
 			grid: {
 				background: '#f4f2f2'
-			},
+			}
 			});
 		});
 		</script>
-		<div style="width:90%; height:350px; margin:0px auto;" id="graph"></div>
+		<div style="graph-wrapper"><div style="graph-container" id="graph"></div></div>
 			</td>
 		</tr>
 		<?php endif; ?>
@@ -292,10 +303,10 @@ include_once ROOT . '/admin/template/header.php';
 				<table class="lines"  cellspacing="0px">
 					<tr>
 						<td>
-							&nbsp;От&nbsp;:&nbsp;&nbsp;<input class="tcal" id="ffrom" type="text" name="grfrom" />
-							&nbsp;До&nbsp;:&nbsp;&nbsp;<input class="tcal" id="fto" type="text" name="grto" />
+							&nbsp;<?php echo __('From') ?>&nbsp;:&nbsp;&nbsp;<input class="tcal" id="ffrom" type="text" name="grfrom" value="<?php echo (!empty($_POST['grfrom'])) ? date("Y/m/d", strtotime($_POST['grfrom'])) : date("Y/m/d", time() - 2592000); ?>"/>
+							&nbsp;<?php echo __('To') ?>&nbsp;:&nbsp;&nbsp;<input class="tcal" id="fto" type="text" name="grto" value="<?php echo (!empty($_POST['grto'])) ? date("Y/m/d", strtotime($_POST['grto'])) : date("Y/m/d"); ?>"/>
 						</td>
-						<td><input type="submit" name="send" class="save-button" value="Отправить" /></td>
+						<td><input type="submit" name="send" class="save-button" value="<?php echo __('Apply') ?>" /></td>
 					</tr>
 				</table>
 				</form>

@@ -11,11 +11,11 @@
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
-| CMS Fapos,without the consent of the         |
+| CMS AtomX,without the consent of the         |
 | author, is illegal                           |
 |----------------------------------------------|
 | Любое распространение                        |
-| CMS Fapos или ее частей,                     |
+| CMS AtomX или ее частей,                     |
 | без согласия автора, является не законным    |
 \---------------------------------------------*/
 if (function_exists('set_time_limit')) @set_time_limit(0);
@@ -28,8 +28,8 @@ if (function_exists('ignor_user_abort')) @ignor_user_abort();
 /**
  * @author      Andrey Brykin
  * @year        2011
- * @url         http://fapos.net
- * @package     Fapos CMS
+ * @url         http://atomx.net
+ * @package     AtomX CMS
  * @subpackage  Sitemap Generator
  * @copyright   ©Andrey Brykin
  */
@@ -47,7 +47,7 @@ class FpsSitemapGen {
 
 	public function __construct($params = array()) {
         $Register = Register::getInstance();
-		$this->host = $_SERVER['HTTP_HOST'] . '/';
+		$this->host = $_SERVER['HTTP_HOST'];
 		$this->uniqUrl[] = 'http://' . $this->host;
 		$this->DB = $Register['DB'];
 	}
@@ -102,9 +102,9 @@ class FpsSitemapGen {
 	
 		$this->uniqUrl = array_unique($this->uniqUrl);
 		foreach ($this->uniqUrl as $key => $link) {
-			$link = trim($link, '/');
+			//$link = trim($link, '/');
 			$link = str_replace(array_keys($entities), $entities, $link);
-			$this->uniqUrl[$key] = $link;
+			$this->uniqUrl[$key] = ('http://' !== substr($link, 0, 7)) ? $this->host . get_url($link) : get_url($link);
 		}
 	}
 	
@@ -115,8 +115,8 @@ class FpsSitemapGen {
 	 */
 	public function getLinks() {
 		// single pages
-		$this->uniqUrl[] = $this->host . 'search';
-		$this->uniqUrl[] = $this->host . 'chat';
+		$this->uniqUrl[] = 'search';
+		$this->uniqUrl[] = 'chat';
 		
 	
 		// Unique pages (Module pages)
@@ -124,7 +124,7 @@ class FpsSitemapGen {
 			$htmlpages = $this->DB->select('pages', DB_ALL, array());
 			if (count($htmlpages) > 0) {
 				foreach ($htmlpages as $htmlpage) {
-					$this->uniqUrl[] = $this->host . $htmlpage['id'];
+					$this->uniqUrl[] = $htmlpage['id'];
 				}
 			}
 		}
@@ -135,16 +135,16 @@ class FpsSitemapGen {
 		$hluactive = Config::read('hlu');
 		foreach (array('news', 'stat', 'loads', 'foto') as $mkey) {
 			if (Config::read('active', $mkey)) {
-				$this->uniqUrl[] = $this->host . $mkey;
-				if ($mkey != 'foto') $this->uniqUrl[] = $this->host . $mkey . '/rss';
+				$this->uniqUrl[] = $mkey;
+				if ($mkey != 'foto') $this->uniqUrl[] = $mkey . '/rss';
 			
 				$entities = $this->DB->select($mkey, DB_ALL, array());
-				$entitiesc = $this->DB->select($mkey . '_sections', DB_ALL, array());
+				$entitiesc = $this->DB->select($mkey . '_categories', DB_ALL, array());
 
 				if (count($entitiesc) > 0) {
 					foreach ($entitiesc as $entityc) {
 						$action = '/category/';
-						$this->uniqUrl[] = $this->host . $mkey . $action . $entityc['id'];
+						$this->uniqUrl[] = $mkey . $action . $entityc['id'];
 						
 						
 						$cntmat = 0;
@@ -162,7 +162,7 @@ class FpsSitemapGen {
 							$pages = ceil($cntmat / $per_page);
 							
 							for ($i = 2; $i <= $pages; $i++) {
-								$this->uniqUrl[] = $this->host . $mkey . $action . $entityc['id'] . '?page=' . $i;
+								$this->uniqUrl[] = $mkey . $action . $entityc['id'] . '?page=' . $i;
 							}
 						}
 					}
@@ -174,9 +174,9 @@ class FpsSitemapGen {
 						$hlufile = ROOT . '/sys/tmp/hlu_' . $mkey . '/' . $entity['id'] . '.dat';
 						if ($mkey != 'foto' && $hluactive == 1 && file_exists($hlufile)) {
 							$hludata = file_get_contents($hlufile);
-							if ($hludata) $this->uniqUrl[] = $this->host . $mkey . '/' . $hludata . $hluex;
+							if ($hludata) $this->uniqUrl[] = $mkey . '/' . $hludata . $hluex;
 						} else {
-							$this->uniqUrl[] = $this->host . $mkey . '/view/' . $entity['id'];
+							$this->uniqUrl[] = $mkey . '/view/' . $entity['id'];
 						}
 					}
 				}
@@ -186,7 +186,7 @@ class FpsSitemapGen {
 		
 		// forum
 		if (Config::read('active', 'forum')) {
-			$this->uniqUrl[] = $this->host . 'forum';
+			$this->uniqUrl[] = '/forum/';
 			
 			$cats = $this->DB->select('forum_cat', DB_ALL);
 			$forums = $this->DB->select('forums', DB_ALL);
@@ -194,13 +194,13 @@ class FpsSitemapGen {
 
 			if (count($cats) > 0) {
 				foreach ($cats as $cat) {
-					$this->uniqUrl[] = $this->host . 'forum/index/' . $cat['id'];
+					$this->uniqUrl[] = '/forum/index/' . $cat['id'];
 				}
 			}
 			
 			if (count($forums) > 0) {
 				foreach ($forums as $forum) {
-					$this->uniqUrl[] = $this->host . 'forum/view_forum/' . $forum['id'];
+					$this->uniqUrl[] = '/forum/view_forum/' . $forum['id'];
 					if ($forum['themes'] > 1) {
 						$per_page = Config::read('themes_per_page', 'forum');
 						$per_page = intval($per_page); 
@@ -208,7 +208,7 @@ class FpsSitemapGen {
 						$pages = ceil($forum['themes'] / $per_page);
 						
 						for ($i = 2; $i <= $pages; $i++) {
-							$this->uniqUrl[] = $this->host . 'forum/view_forum/' . $forum['id'] . '?page=' . $i;
+							$this->uniqUrl[] = '/forum/view_forum/' . $forum['id'] . '?page=' . $i;
 						}
 					}
 				}
@@ -216,8 +216,8 @@ class FpsSitemapGen {
 			
 			if (count($themes) > 0) {
 				foreach ($themes as $theme) {
-					$this->uniqUrl[] = $this->host . 'forum/view_theme/' . $theme['id'];
-					$this->uniqUrl[] = $this->host . 'forum/view_theme/' . $theme['id'] . '?page=99999/';
+					$this->uniqUrl[] = '/forum/view_theme/' . $theme['id'];
+					$this->uniqUrl[] = '/forum/view_theme/' . $theme['id'] . '/?page=99999/';
 					if ($theme['posts'] > 1) {
 						$per_page = Config::read('posts_per_page', 'forum');
 						$per_page = intval($per_page); 
@@ -225,7 +225,7 @@ class FpsSitemapGen {
 						$pages = ceil($theme['posts'] / $per_page);
 						
 						for ($i = 2; $i <= $pages; $i++) {
-							$this->uniqUrl[] = $this->host . 'forum/view_theme/' . $theme['id'] . '?page=' . $i;
+							$this->uniqUrl[] = '/forum/view_theme/' . $theme['id'] . '/?page=' . $i;
 						}
 					}
 				}
@@ -236,9 +236,9 @@ class FpsSitemapGen {
 				if ($per_page < 1) $per_page = 1;
 				$pages = ceil($cnt / $per_page);
 				
-				$this->uniqUrl[] = $this->host . 'forum/last_posts/';
+				$this->uniqUrl[] = '/forum/last_posts/';
 				for ($i = 2; $i <= $pages; $i++) {
-					$this->uniqUrl[] = $this->host . 'forum/last_posts/?page=' . $i;
+					$this->uniqUrl[] = '/forum/last_posts/?page=' . $i;
 				}
 			}
 			
@@ -265,9 +265,10 @@ class FpsSitemapGen {
 				),
 				'group' => '`a`.`id`',
 			));
+
 			if (count($users) > 0) {
 				foreach ($users as $user) {
-					$this->uniqUrl[] = $this->host . 'forum/user_posts/' . $user['id'];
+					$this->uniqUrl[] = '/forum/user_posts/' . $user['id'];
 
 					$per_page = Config::read('themes_per_page', 'forum');
 					$per_page = intval($per_page); 
@@ -275,7 +276,7 @@ class FpsSitemapGen {
 					$pages = ceil($user['cnt'] / $per_page);
 					
 					for ($i = 2; $i <= $pages; $i++) {
-						$this->uniqUrl[] = $this->host . 'forum/user_posts/' . $user['id'] . '/?page=' . $i;
+						$this->uniqUrl[] = '/forum/user_posts/' . $user['id'] . '/?page=' . $i;
 					}
 				}
 			}
@@ -284,15 +285,15 @@ class FpsSitemapGen {
 		
 		// Users
 		if (Config::read('active', 'users')) {
-			$this->uniqUrl[] = $this->host . 'users';
-			$this->uniqUrl[] = $this->host . 'users/add_form/';
-			$this->uniqUrl[] = $this->host . 'users/login_form/';
+			$this->uniqUrl[] = '/users/';
+			$this->uniqUrl[] = '/users/add_form/';
+			$this->uniqUrl[] = '/users/login_form/';
 			
 			$users = $this->DB->select('users', DB_ALL);
 
 			if (count($users) > 0) {
 				foreach ($users as $user) {
-					$this->uniqUrl[] = $this->host . 'users/info/' . $user['id'];
+					$this->uniqUrl[] = '/users/info/' . $user['id'];
 				}
 				
 				$per_page = Config::read('users_per_page', 'users');
@@ -301,7 +302,7 @@ class FpsSitemapGen {
 				$pages = ceil(count($users) / $per_page);
 				
 				for ($i = 2; $i <= $pages; $i++) {
-					$this->uniqUrl[] = $this->host . 'users/index/?page=' . $i;
+					$this->uniqUrl[] = '/users/index/?page=' . $i;
 				}
 			}
 		}
@@ -310,6 +311,3 @@ class FpsSitemapGen {
 }
 
 
-
-
-?>

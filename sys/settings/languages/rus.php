@@ -296,8 +296,10 @@ return array(
 	'Message not found'				=> 'Сообщение не найдено',
 	'PM in'					 		=> 'Личные сообщения (входящие)',
 	'PM on'					 		=> 'Личные сообщения (исходящие)',
-	'From'					 		=> 'Отправитель',
-	'To'					 		=> 'Получатель',
+	'Sender'					 	=> 'Отправитель',
+	'Recipient'					 	=> 'Получатель',
+	'From'					 		=> 'От',
+	'To'					 		=> 'До',
 	'Sended'				 		=> 'Отправлено',
 	'Getting'				 		=> 'Получено',
 	'This dir is empty'		 		=> 'В этой папке пока нет сообщений',
@@ -374,8 +376,8 @@ return array(
 	'No'                            => 'Нет',
 	'General'                       => 'Общее',
 	'Main page'                     => 'Главная страница',
-	'Version of Fapos'              => 'Версия CMS Fapos:',
-	'New version of Fapos'          => 'Новая версия:',
+	'Version of AtomX'              => 'Версия CMS AtomX:',
+	'New version of AtomX'          => 'Новая версия:',
 	'Common settings'               => 'Общие настройки',
 	'Plugins'                       => 'Плагины',
 	'List'                          => 'Список',
@@ -390,6 +392,7 @@ return array(
 	'Security'                      => 'Безопасность',
 	'Security settings'             => 'Параметры безопасности',
 	'Action log'                    => 'Лог действий',
+	'Errors log'                    => 'Лог ошибок',
 	'Bans by IP'                    => 'Баны по IP',
 	'Backup control'                => 'Управление Бекапами',
 	'Additional'                    => 'Дополнительно',
@@ -399,7 +402,7 @@ return array(
 	'Links settings'				=> 'Настройки переадресации',
 	'Sitemap settings'              => 'Настройки Sitemap',
 	'Help'                          => 'Помощь',
-	'Fapos CMS Community'           => 'Сообщество CMS Fapos',
+	'AtomX CMS Community'           => 'Сообщество CMS AtomX',
 	'FAQ'                           => 'Частые вопросы и ответы',
 	'Dev. Team'                     => 'Авторы',
 	'Admin Panel'                   => 'Админ-панель',
@@ -790,6 +793,7 @@ return array(
 	'Ordering'				        => 'Сортировка',
 	'Module "%s" has been installed' => 'Модуль "%s" был успешно установлен',
 	'Module "%s" has been not installed (Reason: %s)' => 'Модуль "%s" не удалось установить (Причина: %s)',
+	'You can\'t remove the last category' => 'Нельзя удалять последнюю категорию',
 
 	// Templates name
 	'Add form'  					=> 'Форма добавления',
@@ -812,6 +816,13 @@ return array(
     'Search results' 				=> 'Вид результата',
     'Not found material for premoderation' => 'Нет материалов для премодерации',
     'Module not found' 				=> 'Модуль не найден',
+
+    // Install
+    'Some error occurred during database creation' => 'При формировании базы данных произошел збой!',
+    'Please, start from beginning'  => 'Начните  пожалуйста заново',
+    'Go to the site'                => 'Перейти на сайт :)',
+    'To admin panel'                => 'В админку',
+    'Before using the site, remove or rename INSTALL directory' => 'Перед использованием сайта не забудте удалить или переименовать директорию INSTALL',
 );
 
 

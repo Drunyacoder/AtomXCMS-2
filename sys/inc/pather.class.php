@@ -13,11 +13,11 @@
 |------------------------------------------------|
 | 												 |
 |  any partial or not partial extension          |
-|  CMS Fapos,without the consent of the          |
+|  CMS AtomX,without the consent of the          |
 |  author, is illegal                            |
 |------------------------------------------------|
 |  Любое распространение                         |
-|  CMS Fapos или ее частей,                      |
+|  CMS AtomX или ее частей,                      |
 |  без согласия автора, является не законным     |
 \-----------------------------------------------*/
 
@@ -25,7 +25,7 @@
 
 /**
  * @author      Brykin Andrey
- * @url         http://fapos.net
+ * @url         http://atomx.net
  * @version     1.1.0
  * @copyright   ©Andrey Brykin 2010 - 2013
  * @last mod.   2013/07/06
@@ -93,7 +93,7 @@ Class Pather {
 	function parsePath($url) {
 		$url = (!empty($url)) ? $this->decodeUrl($url) : '';
         $Register = Register::getInstance();
-        $pathParams = array();
+
 
 		$fixed_url = $Register['URL']->checkAndRepair($_SERVER['REQUEST_URI']);
 		if (!empty($url) && $_SERVER['REQUEST_METHOD'] == 'GET'
@@ -102,23 +102,30 @@ Class Pather {
 		
 
 		$url = rtrim($url, '/');
-		if (empty($url)) {
-			if ($this->Register['Config']->read('start_mod')) {
-				$start_mod = $this->Register['Config']->read('start_mod');
-				$pathParams = $this->parsePath($start_mod);
-				return $pathParams;
-			}
-		} else {
-			if ($this->Register['Config']->read('start_mod') && $url === $this->Register['Config']->read('start_mod')) {
-				$this->Register['is_home_page'] = true;
-			}
-			
-			$pathParams = explode('/', $url);
-		}
-		$this->getLang($pathParams);
-		
-		
+        $pathParams = explode('/', $url);
+        $pathParams = array_filter($pathParams);
+
+
+        $start_mod = Config::read('start_mod');
+        if ($start_mod) {
+            if  (rtrim($start_mod, '/') != $url) {
+                $this->getLang($pathParams);
+
+                if (!$pathParams || count($pathParams) < 1) {
+                    $pathParams_ = $this->parsePath($start_mod);
+                    $pathParams = $pathParams_;
+                }
+
+            } else {
+                $this->Register['is_home_page'] = true;
+            }
+        } else {
+            $this->getLang($pathParams);
+        }
+
 		if (empty($pathParams)) {
+            $this->Register['is_home_page'] = true;
+
 			$pathParams = array(
 				'pages',
 				'index',
@@ -131,22 +138,7 @@ Class Pather {
 		}, $pathParams);
 
 
-		// Redirect from not HLU to HLU
-		if (count($pathParams) >= 3 &&  $pathParams[1] == 'view' && $this->Register['Config']->read('hlu') == 1) {
-			$hlufile = $Register['URL']->getTmpFilePath($pathParams[2], $pathParams[0]);
-
-			if (file_exists($hlufile) && is_readable($hlufile)) {
-				$hlustr = file_get_contents($hlufile);
-				if (!empty($hlustr)) {
-					$hlustr .= $this->Register['Config']->read('hlu_extention');
-					header('HTTP/1.0 301 Moved Permanently');
-					redirect('/' . $pathParams[0] . '/' . $hlustr);
-				}
-			}
-			
-		
-		// inserted URL for Pages module
-		} else if (count($pathParams) >= 1 && !file_exists(ROOT . '/modules/' . $pathParams[0])) {
+		if (count($pathParams) >= 1 && !file_exists(ROOT . '/modules/' . $pathParams[0])) {
 			$pathParams = array(
 				0 => 'pages',
 				1 => 'index',
@@ -167,12 +159,14 @@ Class Pather {
 				if (!empty($pathParams[0]) && $pathParams[0] === $lang) {
 					$_SESSION['lang'] = $lang;
 					unset($pathParams[0]);
-					
+
+
+                    $tmpArr = array();
 					if (count($pathParams) > 0) {
-						$tmpArr = array();
-						foreach ($pathParams as $param) $tmpArr[] = $param;
-						$pathParams = $tmpArr;
+						foreach ($pathParams as $param)
+                            $tmpArr[] = $param;
 					}
+                    $pathParams = $tmpArr;
 					
 					return;
 				}
@@ -192,41 +186,34 @@ Class Pather {
     {
 		// if we have one argument, we get page if it exists or error
 		if (!is_file(ROOT . '/modules/' . strtolower($params[0]) . '/index.php')) {
-			$mat_id = $this->getHluId($params[0], 'pages');
-			if ($mat_id && $this->Register['Config']->read('hlu') == 1) {
-				$params = array(
-					0 => 'pages',
-					1 => 'index',
-					2 => $mat_id,
-				);
-			} else {
-				$params = array(
-					0 => 'pages',
-					1 => 'index',
-					2 => $params[0],
-				);
-			}
+            $params = array(
+                0 => 'pages',
+                1 => 'index',
+                2 => $params[0],
+            );
 		}
 
 		
 		include_once ROOT . '/modules/' . strtolower($params[0]) . '/index.php';
 		$module = ucfirst($params[0]) . 'Module';
 		if (!class_exists($module))  {
-			$_GET['ac'] = 404;
-			include_once ROOT . '/error.php';
-			//die("Not found class " . h($module));
+            $this->Register['DocParser']->showHttpError();
 		}
 
-	
+
 		// Parse two and more arguments
 		if (count($params) > 1) {
 			// Human Like URL
 			if ($this->Register['Config']->read('hlu_understanding') || $this->Register['Config']->read('hlu')) {
-				$mat_id = $this->getHluId($params[1], $params[0]);
-				if ($mat_id) {
-					$params[1] = 'view';
-					$params[2] = $mat_id;
-				}
+				if ($params[1] !== 'view' && (empty($params[2]) || !is_numeric($params[2]))) {
+
+                    // Geting new HLU title if he was changed.
+                    $mat_id = $this->getNewHLUTitle($params[1], $params[0]);
+                    if ($mat_id) {
+                        // redirect to new URL (might the title was changed)
+                        redirect($params[0] . '/' . $mat_id, 301);
+                    }
+                }
 			}
 		}
 
@@ -239,14 +226,16 @@ Class Pather {
 		// Parse second argument
 		if (count($params) > 1) {
 			if (preg_match('#^_+#', $params[1])) {
-				$_GET['ac'] = 404;
-				include_once ROOT . '/error.php';
-				//die('Access to action ' . h($params[1]) . ' is denied');
+                $this->Register['DocParser']->showHttpError();
 			}
 			if (!method_exists($this->module, $params[1])) {
-				$_GET['ac'] = 404;
-				include_once ROOT . '/error.php';
-				//die('Action ' . h($params[1]) . ' not found in ' . h($module) . ' Class.');
+                if (method_exists($this->module, ($params[0] === 'forum') ? 'view_theme' : 'view')) {
+                    // geting entity ID by HLU title from URL
+                    $params[2] = $this->module->getEntryId($params[1]);
+                    $params[1] = ($params[0] === 'forum') ? 'view_theme' : 'view';
+                } else {
+                    $this->Register['DocParser']->showHttpError();
+                }
 			}
 		}
 
@@ -257,22 +246,20 @@ Class Pather {
 
 
 	/**
-	 * Find relation string->id on Human Like Url
+	 * Tries to find temporary file with the new entity title if he was changed.
 	 *
 	 * @param string $string
 	 * @param string $module
 	 * @return int ID
 	 */
-	private function getHluId($string, $module) {
+	private function getNewHLUTitle($string, $module) {
 		$Register = Register::getInstance();
-		$clean_str = substr($string, 0, strpos($string, '.'));
-		
+		$clean_str = $string;
 		$tmp_file = $Register['URL']->getTmpFilePath($clean_str, $module);
 		if (!file_exists($tmp_file) || !is_readable($tmp_file)) return false;
 
-		$id = file_get_contents($tmp_file);
-		$id = (int)$id;
-		return (is_int($id)) ? $id : false;
+        $params = json_decode(file_get_contents($tmp_file), true);
+        return $params['title'];
 	}
 
 }

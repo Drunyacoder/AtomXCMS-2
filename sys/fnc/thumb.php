@@ -52,6 +52,8 @@ function resampleImage($path, $new_path, $sizew, $sizeh = false)
 	switch ($itype) {
 		case 'image/gif':
 		case 'image/png':
+		case 3:
+		case 1:
 			imagecolortransparent($dest, imagecolortransparent($img));
 			imagealphablending($dest, false);
 			imagesavealpha($dest, true);

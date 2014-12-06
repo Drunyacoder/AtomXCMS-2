@@ -4,7 +4,7 @@
 ## Author:       Andrey Brykin (Drunya)         ##
 ## Version:      0.8                            ##
 ## Project:      CMS                            ##
-## package       CMS Fapos                      ##
+## package       CMS AtomX                      ##
 ## subpackege    Cache library                  ##
 ## copyright     ©Andrey Brykin 2010-2011       ##
 ##################################################
@@ -13,11 +13,11 @@
 ##################################################
 ##												##
 ## any partial or not partial extension         ##
-## CMS Fapos,without the consent of the         ##
+## CMS AtomX,without the consent of the         ##
 ## author, is illegal                           ##
 ##################################################
 ## Любое распространение                        ##
-## CMS Fapos или ее частей,                     ##
+## CMS AtomX или ее частей,                     ##
 ## без согласия автора, является не законным    ##
 ##################################################
 
@@ -35,7 +35,7 @@ define ('CACHE_MATCHING_ANY_TAG', 'Any');
 * File Cache class
 *
 * @author       ©Andrey Brykin 2009-2011
-* @package      CMS Fapos
+* @package      CMS AtomX
 * @subpackage   File Cache
 * @link         http://cms.develdo.com
 */

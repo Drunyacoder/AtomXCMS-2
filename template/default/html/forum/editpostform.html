@@ -1,14 +1,33 @@
-<!-- Multi attaches upload -->
+<!--{#
+For inspect an any variable use "show" filter as shown below:
+{{ context.entity|show }}
+
+It represents a variable the same way as the "var_dump" function in PHP.
+
+More details & documentation are located at http://atomx.net/stat/category/27/.
+
+Current context:
+- context (array)
+- - action (string)
+- - message (string)
+- - errors (array)
+- - preview (string)
+#}-->
+
+
+<!--{# Multi attaches upload #}-->
 {% include '/atm-multiupload.html' %}
 
 {{ editor_body }}
 {{ context.errors }}
+{{ context.preview }}
+
 <form name="sendForm" id="sendForm" action="{{ context.action }}" method="POST" enctype="multipart/form-data" onsubmit="return checkForm(this)">
 <div class="material">
 	  <div class="mat-title">{{ 'Edit message'|lang }}</div>
 	  <div class="mat-content">
 		<ul class="spisok-all">
-		  <li><textarea {{ editor_text }} class="text-area" id="editor" name="mainText">{{ context.main_text }}</textarea></li>
+		  <li><textarea {{ editor_text }} class="text-area" id="editor" name="main_text">{{ context.message }}</textarea></li>
 		  
 			{% if checkAccess([module,'edit_posts']) %}
 			<li>

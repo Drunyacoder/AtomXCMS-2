@@ -4,7 +4,7 @@
 ## Author:       Andrey Brykin (Drunya)         ##
 ## Version:      1.2                            ##
 ## Project:      CMS                            ##
-## package       CMS Fapos                      ##
+## package       CMS AtomX                      ##
 ## subpackege    Admin Panel module             ##
 ## copyright     ©Andrey Brykin 2010-2011       ##
 ##################################################
@@ -13,11 +13,11 @@
 ##################################################
 ##												##
 ## any partial or not partial extension         ##
-## CMS Fapos,without the consent of the         ##
+## CMS AtomX,without the consent of the         ##
 ## author, is illegal                           ##
 ##################################################
 ## Любое распространение                        ##
-## CMS Fapos или ее частей,                     ##
+## CMS AtomX или ее частей,                     ##
 ## без согласия автора, является не законным    ##
 ##################################################
 
@@ -83,12 +83,7 @@ if (isset($_GET['a']) && $_GET['a'] == 'ed') {
 	Тут приведен список, уже созданных, сниппетов. Вы можете их просматривать и редактировать.<br />
 	Для то, что бы создавать и редактировать сниппеты, желательно, обладать, хотя бы, базовыми знаниями PHP
 </div>
-<?php if (!empty($_SESSION['message'])): ?>
-<div class="warning ok"><?php echo $_SESSION['message'] ?></div>
-<?php unset($_SESSION['message']); ?>
-<?php elseif (!empty($_SESSION['errors'])): ?>
-<div class="warning error"><?php echo $_SESSION['errors'] ?></div>
-<?php unset($_SESSION['errors']); endif; ?>
+
 
 
 <div class="white">
@@ -197,12 +192,7 @@ if (isset($_GET['a']) && $_GET['a'] == 'ed') {
 	На странице редактирования приведен список, уже созданных, сниппетов. Вы можете их просматривать и редактировать.<br />
 	Для то, что бы создавать и редактировать сниппеты, желательно, обладать, хотя бы, базовыми знаниями PHP
 </div>
-<?php if (!empty($_SESSION['message'])): ?>
-<div class="warning ok"><?php echo $_SESSION['message'] ?></div>
-<?php unset($_SESSION['message']); ?>
-<?php elseif (!empty($_SESSION['errors'])): ?>
-<div class="warning error"><?php echo $_SESSION['errors'] ?></div>
-<?php unset($_SESSION['errors']); endif; ?>
+
 
 
 <div class="white">

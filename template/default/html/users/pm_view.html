@@ -5,10 +5,10 @@
         <ul class="userslinks">
             <li><a href="{{ www_root }}/users/info/{{ user.id }}">{{ 'Browse Profile'|lang }}</a></li>
             {% if checkAccess(['users', 'edit_users']) %}
-            <li><a href="{{ www_root }}/users/edit_form_by_admin/{{ user.id }}">{{ __('Edit profile') }}</a></li>
+            <li><a href="{{ www_root }}/users/edit_form_by_admin/{{ user.id }}">{{ 'Edit profile'|lang }}</a></li>
             {% else %}
                 {% if user.id == fps_user_id and checkAccess(['users', 'edit_mine']) %}
-                <li><a href="{{ www_root }}/users/edit_form/">{{ __('Edit profile') }}</a></li>
+                <li><a href="{{ www_root }}/users/edit_form/">{{ 'Edit profile'|lang }}</a></li>
                 {% endif %}
             {% endif %}
             {% if fps_user_id == user.id %}

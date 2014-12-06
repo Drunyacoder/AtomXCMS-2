@@ -4,7 +4,7 @@
 ## Author:       Andrey Brykin (Drunya)         ##
 ## Version:      0.7                            ##
 ## Project:      CMS                            ##
-## package       CMS Fapos                      ##
+## package       CMS AtomX                      ##
 ## subpackege    Admin Panel module             ##
 ## copyright     ©Andrey Brykin 2010-2011       ##
 ##################################################
@@ -13,11 +13,11 @@
 ##################################################
 ##												##
 ## any partial or not partial extension         ##
-## CMS Fapos,without the consent of the         ##
+## CMS AtomX,without the consent of the         ##
 ## author, is illegal                           ##
 ##################################################
 ## Любое распространение                        ##
-## CMS Fapos или ее частей,                     ##
+## CMS AtomX или ее частей,                     ##
 ## без согласия автора, является не законным    ##
 ##################################################
 
@@ -316,10 +316,10 @@ if (!empty($errors)) {
 			<td><?php echo h($value['title']); ?></td>
 			<td><?php echo h($value['cnt_users']); ?></td>
 			<td>
-				<a title="Edit" href="javascript://" onClick="openPopup('<?php echo h($key) ?>_Edit')" class="edit"></a>
-				<a title="Move" href="javascript://" onClick="openPopup('<?php echo h($key) ?>_Move')" class="move"></a>
+				<a title="<?php echo __('Edit') ?>" href="javascript://" onClick="openPopup('<?php echo h($key) ?>_Edit')" class="edit"></a>
+				<a title="<?php echo __('Move') ?>" href="javascript://" onClick="openPopup('<?php echo h($key) ?>_Move')" class="move"></a>
 				<?php if ($key !== 0 && $key !== 1): ?>
-				<a title="Delete" href="users_groups.php?ac=delete&id=<?php echo h($key) ?>" onClick="return confirm('Are you sure?')" class="delete"></a>
+				<a title="<?php echo __('Delete') ?>" href="users_groups.php?ac=delete&id=<?php echo h($key) ?>" onClick="return confirm('Are you sure?')" class="delete"></a>
 				<?php endif; ?>
 				
 			</td>

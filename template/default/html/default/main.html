@@ -10,7 +10,7 @@
 <meta name='author' content='Andrey Brykin' />
 <meta name='robots' content='index, follow' />
 <meta name='rating' content='general' />
-<meta name='generator' content='AtomX CMS {{ version }}' />
+<meta name='generator' content='AtomX Engine {{ version }}' />
 
 <link rel="icon" href="{{ template_path }}/favicon.ico" type="image/x-icon" />
 <link rel="shortcut icon" href="{{ template_path }}/favicon.ico" type="image/x-icon" />
@@ -149,7 +149,7 @@ $(document).ready(function() {
        </form> 
 	  </div>
 	</div>
-	<!---------------------------------------------------------------------------CONTENT/----------------------------------------------------------------------------------------------->
+	<!-----------------------------------------CONTENT/---------------------------------------------------------->
     <div class="content">
 	<div class="spedbar">
 		<div>
@@ -167,10 +167,10 @@ $(document).ready(function() {
 	<div style="clear:both;"></div>
 
 	<div class="twoblocks">
-		<div class="materials"> 
+		<div class="materials">
 			{% if pagination %}<div class="mezdyblock"><span class="meta">{{ meta }}</span><div class="paginator">
 			<div class="pages">{{ 'Pages:'|lang }} {{ pagination }}</div></div></div>{% endif %}
-			{{ content }}
+            {{ content }}
 			<div class="paginator"><div class="pages">{{ comments_pagination }}</div></div>
 			{{ comments }}
 			<div class="paginator"><div class="pages">{{ comments_pagination }}</div></div>

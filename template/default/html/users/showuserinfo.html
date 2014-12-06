@@ -7,7 +7,7 @@
 				 <li>{{ user.edit_profile_link }}</li>
 				 {% endif %}
 				 {% if checkAccess(['users', 'edit_users']) %}
-				 <li><a href="{{ www_root }}/users/edit_form_by_admin/{{ user.id }}">{{ __('Edit profile') }}</a></li>
+				 <li><a href="{{ www_root }}/users/edit_form_by_admin/{{ user.id }}">{{ 'Edit profile'|lang }}</a></li>
 				 {% endif %}
 				 {% if fps_user_id == user.id %}
 				 <li><a href="{{ www_root }}/users/pm/">{{ 'Private messages'|lang }}</a></li>
@@ -35,7 +35,7 @@
 				  <div class="userinfocell">
 				       <div class="nameuser">{{ user.name }}</div>
 					   <div>{{ 'Registration'|lang }}: {{ user.puttime }}</div>
-					   <div class="lastrun">{% if CheckUserOnline(user.id) %}<img src="{{ template_path }}/img/online.png" title="online" alt="online">{% else %}Recent activity'|lang }}: {{ user.lastvisit }}{% endif %}</div>
+					   <div class="lastrun">{% if CheckUserOnline(user.id) %}<img src="{{ template_path }}/img/online.png" title="online" alt="online">{% else %}{{ 'Recent activity'|lang }}: {{ user.lastvisit }}{% endif %}</div>
 					   <div class="shkalakrut"><img border="0" src="{{ template_path }}/img/{{ getUserRatingImg(user.posts) }}" alt="" /></div>
 
 				  </div>

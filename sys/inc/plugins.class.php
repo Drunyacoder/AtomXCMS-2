@@ -6,18 +6,18 @@
 |  @Site:         http://atomx.net			     |
 |  @Version:      1.1.0                          |
 |  @Project:      CMS                            |
-|  @Package       CMS Fapos                      |
+|  @package       CMS AtomX                      |
 |  @Subpackege    Plugins Class                  |
 |  @Copyright     ©Andrey Brykin                 |
 |  @Last mod.     2014/03/31                     |
 |------------------------------------------------|
 | 												 |
 |  any partial or not partial extension          |
-|  CMS Fapos,without the consent of the          |
+|  CMS AtomX,without the consent of the          |
 |  author, is illegal                            |
 |------------------------------------------------|
 |  Любое распространение                         |
-|  CMS Fapos или ее частей,                      |
+|  CMS AtomX или ее частей,                      |
 |  без согласия автора, является не законным     |
 \-----------------------------------------------*/
 
@@ -95,7 +95,7 @@ class Plugins {
 		$plugin_path = ROOT . '/sys/plugins/' . $plugin_basename;
 			
 		
-		copyr($dest, ROOT . '/sys/plugins/');
+		copyr($dest, ROOT . '/sys/plugins/', 0755);
 		$this->files = getDirFiles($plugin_path);
 		
 		

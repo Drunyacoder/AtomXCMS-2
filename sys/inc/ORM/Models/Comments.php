@@ -11,11 +11,11 @@
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
-| CMS Fapos,without the consent of the         |
+| CMS AtomX,without the consent of the         |
 | author, is illegal                           |
 |----------------------------------------------|
 | Любое распространение                        |
-| CMS Fapos или ее частей,                     |
+| CMS AtomX или ее частей,                     |
 | без согласия автора, является не законным    |
 \---------------------------------------------*/
 
@@ -33,13 +33,18 @@ class CommentsModel extends FpsModel
         'author' => array(
             'model' => 'Users',
             'type' => 'has_one',
-            'foreignKey' => 'user_id',
+            'internalKey' => 'user_id',
       	),
         'parent_entity' => array(
             'model' => 'this.module',
             'type' => 'has_one',
-            'foreignKey' => 'entity_id',
+            'internalKey' => 'entity_id',
         ),
+    );
+
+    protected $orderParams = array(
+        'allowed' => array('user_id', 'date', 'premoder'),
+        'default' => 'date',
     );
 
 	

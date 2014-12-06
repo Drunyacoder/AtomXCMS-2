@@ -4,20 +4,20 @@
 | @Author:       Andrey Brykin (Drunya)        |
 | @Email:        drunyacoder@gmail.com         |
 | @Site:         http://atomx.net              |
-| @Version:      2.1.0                         |
+| @Version:      2.2.0                         |
 | @Project:      CMS                           |
 | @Package       AtomX CMS                     |
 | @subpackege    Loads Module                  |
 | @copyright     ©Andrey Brykin 		       |
-| @last mod.     2014/04/14                    |
+| @last mod.     2014/06/26                    |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
-| CMS Fapos,without the consent of the         |
+| CMS AtomX,without the consent of the         |
 | author, is illegal                           |
 |----------------------------------------------|
 | Любое распространение                        |
-| CMS Fapos или ее частей,                     |
+| CMS AtomX или ее частей,                     |
 | без согласия автора, является не законным    |
 \---------------------------------------------*/
 
@@ -41,15 +41,9 @@ Class LoadsModule extends Module {
 	public $premoder_types = array('rejected', 'confirmed');
 	
 	/**
-	* @module module indentifier
+	* @var string - path do files upload
 	*/
-	public $attached_files_path = 'loads';
-
-    /**
-     * Wrong extention for download files
-     */
-    private $denyExtentions = array('.php', '.phtml', '.php3', '.html', '.htm', '.pl', '.PHP', '.PHTML', '.PHP3', '.HTML', '.HTM', '.PL', '.js', '.JS');
-
+	public $attached_files_path = '';
 
 
 
@@ -68,7 +62,6 @@ Class LoadsModule extends Module {
 	 */
 	public function index($tag = null)
     {
-		
 		//turn access
 		$this->ACL->turn(array($this->module, 'view_list'));
 		
@@ -83,33 +76,26 @@ Class LoadsModule extends Module {
         }
 
 
-        // we need to know whether to show hidden
-		$group = (!empty($_SESSION['user']['status'])) ? $_SESSION['user']['status'] : 0;
-		$sectionModel = $this->Register['ModManager']->getModelInstance($this->module . 'Sections');
-		$deni_sections = $sectionModel->getCollection(array("CONCAT(',', `no_access`, ',') NOT LIKE '%,$group,%'"));
-		$ids = array();
-		if ($deni_sections) {
-			foreach ($deni_sections as $deni_section) {
-				$ids[] = $deni_section->getId();
-			}
-		}
-		$ids = (count($ids)) ? implode(', ', $ids) : 'NULL';
-		
-		$query_params = array('cond' => array("`category_id` IN ({$ids})"));
+		$where = array();
+		// we need to know whether to show hidden
+		$where[] = $this->_getDeniSectionsCond();
         if (!$this->ACL->turn(array('other', 'can_see_hidden'), false)) {
-            $query_params['cond']['available'] = 1;
+            $where['available'] = '1';
         }
+		if (!$this->ACL->turn(array('other', 'can_premoder'), false)) {
+			$where['premoder'] = 'confirmed';
+		}
 		if (!empty($tag)) {
 			$tag = $this->Register['DB']->escape($tag);
-			$query_params['cond'][] = "CONCAT(',', `tags`, ',') LIKE '%,{$tag},%'";
+			$where[] = "CONCAT(',', `tags`, ',') LIKE '%,{$tag},%'";
 		}
 
 
-        $total = $this->Model->getTotal($query_params);
+        $total = $this->Model->getTotal(array('cond' => $where));
         list ($pages, $page) = pagination( $total, Config::read('per_page', $this->module), '/' . $this->module . '/');
         $this->Register['pages'] = $pages;
         $this->Register['page'] = $page;
-        $this->page_title .= ' (' . $page . ')';
+        $this->addToPageMetaContext('page', $page);
 
 
         $navi = array();
@@ -127,17 +113,15 @@ Class LoadsModule extends Module {
         }
 
 
-        $params = array(
-            'page' => $page,
-            'limit' => $this->Register['Config']->read('per_page', $this->module),
-            'order' => getOrderParam(__CLASS__),
-        );
-		
-
         $this->Model->bindModel('attaches');
         $this->Model->bindModel('author');
         $this->Model->bindModel('category');
-        $records = $this->Model->getCollection($query_params['cond'], $params);
+        $params = array(
+            'page' => $page,
+            'limit' => Config::read('per_page', $this->module),
+            'order' => $this->Model->getOrderParam(),
+        );
+        $records = $this->Model->getCollection($where, $params);
 
         if (is_object($this->AddFields) && count($records) > 0) {
             $records = $this->AddFields->mergeRecords($records);
@@ -149,19 +133,14 @@ Class LoadsModule extends Module {
             $markers = array();
 
             $markers['moder_panel'] = $this->_getAdminBar($entity);
-            $entry_url = get_url(entryUrl($entity, $this->module));
+            $entry_url = entryUrl($entity, $this->module);
             $markers['entry_url'] = $entry_url;
 
 
-            $announce = $entity->getMain();
-			
-			
-            $announce = $this->Textarier->getAnnounce($announce, $entry_url, 0,
-                $this->Register['Config']->read('announce_lenght', $this->module), $entity);
-			$announce = $this->insertImageAttach($entity, $announce);
-			
-
-            $markers['announce'] = $announce;
+            $markers['announce'] = $this->Textarier->getAnnounce(
+				$entity->getMain(),
+                $entity,
+				$this->Register['Config']->read('announce_lenght', $this->module));
 
 
             $markers[$this->module] = $entity->getDownloads();
@@ -203,15 +182,12 @@ Class LoadsModule extends Module {
         if (empty($id) || $id < 1) redirect('/');
 
 
-        $SectionsModel = $this->Register['ModManager']->getModelInstance($this->module . 'Sections');
+        $SectionsModel = $this->Register['ModManager']->getModelInstance($this->module . 'Categories');
         $category = $SectionsModel->getById($id);
         if (!$category)
             return showInfoMessage(__('Can not find category'), '/' . $this->module . '/');
         if (!$this->ACL->checkCategoryAccess($category->getNo_access()))
             return showInfoMessage(__('Permission denied'), '/' . $this->module . '/');
-
-
-        $this->page_title = h($category->getTitle()) . ' - ' . $this->page_title;
 
 
         //формируем блок со списком  разделов
@@ -223,39 +199,23 @@ Class LoadsModule extends Module {
             return $this->_view($source);
         }
 
-        // we need to know whether to show hidden
-        $childCats = $SectionsModel->getOneField('id', array('parent_id' => $id));
-        $childCats[] = $id;
-        $childCats = implode(', ', $childCats);
 		
-		$group = (!empty($_SESSION['user']['status'])) ? $_SESSION['user']['status'] : 0;
-		$sectionModel = $this->Register['ModManager']->getModelInstance($this->module . 'Sections');
-		$deni_sections = $sectionModel->getCollection(array(
-			"CONCAT(',', `no_access`, ',') NOT LIKE '%,$group,%'",
-			"`id` IN ({$childCats})",
-		));
-		$ids = array();
-		if ($deni_sections) {
-			foreach ($deni_sections as $deni_section) {
-				$ids[] = $deni_section->getId();
-			}
-		}
-		$ids = (count($ids)) ? implode(', ', $ids) : 'NULL';
-		
-        $query_params = array('cond' => array(
-			"`category_id` IN ({$childCats})",
-			"`category_id` IN ({$ids})",
-        ));
+		$where = array();
+		$where[] = $this->_getDeniSectionsCond($id);
         if (!$this->ACL->turn(array('other', 'can_see_hidden'), false)) {
-            $query_params['cond']['available'] = 1;
+            $where['available'] = '1';
         }
+		if (!$this->ACL->turn(array('other', 'can_premoder'), false)) {
+			$where['premoder'] = 'confirmed';
+		}
 
 
-        $total = $this->Model->getTotal($query_params);
+        $total = $this->Model->getTotal(array('cond' => $where));
         list ($pages, $page) = pagination( $total, $this->Register['Config']->read('per_page', $this->module), '/' . $this->module . '/category/' . $id);
         $this->Register['pages'] = $pages;
         $this->Register['page'] = $page;
-        $this->page_title .= ' (' . $page . ')';
+        $this->addToPageMetaContext('page', $page);
+        $this->addToPageMetaContext('category_title', h($category->getTitle()));
 
 
 
@@ -275,18 +235,14 @@ Class LoadsModule extends Module {
         }
 
 
-        $params = array(
-            'page' => $page,
-            'limit' => Config::read('per_page', $this->module),
-            'order' => getOrderParam(__CLASS__),
-        );
-        $where = $query_params['cond'];
-        if (!$this->ACL->turn(array('other', 'can_see_hidden'), false)) $where['available'] = '1';
-
-
         $this->Model->bindModel('attaches');
         $this->Model->bindModel('author');
         $this->Model->bindModel('category');
+        $params = array(
+            'page' => $page,
+            'limit' => Config::read('per_page', $this->module),
+            'order' => $this->Model->getOrderParam(),
+        );
         $records = $this->Model->getCollection($where, $params);
 
 
@@ -302,20 +258,14 @@ Class LoadsModule extends Module {
 
 
             $markers['moder_panel'] = $this->_getAdminBar($result);
-            $entry_url = get_url(entryUrl($result, $this->module));
+            $entry_url = entryUrl($result, $this->module);
             $markers['entry_url'] = $entry_url;
 	
 			
-            $announce = $this->Textarier->getAnnounce($result->getMain()
-                , $entry_url
-                , 0
-                , $this->Register['Config']->read('announce_lenght', $this->module)
-                , $result
-            );
-			$announce = $this->insertImageAttach($result, $announce);
-
-
-            $markers['announce'] = $announce;
+            $markers['announce'] = $this->Textarier->getAnnounce(
+				$result->getMain(),
+                $result,
+				$this->Register['Config']->read('announce_lenght', $this->module));
 
 
             $markers['category_url'] = get_url('/' . $this->module . '/category/' . $result->getCategory_id());
@@ -367,7 +317,7 @@ Class LoadsModule extends Module {
         $entity = $this->Model->getById($id);
 
 
-        if (empty($entity)) redirect('/error.php?ac=404');
+        if (empty($entity)) $this->Parser->showHttpError();
         if ($entity->getAvailable() == 0 && !$this->ACL->turn(array('other', 'can_see_hidden'), false))
             return $this->showInfoMessage(__('Permission denied'), '/' . $this->module . '/');
         if (!$this->ACL->checkCategoryAccess($entity->getCategory()->getNo_access()))
@@ -396,11 +346,11 @@ Class LoadsModule extends Module {
             $this->comments = $this->_get_comments($entity);
         }
         $this->Register['current_vars'] = $entity;
-		
 
 
-        //производим замену соответствующих участков в html шаблоне нужной информацией
-        $this->page_title = h($entity->getTitle()) . ' - ' . $this->page_title;
+
+        $this->addToPageMetaContext('category_title', h($entity->getCategory()->getTitle()));
+        $this->addToPageMetaContext('entity_title', h($entity->getTitle()));
         $tags = $entity->getTags();
         $description = $entity->getDescription();
         if (!empty($tags)) $this->page_meta_keywords = h($tags);
@@ -443,17 +393,12 @@ Class LoadsModule extends Module {
 		$markers['attachment'] = $attach_serv . ' | ' . $attach_rem_url;
 
 
-        $announce = $entity->getMain();
-        $announce = $this->Textarier->print_page($announce, $entity->getAuthor()->getStatus(), $entity->getTitle());
-		$announce = $this->insertImageAttach($entity, $announce);
-		
-
+        $announce = $this->Textarier->parseBBCodes($entity->getMain(), $entity);
         $markers['mainText'] = $announce;
         $markers['main_text'] = $announce;
 		
 		
-
-		$entry_url = get_url(entryUrl($entity, $this->module));
+		$entry_url = entryUrl($entity, $this->module);
 		$markers['entry_url'] = $entry_url;
 
 		
@@ -488,11 +433,6 @@ Class LoadsModule extends Module {
 		$user = $usersModel->getById($id);
 		if (!$user)
 			return $this->showInfoMessage(__('Can not find user'), $this->getModuleURL());
-		if (!$this->ACL->checkCategoryAccess($user->getNo_access()))
-			return $this->showInfoMessage(__('Permission denied'), $this->getModuleURL());
-
-
-		$this->page_title = sprintf(__('User materials'), h($user->getName())) . ' - ' . $this->page_title;
 
 
 		//формируем блок со списком разделов
@@ -506,8 +446,13 @@ Class LoadsModule extends Module {
 
 		// we need to know whether to show hidden
 		$where = array('author_id' => $id);
+		// we need to know whether to show hidden
+		$where[] = $this->_getDeniSectionsCond();
 		if (!$this->ACL->turn(array('other', 'can_see_hidden'), false)) {
-			$where['available'] = 1;
+			$where['available'] = '1';
+		}
+		if (!$this->ACL->turn(array('other', 'can_premoder'), false)) {
+			$where['premoder'] = 'confirmed';
 		}
 
 
@@ -515,7 +460,8 @@ Class LoadsModule extends Module {
 		list ($pages, $page) = pagination($total, $this->Register['Config']->read('per_page', $this->module), $this->getModuleURL('user/' . $id));
 		$this->Register['pages'] = $pages;
 		$this->Register['page'] = $page;
-		$this->page_title .= ' (' . $page . ')';
+        $this->addToPageMetaContext('page', $page);
+        $this->addToPageMetaContext('entity_title', sprintf(__('User materials'), h($user->getName())));
 
 
 
@@ -535,15 +481,13 @@ Class LoadsModule extends Module {
 		}
 
 
-		$params = array(
-			'page' => $page,
-			'limit' => $this->Register['Config']->read('per_page', $this->module),
-			'order' => getOrderParam(__CLASS__),
-		);
-
-
 		$this->Model->bindModel('author');
 		$this->Model->bindModel('category');
+        $params = array(
+            'page' => $page,
+            'limit' => $this->Register['Config']->read('per_page', $this->module),
+            'order' => $this->Model->getOrderParam(),
+        );
 		$records = $this->Model->getCollection($where, $params);
 
 
@@ -554,19 +498,16 @@ Class LoadsModule extends Module {
 
 
 			$markers['moder_panel'] = $this->_getAdminBar($entity);
-			$entry_url = get_url(entryUrl($entity, $this->module));
+			$entry_url = entryUrl($entity, $this->module);
 			$markers['entry_url'] = $entry_url;
 
 			
-			
-			$announce = $this->Textarier->getAnnounce($entity->getMain(), $entry_url, 0, $this->Register['Config']->read('announce_lenght', $this->module), $entity);
-			$announce = $this->insertImageAttach($entity, $announce);
-
-
-			$markers['announce'] = $announce;
+			$markers['announce'] = $this->Textarier->getAnnounce(
+				$entity->getMain(), 
+				$entity,
+				Config::read('announce_lenght', $this->module));
 
 			
-
 			$markers['category_url'] = get_url($this->getModuleURL('category/' . $entity->getCategory_id()));
 			$markers['profile_url'] = getProfileUrl($entity->getAuthor_id());
 
@@ -626,13 +567,13 @@ Class LoadsModule extends Module {
 
 
         $data['preview'] = $this->Parser->getPreview($data['mainText']);
-        $data['errors'] = $this->Parser->getErrors();
+        $data['errors'] = $this->Register['Validate']->getErrors();
         if (isset($_SESSION['viewMessage'])) unset($_SESSION['viewMessage']);
         if (isset($_SESSION['FpsForm'])) unset($_SESSION['FpsForm']);
 
 
 		
-        $SectionsModel = $this->Register['ModManager']->getModelInstance($this->module . 'Sections');
+        $SectionsModel = $this->Register['ModManager']->getModelInstance($this->module . 'Categories');
         $sql = $SectionsModel->getCollection();
         $data['cats_selector'] = $this->_buildSelector($sql, ((!empty($data['in_cat'])) ? $data['in_cat'] : false));
 
@@ -677,17 +618,20 @@ Class LoadsModule extends Module {
     {
 		//turn access
 		$this->ACL->turn(array($this->module, 'add_materials'));
-		$errors  = '';
+
+
+        $errors = $this->Register['Validate']->check($this->Register['action']);
 
 
         // Check additional fields if an exists.
         // This must be doing after define $error variable.
         if (is_object($this->AddFields)) {
-            $_addFields = $this->AddFields->checkFields();
-            if (is_string($_addFields)) $errors .= $_addFields;
+            try {
+                $_addFields = $this->AddFields->checkFields();
+            } catch (Exception $e) {
+                $errors[] = $this->AddFields->getErrors();
+            }
         }
-		
-		$errors .= $this->Register['Validate']->check($this->getValidateRules());
 
 
 		$fields = array('description', 'tags', 'sourse', 'sourse_email', 'sourse_site', 'download_url', 'download_url_size');
@@ -732,9 +676,9 @@ Class LoadsModule extends Module {
 
 
 
-        $sectionModel = $this->Register['ModManager']->getModelInstance($this->module . 'Sections');
+        $sectionModel = $this->Register['ModManager']->getModelInstance($this->module . 'Categories');
         $section = $sectionModel->getById($in_cat);
-        if (!$section) $errors .= '<li>' . __('Can not find category') . '</li>' . "\n";
+        if (!$section) $errors[] = __('Can not find category');
 		
 		
 
@@ -753,8 +697,7 @@ Class LoadsModule extends Module {
 			'download_url_size' => null, 
 			'commented' => null, 
 			'available' => null), $_POST);
-			$_SESSION['FpsForm']['error'] = '<p class="errorMsg">' . __('Some error in form') . '</p>'.
-				"\n" . '<ul class="errorMsg">' . "\n" . $errors . '</ul>' . "\n";
+			$_SESSION['FpsForm']['errors'] = $errors;
 			redirect('/' . $this->module . '/add_form/');
 		}
 
@@ -891,13 +834,13 @@ Class LoadsModule extends Module {
 
 
         $markers->setPreview($this->Parser->getPreview($markers->getMain()));
-        $markers->setErrors($this->Parser->getErrors());
+        $markers->setErrors($this->Register['Validate']->getErrors());
         if (isset($_SESSION['viewMessage'])) unset($_SESSION['viewMessage']);
         if (isset($_SESSION['FpsForm'])) unset($_SESSION['FpsForm']);
 
 
 		
-		$sectionsModel = $this->Register['ModManager']->getModelInstance($this->module . 'Sections');
+		$sectionsModel = $this->Register['ModManager']->getModelInstance($this->module . 'Categories');
 		$categories = $sectionsModel->getCollection();
 		$selectedCatId = ($markers->getIn_cat()) ? $markers->getIn_cat() : $markers->getCategory_id();
 		$cats_change = $this->_buildSelector($categories, $selectedCatId); 
@@ -936,7 +879,8 @@ Class LoadsModule extends Module {
 
 
         $source = $this->render('editform.html', array('context' => $markers));
-		setReferer();
+        setReferer();
+
 		return $this->_view($source);
 	}
 
@@ -954,7 +898,6 @@ Class LoadsModule extends Module {
     {
 		$id = (int)$id;
 		if ( $id < 1 ) redirect('/' . $this->module . '/');
-        $errors = '';
 
         $target = $this->Model->getById($id);
         if (!$target) redirect('/' . $this->module . '/');
@@ -968,14 +911,18 @@ Class LoadsModule extends Module {
         }
 
 
+        $errors = $this->Register['Validate']->check($this->Register['action']);
+
+
         // Check additional fields if an exists.
         // This must be doing after define $error variable.
         if (is_object($this->AddFields)) {
-            $_addFields = $this->AddFields->checkFields();
-            if (is_string($_addFields)) $errors .= $_addFields;
+            try {
+                $_addFields = $this->AddFields->checkFields();
+            } catch (Exception $e) {
+                $errors[] = $this->AddFields->getErrors();
+            }
         }
-
-		$errors .= $this->Register['Validate']->check($this->getValidateRules());
 		
 		
 		$valobj = $this->Register['Validate'];
@@ -1011,9 +958,9 @@ Class LoadsModule extends Module {
 		
 
 		if (!empty($in_cat)) {
-			$sectionsModel = $this->Register['ModManager']->getModelInstance($this->module . 'Sections');
+			$sectionsModel = $this->Register['ModManager']->getModelInstance($this->module . 'Categories');
 			$category = $sectionsModel->getById($in_cat);
-			if (!$category) $errors .= '<li>' . __('Can not find category') . '</li>' . "\n";
+			if (!$category) $errors[] = __('Can not find category');
 		}
 		
 		
@@ -1031,8 +978,7 @@ Class LoadsModule extends Module {
 			$_SESSION['FpsForm'] = array_merge(array('title' => null, 'mainText' => null, 
 				'description' => null, 'tags' => null, 'sourse' => null, 'sourse_email' => null, 'in_cat' => $in_cat,
 				'sourse_site' => null, 'download_url' => null, 'download_url_size' => null, 'commented' => null, 'available' => null), $_POST);
-			$_SESSION['FpsForm']['error'] = '<p class="errorMsg">' . __('Some error in form') 
-				. '</p>' . "\n" . '<ul class="errorMsg">'."\n".$errors.'</ul>'."\n";
+			$_SESSION['FpsForm']['errors'] = $errors;
 			redirect('/' . $this->module . '/edit_form/' . $id );
 		}
 		
@@ -1052,8 +998,8 @@ Class LoadsModule extends Module {
 			$tags = $TagGen->getTags($editLoad);
 			$tags = (!empty($tags) && is_array($tags)) ? implode(',', array_keys($tags)) : '';
 		}
-		
-		
+
+
 		$max_lenght = Config::read('max_lenght', $this->module);
 		$editLoad = mb_substr($editLoad, 0, $max_lenght);
 		// Запрос на обновление новости
@@ -1073,9 +1019,8 @@ Class LoadsModule extends Module {
 			'available'    => $available,
 		);
 		if (!empty($file)) $data['download'] = $file;
-        $target->__construct($data);
+        $target($data);
         $target->save();
-
 		// Save additional fields if they is active
 		if (is_object($this->AddFields)) {
 			$this->AddFields->save($id, $_addFields);
@@ -1493,36 +1438,22 @@ Class LoadsModule extends Module {
 
 	
 	/**
-	 * Try Save file
+	 * Try to save file
 	 * 
 	 * @param array $file (From POST request)
 	 */
 	private function __saveFile($file)
     {
-		// Массив недопустимых расширений файла вложения
-		$extentions = $this->denyExtentions;
-		// Извлекаем из имени файла расширение
-		$ext = strrchr( $file['name'], "." );
-		
-		
-		// Формируем путь к файлу
-		if (in_array(strtolower($ext), $extentions)) {
-			$path = date("YmdHis", time()) . '.txt';
-		} else {
-			$path = date("YmdHis", time()) . $ext;
-		}
-		
-		
-		$files_dir = ROOT . '/sys/files/' . $this->module . '/';
-		$path = getSecureFilename($file['name'] . '_' . $path, $files_dir);
+		$path = getSecureFilename($file['name'], $this->attached_files_path);
 		
 		
 		// Перемещаем файл из временной директории сервера в директорию files
-		if (move_uploaded_file($file['tmp_name'], ROOT . '/sys/files/' . $this->module . '/' . $path)) {
-			chmod( ROOT . '/sys/files/' . $this->module . '/' . $path, 0644 );
+		if (move_uploaded_file($file['tmp_name'], $this->attached_files_path . $path)) {
+			chmod( $this->attached_files_path . $path, 0644 );
+            return $path;
 		}
 		
-		return $path;
+		return false;
 	}
 	
 
@@ -1545,7 +1476,7 @@ Class LoadsModule extends Module {
 	
 	
 	
-	public function getValidateRules() 
+	protected function _getValidateRules()
 	{
 		$max_attach = $this->Register['Config']->read('max_attaches', $this->module);
 		if (empty($max_attach) || !is_numeric($max_attach)) $max_attach = 5;
@@ -1711,7 +1642,7 @@ Class LoadsModule extends Module {
 			),
 		);
 		
-		return array($this->module => $rules);
+		return $rules;
 	}
 }
 

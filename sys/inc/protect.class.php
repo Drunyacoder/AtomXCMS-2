@@ -13,16 +13,34 @@
 |------------------------------------------------|
 | 												 |
 |  any partial or not partial extension          |
-|  CMS Fapos,without the consent of the          |
+|  CMS AtomX,without the consent of the          |
 |  author, is illegal                            |
 |------------------------------------------------|
 |  Любое распространение                         |
-|  CMS Fapos или ее частей,                      |
+|  CMS AtomX или ее частей,                      |
 |  без согласия автора, является не законным     |
 \-----------------------------------------------*/
 
 class Protect
 {
+	private $phpErrorsLogMaxSize = 1000000;
+
+	public function __construct()
+	{
+		if (rand() % 100 == 0) $this->cleanPHPErrorsLog();
+	}
+	
+	
+	public function cleanPHPErrorsLog()
+	{
+		$path = ROOT . '/sys/logs/php_errors.log';
+		if (is_readable($path) && is_writeable($path)) {
+			if (filesize($path) >= $this->phpErrorsLogMaxSize) {
+				file_put_contents($path, '');
+			}
+		}
+	}
+	
 	
 	public function getCaptcha($key = null)
 	{
@@ -88,20 +106,22 @@ class Protect
 
     public function checkIpBan()
     {
+        $Register = Register::getInstance();
+
         if (file_exists(ROOT . '/sys/logs/ip_ban/baned.dat')) {
             $data = file(ROOT . '/sys/logs/ip_ban/baned.dat');
 
             if (!empty($_SERVER['REMOTE_ADDR'])) {
                 $ip = trim(substr($_SERVER['REMOTE_ADDR'], 0, 15));
                 if (in_array($ip, $data)) {
-                    redirect('/error.php?ac=ban');
+                    $Register['DocParser']->showHttpError('ban');
                 }
             }
 
             if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
                 $ip = trim(substr($_SERVER['HTTP_X_FORWARDED_FOR'], 0, 15));
                 if (in_array($ip, $data)) {
-                    redirect('/error.php?ac=ban');
+                    $Register['DocParser']->showHttpError('ban');
                 }
             }
 
@@ -112,14 +132,19 @@ class Protect
 
     public function antiDdos()
     {
+        $Register = Register::getInstance();
+
+
         touchDir(ROOT . '/sys/logs/anti_ddos/');
         $date = date("Y-m-d");
+
 
         if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
             $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
         } else {
             $ip = (!empty($_SERVER['REMOTE_ADDR'])) ? $_SERVER['REMOTE_ADDR'] : '';
         }
+
         if (mb_strlen($ip) > 15
             || !preg_match('#^\d+\.\d+\.\d+\.\d+$#', $ip)
             || empty($ip))
@@ -129,7 +154,7 @@ class Protect
         if (!empty($ip)) {
             /* if current IP is hacked */
             if (file_exists(ROOT . '/sys/logs/anti_ddos/hack_' . $ip . '.dat')) {
-                redirect('/error.php?ac=hack');
+                $Register['DocParser']->showHttpError('hack');
             }
 
             //clean old files
@@ -153,7 +178,7 @@ class Protect
                         $f = fopen(ROOT . '/sys/logs/anti_ddos/hack_' . $ip . '.dat', 'w');
                         fwrite($f, date("Y-m-d H:i"));
                         fclose($f);
-                        redirect('/error.php?ac=hack');
+                        $Register['DocParser']->showHttpError('hack');
                     }
                     $attempt = $data[0] + 1;
                     $f = fopen($file, 'w');

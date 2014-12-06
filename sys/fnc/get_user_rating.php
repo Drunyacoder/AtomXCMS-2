@@ -4,21 +4,21 @@
 ## Author:       Andrey Brykin (Drunya)         ##
 ## Version:      0.7                            ##
 ## Project:      CMS                            ##
-## package       CMS Fapos                      ##
+## package       CMS AtomX                      ##
 ## subpackege    Geting user rating function    ##
-## copyright     ©Andrey Brykin 2010-2011       ##
+## copyright     пїЅAndrey Brykin 2010-2011       ##
 ##################################################
 
 
 ##################################################
 ##												##
 ## any partial or not partial extension         ##
-## CMS Fapos,without the consent of the         ##
+## CMS AtomX,without the consent of the         ##
 ## author, is illegal                           ##
 ##################################################
-## Любое распространение                        ##
-## CMS Fapos или ее частей,                     ##
-## без согласия автора, является не законным    ##
+## пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                        ##
+## CMS Fapos пїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ,                     ##
+## пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ    ##
 ##################################################
 
 /**
@@ -75,15 +75,3 @@ function getUserRating($rating, $settings) {
 	return $result;
 	
 }
-
-function getUserRatingImg($rating) {
-	$Register = Register::getInstance();
-	$settingsModel = $Register['ModManager']->getModelInstance('UsersSettings');
-	$rating_settings = $settingsModel->getCollection(array('type' => 'rating'));
-	$rating_settings = (count($rating_settings) > 0) ? $rating_settings[0]->getValues() : ''; 
-	
-	$rank = getUserRating($rating, $rating_settings);
-	return $rank['img'];
-}
-
-?>

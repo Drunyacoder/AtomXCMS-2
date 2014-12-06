@@ -11,11 +11,11 @@
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
-| CMS Fapos,without the consent of the         |
+| CMS AtomX,without the consent of the         |
 | author, is illegal                           |
 |----------------------------------------------|
 | Любое распространение                        |
-| CMS Fapos или ее частей,                     |
+| CMS AtomX или ее частей,                     |
 | без согласия автора, является не законным    |
 \---------------------------------------------*/
 
@@ -29,6 +29,7 @@ class NewsEntity extends FpsEntity
 	
 	protected $id;
 	protected $title;
+	protected $clean_url_title;
 	protected $main;
 	protected $views;
 	protected $date;
@@ -56,8 +57,10 @@ class NewsEntity extends FpsEntity
 	
 	public function save()
 	{
+        $Register = Register::getInstance();
 		$params = array(
 			'title' => $this->title,
+			'clean_url_title' => $this->clean_url_title,
 			'main' => $this->main,
 			'views' => intval($this->views),
 			'date' => $this->date,
@@ -76,10 +79,8 @@ class NewsEntity extends FpsEntity
 			'premoder' => (!empty($this->premoder) && in_array($this->premoder, array('nochecked', 'rejected', 'confirmed'))) ? $this->premoder : 'nochecked',
 			'rating' => intval($this->rating),
 		);
-		
-		
+
 		if ($this->id) $params['id'] = $this->id;
-		$Register = Register::getInstance();
 		return $Register['DB']->save('news', $params);
 	}
 	
@@ -102,18 +103,22 @@ class NewsEntity extends FpsEntity
 		
 
 		$Register['DB']->delete('news', array('id' => $this->id));
+        $Register['URL']->removeOldTmpFiles($this, 'news');
 	}
 
 
-
     /**
-     * @param $comments
+     * @param string $title
      */
-	public function setComments_($comments)
+	public function setTitle($title)
     {
-        $this->comments_ = $comments;
+        $Register = Register::getInstance();
+        if (!empty($this->title) && $this->title !== $title) {
+            $Register['URL']->saveOldEntryUrl($this, 'news', $title);
+        }
+        $this->title = $title;
+        $this->clean_url_title = $Register['URL']->getUrlByTitle($title, false);
     }
-
 
 
     /**
@@ -127,17 +132,6 @@ class NewsEntity extends FpsEntity
    	}
 
 
-
-    /**
-     * @param $comments
-     */
-	public function setAttaches($attaches)
-    {
-        $this->attaches = $attaches;
-    }
-
-
-
     /**
      * @return array
      */
@@ -147,39 +141,4 @@ class NewsEntity extends FpsEntity
         $this->checkProperty('attaches');
    		return $this->attaches;
    	}
-
-
-
-    /**
-     * @param $author
-     */
-    public function setAuthor($author)
-   	{
-   		$this->author = $author;
-   	}
-
-
-
-    /**
-     * @return object
-     */
-	public function getAuthor()
-	{
-        if (!$this->checkProperty('author')) {
-            $Model = new NewsModel('news');
-            $this->author = $Model->getAuthorByNew($this);
-        }
-		return $this->author;
-	}
-	
-	
-
-    /**
-     * @param $category
-     */
-    public function setCategory($category)
-   	{
-   		$this->category = $category;
-   	}
-
 }

@@ -11,11 +11,11 @@
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
-| CMS Fapos,without the consent of the         |
+| CMS AtomX,without the consent of the         |
 | author, is illegal                           |
 |----------------------------------------------|
 | Любое распространение                        |
-| CMS Fapos или ее частей,                     |
+| CMS AtomX или ее частей,                     |
 | без согласия автора, является не законным    |
 \---------------------------------------------*/
 
@@ -27,8 +27,7 @@ Class StatisticsModule
 	/**
 	* @module module indentifier
 	*/
-	var $module = 'statistics';
-	
+	public $module = 'statistics';
 	
 	
 	public static function index() 
@@ -90,7 +89,9 @@ Class StatisticsModule
 				|| strstr($_SERVER["HTTP_USER_AGENT"], "slurp")
 				|| strstr($_SERVER["HTTP_USER_AGENT"], "architextspider")
 				|| strstr($_SERVER["HTTP_USER_AGENT"], "lycos")
-				|| strstr($_SERVER["HTTP_USER_AGENT"], "grabber"))
+				|| strstr($_SERVER["HTTP_USER_AGENT"], "grabber")
+				|| strstr(strtolower($_SERVER["HTTP_USER_AGENT"]), "bot")
+				|| strstr(strtolower($_SERVER["HTTP_USER_AGENT"]), "spider"))
 				$other_bot = 1;
 			}
 		}
@@ -113,7 +114,7 @@ Class StatisticsModule
 			$timestamp = mktime(23, 59, 59, $curdate[0], $curdate[1], $curdate[2]);
 			setcookie( 'counter', md5($ip), $timestamp, '/' );
 		}
-		
+		$view = (!empty($other_bot) || !empty($yandex_bot) || !empty($google_bot)) ? 0 : 1;
 		
 		
 		touchDir(ROOT . '/sys/logs/counter/', 0777);
@@ -121,7 +122,7 @@ Class StatisticsModule
 		if (file_exists($tmp_datafile) && is_readable($tmp_datafile)) {
 			$stats = unserialize(file_get_contents($tmp_datafile));
 			
-			$stats['views'] 			= $stats['views'] + 1;
+			$stats['views'] 			= $stats['views'] + $view;
 			$stats['cookie']			= $stats['cookie'] + $cookie;
 			$stats['ips'] 				= $stats['ips'] + $inc_ip;
 			$stats['yandex_bot_views'] 	= $stats['yandex_bot_views'] + $yandex_bot;

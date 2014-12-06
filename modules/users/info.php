@@ -22,12 +22,12 @@ $menuInfo = array(
 
 $settingsInfo = array(
     'title' => array(
-        'type' => 'text',
+        'type' => 'textarea',
         'title' => __('Title'),
 		'description' => sprintf(__('Used in the template as %s'), '{{ meta_title }} | {{ title }}'),
     ),
     'description' => array(
-        'type' => 'text',
+        'type' => 'textarea',
 		'title' => __('Description'),
 		'description' => sprintf(__('Used in the template as %s'), '{{ meta_description }}'),
     ),
@@ -112,6 +112,20 @@ $settingsInfo = array(
             'disabled' => 'disabled',
             'checked' => 'checked',
         ),
+    ),
+    'sub_first_name' => array(
+        'type' => 'checkbox',
+        'title' => __('First name'),
+        'fields' => 'fields',
+        'value' => 'first_name',
+        'checked' => '1',
+    ),
+    'sub_last_name' => array(
+        'type' => 'checkbox',
+        'title' => __('Last name'),
+        'fields' => 'fields',
+        'value' => 'last_name',
+        'checked' => '1',
     ),
     'sub_keystring' => array(
         'type' => 'checkbox',

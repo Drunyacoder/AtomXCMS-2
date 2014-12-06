@@ -292,8 +292,10 @@ return array(
 	'Message'				 		=> 'Message',
 	'PM in'					 		=> 'Personal messages (Inbox)',
 	'PM on'					 		=> 'Personal messages (Outbox)',
-	'From'					 		=> 'Sender',
-	'To'					 		=> 'Recipient',
+	'Sender'					 	=> 'Sender',
+	'Recipient'					 	=> 'Recipient',
+	'From'					 		=> 'From',
+	'To'					 		=> 'To',
 	'Sended'				 		=> 'Sent',
 	'Getting'				 		=> 'Received',
 	'This dir is empty'		 		=> 'In this folder until there are no messages',
@@ -342,8 +344,8 @@ return array(
 	'No'                            => 'No',
 	'General'                       => 'General',
 	'Main page'                     => 'Main page',
-	'Version of Fapos'              => 'Version of AtomX:',
-	'New version of Fapos'          => 'New version:',
+	'Version of AtomX'              => 'Version of AtomX:',
+	'New version of AtomX'          => 'New version:',
 	'Common settings'               => 'General settings',
 	'Plugins'                       => 'Plugins',
 	'List'                          => 'List',
@@ -358,6 +360,7 @@ return array(
 	'Security'                      => 'Security',
 	'Security settings'             => 'Security settings',
 	'Action log'                    => 'Action log',
+    'Errors log'                    => 'Errors log',
 	'Bans by IP'                    => 'Blocking by IP',
 	'Backup control'                => 'Backup control',
 	'Additional'                    => 'Additionally',
@@ -367,7 +370,7 @@ return array(
 	'Links settings'				=> 'Forwarding settings',
 	'Sitemap settings'              => 'Settings Sitemap',
 	'Help'                          => 'Help',
-	'Fapos CMS Community'           => 'AtomX CMS Community',
+	'AtomX CMS Community'           => 'AtomX CMS Community',
 	'FAQ'                           => 'FAQ',
 	'Dev. Team'                     => 'Authors',
 	'Admin Panel'                   => 'Admin Panel',
@@ -757,6 +760,7 @@ return array(
     'Ordering'				        => 'Ordering',
     'Module "%s" has been installed' => 'Module "%s" has been installed',
     'Module "%s" has been not installed (Reason: %s)' => 'Module "%s" has been not installed (Reason: %s)',
+	'You can\'t remove the last category' => 'You can\'t remove the last category',
 
 	// Templates name
 	'Add form'  					=> 'Add form',
@@ -779,6 +783,14 @@ return array(
     'Search results' 				=> 'Result type',
     'Not found material for premoderation' => 'There are no materials for pre-moderation',
     'Module not found' 				=> 'The module is not found',
+
+
+    // Install
+    'Some error occurred during database creation' => 'Some error occurred during database creation!',
+    'Please, start from beginning'  => 'Please, start from beginning',
+    'Go to the site'                => 'Go to the site :)',
+    'To admin panel'                => 'To admin panel',
+    'Before using the site, remove or rename INSTALL directory' => 'Before using the site, remove or rename INSTALL directory',
 );
 
 

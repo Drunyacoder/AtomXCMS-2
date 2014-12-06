@@ -1,3 +1,23 @@
+<!--{#
+For inspect an any variable use "show" filter as shown below:
+{{ context.entity|show }}
+
+It represents a variable the same way as the "var_dump" function in PHP.
+
+More details & documentation are located at http://atomx.net/stat/category/27/.
+
+Current context:
+- context (array)
+- - action (string)
+- - user (array)
+- - errors (array)
+- - options (string)
+- - servertime (string)
+- - captcha (string)
+- - captcha_text (string)
+#}-->
+
+
 <form name="addNewUserForm" id="sendForm" action="{{ context.action }}" method="POST" enctype="multipart/form-data">
 {{ context.errors }}
 <div class="material">
@@ -6,11 +26,11 @@
           <ul class="spisok-all">
           <li>
             <span class="siu_title"><strong><font color="red">*</font>{{ 'Login'|lang }}:</strong>{{ 'Your personal alias'|lang }}</span>
-            <span class="siu_data"><input type="text" name="name" maxlength="30" value="{{ context.name }}" /></span>
+            <span class="siu_data"><input type="text" name="name" maxlength="30" value="{{ context.user.name }}" /></span>
           </li>
           <li>
             <span class="siu_title"><strong><font color="red">*</font>{{ 'E-mail'|lang }}:</strong></span>
-            <span class="siu_data"><input type="text" name="email" maxlength="60" value="{{ context.email }}" /></span>
+            <span class="siu_data"><input type="text" name="email" maxlength="60" value="{{ context.user.email }}" /></span>
           </li>
 		  <li>
             <span class="siu_title"><strong><font color="red">*</font>{{ 'Password'|lang }}:</strong></span>
@@ -23,25 +43,25 @@
 		  <li>
             <span class="siu_title"><strong>{{ 'Sex'|lang }}:</strong></span>
             <span class="siu_data">
-			      {{ 'Man'|lang }}<input type="radio" name="pol" value="1"{{ context.mpol }} />
-		          {{ 'Women'|lang }}<input type="radio" name="pol" value="2"{{ context.fpol }} />
+			      {{ 'Man'|lang }}<input type="radio" name="pol" value="1"{{ context.user.mpol }} />
+		          {{ 'Women'|lang }}<input type="radio" name="pol" value="2"{{ context.user.fpol }} />
 		    </span>
           </li>
 		  <li>
             <span class="siu_title"><strong>{{ 'City'|lang }}:</strong></span>
-            <span class="siu_data"><input type="text" name="city" maxlength="100" value="{{ context.city }}" /></span>
+            <span class="siu_data"><input type="text" name="city" maxlength="100" value="{{ context.user.city }}" /></span>
           </li>
 		  <li>
             <span class="siu_title"><strong>{{ 'Date of birth'|lang }}:</strong>{{ '(day, month, year)'|lang }}</span>
             <span class="siu_data"> 
 		                     <select style="width:50px;" name="bday">
-			                         {{ context.bday_selector }}
+			                         {{ context.user.bday_selector }}
 		                     </select>
 							 <select style="width:50px;" name="bmonth">
-			                         {{ context.bmonth_selector }}
+			                         {{ context.user.bmonth_selector }}
 		                     </select>
 							 <select style="width:50px;" name="byear">
-			                         {{ context.byears_selector }}
+			                         {{ context.user.byears_selector }}
 		                      </select>&nbsp;
 		                      
 			</span>
@@ -53,7 +73,7 @@
                               {{ context.options }}
                        </select>
                                {{ 'The current time on the server'|lang }}: {{ context.servertime }}<br>
-						   <input type="checkbox" name="summer_time" value="1"{% if context.summer_time %} checked="checked" {% endif %}/>
+						   <input type="checkbox" name="summer_time" value="1"{% if context.user.summer_time %} checked="checked" {% endif %}/>
 						   {{ 'Auto switch to summer time'|lang }}</span>
           </li>
 		  <li>
@@ -62,27 +82,27 @@
           </li>
 		  <li>
             <span class="siu_title"><strong>{{ 'Signature'|lang }}:</strong>{{ 'Displayed under your messages'|lang }}</span>
-            <span class="siu_data"><textarea name="signature" cols="30" rows="3">{{ context.signature }}</textarea></span>
+            <span class="siu_data"><textarea name="signature" cols="30" rows="3">{{ context.user.signature }}</textarea></span>
           </li>
 		  <li>
             <span class="siu_title"><strong>{{ 'About myself'|lang }}:</strong></span>
-            <span class="siu_data"><textarea name="about" cols="30" rows="3">{{ context.about }}</textarea></span>
+            <span class="siu_data"><textarea name="about" cols="30" rows="3">{{ context.user.about }}</textarea></span>
           </li>
 		  <li>
             <span class="siu_title"><strong>{{ 'Home page'|lang }}:</strong> {{ 'Your WEB-site or a link to your page in a social network'|lang }}</span>
-            <span class="siu_data"><input type="text" name="url" maxlength="60" value="{{ context.url }}"  /></span>
+            <span class="siu_data"><input type="text" name="url" maxlength="60" value="{{ context.user.url }}"  /></span>
           </li>
 		  <li>
             <span class="siu_title"><strong>{{ 'Telephone'|lang }}:</strong></span>
-            <span class="siu_data"><input type="text" name="telephone" maxlength="100" value="{{ context.telephone }}" /></span>
+            <span class="siu_data"><input type="text" name="telephone" maxlength="100" value="{{ context.user.telephone }}" /></span>
           </li>
 		  <li>
             <span class="siu_title"><strong>{{ 'ICQ number'|lang }}:</strong></span>
-            <span class="siu_data"><input type="text" name="icq" maxlength="12" value="{{ context.icq }}"  /></span>
+            <span class="siu_data"><input type="text" name="icq" maxlength="12" value="{{ context.user.icq }}"  /></span>
           </li>
 		  <li>
             <span class="siu_title"><strong>Jabber:</strong></span>
-            <span class="siu_data"><input type="text" name="jabber" maxlength="100" value="{{ context.jabber }}" /></span>
+            <span class="siu_data"><input type="text" name="jabber" maxlength="100" value="{{ context.user.jabber }}" /></span>
           </li>
 		  <li>
 		  <span class="siu_title"><strong><font color="red">*</font>{{ 'Confirmation code'|lang }}:</strong>{{ context.captcha_text }}</span>

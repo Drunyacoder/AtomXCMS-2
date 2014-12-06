@@ -11,11 +11,11 @@
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
-| CMS Fapos,without the consent of the         |
+| CMS AtomX,without the consent of the         |
 | author, is illegal                           |
 |----------------------------------------------|
 | Любое распространение                        |
-| CMS Fapos или ее частей,                     |
+| CMS AtomX или ее частей,                     |
 | без согласия автора, является не законным    |
 \---------------------------------------------*/
 
@@ -32,12 +32,12 @@ class UsersWarningsModel extends FpsModel
         'user' => array(
             'model' => 'Users',
             'type' => 'has_one',
-            'foreignKey' => 'user_id',
+            'internalKey' => 'user_id',
         ),
         'admin' => array(
             'model' => 'Users',
             'type' => 'has_one',
-            'foreignKey' => 'admin_id',
+            'internalKey' => 'admin_id',
         ),
     );
 	

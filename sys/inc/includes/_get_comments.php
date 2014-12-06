@@ -73,7 +73,7 @@ if (empty($html) && $commentsModel) {
 
 			
 			$markers['moder_panel'] = $moder_panel;
-			$markers['message'] = $this->Textarier->print_page($comment->getMessage());
+			$markers['message'] = $this->Textarier->parseBBCodes($comment->getMessage(), $comment);
 			$comment->setAdd_markers($markers);
 		}
 	}

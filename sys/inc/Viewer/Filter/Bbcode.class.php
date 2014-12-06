@@ -13,11 +13,11 @@
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
-| CMS Fapos,without the consent of the         |
+| CMS AtomX,without the consent of the         |
 | author, is illegal                           |
 |----------------------------------------------|
 | Любое распространение                        |
-| CMS Fapos или ее частей,                     |
+| CMS AtomX или ее частей,                     |
 | без согласия автора, является не законным    |
 \---------------------------------------------*/
 
@@ -28,10 +28,20 @@ class Fps_Viewer_Filter_Bbcode {
 	{
         if (!is_callable($value)) throw new Exception('(Filter_Bbcode):Value for filtering must be callable.');
 
-        $compiler->raw('Register::getInstance()->PrintText->print_page(');
+        $compiler->raw('Register::getInstance()->PrintText->parseBBCodes(');
         $value($compiler);
+		if (!empty($this->params[0])) {
+			$compiler->raw(', ');
+			$this->params[0]->compile($compiler);
+		}
         $compiler->raw(')');
 	}
+	
+
+    public function addParam($param)
+    {
+        $this->params[] = $param;
+    }
 	
 	
 	public function __toString()

@@ -2,20 +2,20 @@
 /*---------------------------------------------\
 |											   |
 | @Author:       Andrey Brykin (Drunya)        |
-| @Version:      1.2                           |
+| @Version:      1.3                           |
 | @Project:      CMS                           |
 | @Package       AtomX CMS                     |
 | @subpackege    Pages Model                   |
-| @copyright     ©Andrey Brykin 2010-2013      |
-| @last mod      2013/07/16                    |
+| @copyright     ©Andrey Brykin 2010-2014      |
+| @last mod      2014/10/09                    |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
-| CMS Fapos,without the consent of the         |
+| CMS AtomX,without the consent of the         |
 | author, is illegal                           |
 |----------------------------------------------|
 | Любое распространение                        |
-| CMS Fapos или ее частей,                     |
+| CMS AtomX или ее частей,                     |
 | без согласия автора, является не законным    |
 \---------------------------------------------*/
 
@@ -150,7 +150,7 @@ class PagesModel extends FpsModel
 		
         $page = $this->getCollection(array(
 			'id' => $page_id,
-			'publish' => 1,
+			'publish' => '1',
 		));
 		
 		$page = (!empty($page)) ? $page[0] : false;
@@ -364,14 +364,14 @@ class PagesModel extends FpsModel
 
 		if (in_array('news', $latest_on_home)) 
 		$sql .= "(SELECT `title`, `main`, `date`, `on_home_top`, `id`, `views`, `author_id`, `category_id`, `comments`, 
-			(SELECT title FROM `" . $Register['DB']->getFullTableName('news_sections') . "` 
+			(SELECT title FROM `" . $Register['DB']->getFullTableName('news_categories') . "`
 			WHERE `id` = `news`.`category_id`) as category_title, 
 			(SELECT \"news\") AS skey  
 			FROM `" . $Register['DB']->getFullTableName('news') . "` 
 			WHERE `view_on_home` = '1' AND `available` = '1' AND `premoder` = 'confirmed') ";
 		if (in_array('loads', $latest_on_home)) {
 			if (!empty($sql)) $sql .= 'UNION ';
-			$sql .= "(SELECT `title`, `main`, `date`, `on_home_top`, `id`, `views`, `author_id`, `category_id`, `comments`, (SELECT title FROM `" . $Register['DB']->getFullTableName('loads_sections') . "` 
+			$sql .= "(SELECT `title`, `main`, `date`, `on_home_top`, `id`, `views`, `author_id`, `category_id`, `comments`, (SELECT title FROM `" . $Register['DB']->getFullTableName('loads_categories') . "`
 			WHERE `id` = `loads`.`category_id`) as category_title, 
 			(SELECT \"loads\") AS skey   
 			FROM `" . $Register['DB']->getFullTableName('loads') . "` 
@@ -380,7 +380,7 @@ class PagesModel extends FpsModel
 		if (in_array('stat', $latest_on_home)) {
 			if (!empty($sql)) $sql .= 'UNION ';
 			$sql .= "(SELECT `title`, `main`, `date`, `on_home_top`, `id`, `views`, `author_id`, `category_id`, `comments`, 
-				(SELECT title FROM `" . $Register['DB']->getFullTableName('stat_sections') . "` 
+				(SELECT title FROM `" . $Register['DB']->getFullTableName('stat_categories') . "`
 				WHERE `id` = `stat`.`category_id`) as category_title, 
 				(SELECT \"stat\") AS skey  
 				FROM `" . $Register['DB']->getFullTableName('stat') . "` 
@@ -421,6 +421,9 @@ class PagesModel extends FpsModel
 				foreach ($module_materials as &$mat) {
 					$mat = new $entity($mat);
 				}
+
+                $module_materials = $module_model->getMaterialsAttaches($module_materials, $module);
+
 			} else {
 				$module_materials = array();
 			}

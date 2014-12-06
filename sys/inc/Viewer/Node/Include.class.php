@@ -20,7 +20,6 @@ class Fps_Viewer_Node_Include
 
     public function compile(Fps_Viewer_CompileParser $compiler)
     {
-		$Config = $compiler->loader->config;
 		$path = strtr($this->path, array('//' => '/', '\\\\' => '\\'));
 		
 		$compiler->write("\n");
@@ -29,7 +28,7 @@ class Fps_Viewer_Node_Include
         if (is_array($this->context) && count($this->context)) {
             $compiler->raw("array(");
             foreach ($this->context as $key => $row) {
-                $compiler->raw("'$row' => \$$row");
+                $compiler->raw("'$row' => (isset(\$$row)) ? \$$row : ''");
                 if ($key + 1 < count($this->context)) $compiler->raw(", ");
             }
             $compiler->raw(")");

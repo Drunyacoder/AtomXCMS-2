@@ -28,7 +28,7 @@ $keystring = (isset($_POST['keystring'])) ? trim($_POST['keystring']) : '';
 
 
 // Check fields
-$errors = $this->Register['Validate']->check($this->getValidateRules());
+$errors = $this->Register['Validate']->check($this->Register['action']);
 
 
 
@@ -50,8 +50,7 @@ if (!$this->ACL->turn(array('other', 'no_captcha'), false)) {
 /* if an errors */
 if (!empty($errors)) {
 	$_SESSION['FpsForm'] = array();
-	$_SESSION['FpsForm']['error'] = '<p class="errorMsg">' . __('Some error in form') . '</p>' .
-		"\n" . '<ul class="errorMsg">' . "\n" . $errors . '</ul>' . "\n";
+	$_SESSION['FpsForm']['errors'] = $this->Register['DocParser']->wrapErrors($errors);
 	$_SESSION['FpsForm']['name'] = $name;
 	$_SESSION['FpsForm']['message'] = $message;
 	redirect('/' . $this->module . '/view/' . $id);

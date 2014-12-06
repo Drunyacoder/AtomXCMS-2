@@ -11,11 +11,11 @@
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
-| CMS Fapos,without the consent of the         |
+| CMS AtomX,without the consent of the         |
 | author, is illegal                           |
 |----------------------------------------------|
 | Любое распространение                        |
-| CMS Fapos или ее частей,                     |
+| CMS AtomX или ее частей,                     |
 | без согласия автора, является не законным    |
 \---------------------------------------------*/
 
@@ -32,12 +32,12 @@ class MessagesModel extends FpsModel
         'touser' => array(
             'model' => 'Users',
             'type' => 'has_one',
-            'foreignKey' => 'to_user',
+            'internalKey' => 'to_user',
       	),
         'fromuser' => array(
             'model' => 'Users',
             'type' => 'has_one',
-            'foreignKey' => 'from_user',
+            'internalKey' => 'from_user',
         ),
     );
 

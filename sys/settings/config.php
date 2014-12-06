@@ -1,6 +1,6 @@
 <?php 
 $set = array (
-  'cache' => 0,
+  'cache' => 1,
   'language' => 'rus',
   'permitted_languages' => 'rus,eng',
   'cache_querys' => 0,
@@ -47,10 +47,9 @@ $set = array (
   'url_delay' => '5',
   'use_pdo' => 1,
   'new_pm_mail' => 1,
-  'latest_on_home' => 
+  'allow_server_notifications' => 1,
+  'latest_on_home' =>
   array (
-    0 => 'news',
-    1 => 'stat',
     'news' => 'news',
     'stat' => 'stat',
   ),
@@ -58,7 +57,7 @@ $set = array (
   'announce_lenght' => '1000',
   'forum' => 
   array (
-    'title' => 'Форум',
+    'title' => '{% if entity_title %}{{ entity_title }} / {% endif %}{% if category_title %}{{ category_title }} / {% endif %}Форум{% if page %} ({{ page }}){% endif %}',
     'description' => 'CMS форум',
     'not_reg_user' => 'Гостелло',
     'max_post_lenght' => '10000',
@@ -74,8 +73,8 @@ $set = array (
   ),
   'news' => 
   array (
-    'title' => 'Новости',
-    'description' => 'Самые свежие новости',
+    'title' => '{% if entity_title %}{{ entity_title }} / {% endif %}{% if category_title %}{{ category_title }} / {% endif %}Новости{% if page %} ({{ page }}){% endif %}',
+    'description' => '{% if entity_title %}{{ entity_title }} / {% endif %}{% if category_title %}{{ category_title }} / {% endif %}Самые свежие новости',
     'max_lenght' => '15000',
     'announce_lenght' => '700',
     'per_page' => '10',
@@ -96,7 +95,7 @@ $set = array (
   ),
   'stat' => 
   array (
-    'title' => 'Каталог статей',
+    'title' => '{% if entity_title %}{{ entity_title }} / {% endif %}{% if category_title %}{{ category_title }} / {% endif %}Статьи{% if page %} ({{ page }}){% endif %}',
     'description' => 'Только интересные статьи',
     'max_lenght' => '10000',
     'per_page' => '10',
@@ -121,7 +120,7 @@ $set = array (
   ),
   'loads' => 
   array (
-    'title' => 'Каталог файлов',
+    'title' => '{% if entity_title %}{{ entity_title }} / {% endif %}{% if category_title %}{{ category_title }} / {% endif %}Каталог файлов{% if page %} ({{ page }}){% endif %}',
     'description' => 'Каталог файлов. Все файлы тут.',
     'min_lenght' => '200',
     'max_lenght' => '10000',
@@ -168,7 +167,7 @@ $set = array (
     'users_per_page' => '30',
     'max_message_lenght' => '2000',
     'max_count_mess' => '1000',
-    'title' => 'Пользователи',
+    'title' => '{% if entity_title %}{{ entity_title }} / {% endif %}{% if category_title %}{{ category_title }} / {% endif %}Пользователи',
     'description' => 'Юзвери',
     'max_mail_lenght' => '20000',
     'rating_comment_lenght' => '200',
@@ -193,7 +192,7 @@ $set = array (
     'description_lenght' => '300',
     'description_requred' => 0,
     'active' => 1,
-    'title' => 'Фото',
+    'title' => '{% if entity_title %}{{ entity_title }} / {% endif %}{% if category_title %}{{ category_title }} / {% endif %}Фото{% if page %} ({{ page }}){% endif %}',
     'description' => 'Каталог Фотографий',
     'per_page' => '20',
     'max_file_size' => '5000000',
@@ -201,7 +200,6 @@ $set = array (
     array (
       'description' => 'description',
     ),
-    'Прочее' => '',
   ),
   'statistics' => 
   array (
@@ -217,12 +215,12 @@ $set = array (
   ),
   'news_on_home' => 1,
   'site_title' => 'CMS AtomX',
-  'meta_keywords' => 'создание сайта, шаблоны',
+  'meta_keywords' => '{% if entity_title %}{{ entity_title }} / {% endif %}{% if category_title %}{{ category_title }} / {% endif %}создание сайта, шаблоны',
   'meta_description' => 'Что такое и как пользоваться AtomX CMS. Документация и шаблоны',
-  'title' => 'Atomx.net - простота и легкость создания сайтов',
+  'title' => '{% if entity_title %}{{ entity_title }} / {% endif %}{% if category_title %}{{ category_title }} / {% endif %}Atomx.net - простота и легкость создания сайтов',
   'search' => 
   array (
-    'title' => 'Поиск',
+    'title' => '{% if entity_title %}{{ entity_title }} / {% endif %}{% if category_title %}{{ category_title }} / {% endif %}Поиск',
     'active' => '1',
     'description' => 'Лучший  поиск от AtomX',
     'min_lenght' => '2',
@@ -241,5 +239,5 @@ $set = array (
   'auto_sitemap' => 1,
   'allow_smiles' => 1,
   'smiles_set' => 'fapos',
-)
+);
 ?>

@@ -6,7 +6,7 @@ class Fps_Viewer_Node_Url
 {
 
 	private $value;
-	private static $pagesModel;
+	private static $callback;
 
 	
 	
@@ -26,13 +26,14 @@ class Fps_Viewer_Node_Url
 	
     public function compile(Fps_Viewer_CompileParser $compiler)
     {
-		if (isset($compiler->loader->pagesModel) && is_object($compiler->loader->pagesModel)) {
-			$this->__setPagesModel($compiler->loader->pagesModel);
+		if (isset($compiler->loader->createPageUrlCallback) 
+		&& is_callable($compiler->loader->createPageUrlCallback)) {
+			$this->callback($compiler->loader->createPageUrlCallback);
 		}
 	
-        if (is_object(self::$pagesModel) && is_callable(array(self::$pagesModel, 'buildUrl'))) {
-            $url = self::$pagesModel->buildUrl($this->value);
-            $compiler->write('"'.get_url('/'.$url).'"');
+        if (is_callable(self::$callback)) {
+            $url = self::$callback($this->value);
+            $compiler->write('"'.$url.'"');
         } else {
             $compiler->write($this->value);
         }
@@ -45,12 +46,5 @@ class Fps_Viewer_Node_Url
 		$out = "\n";
 		$out .= '[value]:' . $this->value . "\n";
 		return $out;
-	}
-	
-	
-	
-	private function __setPagesModel($model)
-	{
-		self::$pagesModel = $model;
 	}
 }

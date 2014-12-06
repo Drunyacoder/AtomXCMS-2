@@ -4,7 +4,7 @@
 |  @Author:       Andrey Brykin (Drunya)         |
 |  @Version:      1.5.6                          |
 |  @Project:      CMS                            |
-|  @package       CMS Fapos                      |
+|  @package       CMS AtomX                      |
 |  @subpackege    Pages Module                   |
 |  @copyright     ©Andrey Brykin 2010-2013       |
 |  @last mod      2013/07/20                     |
@@ -13,11 +13,11 @@
 /*-----------------------------------------------\
 | 												 |
 |  any partial or not partial extension          |
-|  CMS Fapos,without the consent of the          |
+|  CMS AtomX,without the consent of the          |
 |  author, is illegal                            |
 |------------------------------------------------|
 |  Любое распространение                         |
-|  CMS Fapos или ее частей,                      |
+|  CMS AtomX или ее частей,                      |
 |  без согласия автора, является не законным     |
 \-----------------------------------------------*/
 
@@ -44,7 +44,6 @@ Class PagesModule extends Module {
 	* default action
 	*/
 	function index($id = null, $s =null, $x = null) {
-		
 		// if isset ID - we need load page with this ID
 		if (!empty($id)) {
 			if (is_int($id)) {
@@ -57,16 +56,16 @@ Class PagesModule extends Module {
 				
 				
 			} else {
+
 				if (!preg_match('#^[\dа-яa-z_\-./]+$#ui', $id))  redirect('/pages/');
-			
 				$page = $this->Model->getByUrl($id);
 				if (empty($page)) return $this->showInfoMessage(__('Can not find this page'), '/');
 			}
 			
 			$this->Register['active_page_id'] = $page->getId();
-			
-			
-			$this->page_title = $page->getMeta_title();
+
+
+            $this->addToPageMetaContext('entity_title', h($page->getMeta_title()));
 			$this->page_meta_keywords = $page->getMeta_keywords();
 			$this->page_meta_description = $page->getMeta_description();
 			$this->template = ($page->getTemplate()) ? $page->getTemplate() : 'default';
@@ -76,8 +75,9 @@ Class PagesModule extends Module {
 		
 			// Tree line
 			$navi['navigation'] = get_link(__('Home'), '/');
-			$cnots = explode('.', $page->getPath());
+			$cnots = array_filter(explode('.', $page->getPath()));
 			if (false !== ($res = array_search(1, $cnots))) unset($cnots[$res]);
+
 			if (!empty($cnots)) {
 				$ids = "'" . implode("', '", $cnots) . "'";
 				$pages = $this->Model->getCollection(array(
@@ -223,7 +223,7 @@ Class PagesModule extends Module {
 
                         //moder panel
                         $markers['moder_panel'] = $this->_getAdminBar($result->getId(), $result->getSkey());
-                        $entry_url = get_url(entryUrl($result, $result->getSkey()));
+                        $entry_url = entryUrl($result, $result->getSkey());
                         $markers['entry_url'] = $entry_url;
 
 
@@ -232,9 +232,12 @@ Class PagesModule extends Module {
                         $announce = $result->getMain();
 
 						
-                        $announce = $this->Textarier->getAnnounce($announce, $entry_url, 0,
-                            $this->Register['Config']->read('announce_lenght'), $result);
-						$announce = $this->insertImageAttach($result, $announce, $result->getSkey());
+                        $announce = $this->Textarier->getAnnounce(
+							$announce,
+                            $result,
+							Config::read('announce_lenght'),
+							0,
+							$result->getSkey());
 						
 						
                         $markers['announce'] = $announce;

@@ -261,7 +261,11 @@ class Fps_Viewer_ExpresionParser
 					$node->addAttr($token->getValue());
 				} else if ($token->test(Fps_Viewer_Token::NAME_TYPE)) {
 					$node->addAttr(new Fps_Viewer_Node_Var($token->getValue()));
-				}
+				} else if ($token->test(Fps_Viewer_Token::PUNCTUATION_TYPE, ']')) {
+                    $node->addAttr('[]');
+                    $stream->next();
+                    break;
+                }
 				//$stream->expect(Fps_Viewer_Token::NUMBER_TYPE);
 				$stream->next();
 				$stream->next();

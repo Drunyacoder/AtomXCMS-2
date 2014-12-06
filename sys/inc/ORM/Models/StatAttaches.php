@@ -11,11 +11,11 @@
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
-| CMS Fapos,without the consent of the         |
+| CMS AtomX,without the consent of the         |
 | author, is illegal                           |
 |----------------------------------------------|
 | Любое распространение                        |
-| CMS Fapos или ее частей,                     |
+| CMS AtomX или ее частей,                     |
 | без согласия автора, является не законным    |
 \---------------------------------------------*/
 
@@ -33,7 +33,7 @@ class StatAttachesModel extends FpsModel
         'user' => array(
             'model' => 'Users',
             'type' => 'has_one',
-            'foreignKey' => 'user_id',
+            'internalKey' => 'user_id',
         ),
     );
 	
@@ -41,7 +41,7 @@ class StatAttachesModel extends FpsModel
 	public function getByEntity($entity)
 	{
 		$params['entity_id'] = $entity->getId();
-		$data = $this->getMapper()->getCollection($params);
+		$data = $this->getCollection($params);
 		return $data;
 	}
 	

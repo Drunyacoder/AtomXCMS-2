@@ -4,7 +4,7 @@
 ## Author:       Andrey Brykin (Drunya)         ##
 ## Version:      1.6.1                          ##
 ## Project:      CMS                            ##
-## package       CMS Fapos                      ##
+## package       CMS AtomX                      ##
 ## subpackege    Admin Panel module             ##
 ## copyright     ©Andrey Brykin 2010-2013       ##
 ## @last mod.     2013/07/20                    ##
@@ -14,11 +14,11 @@
 ##################################################
 ##												##
 ## any partial or not partial extension         ##
-## CMS Fapos,without the consent of the         ##
+## CMS AtomX,without the consent of the         ##
 ## author, is illegal                           ##
 ##################################################
 ## Любое распространение                        ##
-## CMS Fapos или ее частей,                     ##
+## CMS AtomX или ее частей,                     ##
 ## без согласия автора, является не законным    ##
 ##################################################
 
@@ -127,6 +127,18 @@ class PagesAdminController {
 		
 		$parent = $this->Model->getById($params['id']);
 		if (!empty($parent)) {
+
+			$errors = array();
+			
+            if (empty($params['title']))
+				$errors[] = sprintf(__('Empty field "%s"'), __('Title'));
+			
+			if (!empty($errors)) {
+                return json_encode(array(
+                    'status' => 0,
+                    'errors' => $errors,
+                ));
+			}
 		
 			$path = ('.' === $parent->getPath()) ? null : $parent->getPath();
 			$template = ($parent->getTemplate()) ? $parent->getTemplate() : '';
@@ -267,11 +279,30 @@ class PagesAdminController {
 	 */
 	public function save($params)
 	{
+        $errors = array();
+
+        if (empty($params['title']))
+            $errors[] = sprintf(__('Empty field "%s"'), __('Title'));
+        if (empty($params['content']))
+            $errors[] = sprintf(__('Empty field "%s"'), __('Content'));
+
+        if (!empty($errors)) {
+            return json_encode(array(
+                'status' => 0,
+                'errors' => $errors,
+            ));
+        }
+
 
 		if (!empty($params['id'])) {
 			$id = intval($params['id']);
 			$entity = $this->Model->getById(intval($params['id']));
-			if (empty($entity)) return json_encode(array('status' => '0'));
+			if (empty($entity)) {
+                return json_encode(array(
+                    'status' => '0',
+                    'errors' => array(__('Record not found'))
+                ));
+            }
 
 			$entity->setName($params['name']);
 			$entity->setTitle($params['title']);
@@ -305,7 +336,12 @@ class PagesAdminController {
 			);
 			$id = $this->Model->add($data);
 
-			if (empty($id)) return json_encode(array('status' => '0'));
+			if (empty($id)) {
+                return json_encode(array(
+                    'status' => '0',
+                    'errors' => array(__('Some error occurred'))
+                ));
+            }
 			return json_encode(array('status' => '1', 'id' => $id));
 		}
 		
@@ -335,19 +371,6 @@ $pageTitle = __('Pages editor');
 $pageNav = $pageTitle;
 $pageNavr = __('Pages') . ' &raquo; [' . __('Editing') . ']';
 
-
-$page = array(
-	'name' => '',
-	'id' => '',
-	'url' => '',
-	'visible' => '',
-	'parent_id' => '',
-	'meta_keywords' => '',
-	'meta_description' => '',
-	'content' => '',
-	'template' => '',
-	'visible' => '',
-);
 
 
 include_once ROOT . '/admin/template/header.php';
@@ -530,7 +553,7 @@ $(document).ready(function(){
 		removeEmptyTags: false,
 		phpTags: true,
 		uploadCrossDomain: true,
-		visual: false
+		visual: true
 	});
 	
 	
@@ -727,9 +750,11 @@ $("#pageTree")
 			function (r) {
 				if(r.status) {
 					$(data.rslt.obj).attr("id", "node_" + r.id);
-				}
-				else {
+				} else {
 					$.jstree.rollback(data.rlbk);
+                    if (r.errors && r.errors.length) {
+                        alert(r.errors.join("\n"));
+                    }
 				}
 			}
 		);
@@ -880,32 +905,22 @@ function submitForm(){
 	$.post(
 		'page.php?operation=save&id='+id, 
 		$(form).serialize(), 
-		function(data){
-		
-			$("#pageTree").jstree('refresh', -1);
-			if (typeof data.id != 'undefined') setTimeout('fillForm('+data.id+')', 1000);
+		function(data) {
 			
-		
+			
+            if (data.errors && data.errors.length) {
+                alert(data.errors.join("\n"));
+            } else {
+				$("#pageTree").jstree('refresh', -1);
+				if (typeof data.id != 'undefined') setTimeout('fillForm('+data.id+')', 1000);
+			}
+			
 			FpsLib.hideLoader();
 		}
 	);
 }
 
 </script>
-
-
-
-
-<?php
-if (!empty($_SESSION['info_message'])):
-?>
-<script type="text/javascript">showHelpWin('<?php echo h($_SESSION['info_message']) ?>', 'Сообщение');</script>
-<?php
-	unset($_SESSION['info_message']);
-endif;
-
-
-?>
 
 
 
@@ -920,9 +935,9 @@ endif;
 	<li><div class="global-marks">{{ fps_user_name }}</div> - Ник текущего пользователя (Для не авторизованного - Гость)</li>
 	<li><div class="global-marks">{{ fps_user_group }}</div> - Группа текущего пользователя (Для не авторизованного - Гости)</li>
 	<li><div class="global-marks">{{ categories }}</div> - Список категорий раздела</li>
-	<li><div class="global-marks">{{ counter }}</div> - Встроенный счетчик посещаемости CMS Fapos</li>
+	<li><div class="global-marks">{{ counter }}</div> - Встроенный счетчик посещаемости AtomX</li>
 	<li><div class="global-marks">{{ fps_year }}</div> - Год</li>
-	<li><div class="global-marks">{{ powered_by }}</div> - CMS Fapos</li>
+	<li><div class="global-marks">{{ powered_by }}</div> - AtomX CMS</li>
 	<li><div class="global-marks">{{ comments }}</div> - Комментарии к материалу и форма добавления комментариев <b>(если предусмотренно)</b></li>
 	<li><div class="global-marks">{{ personal_page_link }}</div> - URL на свою персональную страницу или на страницу регистрации, если не авторизован</li>
 </ul>
@@ -932,5 +947,3 @@ endif;
 
 <?php
 include_once 'template/footer.php';
-
-

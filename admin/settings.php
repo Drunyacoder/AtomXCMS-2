@@ -4,7 +4,7 @@
 ## @Author:       Andrey Brykin (Drunya)        ##
 ## @Version:      1.6.1                         ##
 ## @Project:      CMS                           ##
-## @package       CMS Fapos                     ##
+## @package       CMS AtomX                     ##
 ## @subpackege    Admin Panel module            ##
 ## @copyright     ©Andrey Brykin 2010-2013      ##
 ## @last mod.     2013/06/15                    ##
@@ -14,11 +14,11 @@
 ##################################################
 ##												##
 ## any partial or not partial extension         ##
-## CMS Fapos,without the consent of the         ##
+## CMS AtomX,without the consent of the         ##
 ## author, is illegal                           ##
 ##################################################
 ## Любое распространение                        ##
-## CMS Fapos или ее частей,                     ##
+## CMS AtomX или ее частей,                     ##
 ## без согласия автора, является не законным    ##
 ##################################################
 
@@ -193,7 +193,9 @@ if (isset($_POST['send'])) {
 			
 			if (!empty($params['onsave']['func'])
 			&& function_exists((string)$params['onsave']['func'])) {
-				call_user_func((string)$params['onsave']['func'], $tmpSet);
+				$tmpSet_ = call_user_func((string)$params['onsave']['func'], $tmpSet);
+				if (!empty($tmpSet_) && is_array($tmpSet_))
+					$tmpSet = $tmpSet_;
 				continue;
 			}
 			
@@ -285,9 +287,12 @@ if (count($settingsInfo)) {
 			case 'text':
 				$output_ = '<input type="text" name="' . h($fname) . '" value="' . $currValue . '"' . $attr . ' />';
 				break;
+
+            case 'textarea':
+                $output_ = '<textarea name="' . h($fname) . '"' . $attr . '>' . $currValue . '</textarea>';
+                break;
 				
 			case 'checkbox':
-			
 				$id = md5(rand(0, 99999) + rand(0, 99999));
 			
 				$state = (!empty($params['checked']) && 
@@ -380,10 +385,6 @@ $pageNavr = '';
 include_once ROOT . '/admin/template/header.php';
 ?>
 
-
-<?php if (!empty($_SESSION['message'])): ?>
-<div class="warning ok"><?php echo $_SESSION['message'] ?></div>
-<?php unset($_SESSION['message']); endif; ?>
 
 
 <form method="POST" action="settings.php?m=<?php echo $module; ?>" enctype="multipart/form-data">

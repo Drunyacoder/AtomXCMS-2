@@ -27,7 +27,7 @@ class Fps_Viewer_Parser_Set
         $right = $this->parser->getExpression()->parseExpression();
 
         $this->parser->setEnv(false);
-		$this->parser->setStack($left->getValue());
+		//$this->parser->setStack($left->getValue());
 
 		return new Fps_Viewer_Node_Set($left, $right);
 	}

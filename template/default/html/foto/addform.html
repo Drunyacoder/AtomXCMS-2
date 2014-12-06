@@ -1,3 +1,4 @@
+{{ context.errors }}
 {{ editor_body }}
 <form name="sendForm" id="sendForm" action="{{ context.action }}" method="POST" enctype="multipart/form-data">
 <div class="material">
@@ -13,7 +14,7 @@
             <span class="siu_data"><input type="text" name="title" maxlength="128" value="{{ context.title }}"></span>
           </li>
 		  <li class="margin">
-            <textarea {{ editor_text }} class="text-area" name="mainText">{{ context.main_text }}</textarea>
+            <textarea {{ editor_text }} class="text-area" name="main_text">{{ context.main_text }}</textarea>
           </li>
 		  <li>
             <span class="siu_title"><strong><font color="red">*</font>{{ 'Image'|lang }}:</strong></span>

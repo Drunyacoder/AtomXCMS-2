@@ -18,7 +18,7 @@ if ($id < 1) {
 
 	/* if an error */
 	if (isset($_SESSION['FpsForm'])) {
-        $markers['errors'] = $this->render('infomessage.html', array('info_message' => $_SESSION['FpsForm']['error']));
+        $markers['errors'] = $this->render('infomessage.html', array('info_message' => $_SESSION['FpsForm']['errors']));
 		$name = h($_SESSION['FpsForm']['name']);
 		$message = h($_SESSION['FpsForm']['message']);
 		unset($_SESSION['FpsForm']);

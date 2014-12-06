@@ -11,11 +11,11 @@
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
-| CMS Fapos,without the consent of the         |
+| CMS AtomX,without the consent of the         |
 | author, is illegal                           |
 |----------------------------------------------|
 | Любое распространение                        |
-| CMS Fapos или ее частей,                     |
+| CMS AtomX или ее частей,                     |
 | без согласия автора, является не законным    |
 \---------------------------------------------*/
 
@@ -32,13 +32,18 @@ class FotoModel extends FpsModel
         'author' => array(
             'model' => 'Users',
             'type' => 'has_one',
-            'foreignKey' => 'author_id',
+            'internalKey' => 'author_id',
       	),
         'category' => array(
-            'model' => 'FotoSections',
+            'model' => 'FotoCategories',
             'type' => 'has_one',
-            'foreignKey' => 'category_id',
+            'internalKey' => 'category_id',
         ),
+    );
+
+    protected $orderParams = array(
+        'allowed' => array('views', 'date', 'comments'),
+        'default' => 'date',
     );
 
 	

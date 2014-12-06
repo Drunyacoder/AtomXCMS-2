@@ -3,10 +3,10 @@
 | 												 |
 | @Author:       Andrey Brykin (Drunya)          |
 | @Email:        drunyacoder@gmail.com           |
-| @Site:         http://fapos.net                |
+| @Site:         http://atomx.net                |
 | @Version:      0.5                             |
 | @Project:      CMS                             |
-| @package       CMS Fapos                       |
+| @package       CMS AtomX                       |
 | @subpackege    Additional Fields (Admin Part)  |
 | @copyright     ©Andrey Brykin 2010-2013        |
 \-----------------------------------------------*/
@@ -14,11 +14,11 @@
 /*-----------------------------------------------\
 | 												 |
 |  any partial or not partial extension          |
-|  CMS Fapos,without the consent of the          |
+|  CMS AtomX,without the consent of the          |
 |  author, is illegal                            |
 |------------------------------------------------|
 |  Любое распространение                         |
-|  CMS Fapos или ее частей,                      |
+|  CMS AtomX или ее частей,                      |
 |  без согласия автора, является не законным     |
 \-----------------------------------------------*/
 
@@ -236,7 +236,7 @@ if ($_GET['ac'] == 'index'):
 			<div class="item submit">
 				<div class="left"></div>
 				<div class="right" style="float:left;">
-					<input type="submit" value="Сохранить" name="send" class="save-button" />
+					<input type="submit" value="<?php echo __('Save') ?>" name="send" class="save-button" />
 				</div>
 				<div class="clear"></div>
 			</div>
@@ -256,9 +256,9 @@ if ($_GET['ac'] == 'index'):
 	
 
 
-	
+<?php if (!empty($fields)): ?>
 <div class="list">
-	<div class="title">Дополнительные поля</div>
+	<div class="title"><?php echo __('Additional fields') ?></div>
 	<div onclick="openPopup('addCat');" class="add-cat-butt"><div class="add"></div><?php echo __('Add') ?></div>
 	<table class="grid" cellspacing="0" style="width:100%;">
 		<tr>
@@ -268,10 +268,10 @@ if ($_GET['ac'] == 'index'):
 			<th><?php echo __('Params') ?></th>
 			<th><?php echo __('Required field') ?></th>
 			<th><?php echo __('Marker of field') ?></th>
-			<th style="width:160px;">Действия</th>
+			<th style="width:160px;"><?php echo __('Actions') ?></th>
 		</tr>
 	
-	<?php if (!empty($fields)): ?>
+
 	<?php foreach($fields as $field): ?>
 		<?php
 			$params = (!empty($field['params'])) ? unserialize($field['params']) : array();
@@ -299,15 +299,15 @@ if ($_GET['ac'] == 'index'):
 				</tr>
 
 	<?php endforeach; ?>
-	<?php else: ?>
-	<div class="fps-win"><div class="h3"><?php echo __('Additional fields not found') ?></div></div>
-	<?php endif; ?>
 	</table>
 </div>
-			
-	
-	
-	
+<?php else: ?>
+
+<div class="warning">
+	<div class="h3"><?php echo __('Additional fields not found') ?></div>
+</div>
+<input type="button" value="<?php echo __('Add') ?>" onclick="openPopup('addCat');" class="save-button" />
+<?php endif; ?>			
 	
 	
 	<?php if (!empty($_SESSION['FpsForm']['errors'])): ?>

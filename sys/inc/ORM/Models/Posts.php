@@ -11,11 +11,11 @@
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
-| CMS Fapos,without the consent of the         |
+| CMS AtomX,without the consent of the         |
 | author, is illegal                           |
 |----------------------------------------------|
 | Любое распространение                        |
-| CMS Fapos или ее частей,                     |
+| CMS AtomX или ее частей,                     |
 | без согласия автора, является не законным    |
 \---------------------------------------------*/
 
@@ -32,22 +32,23 @@ class PostsModel extends FpsModel
         'author' => array(
             'model' => 'Users',
             'type' => 'has_one',
-            'foreignKey' => 'id_author',
+            'internalKey' => 'id_author',
       	),
         'editor' => array(
             'model' => 'Users',
             'type' => 'has_one',
-            'foreignKey' => 'id_editor',
+            'internalKey' => 'id_editor',
       	),
         'theme' => array(
-            'model' => 'Users',
-            'type' => 'has_many',
-            'foreignKey' => 'id_theme',
+            'model' => 'Themes',
+            'type' => 'has_one',
+            'internalKey' => 'id_theme',
       	),
         'attacheslist' => array(
             'model' => 'ForumAttaches',
             'type' => 'has_many',
             'foreignKey' => 'post_id',
+            'relationType' => FpsModel::DQ,
       	),
     );
 	
@@ -71,7 +72,7 @@ class PostsModel extends FpsModel
 	}
 
 
-    public function getFirst($where, $params)
+    public function getFirst($where, $params = array())
     {
         $params['limit'] = 1;
         $post = $this->getCollection($where, $params);

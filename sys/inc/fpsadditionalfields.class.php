@@ -4,7 +4,7 @@
 |  @Author:       Andrey Brykin (Drunya)         |
 |  @Version:      0.5                            |
 |  @Project:      CMS                            |
-|  @package       CMS Fapos                      |
+|  @package       CMS AtomX                      |
 |  @subpackege    Additional Fields              |
 |  @copyright     ©Andrey Brykin 2010-2013       |
 |  @last mod.     2013/02/22                     |
@@ -13,11 +13,11 @@
 /*-----------------------------------------------\
 | 												 |
 |  any partial or not partial extension          |
-|  CMS Fapos,without the consent of the          |
+|  CMS AtomX,without the consent of the          |
 |  author, is illegal                            |
 |------------------------------------------------|
 |  Любое распространение                         |
-|  CMS Fapos или ее частей,                      |
+|  CMS AtomX или ее частей,                      |
 |  без согласия автора, является не законным     |
 \-----------------------------------------------*/
 
@@ -27,12 +27,17 @@
  *
  * @author     Andrey Brykin
  * @version    0.2
- * @url        http://fapos.net
+ * @url        http://atomx.net
  */
 class FpsAdditionalFields {
  
 	
 	public $module;
+
+    /**
+     * @var array
+     */
+    private $errors;
 	
 	
 	public function __construct() {
@@ -79,6 +84,7 @@ class FpsAdditionalFields {
 				
 				
 					$fieldContent = array();
+                    $viewData = '';
 					if (!empty($addContents)) {
 						foreach($addContents as $addCon) {
 						
@@ -91,14 +97,11 @@ class FpsAdditionalFields {
 						}
 					}
 					$addField->setContent($fieldContent);
-					
 				
 
                     $field = 'add_field_' . $addField->getId();
                     $f_params = $addField->getParams();
                     if (!empty($f_params)) $f_params = unserialize($f_params);
-
-
 
 
                     if ($inputs === true) {
@@ -176,7 +179,7 @@ class FpsAdditionalFields {
         $ModelName = $Register['ModManager']->getModelName(ucfirst($module) . 'AddFields');
         $Model = new $ModelName();
 
-        $Model->bindModel(ucfirst($module) . 'AddContent');
+        $Model->bindModel('content');
 		if (!empty($records)) $addFields = $records;
 		else $addFields = $Model->getCollection();
 		
@@ -238,29 +241,25 @@ class FpsAdditionalFields {
 		
 		
 		$_addFields = array();
-		$error = null;
+		$errors = array();
 		
 		
 		if (!empty($addFields)) {
 			foreach($addFields as $key => $field) {
 				$params = $field->getParams();
-				$params = (!empty($params)) 
-				? unserialize($params) : array();
+				$params = (!empty($params)) ? unserialize($params) : array();
 				$field_name = 'add_field_' . $field->getId();
-				$value = '';
 				$array = array('field_id' => $field->getId());
-				
-				
 				
 				
 				switch ($field->getType()) {
 					case 'textarea':
 					case 'text':
 						if (!empty($params['required']) && empty($_POST[$field_name])) 
-							$error = $error . '<li>Поле "' . $field->getLabel() . '" не заполнено</li>';
+							$errors[] = 'Поле "' . $field->getLabel() . '" не заполнено';
 						if (!empty($_POST[$field_name]) && mb_strlen($_POST[$field_name]) > (int)$field->getSize()) 
-							$error = $error . '<li>Поле "' . $field->getLabel() . '" превышает ' 
-							. $field->getSize() . ' символов</li>';
+							$errors[] = 'Поле "' . $field->getLabel() . '" превышает '
+							. $field->getSize() . ' символов';
 						$array['content'] = (!empty($_POST[$field_name])) ? $_POST[$field_name] : '';
 						break;
 					case 'checkbox':
@@ -273,8 +272,15 @@ class FpsAdditionalFields {
 				$_addFields[] = $array;
 			}
 		}
-		
-		return (!empty($error)) ? $error : $_addFields;
+
+        // Should be catched above
+        if (!empty($error)) {
+            $this->errors = $errors;
+            throw new Exception('Errors are found in additional fields');
+        }
+
+
+		return $_addFields;
 	}
 	
 	
@@ -312,5 +318,7 @@ class FpsAdditionalFields {
 	
 	
 	
-	
+	public function getErrors() {
+        return (array)$this->errors;
+    }
 }

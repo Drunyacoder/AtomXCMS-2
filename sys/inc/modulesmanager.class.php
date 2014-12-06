@@ -4,7 +4,7 @@
 |  @Author:       Andrey Brykin (Drunya)         |
 |  @Version:      0.6                            |
 |  @Project:      CMS                            |
-|  @package       CMS Fapos                      |
+|  @package       CMS AtomX                      |
 |  @subpackege    Modules manager                |
 |  @copyright     ©Andrey Brykin 2010-2012       |
 |  @last mod.     2012/02/27                     |
@@ -13,11 +13,11 @@
 /*-----------------------------------------------\
 | 												 |
 |  any partial or not partial extension          |
-|  CMS Fapos,without the consent of the          |
+|  CMS AtomX,without the consent of the          |
 |  author, is illegal                            |
 |------------------------------------------------|
 |  Любое распространение                         |
-|  CMS Fapos или ее частей,                      |
+|  CMS AtomX или ее частей,                      |
 |  без согласия автора, является не законным     |
 \-----------------------------------------------*/
 
@@ -117,14 +117,16 @@ class ModulesManager
     }
 	
 	
-	public function getModulesList()
+	public function getModulesList($onlyInstalled = false, $onlyActivated = false)
 	{
 		$modules = array();
 		
 		$pathes = glob(ROOT . '/modules/*', GLOB_ONLYDIR);
 		if (!empty($pathes)) {
 			foreach ($pathes as $path) {
-				$modules[] = substr(strrchr($path, '/'), 1);
+				$module = substr(strrchr($path, '/'), 1);
+                if ($onlyActivated && !$this->isActivated($module)) continue;
+                $modules[] = $module;
 			}
 		}
 		
@@ -165,5 +167,11 @@ class ModulesManager
     {
         $modSettings = Config::read($module);
         return (!empty($modSettings) && is_array($modSettings));
+    }
+
+
+    public function isActivated($module)
+    {
+        return ($this->isInstall($module) && Config::read($module . '.active'));
     }
 }

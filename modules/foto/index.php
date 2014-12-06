@@ -3,23 +3,23 @@
 | 												 |
 | @Author:       Andrey Brykin (Drunya)          |
 | @Email:        drunyacoder@gmail.com           |
-| @Site:         http://fapos.net                |
-| @Version:      1.6.7                           |
+| @Site:         http://atomx.net                |
+| @Version:      1.7.7                           |
 | @Project:      CMS                             |
-| @package       CMS Fapos                       |
+| @package       CMS AtomX                       |
 | @subpackege    Foto Module  			 		 |
-| @copyright     ©Andrey Brykin 2010-2013        |
-| @last  mod     2013/11/01                      |
+| @copyright     ©Andrey Brykin 2010-2014        |
+| @last  mod     2014/06/26                      |
 \-----------------------------------------------*/
 
 /*-----------------------------------------------\
 | 												 |
 |  any partial or not partial extension          |
-|  CMS Fapos,without the consent of the          |
+|  CMS AtomX,without the consent of the          |
 |  author, is illegal                            |
 |------------------------------------------------|
 |  Любое распространение                         |
-|  CMS Fapos или ее частей,                      |
+|  CMS AtomX или ее частей,                      |
 |  без согласия автора, является не законным     |
 \-----------------------------------------------*/
 
@@ -43,11 +43,6 @@ Class FotoModule extends Module {
 	* @module module indentifier
 	*/
 	public $module = 'foto';
-	
-	/**
-	 * Wrong extention for download files
-	 */
-	private $allowedExtentions = array('.png', '.jpg', '.gif');
 
 
 	
@@ -69,25 +64,16 @@ Class FotoModule extends Module {
 		}
 		
 		
+		$where = array();
 		// we need to know whether to show hidden
-		$group = (!empty($_SESSION['user']['status'])) ? $_SESSION['user']['status'] : 0;
-		$sectionModel = $this->Register['ModManager']->getModelInstance($this->module . 'Sections');
-		$deni_sections = $sectionModel->getCollection(array("CONCAT(',', `no_access`, ',') NOT LIKE '%,$group,%'"));
-		$ids = array();
-		if ($deni_sections) {
-			foreach ($deni_sections as $deni_section) {
-				$ids[] = $deni_section->getId();
-			}
-		}
-		$ids = (count($ids)) ? implode(', ', $ids) : 'NULL';
-		$query_params = array('cond' => array("`category_id` IN ({$ids})"));
+		$where[] = $this->_getDeniSectionsCond();
 		
 		//Узнаем кол-во материалов в БД
-		$total = $this->Model->getTotal($query_params);
+		$total = $this->Model->getTotal(array('cond' => $where));
 		list ($pages, $page) = pagination( $total, $this->Register['Config']->read('per_page', 'foto'), '/foto/');
 		$this->Register['pages'] = $pages;
 		$this->Register['page'] = $page;
-		$this->page_title .= ' (' . $page . ')';
+        $this->addToPageMetaContext('page', $page);
 
 		
 		$navi = array();
@@ -103,17 +89,16 @@ Class FotoModule extends Module {
 			$html = __('Materials not found');
 			return $this->_view($html);
 		}
-		
-		
-		$params = array(
-			'page' => $page,
-			'limit' => $this->Register['Config']->read('per_page', 'foto'),
-			'order' => getOrderParam(__CLASS__),
-		);
+
 
 		$this->Model->bindModel('author');
 		$this->Model->bindModel('category');
-		$records = $this->Model->getCollection($query_params['cond'], $params);
+        $params = array(
+            'page' => $page,
+            'limit' => $this->Register['Config']->read('per_page', 'foto'),
+            'order' => $this->Model->getOrderParam(),
+        );
+		$records = $this->Model->getCollection($where, $params);
 		
 		
 		// create markers
@@ -124,9 +109,8 @@ Class FotoModule extends Module {
 			
 			
 			$_addParams['moder_panel'] = $this->_getAdminBar($result);
-			$entry_url = get_url(entryUrl($result, $this->module));
+			$entry_url = entryUrl($result, $this->module);
 			$_addParams['entry_url'] = $entry_url;
-			$_addParams['preview_foto'] = get_url('/sys/files/foto/preview/' . $result->getFilename());
 			$_addParams['foto_alt'] = h(preg_replace('#[^\w\d ]+#ui', ' ', $result->getTitle()));
 			
 			
@@ -166,15 +150,15 @@ Class FotoModule extends Module {
 		if (empty($id) || $id < 1) redirect('/');
 
 		
-		$SectionsModel = $this->Register['ModManager']->getModelInstance($this->module . 'Sections');
+		$SectionsModel = $this->Register['ModManager']->getModelInstance($this->module . 'Categories');
 		$category = $SectionsModel->getById($id);
 		if (!$category)
 			return showInfoMessage(__('Can not find category'), '/foto/');
 		if (!$this->ACL->checkCategoryAccess($category->getNo_access())) 
 			return showInfoMessage(__('Permission denied'), '/foto/');
-		
-		
-		$this->page_title = h($category->getTitle()) . ' - ' . $this->page_title;
+
+
+        $this->addToPageMetaContext('category_title', h($category->getTitle()));
 		
 		
 		//формируем блок со списком  разделов
@@ -186,36 +170,16 @@ Class FotoModule extends Module {
 			return $this->_view($source);
 		}
 	
+		$where = array();
 		// we need to know whether to show hidden
-		$childCats = $SectionsModel->getOneField('id', array('parent_id' => $id));
-		$childCats[] = $id;
-		$childCats = implode(', ', $childCats);
-		
-		$group = (!empty($_SESSION['user']['status'])) ? $_SESSION['user']['status'] : 0;
-		$sectionModel = $this->Register['ModManager']->getModelInstance($this->module . 'Sections');
-		$deni_sections = $sectionModel->getCollection(array(
-			"CONCAT(',', `no_access`, ',') NOT LIKE '%,$group,%'",
-			"`id` IN ({$childCats})",
-		));
-		$ids = array();
-		if ($deni_sections) {
-			foreach ($deni_sections as $deni_section) {
-				$ids[] = $deni_section->getId();
-			}
-		}
-		$ids = (count($ids)) ? implode(', ', $ids) : 'NULL';
-		
-		$query_params = array('cond' => array(
-			"`category_id` IN ({$childCats})",
-			"`category_id` IN ({$ids})",
-		));
+		$where[] = $this->_getDeniSectionsCond($id);
 		
 
-		$total = $this->Model->getTotal($query_params);
+		$total = $this->Model->getTotal(array('cond' => $where));
 		list ($pages, $page) = pagination( $total, Config::read('per_page', 'foto'), '/foto/');
 		$this->Register['pages'] = $pages;
 		$this->Register['page'] = $page;
-		$this->page_title .= ' (' . $page . ')';
+        $this->addToPageMetaContext('page', $page);
 
 
 		
@@ -233,17 +197,16 @@ Class FotoModule extends Module {
 			$html = __('Materials not found');
 			return $this->_view($html);
 		}
-	  
-	  
-		$params = array(
-			'page' => $page,
-			'limit' => $this->Register['Config']->read('per_page', 'foto'),
-			'order' => getOrderParam(__CLASS__),
-		);
+
 
 		$this->Model->bindModel('author');
 		$this->Model->bindModel('category');
-		$records = $this->Model->getCollection($query_params['cond'], $params);
+        $params = array(
+            'page' => $page,
+            'limit' => $this->Register['Config']->read('per_page', 'foto'),
+            'order' => $this->Model->getOrderParam(),
+        );
+		$records = $this->Model->getCollection($where, $params);
 
 
 		// create markers
@@ -253,11 +216,8 @@ Class FotoModule extends Module {
 			
 			
 			$_addParams['moder_panel'] = $this->_getAdminBar($result);
-			$entry_url = get_url(entryUrl($result, $this->module));
+			$entry_url = entryUrl($result, $this->module);
 			$_addParams['entry_url'] = $entry_url;
-			//$_addParams['entry_url'] = get_url('/foto/view/' . $result->getId());
-			
-			$_addParams['preview_foto'] = get_url('/sys/files/foto/preview/' . $result->getFilename());
 			$_addParams['foto_alt'] = h(preg_replace('#[^\w\d ]+#ui', ' ', $result->getTitle()));
 			
 			
@@ -306,7 +266,7 @@ Class FotoModule extends Module {
 		$entity = $this->Model->getById($id);
 		
 		
-		if (!$entity) redirect('/error.php?ac=404');
+		if (!$entity) $this->Parser->showHttpError();
 		if (!$this->ACL->checkCategoryAccess($entity->getCategory()->getNo_access())) 
 			return $this->showInfoMessage(__('Permission denied'), '/foto/');
 		
@@ -318,7 +278,8 @@ Class FotoModule extends Module {
 		
 		
 		//производим замену соответствующих участков в html шаблоне нужной информацией
-		$this->page_title = h($entity->getTitle()) . ' - ' . $this->page_title;
+        $this->addToPageMetaContext('category_title', h($entity->getCategory()->getTitle()));
+        $this->addToPageMetaContext('entity_title', h($entity->getTitle()));
 
 		
 		$navi = array();
@@ -336,9 +297,8 @@ Class FotoModule extends Module {
 		$markers['profile_url'] = getProfileUrl($entity->getAuthor()->getId());
 		
 		$markers['moder_panel'] = $this->_getAdminBar($entity);
-		$markers['main'] = get_url('/sys/files/foto/full/' . $entity->getFilename());
 		$markers['foto_alt'] = h(preg_replace('#[^\w\d ]+#ui', ' ', $entity->getTitle()));
-		$markers['description'] = $this->Textarier->print_page($entity->getDescription(), $entity->getAuthor()->geteStatus());
+		$markers['description'] = $this->Textarier->parseBBCodes($entity->getDescription(), $entity);
 		
 
 		$prev_id = (!empty($next_prev['prev'])) ? $next_prev['prev']->getId() : $id;
@@ -347,7 +307,7 @@ Class FotoModule extends Module {
 		$markers['previous_url'] = get_url('/foto/view/' . $prev_id);
 		$markers['next_url'] = get_url('/foto/view/' . $next_id);
 
-		$entry_url = get_url(entryUrl($entity, $this->module));
+		$entry_url = entryUrl($entity, $this->module);
 		$markers['entry_url'] = $entry_url;
 		
 		
@@ -391,9 +351,6 @@ Class FotoModule extends Module {
 			return $this->showInfoMessage(__('Can not find user'), '/' . $this->module . '/');
 
 
-		$this->page_title = sprintf(__('User materials'), h($user->getName())) . ' - ' . $this->page_title;
-
-
 		//формируем блок со списком разделов
 		$this->_getCatsTree();
 
@@ -405,21 +362,26 @@ Class FotoModule extends Module {
 
 		// we need to know whether to show hidden
 		$where = array('author_id' => $id);
-		$where[] = $this->getDeniSectionsCond();
+		$where[] = $this->_getDeniSectionsCond();
 
 
 		$total = $this->Model->getTotal(array('cond' => $where));
 		list ($pages, $page) = pagination($total, $this->Register['Config']->read('per_page', $this->module), '/' . $this->module . '/user/' . $id);
 		$this->Register['pages'] = $pages;
 		$this->Register['page'] = $page;
-		$this->page_title .= ' (' . $page . ')';
+        $this->addToPageMetaContext('page', $page);
+        $this->addToPageMetaContext('entity_title', sprintf(__('User materials'), h($user->getName())));
 
 
 
 		$navi = array();
-		$navi['add_link'] = ($this->ACL->turn(array($this->module, 'add_materials'), false)) ? get_link(__('Add material'), '/' . $this->module . '/add_form/') : '';
+		$navi['add_link'] = ($this->ACL->turn(array($this->module, 'add_materials'), false)) 
+			? get_link(__('Add material'), '/' . $this->module . '/add_form/') 
+			: '';
 		$navi['navigation'] = get_link(__('Home'), '/') . __('Separator')
-		. get_link(h($this->module_title), '/' . $this->module . '/') . __('Separator') . sprintf(__('User materials'), h($user->getName())) . '"';
+			. get_link(h($this->module_title), '/' . $this->module . '/') 
+			. __('Separator') 
+			. sprintf(__('User materials'), h($user->getName())) . '"';
 		$navi['pagination'] = $pages;
 		$navi['meta'] = __('Total materials') . $total;
 		$navi['category_name'] = sprintf(__('User materials'), h($user->getName()));
@@ -432,15 +394,13 @@ Class FotoModule extends Module {
 		}
 
 
-		$params = array(
-			'page' => $page,
-			'limit' => $this->Register['Config']->read('per_page', $this->module),
-			'order' => getOrderParam(__CLASS__),
-		);
-
-
 		$this->Model->bindModel('author');
 		$this->Model->bindModel('category');
+        $params = array(
+            'page' => $page,
+            'limit' => $this->Register['Config']->read('per_page', $this->module),
+            'order' => $this->Model->getOrderParam(),
+        );
 		$records = $this->Model->getCollection($where, $params);
 
 
@@ -451,10 +411,8 @@ Class FotoModule extends Module {
 
 
 			$markers['moder_panel'] = $this->_getAdminBar($entity);
-			$entry_url = get_url(entryUrl($entity, $this->module));
+			$entry_url = entryUrl($entity, $this->module);
 			$markers['entry_url'] = $entry_url;
-
-			$markers['preview_foto'] = get_url('/sys/files/foto/preview/' . $entity->getFilename());
 			$markers['foto_alt'] = h(preg_replace('#[^\w\d ]+#ui', ' ', $entity->getTitle()));
 
 
@@ -508,24 +466,23 @@ Class FotoModule extends Module {
         $data = Validate::getCurrentInputsValues($data);
 
 
-		$html = '';
-        $errors = $this->Parser->getErrors();
+        $errors = $this->Register['Validate']->getErrors();
         if (isset($_SESSION['FpsForm'])) unset($_SESSION['FpsForm']);
-        if (!empty($errors)) $html = $errors;
 
 		
 		//categories list
-		$className = $this->Register['ModManager']->getModelNameFromModule('fotoSections');
+		$className = $this->Register['ModManager']->getModelNameFromModule($this->module . 'Categories');
 		$catModel = new $className;
 		$sql = $catModel->getCollection();
 		$cats_change = $this->_buildSelector($sql, ((!empty($data['in_cat'])) ? $data['in_cat'] : false));
 		
 
 		$markers = array();
+		$markers['errors'] = $errors;
 		$markers['action'] = get_url('/foto/add/');
 		$markers['cats_selector'] = $cats_change;
 		$markers['title'] = (!empty($title)) ? $title : '';
-		$markers['mainText'] = (!empty($data['description'])) ? $data['description'] : '';
+		$markers['main_text'] = (!empty($data['description'])) ? $data['description'] : '';
 		
 		
 		// Navigation Panel
@@ -536,7 +493,7 @@ Class FotoModule extends Module {
 		
 		$source = $this->render('addform.html', array('context' => $markers));
 		
-		return $this->_view($html . $source);
+		return $this->_view($source);
 	}
 
 
@@ -549,28 +506,27 @@ Class FotoModule extends Module {
 
 		// Обрезаем переменные до длины, указанной в параметре maxlength тега input
 		$title   	 = trim(mb_substr( $_POST['title'], 0, 128 ));
-		$description = trim($_POST['mainText']);
+		$description = trim($_POST['main_text']);
 		$in_cat 	 = intval($_POST['cats_selector']);
 
 
 		// Check fields
-		$errors = $this->Register['Validate']->check($this->getValidateRules());
+		$errors = $this->Register['Validate']->check($this->Register['action']);
 		
 		
 		//categories list
-		$className = $this->Register['ModManager']->getModelNameFromModule('fotoSections');
+		$className = $this->Register['ModManager']->getModelNameFromModule($this->module . 'Categories');
 		$catModel = new $className;
 		$sql = $catModel->getCollection(array('id' => $in_cat));
 
-		if (empty($sql)) $errors .= '<li>'.__('Can not find category').'</li>'."\n";
+		if (empty($sql)) $errors[] = __('Can not find category');
 		
 
 		// errors
 		if (!empty($errors)) {
 			$data = array('title' => null, 'description' => $description, 'in_cat' => $in_cat);
 			$data = array_merge($data, $_POST);
-			$data['error'] = '<p class="errorMsg">' . __('Some error in form') . '</p>'.
-				"\n".'<ul class="errorMsg">'."\n".$errors.'</ul>'."\n";
+			$data['errors'] = $errors;
 			$_SESSION['FpsForm'] = $data;
 			redirect('/foto/add_form/');
 		}
@@ -592,50 +548,32 @@ Class FotoModule extends Module {
 			'category_id'  => $in_cat,
 			'filename'  => '',
 		);
-		
-		$entity = new FotoEntity($res);
-		$id = $entity->save();
-		
-	
-		$entity->setId($id);
-		$entity->save();
- 
- 
-		/* save full and resample images */
-		$ext = strtolower(strchr($_FILES['foto']['name'], '.'));
-		$save_path = ROOT . '/sys/files/foto/full/' . $id . $ext;
-		$save_sempl_path = ROOT . '/sys/files/foto/preview/' . $id . $ext;
-		
-		$entity->setFilename($id . $ext);
-		$entity->save();
-		
-		if (!move_uploaded_file($_FILES['foto']['tmp_name'], $save_path)) $error_flag = true;
-		if (!chmod($save_path, 0644)) $error_flag = true; 
-		
-		
-		/* if an error when coping */
-		if (!empty($error_flag)) {
-			$entity->delete();
-			
-			$data = array('title' => null, 'description' => null, 'in_cat' => $in_cat);
-			$data = array_merge($data, $_POST);
-			$data['error'] = '<p class="errorMsg">Произошла ошибка:</p>'
-				. "\n" . '<ul class="errorMsg">'."\n".'Неизвесная ошибка. Попробуйте начать заново.</ul>'."\n";
-			$_SESSION['FpsForm'] = $data;
-			redirect('/foto/add_form/');
-		}
-		
-		
-		// Create watermark and resample image
-		$watermark_path = ROOT . '/sys/img/' . (Config::read('watermark_type') == '1' ? 'watermark_text.png' : Config::read('watermark_img'));
-		if ($this->Register['Config']->read('use_watermarks') && !empty($watermark_path) && file_exists($watermark_path)) {
-			$waterObj = new FpsImg;
-			$waterObj->createWaterMark($save_path, $watermark_path);
-		}
 
-		
-		$resample = resampleImage($save_path, $save_sempl_path, 150);
-		if ($resample) chmod($save_sempl_path, 0644);
+
+        try {
+            $entity = new FotoEntity($res);
+            $id = $entity->save();
+            if (!$id)
+                throw new Exception('ERROR: SAVE_ERR');
+
+
+            $filename = $this->__saveFile($_FILES['foto'], $id);
+            if (!$filename)
+                throw new Exception('ERROR: FILE_UPL');
+
+
+		    $entity->setFilename($filename)->save();
+
+        } catch (Exception $e) {
+            $entity->delete();
+
+            $data = array('title' => null, 'description' => null, 'in_cat' => $in_cat);
+            $data = array_merge($data, $_POST);
+            $data['errors'] = array(__('Some error occurred'));
+            $_SESSION['FpsForm'] = $data;
+            redirect('/foto/add_form/');
+        }
+
 		
 		
 		// hook for plugins
@@ -643,10 +581,12 @@ Class FotoModule extends Module {
 			'entity' => $entity,
 			'module' => $this->module,
 		));
-		
+
+
 		//clean cache
 		$this->Cache->clean(CACHE_MATCHING_TAG, array('module_foto'));
 		$this->DB->cleanSqlCache();
+
 		if ($this->Log) $this->Log->write('adding foto', 'foto id(' . $id . ')');
 		return $this->showInfoMessage(__('Material successfully added'), '/foto/' );		  
 	}
@@ -679,11 +619,7 @@ Class FotoModule extends Module {
 		|| !$this->ACL->turn(array('foto', 'edit_mine_materials'), false))) {
 			return $this->showInfoMessage(__('Permission denied'), '/foto/' );
 		}
-		
-		
-		$this->Register['current_vars'] = $entity;
-		$html = '';
-		
+
 		//формируем блок со списком  разделов
 		$this->_getCatsTree($entity->getCategory_id());
 		
@@ -699,27 +635,27 @@ Class FotoModule extends Module {
         $data = Validate::getCurrentInputsValues($entity, $data);
 	
 	
-        $errors = $this->Parser->getErrors();
+        $errors = $this->Register['Validate']->getErrors();
         if (isset($_SESSION['FpsForm'])) unset($_SESSION['FpsForm']);
-        if (!empty($errors)) $html = $errors . $html;
 	
 	
 		//categories list
-		$className = $this->Register['ModManager']->getModelNameFromModule('fotoSections');
+		$className = $this->Register['ModManager']->getModelNameFromModule($this->module . 'Categories');
 		$catModel = new $className;
 		$cats = $catModel->getCollection();
 		$selectedCatId = (!empty($in_cat)) ? $in_cat : $entity->getCategory_id();
 		$cats_change = $this->_buildSelector($cats, $selectedCatId);
 		
 		
+		$data->setErrors($errors);
 		$data->setAction(get_url('/foto/update/' . $id));
 		$data->setCats_selector($cats_change);
-		$data->setMainText($this->Textarier->print_page($data->getDescription(), $data->getAuthor()->geteStatus()));
+		$data->setMain_text($this->Textarier->parseBBCodes($data->getDescription(), $data));
 		
 		
-		$source = $this->render('editform.html', array('data' => $data));
+		$source = $this->render('editform.html', array('context' => $data));
 		
-		return $this->_view($html . $source);
+		return $this->_view($source);
 	}
 
 
@@ -748,27 +684,26 @@ Class FotoModule extends Module {
 		}
 		
 		
-		$errors = $this->Register['Validate']->check($this->getValidateRules());
+		$errors = $this->Register['Validate']->check($this->Register['action']);
 		
 		
 		// Обрезаем переменные до длины, указанной в параметре maxlength тега input
 		$title       = trim(mb_substr($_POST['title'], 0, 128));
-		$description = trim($_POST['mainText']);
+		$description = trim($_POST['main_text']);
 		$in_cat		 = intval($_POST['cats_selector']);
-		if (empty($in_cat)) $in_cat = $foto['category_id'];
+		if (empty($in_cat)) $in_cat = $entity->getCategory_id();
 			
 			
-		$className = $this->Register['ModManager']->getModelNameFromModule('fotoSections');
+		$className = $this->Register['ModManager']->getModelNameFromModule($this->module . 'Categories');
 		$catModel = new $className;
 		$cats = $catModel->getById($in_cat);	
-		if (!$cats) $errors .= '<li>' . __('Can not find category') .'</li>'."\n";
+		if (!$cats) $errors[] = __('Can not find category');
 
 		
 		// errors
 		if (!empty( $errors )) {
 			$data = array('title' => $title, 'description' => $description, 'in_cat' => $in_cat);
-			$data['error'] = '<p class="errorMsg">' . __('Some error in form') 
-			. '</p>'."\n".'<ul class="errorMsg">'."\n".$errors.'</ul>'."\n";
+			$data['errors'] = $errors;
 			$_SESSION['FpsForm'] = $data;
 			redirect('/foto/edit_form/' . $id );
 		}
@@ -778,6 +713,25 @@ Class FotoModule extends Module {
 		$entity->setDescription($description);
 		$entity->setCategory_id($in_cat);
 		$entity->save();
+
+
+        if (!empty($_FILES['foto']['name'])) {
+            try {
+                $filename = $this->__saveFile($_FILES['foto'], $id);
+                if (!$filename)
+                    throw new Exception('ERROR: FILE_UPL');
+
+
+                $entity->setFilename($filename)->save();
+
+            } catch (Exception $e) {
+                $data = array('title' => null, 'description' => null, 'in_cat' => $in_cat);
+                $data = array_merge($data, $_POST);
+                $data['errors'] = array(__('Some error occurred'));
+                $_SESSION['FpsForm'] = $data;
+                redirect('/foto/edit_form/');
+            }
+        }
 
 		
 		//clean cache
@@ -873,7 +827,7 @@ Class FotoModule extends Module {
 	
 
 	
-	public function getValidateRules() 
+	protected function _getValidateRules()
 	{
 		$max_attach = Config::read('max_attaches', $this->module);
 		if (empty($max_attach) || !is_numeric($max_attach)) $max_attach = 5;
@@ -884,18 +838,13 @@ Class FotoModule extends Module {
 					'max_lenght' => 250,
 					'title' => 'Title',
 				),
-				'mainText' => array(
-					'required' => true,
-					'max_lenght' => Config::read('max_lenght', $this->module),
-					'title' => 'Text',
-				),
 				'cats_selector' => array(
 					'required' => true,
 					'pattern' => V_INT,
 					'max_lenght' => 11,
 					'title' => 'Category',
 				),
-				'mainText' => array(
+				'main_text' => array(
 					'required' => 'editable',
 					'max_lenght' => Config::read('description_lenght', 'foto'),
 				),
@@ -911,34 +860,71 @@ Class FotoModule extends Module {
 					'max_lenght' => 250,
 					'title' => 'Title',
 				),
-				'mainText' => array(
-					'required' => true,
-					'max_lenght' => Config::read('max_lenght', $this->module),
-					'title' => 'Text',
-				),
 				'cats_selector' => array(
 					'required' => true,
 					'pattern' => V_INT,
 					'max_lenght' => 11,
 					'title' => 'Category',
 				),
-				'mainText' => array(
+				'main_text' => array(
 					'required' => 'editable',
 					'max_lenght' => Config::read('description_lenght', 'foto'),
+                    'title' => 'Description',
 				),
 				'files__foto' => array(
-					'required' => true,
+					'required' => false,
 					'type' => 'image',
 					'max_size' => Config::read('max_file_size', 'foto'),
 				),
 			),
 		);
 		
-		return array($this->module => $rules);
-	}	
+		return $rules;
+	}
 
 
-	
+    /**
+     * Try to save file
+     *
+     * @param $file array (From POST request)
+     */
+    private function __saveFile($file, $id)
+    {
+        /**
+         * We doesn't check an file extension here
+         * because it was doing above in the Validator.
+         * That's why we could be sure that $file is image.
+         */
+
+        $ext = strtolower(strchr($file['name'], '.'));
+        $file_name = $id . $ext;
+
+        $files_dir = ROOT . '/sys/files/' . $this->module . '/';
+        $path = getSecureFilename($file_name, $files_dir);
+
+
+        // Перемещаем файл из временной директории сервера в директорию files
+        if (move_uploaded_file($file['tmp_name'], $files_dir . $path)) {
+            chmod( $files_dir . $path, 0644 );
+
+
+            // Create watermark and resample image
+            $watermark_path = ROOT . '/sys/img/' .
+                (Config::read('watermark_type') == '1'
+                    ? 'watermark_text.png' : Config::read('watermark_img'));
+
+            if (Config::read('use_watermarks') && !empty($watermark_path) && file_exists($watermark_path)) {
+                $waterObj = new FpsImg;
+                $waterObj->createWaterMark($files_dir . $path, $watermark_path);
+            }
+
+            return $path;
+        }
+
+        return false;
+    }
+
+
 	public function set_rating($id = null)
     {
 		include_once(ROOT . '/sys/inc/includes/set_rating.php');

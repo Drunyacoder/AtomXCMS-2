@@ -4,7 +4,7 @@
 |  @Author:       Andrey Brykin (Drunya)         |
 |  @Version:      1.0                            |
 |  @Project:      CMS                            |
-|  @package       CMS Fapos                      |
+|  @package       CMS AtomX                      |
 |  @subpackege    Zip lib                        |
 |  @copyright     ©Andrey Brykin 2010-2013       |
 |  @last mod.     2013/11/07                     |
@@ -13,11 +13,11 @@
 /*-----------------------------------------------\
 | 												 |
 |  any partial or not partial extension          |
-|  CMS Fapos,without the consent of the          |
+|  CMS AtomX,without the consent of the          |
 |  author, is illegal                            |
 |------------------------------------------------|
 |  Любое распространение                         |
-|  CMS Fapos или ее частей,                      |
+|  CMS AtomX или ее частей,                      |
 |  без согласия автора, является не законным     |
 \-----------------------------------------------*/
 
@@ -68,7 +68,7 @@ class Zip
         {
             foreach ($src as $item)
                 if (file_exists($item))
-                    $this->addZipItem($zip, realpath(dirname($item)).'/', realpath($item).'/');
+                    $this->addZipItem($zip, realpath(dirname($item)).'/', realpath($item));
             $zip->close();
             return true;
         }
@@ -83,7 +83,7 @@ class Zip
                 array_shift($lst);
                 array_shift($lst);
             foreach ($lst as $item)
-                $this->addZipItem($zip, $racine, $dir.$item.(is_dir($dir.$item)?'/':''));
+                $this->addZipItem($zip, $racine, $dir . '/' . $item.(is_dir($dir . '/' . $item)?'/':''));
         }
         elseif (is_file($dir))
             $zip->addFile($dir, str_replace($racine, '', $dir));

@@ -7,14 +7,13 @@ $Register = Register::getInstance();
 $FpsDB = $Register['DB'];
 
 
-
 $params = (!empty($_GET['url'])) ? explode('/', $_GET['url']) : array();
 if (!empty($params[0]) && !empty($params[1])) {
-
+	$params[0] = str_replace(' ', '/', $params[0]);
 	$ext = strchr($params[1], '.');
 	$ext = strtolower($ext);
 	if (!in_array($ext, $allowed_ext)) die();
-	
+
 	
 	if ($params[0] == 'loads') {
 		$attach = $FpsDB->select('loads_attaches', DB_FIRST, array('cond' => array('filename' => $params[1])));

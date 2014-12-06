@@ -4,7 +4,7 @@
 ## Author:       Andrey Brykin (Drunya)         ##
 ## Version:      1.6                            ##
 ## Project:      CMS                            ##
-## package       CMS Fapos                      ##
+## package       CMS AtomX                      ##
 ## subpackege    Install                        ##
 ## copyright     ©Andrey Brykin 2010-2013       ##
 ## last mod.     2013/04/02                     ##
@@ -14,19 +14,18 @@
 ##################################################
 ##												##
 ## any partial or not partial extension         ##
-## CMS Fapos,without the consent of the         ##
+## CMS AtomX,without the consent of the         ##
 ## author, is illegal                           ##
 ##################################################
 ## Любое распространение                        ##
-## CMS Fapos или ее частей,                     ##
+## CMS AtomX или ее частей,                     ##
 ## без согласия автора, является не законным    ##
 ##################################################
 @ini_set('display_errors', 1);
 session_start();
 define ('ROOT', dirname(dirname(__FILE__)));
 if (function_exists('set_time_limit')) set_time_limit(0);
-include_once '../sys/inc/config.class.php';
-include_once '../sys/inc/helpers.lib.php';
+include_once '../sys/boot.php';
 
 
 $errors = array();
@@ -71,7 +70,8 @@ $array[] = "CREATE TABLE `{$set['db']['prefix']}forums` (
   `parent_forum_id` INT(11),
   `lock_posts` INT( 11 ) DEFAULT '0' NOT NULL,
   `lock_passwd` VARCHAR( 100 ) NOT NULL default 0,
-  PRIMARY KEY  (`id`)
+  PRIMARY KEY  (`id`),
+  INDEX (`in_cat`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
 $array[] = "INSERT INTO `{$set['db']['prefix']}forums` (`title`, `description`, `pos`, `in_cat`) VALUES ('TEST', 'тестовый форум', 1, 1)";
 #####################################################################
@@ -86,7 +86,8 @@ $array[] = "CREATE TABLE `{$set['db']['prefix']}forum_attaches` (
 	`size` BIGINT NOT NULL ,
 	`date` DATETIME NOT NULL ,
 	`is_image` ENUM( '0', '1' ) DEFAULT '0' NOT NULL ,
-	PRIMARY KEY ( `id` )
+	PRIMARY KEY ( `id` ),
+	INDEX (`post_id`, `user_id`)
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 #####################################################################
 $array[] = "DROP TABLE IF EXISTS `{$set['db']['prefix']}pages`";
@@ -113,6 +114,7 @@ $array[] = "DROP TABLE IF EXISTS `{$set['db']['prefix']}loads`";
 $array[] = "CREATE TABLE `{$set['db']['prefix']}loads` (
   `id` int(11) NOT NULL auto_increment,
   `title` varchar(255) NOT NULL,
+  `clean_url_title` varchar(255) DEFAULT '' NOT NULL,
   `main` text NOT NULL,
   `author_id` int(11) NOT NULL,
   `category_id` int(11) NOT NULL,
@@ -135,7 +137,8 @@ $array[] = "CREATE TABLE `{$set['db']['prefix']}loads` (
   `on_home_top` ENUM( '0', '1' ) DEFAULT '0' NOT NULL,
   `premoder` ENUM( 'nochecked', 'rejected', 'confirmed' ) NOT NULL DEFAULT 'confirmed',
   `rating` INT( 11 ) NOT NULL DEFAULT '0',
-  PRIMARY KEY  (`id`)
+  PRIMARY KEY  (`id`),
+	INDEX (`category_id`, `author_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
 #####################################################################
 $array[] = "DROP TABLE IF EXISTS `{$set['db']['prefix']}comments`";
@@ -150,11 +153,12 @@ $array[] = "CREATE TABLE `{$set['db']['prefix']}comments` (
   `date` DATETIME NOT NULL,
   `module` varchar(10) default 'news' NOT NULL,
   `premoder` enum('nochecked','rejected','confirmed') NOT NULL DEFAULT 'nochecked',
-  PRIMARY KEY  (`id`)
+  PRIMARY KEY  (`id`),
+	INDEX (`entity_id`, `user_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
 #####################################################################
-$array[] = "DROP TABLE IF EXISTS `{$set['db']['prefix']}loads_sections`";
-$array[] = "CREATE TABLE `{$set['db']['prefix']}loads_sections` (
+$array[] = "DROP TABLE IF EXISTS `{$set['db']['prefix']}loads_categories`";
+$array[] = "CREATE TABLE `{$set['db']['prefix']}loads_categories` (
   `id` int(11) NOT NULL auto_increment,
   `parent_id` int(11) default '0',
   `path` VARCHAR( 255 ) NOT NULL DEFAULT '',
@@ -164,7 +168,7 @@ $array[] = "CREATE TABLE `{$set['db']['prefix']}loads_sections` (
   `no_access` VARCHAR( 255 ) NOT NULL default '',
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
-$array[] = "INSERT INTO `{$set['db']['prefix']}loads_sections` VALUES (1, 0, '', '', 'TEST CAT', '1', '')";
+$array[] = "INSERT INTO `{$set['db']['prefix']}loads_categories` VALUES (1, 0, '', '', 'TEST CAT', '1', '')";
 #####################################################################
 $array[] = "DROP TABLE IF EXISTS `{$set['db']['prefix']}messages`";
 $array[] = "CREATE TABLE `{$set['db']['prefix']}messages` (
@@ -176,13 +180,15 @@ $array[] = "CREATE TABLE `{$set['db']['prefix']}messages` (
   `message` text,
   `id_rmv` int(10) unsigned NOT NULL default '0',
   `viewed` tinyint(1) NOT NULL default '0',
-  PRIMARY KEY  (`id`)
+  PRIMARY KEY  (`id`),
+  INDEX (`to_user`, `from_user`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
 #####################################################################
 $array[] = "DROP TABLE IF EXISTS `{$set['db']['prefix']}news`";
 $array[] = "CREATE TABLE `{$set['db']['prefix']}news` (
   `id` int(11) NOT NULL auto_increment,
   `title` varchar(255) collate utf8_general_ci NOT NULL,
+  `clean_url_title` varchar(255) DEFAULT '' NOT NULL,
   `main` text collate utf8_general_ci NOT NULL,
   `views` int(11) default '0',
   `date` datetime default NULL,
@@ -200,11 +206,13 @@ $array[] = "CREATE TABLE `{$set['db']['prefix']}news` (
   `on_home_top` ENUM( '0', '1' ) DEFAULT '0' NOT NULL,
   `premoder` ENUM( 'nochecked', 'rejected', 'confirmed' ) NOT NULL DEFAULT 'confirmed',
   `rating` INT( 11 ) NOT NULL DEFAULT '0',
-  PRIMARY KEY  (`id`)
+  PRIMARY KEY  (`id`),
+  INDEX (`category_id`, `author_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
 $array[] = "INSERT INTO `{$set['db']['prefix']}news` 
-	(`title`, `main`, `date`, `category_id`, `author_id`, `tags`, `description`, `sourse`, `sourse_email`, `sourse_site`) VALUES 
-	('Моя первая новость', 
+	(`title`, `clean_url_title`, `main`, `date`, `category_id`, `author_id`, `tags`, `description`, `sourse`, `sourse_email`, `sourse_site`) VALUES
+	('Моя первая новость',
+	 'моя_первая_новость',
 	'Теперь сайт установлен и готов к работе.
 	По любым вопросам Вы можете обращаться на сайт [url=http://atomx.net]AtomX[/url].
 
@@ -218,8 +226,8 @@ $array[] = "INSERT INTO `{$set['db']['prefix']}news`
 	[/list]', 
 	NOW(), 1, 1, '', '', '', '', '')";
 #####################################################################
-$array[] = "DROP TABLE IF EXISTS `{$set['db']['prefix']}news_sections`";
-$array[] = "CREATE TABLE `{$set['db']['prefix']}news_sections` (
+$array[] = "DROP TABLE IF EXISTS `{$set['db']['prefix']}news_categories`";
+$array[] = "CREATE TABLE `{$set['db']['prefix']}news_categories` (
   `id` int(11) NOT NULL auto_increment,
   `parent_id` int(11) default '0',
   `path` VARCHAR( 255 ) NOT NULL DEFAULT '',
@@ -229,7 +237,7 @@ $array[] = "CREATE TABLE `{$set['db']['prefix']}news_sections` (
   `no_access` VARCHAR( 255 ) NOT NULL default '',
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
-$array[] = "INSERT INTO `{$set['db']['prefix']}news_sections` VALUES (1, 0, '', '', 'Test category', '1', '')";
+$array[] = "INSERT INTO `{$set['db']['prefix']}news_categories` VALUES (1, 0, '', '', 'Test category', '1', '')";
 #####################################################################
 $array[] = "DROP TABLE IF EXISTS `{$set['db']['prefix']}posts`";
 $array[] = "CREATE TABLE `{$set['db']['prefix']}posts` (
@@ -242,7 +250,8 @@ $array[] = "CREATE TABLE `{$set['db']['prefix']}posts` (
   `id_editor` int(6) unsigned NOT NULL default '0',
   `id_theme` int(11) NOT NULL default '0',
   `locked` tinyint(1) unsigned NOT NULL default '0',
-  PRIMARY KEY  (`id`)
+  PRIMARY KEY  (`id`),
+  INDEX (`id_theme`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
 #####################################################################
 $array[] = "DROP TABLE IF EXISTS `{$set['db']['prefix']}snippets`";
@@ -259,6 +268,7 @@ $array[] = "DROP TABLE IF EXISTS `{$set['db']['prefix']}stat`";
 $array[] = "CREATE TABLE `{$set['db']['prefix']}stat` (
   `id` int(11) NOT NULL auto_increment,
   `title` varchar(255) NOT NULL,
+  `clean_url_title` varchar(255) DEFAULT '' NOT NULL,
   `main` longtext NOT NULL,
   `author_id` int(11) NOT NULL,
   `category_id` int(11) NOT NULL,
@@ -277,11 +287,12 @@ $array[] = "CREATE TABLE `{$set['db']['prefix']}stat` (
   `on_home_top` ENUM( '0', '1' ) DEFAULT '0' NOT NULL,
   `premoder` ENUM( 'nochecked', 'rejected', 'confirmed' ) NOT NULL DEFAULT 'confirmed',
   `rating` INT( 11 ) NOT NULL DEFAULT '0',
-  PRIMARY KEY  (`id`)
+  PRIMARY KEY  (`id`),
+  INDEX (`category_id`, `author_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
 #####################################################################
-$array[] = "DROP TABLE IF EXISTS `{$set['db']['prefix']}stat_sections`";
-$array[] = "CREATE TABLE `{$set['db']['prefix']}stat_sections` (
+$array[] = "DROP TABLE IF EXISTS `{$set['db']['prefix']}stat_categories`";
+$array[] = "CREATE TABLE `{$set['db']['prefix']}stat_categories` (
   `id` int(11) NOT NULL auto_increment,
   `parent_id` int(11) default '0',
   `path` VARCHAR( 255 ) NOT NULL DEFAULT '',
@@ -291,7 +302,7 @@ $array[] = "CREATE TABLE `{$set['db']['prefix']}stat_sections` (
   `no_access` VARCHAR( 255 ) NOT NULL default '',
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
-$array[] = "INSERT INTO `{$set['db']['prefix']}stat_sections` VALUES (1, '0', '', '', 'Test category', '1', '')";
+$array[] = "INSERT INTO `{$set['db']['prefix']}stat_categories` VALUES (1, '0', '', '', 'Test category', '1', '')";
 #####################################################################
 $array[] = "DROP TABLE IF EXISTS `{$set['db']['prefix']}statistics`";
 $array[] = "CREATE TABLE `{$set['db']['prefix']}statistics` (
@@ -312,6 +323,7 @@ $array[] = "DROP TABLE IF EXISTS `{$set['db']['prefix']}themes`";
 $array[] = "CREATE TABLE `{$set['db']['prefix']}themes` (
   `id` int(11) NOT NULL auto_increment,
   `title` varchar(120) default NULL,
+  `clean_url_title` varchar(255) DEFAULT '' NOT NULL,
   `id_author` int(6) NOT NULL default '0',
   `time` datetime NOT NULL default '0000-00-00 00:00:00',
   `id_last_author` int(6) NOT NULL default '0',
@@ -324,13 +336,16 @@ $array[] = "CREATE TABLE `{$set['db']['prefix']}themes` (
   `description` TEXT NOT NULL,
   `group_access` varchar(255) default '' NOT NULL,
   `first_top` ENUM( '0', '1' ) DEFAULT '0' NOT NULL,
-  PRIMARY KEY  (`id`)
+  PRIMARY KEY  (`id`),
+  INDEX (`id_forum`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
 #####################################################################
 $array[] = "DROP TABLE IF EXISTS `{$set['db']['prefix']}users`";
 $array[] = "CREATE TABLE `{$set['db']['prefix']}users` (
 	`id` int(6) NOT NULL auto_increment,
 	`name` varchar(32) character set utf8 NOT NULL,
+	`first_name` varchar(32) character set utf8 NOT NULL default '',
+	`last_name` varchar(32) character set utf8 NOT NULL default '',
 	`passw` varchar(255) character set utf8 NOT NULL,
 	`email` varchar(64) character set utf8 NOT NULL default '',
 	`color` VARCHAR(7) character set utf8 NOT NULL default '',
@@ -371,7 +386,8 @@ $array[] = "CREATE TABLE `{$set['db']['prefix']}users_votes` (
 	`comment` TEXT CHARACTER SET utf8 NOT NULL ,
 	`date` DATETIME,
 	`points` INT DEFAULT '0' NOT NULL,
-	PRIMARY KEY ( `id` )
+	PRIMARY KEY ( `id` ),
+	INDEX (`from_user`, `to_user`)
 	) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci";
 ##########################################################################
 $array[] = "DROP TABLE IF EXISTS `{$set['db']['prefix']}users_settings`";
@@ -388,6 +404,7 @@ $array[] = "DROP TABLE IF EXISTS `{$set['db']['prefix']}foto`";
 $array[] = "CREATE TABLE `{$set['db']['prefix']}foto` (
   `id` int(11) NOT NULL auto_increment,
   `title` varchar(255) character set utf8 NOT NULL,
+  `clean_url_title` varchar(255) DEFAULT '' NOT NULL,
   `description` TEXT character set utf8 NOT NULL,
   `filename` VARCHAR( 255 ) NOT NULL,
   `views` int(11) default '0',
@@ -396,11 +413,12 @@ $array[] = "CREATE TABLE `{$set['db']['prefix']}foto` (
   `author_id` int(11) NOT NULL,
   `comments` int(11) NOT NULL default '0',
   `rating` INT( 11 ) NOT NULL DEFAULT '0',
-  PRIMARY KEY  (`id`)
+  PRIMARY KEY  (`id`),
+  INDEX (`category_id`, `author_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
 #############################################################################
-$array[] = "DROP TABLE IF EXISTS `{$set['db']['prefix']}foto_sections`";
-$array[] = "CREATE TABLE `{$set['db']['prefix']}foto_sections` (
+$array[] = "DROP TABLE IF EXISTS `{$set['db']['prefix']}foto_categories`";
+$array[] = "CREATE TABLE `{$set['db']['prefix']}foto_categories` (
   `id` int(11) NOT NULL auto_increment,
   `parent_id` int(11) default '0',
   `path` VARCHAR( 255 ) NOT NULL DEFAULT '',
@@ -410,7 +428,7 @@ $array[] = "CREATE TABLE `{$set['db']['prefix']}foto_sections` (
   `no_access` VARCHAR( 255 ) NOT NULL default '',
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
-$array[] = "INSERT INTO `{$set['db']['prefix']}foto_sections` VALUES (1, 0, '', '', 'section', '1', '')";
+$array[] = "INSERT INTO `{$set['db']['prefix']}foto_categories` VALUES (1, 0, '', '', 'section', '1', '')";
 #############################################################################
 $array[] = "DROP TABLE IF EXISTS `{$set['db']['prefix']}search_index`";
 $array[] = "CREATE TABLE `{$set['db']['prefix']}search_index` (
@@ -443,7 +461,8 @@ $array[] = "CREATE TABLE `{$set['db']['prefix']}news_add_content` (
 	`field_id` INT(11) NOT NULL,
 	`entity_id` INT(11) NOT NULL,
 	`content` TEXT NOT NULL,
-	PRIMARY KEY (`id`)
+	PRIMARY KEY (`id`),
+	INDEX (`field_id`, `entity_id`)
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci";
 #############################################################################
 $array[] = "DROP TABLE IF EXISTS `{$set['db']['prefix']}users_add_fields`";
@@ -463,7 +482,8 @@ $array[] = "CREATE TABLE `{$set['db']['prefix']}users_add_content` (
 	`field_id` INT(11) NOT NULL,
 	`entity_id` INT(11) NOT NULL,
 	`content` TEXT NOT NULL,
-	PRIMARY KEY (`id`)
+	PRIMARY KEY (`id`),
+	INDEX (`field_id`, `entity_id`)
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci";
 #############################################################################
 $array[] = "DROP TABLE IF EXISTS `{$set['db']['prefix']}stat_add_fields`";
@@ -483,7 +503,8 @@ $array[] = "CREATE TABLE `{$set['db']['prefix']}stat_add_content` (
 	`field_id` INT(11) NOT NULL,
 	`entity_id` INT(11) NOT NULL,
 	`content` TEXT NOT NULL,
-	PRIMARY KEY (`id`)
+	PRIMARY KEY (`id`),
+	INDEX (`field_id`, `entity_id`)
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci";
 #############################################################################
 $array[] = "DROP TABLE IF EXISTS `{$set['db']['prefix']}loads_add_fields`";
@@ -503,7 +524,8 @@ $array[] = "CREATE TABLE `{$set['db']['prefix']}loads_add_content` (
 	`field_id` INT(11) NOT NULL,
 	`entity_id` INT(11) NOT NULL,
 	`content` TEXT NOT NULL,
-	PRIMARY KEY (`id`)
+	PRIMARY KEY (`id`),
+	INDEX (`field_id`, `entity_id`)
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci";
 #############################################################################
 $array[] = "DROP TABLE IF EXISTS `{$set['db']['prefix']}users_warnings`";
@@ -514,7 +536,8 @@ $array[] = "CREATE TABLE `{$set['db']['prefix']}users_warnings` (
 	`cause` VARCHAR( 255 ) NOT NULL ,
 	`date` DATETIME NOT NULL ,
 	`points` INT DEFAULT '0' NOT NULL,
-	PRIMARY KEY ( `id` )
+	PRIMARY KEY ( `id` ),
+	INDEX (`user_id`, `admin_id`)
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 #############################################################################
 $array[] = "DROP TABLE IF EXISTS `{$set['db']['prefix']}loads_attaches`";
@@ -527,7 +550,8 @@ $array[] = "CREATE TABLE `{$set['db']['prefix']}loads_attaches` (
 	`size` BIGINT NOT NULL ,
 	`date` DATETIME NOT NULL ,
 	`is_image` ENUM( '0', '1' ) DEFAULT '0' NOT NULL ,
-	PRIMARY KEY ( `id` )
+	PRIMARY KEY ( `id` ),
+	INDEX (`user_id`)
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 #############################################################################
 $array[] = "DROP TABLE IF EXISTS `{$set['db']['prefix']}stat_attaches`";
@@ -540,7 +564,8 @@ $array[] = "CREATE TABLE `{$set['db']['prefix']}stat_attaches` (
 	`size` BIGINT NOT NULL ,
 	`date` DATETIME NOT NULL ,
 	`is_image` ENUM( '0', '1' ) DEFAULT '0' NOT NULL ,
-	PRIMARY KEY ( `id` )
+	PRIMARY KEY ( `id` ),
+	INDEX (`user_id`)
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 #############################################################################
 $array[] = "DROP TABLE IF EXISTS `{$set['db']['prefix']}news_attaches`";
@@ -553,7 +578,8 @@ $array[] = "CREATE TABLE `{$set['db']['prefix']}news_attaches` (
 	`size` BIGINT NOT NULL ,
 	`date` DATETIME NOT NULL ,
 	`is_image` ENUM( '0', '1' ) DEFAULT '0' NOT NULL ,
-	PRIMARY KEY ( `id` )
+	PRIMARY KEY ( `id` ),
+	INDEX (`user_id`)
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 #############################################################################
 $array[] = "DROP TABLE IF EXISTS `{$set['db']['prefix']}polls`";
@@ -576,7 +602,8 @@ $n = 0;
 foreach ($array as $key => $query) {
 	$DB->query($query);
 	if ($DB->getErrorInfo()) {
-		$errors['query'] = 'При формировании базы данных произошел збой! <br /> Начните  пожалуйста заново. (' . $query . ')';
+		$errors['query'] = __('Some error occurred during database creation')
+            . ' <br /> ' . __('Please, start from beginning') . '. (' . $query . ')';
 		break;
 		
 		
@@ -593,7 +620,8 @@ if (empty($errors['query'])) {
 	$DB->query("INSERT INTO `{$set['db']['prefix']}users` (`id`, `name`, `passw`, `email`, `status`, `puttime`) 
 	VALUES (1, '" . $_SESSION['adm_name'] . "', '" . md5($_SESSION['adm_pass']) . "', '".$_SESSION['adm_email']."', '4', NOW())");
 	if ($DB->getErrorInfo()) 
-		$errors['query'] = 'При формировании базы данных произошел збой! <br /> Начните  пожалуйста заново.<br /><br />';
+		$errors['query'] = __('Some error occurred during database creation')
+            . ' <br /> ' . __('Please, start from beginning') . '.<br /><br />';
 }
 
 
@@ -602,9 +630,9 @@ if (empty($errors)) :
 ?>
 </div>
 <div style="">
-<h1 class="fin-h">Все готово</h1>
-<a class="fin-a" href="../">Перейти на сайт :)</a><a style="margin-left:40px;" class="fin-a" href="../admin/">В админку</a><br />
-<span class="help">Перед использованием сайта не забудте удалить или переименовать директорию INSTALL</span>
+<h1 class="fin-h"><?php echo __('All done') ?></h1>
+<a class="fin-a" href="../"><?php echo __('Go to the site') ?></a><a style="margin-left:40px;" class="fin-a" href="../admin/"><?php echo __('To admin panel') ?></a><br />
+<span class="help"><?php echo __('Before using the site, remove or rename INSTALL directory') ?></span>
 </div>
 <?php 
  

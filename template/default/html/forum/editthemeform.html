@@ -66,13 +66,13 @@ $(function() {
 		  </li>
 		   {% endif %}
 		  <li>
-			<span class="siu_title"><strong>Закрепить первое сообщение темы{{ 'To fix the first message of the topic'|lang }}:</strong></span>
-            <span class="siu_data"><input type="checkbox" name="first_top" {% if context.first_top %} checked="checked" {% endif %} /></span>
+			<span class="siu_title"><strong>{{ 'To fix the first message of the topic'|lang }}:</strong></span>
+            <span class="siu_data"><input type="checkbox" value="1" name="first_top" {% if context.first_top %} checked="checked" {% endif %} /></span>
 		  </li>
 		  {% if checkAccess([module,'close_themes']) %}
 		  <li>
 			<span class="siu_title"><strong>{{ 'To close the topic'|lang }}:</strong></span>
-            <span class="siu_data"><input type="checkbox" name="locked" {% if context.locked %} checked="checked" {% endif %} </span>
+            <span class="siu_data"><input type="checkbox" value="1" name="locked" {% if context.locked %} checked="checked" {% endif %} </span>
 		  </li>
 		  {% endif %}
 		  <li>

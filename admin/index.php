@@ -5,7 +5,7 @@
 ## Author:       Andrey Brykin (Drunya)         ##
 ## Version:      1.0                            ##
 ## Project:      CMS                            ##
-## package       CMS Fapos                      ##
+## package       CMS AtomX                      ##
 ## subpackege    Admin Panel module             ##
 ## copyright     ©Andrey Brykin 2010-2014       ##
 ##################################################
@@ -14,11 +14,11 @@
 ##################################################
 ##												##
 ## any partial or not partial extension         ##
-## CMS Fapos,without the consent of the         ##
+## CMS AtomX,without the consent of the         ##
 ## author, is illegal                           ##
 ##################################################
 ## Любое распространение                        ##
-## CMS Fapos или ее частей,                     ##
+## CMS AtomX или ее частей,                     ##
 ## без согласия автора, является не законным    ##
 ##################################################
 
@@ -28,11 +28,12 @@ include_once ROOT . '/admin/inc/adm_boot.php';
 
 $Register = Register::getInstance();
 $FpsDB = $Register['DB'];
+$isMainPage = true;
 
 
 $pageTitle = __('Admin Panel');
 $pageNav = $pageTitle . __(' - General information');
-$pageNavl = '';
+$pageNavr = '';
 
 
 
@@ -94,24 +95,27 @@ include 'template/header.php';
 ?>
 
 
-<?php
-if (!empty($_SESSION['clean_cache'])):
-?>
-<script type="text/javascript">showHelpWin('<?php echo __('Cache is cleared'); ?>', '<?php echo __('Message') ?>');</script>
-<?php
-	unset($_SESSION['clean_cache']);
-endif;
-?>
 
-<?php if (!empty($_SESSION['message'])): ?>
-<div class="warning ok"><?php echo h($_SESSION['message']) ?></div>
-<?php unset($_SESSION['message']); ?>
-<?php elseif (!empty($_SESSION['errors'])): ?>
-<div class="warning error"><?php echo h($_SESSION['errors']) ?></div>
-<?php unset($_SESSION['errors']); endif; ?>
+<script type="text/javascript">
+    $(document).ready(function() {
+        var resizeHandler = function() {
+            if (/chrome/i.test(navigator.userAgent)) {
+                $('.atm-flex-box .atm-flex-child > .list').each(function(index, element) {
+                    $(element).css('height', function() {
+                        return $(element).parent().height()
+                            - ($(element).outerHeight(true) - $(element).innerHeight());
+                    });
+                });
 
-
-
+                $('.atm-flex-box .atm-flex-child > .list .setting-item').css('height', '100%');
+            }
+        };
+        $(window).resize(resizeHandler);
+        resizeHandler();
+    });
+</script>
+<div class="atm-flex-box">
+	<div class="atm-flex-child">
 <!--************ GENERAL **********-->							
 <div class="list">
 	<div class="title"><?php echo __('Common settings') ?></div>
@@ -165,14 +169,15 @@ endif;
 		</div>
 	</div>
 </div>
-
+	</div>
+	<div class="atm-flex-child">
 <!--************ MATERIALS **********-->							
 <div class="list">
 	<div class="title"><?php echo __('Materials') ?></div>
 	<div class="level1">
 		<div class="head">
 			<div class="title settings"><?php echo __('Material') ?></div>
-			<div class="title-r"><?php echo __('Quantity') . ' / ' . __('Pending moderation materials') . ' / ' . __('Pending moderation comments') ?></div>
+			<div class="title-r"><?php echo __('Quantity') . ' / ' . __('Pending moderation materials') . ' / ' . __('Comments') ?></div>
 			<div class="clear"></div>
 		</div>
 		<div class="items">
@@ -225,7 +230,9 @@ endif;
 			</div>
 		</div>
 	</div>
-</div>							
+</div>
+	</div>
+	<div class="atm-flex-child">
 
 <!--************ USERS **********-->							
 <div class="list">
@@ -270,6 +277,8 @@ endif;
 		</div>
 	</div>
 </div>
+	</div>
+	<div class="atm-flex-child">
 
 
 <!--************ STATISTIC **********-->							
@@ -318,6 +327,8 @@ endif;
 		</div>
 	</div>
 </div>
+	</div>
+	<div class="atm-flex-child">
 
 
 
@@ -360,6 +371,8 @@ endif;
 	</div>
 </div>
 
+	</div>
+</div>
 
 <?php
 include_once 'template/footer.php';

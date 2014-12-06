@@ -3,10 +3,10 @@
 | 												 |
 | @Author:       Andrey Brykin (Drunya)          |
 | @Email:        drunyacoder@gmail.com           |
-| @Site:         http://fapos.net                |
+| @Site:         http://atomx.net                |
 | @Version:      1.4                             |
 | @Project:      CMS                             |
-| @package       CMS Fapos                       |
+| @package       CMS AtomX                       |
 | @subpackege    Admin Panel module  			 |
 | @copyright     ©Andrey Brykin 2010-2013        |
 \-----------------------------------------------*/
@@ -14,11 +14,11 @@
 /*-----------------------------------------------\
 | 												 |
 |  any partial or not partial extension          |
-|  CMS Fapos,without the consent of the          |
+|  CMS AtomX,without the consent of the          |
 |  author, is illegal                            |
 |------------------------------------------------|
 |  Любое распространение                         |
-|  CMS Fapos или ее частей,                      |
+|  CMS AtomX или ее частей,                      |
 |  без согласия автора, является не законным     |
 \-----------------------------------------------*/
 
@@ -70,12 +70,7 @@ include_once ROOT . '/admin/template/header.php';
 <?php echo __('If you delete a category, all the materials in it will be removed') ?><br /><br />
 <?php echo __('Each forum should be inherited from the section') ?>
 </div>
-<?php
-if (!empty($_SESSION['addErrors'])) {
-	echo '<div class="warning error"><ul class="error" style="list-style-type:none;">' . $_SESSION['addErrors'] . '</ul></div>';
-	unset($_SESSION['addErrors']);
-}
-?>
+
 
 
 
@@ -629,7 +624,7 @@ function edit() {
 			&& $_FILES['icon']['type'] != 'image/jpeg'
 			&& $_FILES['icon']['type'] != 'image/png') $error = $error . '<li>' . __('Wrong icon format') . '</li>';
 			if (!empty($error)) {
-				$_SESSION['addErrors'] = $error;
+				$_SESSION['errors'] = $error;
 				redirect('/admin/forum_cat.php');
 			}
 		}
@@ -652,7 +647,7 @@ function edit() {
 		
 		//if isset errors
 		if (!empty($error)) {
-			$_SESSION['addErrors'] = $error;
+			$_SESSION['errors'] = $error;
 			redirect('/admin/forum_cat.php');
 		}
 		
@@ -712,7 +707,7 @@ function edit() {
 		
 		//if isset errors
 		if (!empty($error)) {
-			$_SESSION['addErrors'] = $error;
+			$_SESSION['errors'] = $error;
 			redirect('/admin/forum_cat.php');
 		}
 		
@@ -763,7 +758,7 @@ function add() {
 		if (mb_strlen($title) > 200) $error .= '<li>' . __('Title more than 200 symbol') . '</li>';
 		//if isset errors
 		if (!empty($error)) {
-			$_SESSION['addErrors'] = $error;
+			$_SESSION['errors'] = $error;
 			redirect('/admin/forum_cat.php');
 		}
 		
@@ -813,7 +808,7 @@ function add() {
 		
 		
 		if (!empty($error)) {
-			$_SESSION['addErrors'] = $error;
+			$_SESSION['errors'] = $error;
 			redirect('/admin/forum_cat.php');
 		}
 		
@@ -848,7 +843,7 @@ function add() {
 		));
 		
 		if (empty($id)) {
-			$_SESSION['addErrors'] = __('Some error when adding forum');
+			$_SESSION['errors'] = __('Some error when adding forum');
 			redirect('/admin/forum_cat.php');
 		}
 		

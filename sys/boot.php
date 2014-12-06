@@ -6,7 +6,7 @@ if (isset($_SESSION['db_querys'])) unset($_SESSION['db_querys']);
 /**
  * Current version of engine
  */
-define('FPS_VERSION', '2.6 RC2');
+define('FPS_VERSION', '2.7.0 Beta');
 
 /**
  * Path constants
@@ -17,11 +17,16 @@ define ('R', dirname(dirname(__FILE__)) . DS);
 
 
 /**
- * If we uses Fapos from subdir or subdirs
- * we must set this variable, because Fapos
+ * If we uses AtomX from subdir or subdirs
+ * we must set this variable, because AtomX
  * must know this for good work.
  */
-define ('WWW_ROOT', '');
+$diff = array_diff_assoc(
+	explode(DS, dirname(dirname(__FILE__))),
+	explode('/', $_SERVER['DOCUMENT_ROOT'])
+);
+define ('WWW_ROOT', ((!empty($diff)) ? '/' . implode('/', $diff) : ''));
+
 /**
  * If set to 1, check referer in admin panel
  * and if he dont match current host redirect to

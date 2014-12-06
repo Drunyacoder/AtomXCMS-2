@@ -1,31 +1,76 @@
-<!-- Multi attaches upload -->
+<!--{#
+For inspect an any variable use "show" filter as shown below:
+{{ context.entity|show }}
+
+It represents a variable the same way as the "var_dump" function in PHP.
+
+More details & documentation are located at http://atomx.net/stat/category/27/.
+
+Current context:
+- context (array)
+- - action (string)
+- - message (string)
+- - theme (object)
+- - errors (array)
+- - preview (string)
+#}-->
+
+<!--{# Multi attaches upload #}-->
 {% include '/atm-multiupload.html' %}
 
 {{ editor_body }}
 {{ context.errors }}
-<form name="sendForm" id="sendForm" action="{{ context.action }}" method="POST" enctype="multipart/form-data" onsubmit="return checkForm(this)">
-<div class="material">       
-	<div class="mat-title">{{ 'Form for the answer'|lang }}</div>
-	<div class="mat-content">
-		<ul class="spisok-all">
-			<li>
-				<textarea id="editor" style="width:925px; height:250px;" {{ editor_forum_text }} class="text-area" name="mainText">{{ context.message }}</textarea>
-			</li>
-			<li>
-				<span class="siu_title"><strong>{{ 'Attach files'|lang }}:</strong></span>
-				<span class="siu_data" id="attachments">
-					<input class="attachField" type="file" id="attach" multiple="multiple" name="attach[]">
-					<div id="preloader">
-						<span id="loader"><img src="/sys/img/ajaxload.gif" alt="loading"></span>
-					</div>
-					<div><progress style="display:none;"></progress></div>
-					<br><a id="attaches-show-all" href="javascript:void(0);" onClick="AtomX.loadAllAttaches('{{ module }}'); $('#attaches-hide').show();">{{ 'Show all'|lang }}</a>
-					<a id="attaches-hide" href="javascript:void(0);" onClick="$('.attaches-info, #attaches-hide').hide();">{{ 'Close'|lang }}</a>
-					<div class="attaches-info" id="attaches-info"></div>
-				</span>
-			</li>
-	        <li class="sumbitbuttons"><input type="submit" name="submitForm" value="{{ 'Reply'|lang }}" /></li>
-		</ul>
-	</div>
-</div>
-</form>
+{{ context.preview }}
+
+
+{% if checkAccess([module, 'add_posts', context.theme.id_forum]) %}
+
+    {% if context.theme.locked == 1 %}
+        <div class="not-auth-mess">{{ 'Theme is locked'|lang }}</div>
+    {% else %}
+        <form name="sendForm" id="sendForm" action="{{ context.action }}" method="POST" enctype="multipart/form-data" onsubmit="return checkForm(this)">
+        <div class="material">
+            <div class="mat-title">{{ 'Form for the answer'|lang }}</div>
+            <div class="mat-content">
+                <ul class="spisok-all">
+                    <li>
+                        <textarea id="editor" style="width:925px; height:250px;" {{ editor_forum_text }} class="text-area" name="mainText">{{ context.message }}</textarea>
+                    </li>
+                    <li>
+                        <span class="siu_title"><strong>{{ 'Attach files'|lang }}:</strong></span>
+                        <span class="siu_data" id="attachments">
+                            <input class="attachField" type="file" id="attach" multiple="multiple" name="attach[]">
+                            <div id="preloader">
+                                <span id="loader"><img src="/sys/img/ajaxload.gif" alt="loading"></span>
+                            </div>
+                            <div><progress style="display:none;"></progress></div>
+                            <br>
+
+                            <a
+                                id="attaches-show-all"
+                                href="javascript:void(0);"
+                                onClick="AtomX.loadAllAttaches('{{ module }}'); $('#attaches-hide').show();"
+                            >{{ 'Show all'|lang }}</a>
+                            <a
+                                id="attaches-hide"
+                                href="javascript:void(0);"
+                                onClick="$('.attaches-info, #attaches-hide').hide();"
+                            >{{ 'Close'|lang }}</a>
+
+                            <div class="attaches-info" id="attaches-info"></div>
+                        </span>
+                    </li>
+                    <li class="sumbitbuttons"><input type="submit" name="submitForm" value="{{ 'Reply'|lang }}" /></li>
+                </ul>
+            </div>
+        </div>
+        </form>
+    {% endif %}
+
+{% else %}
+    {% if fps_user.id == false %}
+        <div class="not-auth-mess">{{ 'Guests cant write posts'|lang }}</div>
+    {% else %}
+        <div class="not-auth-mess">{{ 'Dont have permission to write post'|lang }}</div>
+    {% endif %}
+{% endif %}

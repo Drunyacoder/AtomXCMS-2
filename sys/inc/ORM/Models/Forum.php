@@ -11,11 +11,11 @@
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
-| CMS Fapos,without the consent of the         |
+| CMS AtomX,without the consent of the         |
 | author, is illegal                           |
 |----------------------------------------------|
 | Любое распространение                        |
-| CMS Fapos или ее частей,                     |
+| CMS AtomX или ее частей,                     |
 | без согласия автора, является не законным    |
 \---------------------------------------------*/
 
@@ -37,17 +37,17 @@ class ForumModel extends FpsModel
         'category' => array(
             'model' => 'ForumCat',
             'type' => 'has_one',
-            'foreignKey' => 'id_cat',
+            'internalKey' => 'in_cat',
         ),
         'last_theme' => array(
             'model' => 'Themes',
             'type' => 'has_one',
-            'foreignKey' => 'last_theme_id',
+            'internalKey' => 'last_theme_id',
         ),
         'parent_forum' => array(
             'model' => 'Forum',
             'type' => 'has_one',
-            'foreignKey' => 'parent_forum_id',
+            'internalKey' => 'parent_forum_id',
         ),
         'subforums' => array(
             'model' => 'Forum',
@@ -55,8 +55,18 @@ class ForumModel extends FpsModel
             'foreignKey' => 'parent_forum_id',
         ),
     );
-	
-	
+
+
+
+    public function getIdByHluTitle($hlu_id)
+    {
+        $Register = Register::getInstance();
+        $model = $Register['ModManager']->getModelInstance('themes');
+        $entities = $model->getCollection(array('clean_url_title' => $hlu_id), array('limit' => 1, 'fields' => array('id')));
+        return (!empty($entities[0])) ? $entities[0]->getId() : false;
+    }
+
+
 	public function getStats()
 	{
 		$result = $this->getDbDriver()->query("

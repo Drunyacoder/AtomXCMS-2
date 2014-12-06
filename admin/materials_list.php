@@ -4,7 +4,7 @@
 ## @Author:       Andrey Brykin (Drunya)        ##
 ## @Version:      1.6.1                         ##
 ## @Project:      CMS                           ##
-## @package       CMS Fapos                     ##
+## @package       CMS AtomX                     ##
 ## @subpackege    Admin Panel module            ##
 ## @copyright     ©Andrey Brykin 2010-2013      ##
 ## @last mod.     2013/06/15                    ##
@@ -14,11 +14,11 @@
 ##################################################
 ##												##
 ## any partial or not partial extension         ##
-## CMS Fapos,without the consent of the         ##
+## CMS AtomX,without the consent of the         ##
 ## author, is illegal                           ##
 ##################################################
 ## Любое распространение                        ##
-## CMS Fapos или ее частей,                     ##
+## CMS AtomX или ее частей,                     ##
 ## без согласия автора, является не законным    ##
 ##################################################
 
@@ -63,7 +63,6 @@ class MaterialsList {
 		$model = $Register['ModManager']->getModelInstance($_GET['m']);
 		
 		$where = (!empty($_GET['premoder'])) ? array('premoder' => 'nochecked') : array();
-        $order = getOrderParam(ucfirst($_GET['m']) . 'Module');
 
 		$total = $model->getTotal(array('cond' => $where));
 		list ($pages, $page) = pagination($total, 20, '/admin/materials_list.php?m=' . $module
@@ -75,7 +74,7 @@ class MaterialsList {
 		$materials = $model->getCollection($where, array(
 			'page' => $page,
 			'limit' => 20,
-			'order' => $order,
+			'order' => $model->getOrderParam(),
 		));
 
 		
@@ -98,13 +97,13 @@ class MaterialsList {
 			
 			if (!empty($_GET['premoder'])) {
 				$output .= '</div><div class="unbordered-buttons">
-				<a href="' . get_url('/admin/materials_list.php?m=' . $module . '&ac=premoder&status=confirmed&id=' . $mat->getId()) . '" class="on"></a>
-				<a href="' . get_url('/admin/materials_list.php?m=' . $module . '&ac=premoder&status=rejected&id=' . $mat->getId()) . '" class="off"></a>
+				<a href="' . get_url('/admin/materials_list.php?m=' . $module . '&ac=premoder&status=confirmed&id=' . $mat->getId()) . '" class="on"></a>' .
+				'<a href="' . get_url('/admin/materials_list.php?m=' . $module . '&ac=premoder&status=rejected&id=' . $mat->getId()) . '" class="off"></a>
 				</div><div class="clear"></div></div>';
 			} else {
 				$output .= '</div><div class="unbordered-buttons">
-				<a href="' . get_url('/admin/materials_list.php?m=' . $module . '&ac=edit&id=' . $mat->getId()) . '" class="edit"></a>
-				<a href="' . get_url('/admin/materials_list.php?m=' . $module . '&ac=delete&id=' . $mat->getId()) . '" class="delete"></a>
+				<a href="' . get_url('/admin/materials_list.php?m=' . $module . '&ac=edit&id=' . $mat->getId()) . '" class="edit"></a>' .
+				'<a href="' . get_url('/admin/materials_list.php?m=' . $module . '&ac=delete&id=' . $mat->getId()) . '" class="delete"></a>
 				</div><div class="clear"></div></div>';
 			}
 		}
@@ -220,26 +219,18 @@ include_once ROOT . '/admin/template/header.php';
 ?>
 
 
-<?php if (!empty($_SESSION['message'])): ?>
-<div class="warning ok"><?php echo $_SESSION['message'] ?></div>
-<?php unset($_SESSION['message']); ?>
-<?php elseif (!empty($_SESSION['errors'])): ?>
-<div class="warning error"><?php echo $_SESSION['errors'] ?></div>
-<?php unset($_SESSION['errors']); endif; ?>
-
-
 <form method="POST" action="" enctype="multipart/form-data">
 <div class="list">
 	<div class="title"><?php echo $pageNav; ?></div>
     <div class="add-cat-butt">
         <select onChange="window.location.href='/admin/materials_list.php?m=<?php echo $_GET['m'] ?>&order='+this.value;">
             <option><?php echo __('Ordering') ?></option>
-            <option value="views"><?php echo __('Views') ?> (>)</option>
-            <option value="views&asc=1"><?php echo __('Views') ?> (<)</option>
-            <option value="comments"><?php echo __('Comments') ?> (<)</option>
-            <option value="comments&asc=1"><?php echo __('Comments') ?> (>)</option>
-            <option value="date"><?php echo __('Date') ?> (<)</option>
-            <option value="date&asc=1"><?php echo __('Date') ?> (>)</option>
+            <option value="views"><?php echo __('Views') ?> (↓)</option>
+            <option value="views&asc=1"><?php echo __('Views') ?> (↑)</option>
+            <option value="comments"><?php echo __('Comments') ?> (↓)</option>
+            <option value="comments&asc=1"><?php echo __('Comments') ?> (↑)</option>
+            <option value="date"><?php echo __('Date') ?> (↓)</option>
+            <option value="date&asc=1"><?php echo __('Date') ?> (↑)</option>
         </select>
     </div>
 	<div class="level1">

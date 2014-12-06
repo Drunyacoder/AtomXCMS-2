@@ -5,17 +5,17 @@
 | @Version:      1.0                           |
 | @Project:      CMS                           |
 | @Package       AtomX CMS                     |
-| @subpackege    News Sections Model           |
-| @copyright     ©Andrey Brykin 2010-2012      |
-| @last mod      2012/02/27                    |
+| @subpackege    NewsCategories Model          |
+| @copyright     ©Andrey Brykin 2010-2014      |
+| @last mod      2014/05/16                    |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
-| CMS Fapos,without the consent of the         |
+| CMS AtomX,without the consent of the         |
 | author, is illegal                           |
 |----------------------------------------------|
 | Любое распространение                        |
-| CMS Fapos или ее частей,                     |
+| CMS AtomX или ее частей,                     |
 | без согласия автора, является не законным    |
 \---------------------------------------------*/
 
@@ -24,10 +24,10 @@
 /**
  *
  */
-class NewsSectionsModel extends FpsModel
+class NewsCategoriesModel extends FpsModel
 {
 	
-    public $Table = 'news_sections';
+    public $Table = 'news_categories';
 	
 
 

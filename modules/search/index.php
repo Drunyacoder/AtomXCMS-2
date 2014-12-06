@@ -4,7 +4,7 @@
 |  @Author:       Andrey Brykin (Drunya)         |
 |  @Version:      1.8                            |
 |  @Project:      CMS                            |
-|  @package       CMS Fapos                      |
+|  @package       CMS AtomX                      |
 |  @subpackege    Search Module                  |
 |  @copyright     ©Andrey Brykin 2010-2013       |
 |  @last mod.     2013/11/11                     |
@@ -13,11 +13,11 @@
 /*-----------------------------------------------\
 | 												 |
 |  any partial or not partial extension          |
-|  CMS Fapos,without the consent of the          |
+|  CMS AtomX,without the consent of the          |
 |  author, is illegal                            |
 |------------------------------------------------|
 |  Любое распространение                         |
-|  CMS Fapos или ее частей,                      |
+|  CMS AtomX или ее частей,                      |
 |  без согласия автора, является не законным     |
 \-----------------------------------------------*/
 
@@ -105,7 +105,7 @@ class SearchModule extends Module {
 			$_SESSION['search_query'] = $str;
 			if (!empty($error)) {
 				$_SESSION['FpsForm'] = array();
-				$_SESSION['FpsForm']['error'] = $error;
+				$_SESSION['FpsForm']['errors'] = $error;
 				redirect($this->getModuleURL());
 			}
 
@@ -147,9 +147,8 @@ class SearchModule extends Module {
 		$this->_globalize($nav);
 
 
-		$this->page_title = $this->module_title;
-		if (!empty($_POST['search']))
-			$this->page_title .= ' - ' . h($_POST['search']);
+		if (!empty($str))
+            $this->addToPageMetaContext('entity_title', $str);
 
 
 		$this->returnForm = false;
@@ -191,7 +190,7 @@ class SearchModule extends Module {
 		//if an errors
 		if (isset($_SESSION['FpsForm'])) {
 			$markers['info'] = $this->render('infomessage.html', array('context' => array(
-					'message' => $_SESSION['FpsForm']['error'],
+					'message' => $_SESSION['FpsForm']['errors'],
 					)));
 			unset($_SESSION['FpsForm']);
 		}
@@ -210,7 +209,7 @@ class SearchModule extends Module {
 	 * @return boolean
 	 */
 	private function __checkIndex() {
-		$meta_file = ROOT . $this->getTmpPath('meta.dat');
+		$meta_file = $this->getTmpPath('meta.dat');
 		if (file_exists($meta_file) && is_readable($meta_file)) {
 			$meta = unserialize(file_get_contents($meta_file));
 			if (!empty($meta['expire']) && $meta['expire'] > time()) {
@@ -219,7 +218,7 @@ class SearchModule extends Module {
 				$this->__createIndex();
 			}
 		} else {
-			touchDir(ROOT . $this->getTmpPath());
+			touchDir($this->getTmpPath());
 			$this->__createIndex();
 		}
 
@@ -264,6 +263,12 @@ class SearchModule extends Module {
 	 * Create index for search engine
 	 */
 	private function __createIndex() {
+        $lock_file = $this->getTmpPath('lock.dat');
+
+        if (file_exists($lock_file)) return false;
+        file_put_contents($lock_file, '');
+
+
 		if (function_exists('ignore_user_abort'))
 			ignore_user_abort();
 		if (function_exists('set_time_limit'))
@@ -275,7 +280,7 @@ class SearchModule extends Module {
 			$className = $this->Register['ModManager']->getModelNameFromModule($table);
 			$Model = new $className;
 			
-			for ($i = 0; $i < 10000; $i++) {
+			for ($i = 1; $i < 10000; $i++) {
 				$records = $Model->getCollection(array(), array('limit' => 100, 'page' => $i));
 				if (empty($records)) break;
 
@@ -331,6 +336,8 @@ class SearchModule extends Module {
 				}
 			}
 		}
+
+        unlink($lock_file);
 	}
 
 	/**

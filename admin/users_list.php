@@ -4,7 +4,7 @@
 |  Author:       Andrey Brykin (Drunya)          |
 |  Version:      1.2.3                           |
 |  Project:      CMS                             |
-|  package       CMS Fapos                       |
+|  package       CMS AtomX                       |
 |  subpackege    Admin Panel module              |
 |  copyright     ©Andrey Brykin 2010-2011        |
 \-----------------------------------------------*/
@@ -12,11 +12,11 @@
 /*-----------------------------------------------\
 | 												 |
 |  any partial or not partial extension          |
-|  CMS Fapos,without the consent of the          |
+|  CMS AtomX,without the consent of the          |
 |  author, is illegal                            |
 |------------------------------------------------|
 |  Любое распространение                         |
-|  CMS Fapos или ее частей,                      |
+|  CMS AtomX или ее частей,                      |
 |  без согласия автора, является не законным     |
 \-----------------------------------------------*/
 
@@ -387,7 +387,7 @@ function saveAnk() {
 	
 	$check_user = $FpsDB->select('users', DB_FIRST, array('cond' => array('id' => (int)$_GET['id'])));
 	if (count($check_user) < 1) {
-		$_SESSION['info_message'] = __('Record with this ID not found');
+		$_SESSION['errors'] = __('Record with this ID not found');
 		redirect('/admin/users_list.php');
 	}
 	
@@ -488,16 +488,3 @@ function saveAnk() {
 			
 	redirect('/admin/users_list.php?ac=ank&id=' . $_GET['id']);
 }
-
-
-
-?>
-
-<?php
-if (!empty($_SESSION['info_message'])):
-?>
-<script type="text/javascript">showHelpWin('<?php echo h($_SESSION['info_message']) ?>', '<?php echo __('Message') ?>');</script>
-<?php
-	unset($_SESSION['info_message']);
-endif;
-?>

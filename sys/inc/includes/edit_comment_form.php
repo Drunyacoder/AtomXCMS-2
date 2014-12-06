@@ -28,7 +28,7 @@ $markers['disabled'] = ($comment->getUser_id()) ? ' disabled="disabled"' : '';
 
 // Если при заполнении формы были допущены ошибки
 if (isset($_SESSION['FpsForm'])) {
-    $errors   = $_SESSION['FpsForm']['error'];
+    $errors   = $_SESSION['FpsForm']['errors'];
 	$message  = $_SESSION['FpsForm']['message'];
 	$name     = $_SESSION['FpsForm']['name'];
 	unset($_SESSION['FpsForm']);

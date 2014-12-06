@@ -11,11 +11,11 @@
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
-| CMS Fapos,without the consent of the         |
+| CMS AtomX,without the consent of the         |
 | author, is illegal                           |
 |----------------------------------------------|
 | Любое распространение                        |
-| CMS Fapos или ее частей,                     |
+| CMS AtomX или ее частей,                     |
 | без согласия автора, является не законным    |
 \---------------------------------------------*/
 
@@ -75,6 +75,10 @@ class ChatModule extends Module {
 				foreach ($data as $key => &$record) {
 				
 					$record['message'] = $this->Register['PrintText']->smile(h($record['message']));
+					$record['message'] = $this->Register['PrintText']->parseUrlBb(h($record['message']));
+					$record['message'] = $this->Register['PrintText']->parseBBb(h($record['message']));
+					$record['message'] = $this->Register['PrintText']->parseUBb(h($record['message']));
+					$record['message'] = $this->Register['PrintText']->parseSBb(h($record['message']));
 				
 					/* view ip adres if admin */
 					if ($this->ACL->turn(array('chat', 'delete_materials'), false)) {
@@ -100,65 +104,57 @@ class ChatModule extends Module {
 	* @return  none
 	*/
 	public function add() {
-		$Parser = $this->Register['DocParser'];
 		$ACL = $this->Register['ACL'];
 	
 		if (!$ACL->turn(array('chat', 'add_materials'), false)) {
 			return;
 		}
-		if (!isset($_POST['message'])) {
-			die(__('Needed fields are empty'));
-		}
+
 		
 		/* cut and trim values */
 		$name    = (!empty($_SESSION['user'])) ? h($_SESSION['user']['name']) : __('Guest');
-		$message = mb_substr( $_POST['message'], 0, $this->Register['Config']->read('max_lenght', 'chat'));
-		$name    = trim( $name );
-		$message = trim( $message );
+		$message = trim($_POST['message']);
+		$name    = trim($name);
+		$message = trim($message);
 		$ip      = (!empty($_SERVER['REMOTE_ADDR'])) ? $_SERVER['REMOTE_ADDR'] : '';
 		$keystring = (isset($_POST['keystring'])) ? trim($_POST['keystring']) : '';
-		
-		
-		// Check fields
-		$errors = '';
-		
-		
+
+
+		$errors = array();
 		$valobj = $this->Register['Validate'];
+
 		if (!empty($name) && !$valobj->cha_val($name, V_TITLE))  
-			$errors .= '<li>' . __('Wrong chars in field "login"') . '</li>' . "\n";
-			
+			$errors[] = __('Wrong chars in field "login"');
 			
 			
 		// Check captcha if need exists	 
 		if (!$ACL->turn(array('other', 'no_captcha'), false)) {
-
-				
 			// Проверяем поле "код"
 			if (!empty($keystring)) {				
 				if (!$this->Register['Protector']->checkCaptcha('chatsend', $keystring))
-					$errors .= '<li>' . __('Wrong protection code') . '</li>' . "\n";
+					$errors[] = __('Wrong protection code');
 			}
 			$this->Register['Protector']->cleanCaptcha('chatsend');
-			
-			
 		} else {
 			$this->Register['Validate']->disableFieldCheck('keystring');
 		}
-		
-		$errors .= $this->Register['Validate']->check($this->getValidateRules());
-		
+
+
+        // Check fields
+        $errors_ = $this->Register['Validate']->check($this->Register['action']);
+        $errors = array_merge($errors, $errors_);
+
 		
 		/* remember name */
 		$_SESSION['chat_name'] = $name;
 		
 		/* if an errors */
 		if (!empty($errors)) {
-			$_SESSION['addForm']            = array();
-			$_SESSION['addForm']['error']   = '<p class="errorMsg">' . __('Some error in form') . '</p>' . 
-				"\n" . '<ul class="errorMsg">' . "\n" . $errors . '</ul>' . "\n";
-			$_SESSION['addForm']['name']    = $name;
+			$_SESSION['addForm'] = array();
+			$_SESSION['addForm']['errors'] = $this->Register['DocParser']->wrapErrors($errors);;
+			$_SESSION['addForm']['name'] = $name;
 			$_SESSION['addForm']['message'] = $message;
-			die($_SESSION['addForm']['error']);
+			die($_SESSION['addForm']['errors']);
 		}
 		
 		/* create dir for chat tmp file if not exists */
@@ -179,7 +175,7 @@ class ChatModule extends Module {
 			'name' => $name,
 			'message' => $message,
 			'ip' => $ip,
-			'date' => date("Y-m-d h:i"),
+			'date' => date("Y-m-d H:i"),
 		);
 		
 		
@@ -200,8 +196,6 @@ class ChatModule extends Module {
 	*/
 	public static function add_form() {
         $Register = Register::getInstance();
-
-
 		$Parser = $Register['DocParser'];
 		$Parser->templateDir = 'chat';
 		$ACL = $Register['ACL'];
@@ -237,7 +231,7 @@ class ChatModule extends Module {
 
 		
 		
-		$View = new Fps_Viewer_Manager(new Fps_Viewer_Loader());
+		$View = $Register['Viewer'];
 		$View->setLayout('chat');
 		$source = $View->view('addform.html', array('data' => $markers));
 
@@ -247,20 +241,22 @@ class ChatModule extends Module {
 	
 	
 	
-	public function getValidateRules() 
+	protected function _getValidateRules()
 	{
 		$rules = array(
 			'add' => array(
 				'message' => array(
 					'required' => true,
+					'max_lenght' => Config::read('max_lenght', 'chat'),
 				),
 				'keystring' => array(
 					'required' => true,
 					'pattern' => V_CAPTCHA,
+                    'title' => 'Keystring (captcha)',
 				),
 			),
 		);
-		return array($this->module => $rules);
+		return $rules;
 	}
 }
 

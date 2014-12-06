@@ -11,11 +11,11 @@
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
-| CMS Fapos,without the consent of the         |
+| CMS AtomX,without the consent of the         |
 | author, is illegal                           |
 |----------------------------------------------|
 | Любое распространение                        |
-| CMS Fapos или ее частей,                     |
+| CMS AtomX или ее частей,                     |
 | без согласия автора, является не законным    |
 \---------------------------------------------*/
 
@@ -42,9 +42,9 @@ class Validate {
 	private $rules;
 	
 	/**
-	 * @var array
+	 * @var string
 	 */
-	private $pathParams;
+	private $module;
 	
 	/**
 	 * @var array
@@ -58,6 +58,8 @@ class Validate {
 	
 	const V_TITLE = '#^[A-ZА-Яа-яa-z0-9ё\s\-(),._\?!\w\d\{\}\<\>:=\+&%\$\[\]\\\/"\']+$#ui';
 	const V_INT = '#^\d+$#i';
+	const V_FLOAT = '#^\d+\.?\d*$#i';
+	const V_DATETIME = '#^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$#i';
 	const V_TEXT = '#^[\wA-ZА-Яа-яa-z0-9\s\-\(\):;\[\]\+!\.,&\?/\{\}="\']*$#uim';
 	const V_MAIL = '#^[0-9a-z_\-\.]+@[0-9a-z\-\.]+\.[a-z]{2,6}$#i';
 	const V_URL = '#^((https?|ftp):\/\/)?(www.)?([0-9a-z]+(-?[0-9a-z]+)*\.)+[a-z]{2,6}\/?([-0-9a-z_]*\/?)*([-0-9A-Za-zА-Яа-я_]+\.?[-0-9a-z_]+\/?)*$#i';
@@ -131,19 +133,16 @@ class Validate {
 	}
 	
 	
-	
-	public function setPathParams($module, $action) 
-	{
-		$this->pathParams = array($module, $action);
-	}
-	
-	
-	
 	public function setRules($rules) 
 	{
 		$this->rules = $rules;
 	}
 	
+	
+	public function setModule($module) 
+	{
+		$this->module = $module;
+	}
 	
 	
 	public function disableFieldCheck($key) 
@@ -154,13 +153,13 @@ class Validate {
 	
 	
 
-	public function check($rules = null, $wrap = false) 
+	public function check($action = null, $wrap = false)
 	{
-		$rules = $this->prepareRules($rules);
+		$rules = $this->prepareRules($action);
 
 		$Register = Register::getInstance();
 		$request = $_POST;
-		$errors = '';
+		$errors = array();
 		
 		
 		foreach ($rules as $title_ => $params) {
@@ -189,14 +188,16 @@ class Validate {
 				if (substr($field, 0, 7) != 'files__') {
 					// required
 					if (!empty($params['required']) && $params['required'] === true) {
-						if (empty($request[$title])) $errors .= $this->getErrorMessage('required', $params, $title);
+						if (empty($request[$title])) 
+							$errors[] = $this->getErrorMessage('required', $params, $title);
 						
 						
 					} else if (!empty($params['required']) && $params['required'] === 'editable') {
-						$fields_settings = $Register['Config']->read('fields', $this->pathParams[0]);
+						$fields_settings = Config::read('fields', $this->module);
+						if (!$fields_settings) $fields_settings = array();
 						
 						if (empty($_POST[$title]) && in_array($title, $fields_settings)) { 
-							$errors .= $this->getErrorMessage('required', $params, $title);
+							$errors[] = $this->getErrorMessage('required', $params, $title);
 							continue;
 						}
 					}
@@ -205,31 +206,31 @@ class Validate {
 					// max length
 					if (!empty($params['max_lenght'])) {
 						if (!empty($request[$title]) && mb_strlen($request[$title]) > $params['max_lenght']) 
-							$errors .= $this->getErrorMessage('max_lenght', $params, $title);
+							$errors[] = $this->getErrorMessage('max_lenght', $params, $title);
 					}
 
 					// min length
 					if (!empty($params['min_lenght'])) {
 						if (!empty($request[$title]) && mb_strlen($request[$title]) < $params['min_lenght']) 
-							$errors .= $this->getErrorMessage('min_lenght', $params, $title);
+							$errors[] = $this->getErrorMessage('min_lenght', $params, $title);
 					}
 
 					// compare
 					if (!empty($params['compare'])) {
 						if (!empty($request[$title]) && $request[$title] != @$_POST[$params['compare']]) 
-							$errors .= $this->getErrorMessage('compare', $params, $title);
+							$errors[] = $this->getErrorMessage('compare', $params, $title);
 					}					
 					
 					// pattern
 					if (!empty($params['pattern'])) {
 						if (!empty($request[$title]) && !$this->cha_val($request[$title], $params['pattern'])) 
-							$errors .= $this->getErrorMessage('pattern', $params, $title);
+							$errors[] = $this->getErrorMessage('pattern', $params, $title);
 					}
 					
 					// user function
 					if (!empty($params['function'])) {
 						if (!empty($request[$title]) && is_callable($params['function'])) 
-							$errors .= $params['function']($errors);
+							$errors[] = $params['function']($errors);
 					}
 					
 				
@@ -238,14 +239,15 @@ class Validate {
 					
 					// required
 					if (!empty($params['required']) && $params['required'] === true) {
-						if (empty($_FILES[$title]) || empty($_FILES[$title]['name'])) $errors .= $this->getErrorMessage('required', $params, $title);
+						if (empty($_FILES[$title]) || empty($_FILES[$title]['name'])) 
+							$errors[] = $this->getErrorMessage('required', $params, $title);
 						
 						
 					} else if (!empty($params['required']) && $params['required'] === 'editable') {
-						$fields_settings = $Register['Config']->read('fields', $this->pathParams[0]);
+						$fields_settings = $Register['Config']->read('fields', $this->module);
 						
 						if ((empty($_FILES[$title]) || empty($_FILES[$title]['name'])) && in_array($title, $fields_settings)) 
-							$errors .= $this->getErrorMessage('required', $params, $title);
+							$errors[] = $this->getErrorMessage('required', $params, $title);
 					}
 					
 					
@@ -266,14 +268,15 @@ class Validate {
 								&& $_FILES[$title]['type'] != 'image/gif'
 								&& $_FILES[$title]['type'] != 'image/png')
 								|| !in_array(strtolower($ext), $img_extentions)) {
-									$errors .= $this->getErrorMessage('type', $params, $title);
+									$errors[] = $this->getErrorMessage('type', $params, $title);
 								}
 								break;
 								
 							// other files (for example loads module attaches)	
 							case 'file':
 								$denied_exts = array('.php', '.phtml', '.php3', '.html', '.htm', '.pl', 'js');
-								if (in_array(strtolower($ext), $denied_exts)) $errors .= $this->getErrorMessage('type', $params, $title);
+								if (in_array(strtolower($ext), $denied_exts)) 
+									$errors[] = $this->getErrorMessage('type', $params, $title);
 								break;
 						}
 					}
@@ -282,7 +285,7 @@ class Validate {
 					if (!empty($params['max_size'])) {
 						//pr($title);
 						if ($_FILES[$title]['size'] > $params['max_size']) {
-							$errors .= $this->getErrorMessage('max_size', $params, $title);
+							$errors[] = $this->getErrorMessage('max_size', $params, $title);
 						}
 					}
 				}
@@ -295,27 +298,18 @@ class Validate {
 		
 		return $errors;
 	}
-	
-	
-	
-	public function wrapErrors($errors) {
-		return (is_callable($this->layoutWrapper))
-			? call_user_func($this->layoutWrapper, $errors)
-			: $errors;
-	}
 
-	
 	
     /**
      * Merge entity with form session(viewMessage|FpsForm).
-     * Geting [object|array] entity and array pattern. Fill entity from session by pattern.
-     * Geting array entity and nothing pattern. Pattern = entity and fill entity from session by pattern
+     * 1. Geting [object|array] entity and array pattern. Fill entity from session by pattern.
+     * 2. Geting array entity and nothing pattern. Pattern = entity and fill entity from session by pattern
      *
      * @param $entity
      * @param array $pattern
      * @return array
      */
-    public static function getCurrentInputsValues($entity, $pattern = array())
+    public static function  getCurrentInputsValues($entity, $pattern = array())
     {
         if (!empty($_SESSION['viewMessage'])) {
 			$session = $_SESSION['viewMessage'];
@@ -351,11 +345,11 @@ class Validate {
 	
 	
 	/**
-	 * @param $rules array
+	 * @param $action string
 	 */
-	public function getFormFields($rules)
+	public function getFormFields($action)
 	{
-		$rules = $this->prepareRules($rules);
+		$rules = $this->prepareRules($action);
 		$Register = Register::getInstance();
 		$request = $_POST;
 		return array_fill_keys(array_keys($rules), null);
@@ -366,26 +360,25 @@ class Validate {
 	public function getErrors()
 	{
         $outputContent = '';
-        if (!empty($_SESSION['FpsForm']['error'])) {
-            $outputContent = $this->wrapErrors($_SESSION['FpsForm']['error']);
+
+        if (!empty($_SESSION['FpsForm']['errors'])) {
+            $outputContent = $this->wrapErrors($_SESSION['FpsForm']['errors']);
         }
+
         return $outputContent;
 	}
-	
-	
-	
-	/**
-	 * @param $rules array
-	 * @param $additional_fields array
-	 */
-	public function getAndMergeFormPost($rules = null, $additional_fields = array(), $correct = false)
+
+
+    /**
+     * @param null $action
+     * @param array $additional_fields
+     * @param bool $correct
+     * @param bool $fields_meta
+     * @return array
+     */
+    public function getAndMergeFormPost($action, $additional_fields = array(), $correct = false, $fields_meta = false)
 	{
-		$rules = $this->prepareRules($rules);
-		
-		$Register = Register::getInstance();
-		$request = $_POST;
-			
-		
+		$rules = $this->prepareRules($action);
 		$pattern = array_fill_keys(array_keys($rules), null);
 		$pattern = array_merge($pattern, $additional_fields);
 		$fields = $this->getCurrentInputsValues($pattern);
@@ -394,21 +387,55 @@ class Validate {
 			$fields = array_map(function($n){
 				return trim($n);
 			}, $fields);
+
+        if ($fields_meta === true) {
+            foreach ($fields as $k => $value) {
+				$fields[$k] = $rules[$k];
+				$fields[$k]['value'] = $value;
+				
+				// Dataset is array with possible values.
+				// It may be a function whitch returns the array.
+				if (isset($fields[$k]['dataset'])) {
+					$fields[$k]['dataset'] = (is_callable($fields[$k]['dataset'])) 
+						? call_user_func($fields[$k]['dataset'])
+						: $fields[$k]['dataset'];
+				}
+            }
+        }
 		
 		return $fields;
 	}
-	
-	
+
+
+    private function wrapErrors($errors, $preprocess = false) {
+        if ($preprocess) {
+            if (is_array($errors)) {
+                foreach ($errors as $k => $error) {
+                    $errors[$k] = $this->completeErrorMessage($error);
+                }
+            } else $errors = $this->completeErrorMessage($errors);
+        }
+        return (is_callable($this->layoutWrapper))
+            ? call_user_func($this->layoutWrapper, $errors)
+            : $errors;
+    }
+
 	
 	private function getErrorMessage($type, $params, $title) {
 		$publicTitle = (!empty($params['title'])) ? $params['title'] : $title;
+		
+		// Try to translate title
+		$publicTitle_ = __($publicTitle);
+		if ($publicTitle_ === $publicTitle && $this->module) {
+			$publicTitle = __($publicTitle, $this->module);
+		}
 		
 		if (array_key_exists($type . '_error', $params)) return $this->completeErrorMessage($params[$type . '_error']);
 		
 		switch ($type) {
 		
 			case 'required':
-				$message = sprintf(__('Empty field "%s"'), $title);
+				$message = sprintf(__('Empty field "%s"'), $publicTitle);
 				break;
 				
 			case 'max_lenght':
@@ -432,7 +459,7 @@ class Validate {
 				break;
 				
 			case 'max_size':
-				$message = sprintf(__('Very big file'), $title, round(($params['max_size'] / 1000), 1));
+				$message = sprintf(__('Very big file'), $publicTitle, round(($params['max_size'] / 1000), 1));
 				break;
 		}
 		
@@ -440,22 +467,22 @@ class Validate {
 	}
 	
 	
-	
 	private function completeErrorMessage($message) {
+		return $message;
 		return "<li>$message</li>\n";
 	}
 
 
 	
-	private function prepareRules($rules)
+	private function prepareRules($action)
 	{
-		if ($rules == null) $rules = $this->rules;
-		$rules = (array_key_exists($this->pathParams[1], $rules[$this->pathParams[0]])) 
-			? $rules[$this->pathParams[0]][$this->pathParams[1]]
-			: @$rules[$this->pathParams[0]][substr($this->pathParams[1], 0, -5)];
+        $rules = (!empty($this->rules) && is_array($this->rules)) ? $this->rules : array();
+		$rules = (array_key_exists($action, $rules))
+			? $rules[$action]
+			: @$rules[substr($action, 0, -5)];
 		
 		if (empty($rules) || count($rules) < 1) 
-			throw new Exception("Rules for ".$this->pathParams[0]." - ".$this->pathParams[1]."(_form) not found.");
+			throw new Exception("Rules for ".$action."(_form) not found.");
 		
 		return $rules;
 	}

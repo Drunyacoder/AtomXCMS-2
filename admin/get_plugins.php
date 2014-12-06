@@ -5,7 +5,7 @@
 ## Author:       Andrey Brykin (Drunya)         ##
 ## Version:      0.9                            ##
 ## Project:      CMS                            ##
-## package       CMS Fapos                      ##
+## package       CMS AtomX                      ##
 ## subpackege    Admin Panel module             ##
 ## copyright     ©Andrey Brykin 2010-2011       ##
 ##################################################
@@ -14,11 +14,11 @@
 ##################################################
 ##												##
 ## any partial or not partial extension         ##
-## CMS Fapos,without the consent of the         ##
+## CMS AtomX,without the consent of the         ##
 ## author, is illegal                           ##
 ##################################################
 ## Любое распространение                        ##
-## CMS Fapos или ее частей,                     ##
+## CMS AtomX или ее частей,                     ##
 ## без согласия автора, является не законным    ##
 ##################################################
 
@@ -34,6 +34,7 @@ $api_url = 'http://home.develdo.com/';
 
 
 function showError() {
+    $Register = Register::getInstance();
 	$errors = $Register['PluginController']->getErrors();
 	
 	$_SESSION['message'] = $errors;
@@ -113,7 +114,7 @@ if (!empty($_FILES['pl_file']['name'])) {
 
 $pageTitle = __('Admin Panel');
 $pageNav = $pageTitle . __(' - General information');
-$pageNavl = '';
+$pageNavr = '';
 
 
 // get our plugins
@@ -123,7 +124,7 @@ $our_plugins = glob($pl_url, GLOB_ONLYDIR);
 
 foreach ($our_plugins as &$pl) {
 	if (file_exists($pl . '/config.dat')) {
-		$pl_conf = json_decode(get_cont($pl . '/config.dat'), true);
+		$pl_conf = json_decode(file_get_contents($pl . '/config.dat'), true);
 		if (!empty($pl_conf['title'])) {
 			$pl = $pl_conf['title'];
 		}
@@ -139,14 +140,6 @@ if (!$data) $data = array();
 
 
 include 'template/header.php';
-?>
-
-
-<?php if (!empty($_SESSION['message'])): ?>
-	<script type="text/javascript">showHelpWin('<?php echo $_SESSION['message'] ?>', '<?php echo __('Message') ?>');</script>
-<?php
-	unset($_SESSION['message']);
-endif;
 ?>
 
 
@@ -229,7 +222,9 @@ endif;
 	</div>
 </div>
 <?php else: ?>
-<div class="warning error"><?php echo __('Records not found') ?></div>
+<div class="warning error">
+	<?php echo __('Records not found') ?>
+</div>
 <?php endif; ?>
 							
 

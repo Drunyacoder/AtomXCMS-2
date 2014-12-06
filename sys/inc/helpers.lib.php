@@ -2,83 +2,25 @@
 /*---------------------------------------------\
 |											   |
 | Author:       Andrey Brykin (Drunya)         |
-| Version:      1.7.2                          |
+| Version:      1.7.3                          |
 | Project:      CMS                            |
-| package       CMS Fapos                      |
+| package       CMS AtomX                      |
 | subpackege    Helpers library                |
-| copyright     ©Andrey Brykin 2010-2013       |
-| last mod.     2013/02/22                     |
+| copyright     ©Andrey Brykin 2010-2014       |
+| last mod.     2014/10/24                     |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
-| CMS Fapos,without the consent of the         |
+| CMS AtomX,without the consent of the         |
 | author, is illegal                           |
 |----------------------------------------------|
 | Любое распространение                        |
-| CMS Fapos или ее частей,                     |
+| CMS AtomX или ее частей,                     |
 | без согласия автора, является не законным    |
 \---------------------------------------------*/
 
 
-/**
- * Get one or couple entities.
- * If get one entity of the UsersModel, we also get user statistic
- *
- * @param $modelName
- * @param array $id
- * @return array
- * @throws Exception
- */
-function fetch($modelName, $id = array()){
-	$Register = Register::getInstance();
-    try {
-	    $model = $Register['ModManager']->getModelInstance($modelName);
 
-        // get collection of entities
-        if (is_array($id) && count($id)) {
-
-            $id = array_map(function($n){
-                $n = intval($n);
-                if ($n < 1) throw new Exception('Only integer value might send as ID.');
-                return $n;
-            }, $id);
-            $ids = implode(", ", $id);
-            $result = $model->getCollection(array("`id` IN ($ids)"));
-
-        // get one entity
-        } else if (is_numeric($id)) {
-            $id = intval($id);
-            if ($id < 1) throw new Exception('Only integer value might send as ID.');
-            $result = $model->getById($id);
-
-            if ($result && strtolower($modelName) == 'users') {
-                $stat = $model->getFullUserStatistic($id);
-                $result->setStatistic($stat);
-            }
-        }
-
-    } catch (Exception $e) {
-        throw new Exception($e->getMessage());
-    }
-
-	return (!empty($result)) ? $result : array();
-}
-
-
-/**
- * Template operator for date formating
- *
- * @param $date
- * @param string $format
- * @return string
- */
-function AtmGetDate($date, $format = false) {
-	return AtmDateTime::getDate($date, $format);
-}
-
-function AtmGetSimpleDate($date) {
-	return AtmDateTime::getSimpleDate($date);
-}
 
 
 /**
@@ -86,98 +28,10 @@ function AtmGetSimpleDate($date) {
  * @return string
  */
 function wrap_errors($errors) {
-	return '<p class="errorMsg">' . __('Some error in form') . '</p>' .
-			"\n" . '<ul class="errorMsg">' . "\n" . $errors . '</ul>' . "\n";
+    $Register = Register::getInstance();
+	return $Register['DocParser']->wrapErrors($errors);
 }
 
-
-
-/**
- * Alias for file_get_contents
- */
-function get_cont($path) {
-	return file_get_contents($path);
-}
-
-
-	
-/**
- * Replace image marker
- */
-function insertImageAttach($entity, $announce, $module = null) {
-	// replace image tags in text
-	$attaches = $entity->getAttaches();
-	if (!empty($attaches) && count($attaches) > 0) {
-		$attachDir = ROOT . '/sys/files/' . $module . '/';
-		foreach ($attaches as $attach) {
-			if ($attach->getIs_image() == 1 && file_exists($attachDir . $attach->getFilename())) {
-			
-				$announce = str_replace('{IMAGE' . $attach->getAttach_number() . '}'
-					, '<a class="gallery" href="' . get_url('/sys/files/' . $module . '/' . $attach->getFilename()) 
-					. '"><img alt="' . h($entity->getTitle()) . '" title="' . h($entity->getTitle()) 
-					. '" title="" src="' . get_url('/image/' . $module . '/' . $attach->getFilename()) . '" /></a>'
-					, $announce);
-			}
-		}
-	}
-
-	return $announce;
-}
-
-
-
-function checkAccess($params = null) {
-	if (isset($params) && is_array($params)) {
-		$Register = Register::getInstance();
-		return $Register['ACL']->turn($params, false);
-	}
-	return false;
-}
-
-
-
-function getAvatar($id_user = null, $email_user = null) {
-	$def = get_url('/template/' . getTemplateName() . '/img/noavatar.png', false, false);
-	
-	if (isset($id_user) && $id_user > 0) {
-		if (is_file(ROOT . '/sys/avatars/' . $id_user . '.jpg')) {
-			return get_url('/sys/avatars/' . $id_user . '.jpg', false, false);
-		} else {
-			if (Config::read('use_gravatar', 'users') && function_exists('getGravatar')) {
-				if (!isset($email_user)) {
-					$Register = Register::getInstance();
-					$usersModel = $Register['ModManager']->getModelInstance('Users');
-					$user = $usersModel->getById($id_user);
-					if ($user) {
-						$email_user = $user->getEmail();
-					} else {
-						return $def;
-					}
-				}
-				return getGravatar($email_user);
-			} else {
-				return $def;
-			}
-		}
-	} else {
-		return $def;
-	}
-}
-
-
-/**
- * Get either a Gravatar URL or complete image tag for a specified email address.
- *
- * @param string $email The email address
- * @param string $s Size in pixels, defaults to 80px [ 1 - 2048 ]
- * @param string $d Default imageset to use [ 404 | mm | identicon | monsterid | wavatar ]
- * @param string $r Maximum rating (inclusive) [ g | pg | r | x ]
- * @return String containing either just a URL or a complete image tag
- */
-function getGravatar($email, $s = 120, $d = 'mm', $r = 'g') {
-	$url = 'http://www.gravatar.com/avatar/' . md5(strtolower(trim($email))) . ".png?s=$s&d=$d&r=$r";
-	return $url;
-}
 
 
 /**
@@ -188,38 +42,6 @@ function getTemplateName()
 	$template = Config::read('template');
 	$template = Plugins::intercept('select_template', $template);
 	return $template;
-}
-
-
-
-function getOrderLink($params) {
-	if (!$params || !is_array($params) || count($params) < 2) return '';
-	$order = (!empty($_GET['order'])) ? strtolower(trim($_GET['order'])) : '';
-	$new_order = strtolower($params[0]);
-	$active = ($order === $new_order);
-	$asc = ($active && isset($_GET['asc']));
-	return '<a href="?order=' . $new_order . ($asc ? '' : '&asc=1') . '">' . $params[1] . ($active ? ' ' . ($asc ? '↑' : '↓') : '') . '</a>';
-}
-
-
-
-
-/**
- *
- */
-function show_date($date) {
-	$Register = Register::getInstance();
-	$timestamp = strtotime($date);
-	
-	if (!empty($_SESSION['user']) && !empty($_SESSION['user']['timezone'])) {
-		if ($_SESSION['user']['timezone'] >= -12 && $_SESSION['user']['timezone'] <= 12)
-		$timestamp = $timestamp + intval($_SESSION['user']['timezone']) * 60 * 60;
-	}
-
-	
-	$format = $Register['Config']->read('date_format');
-	$format = (!empty($format)) ? $format : 'Y-m-d H-i-s'; 
-	return date($format, $timestamp);
 }
 
 
@@ -368,47 +190,6 @@ function getAge($y = 1970, $m = 1, $d = 1) {
 
 
 
-/**
- * Check and return order param
- */
-function getOrderParam($claas_name) {
-	$order = (!empty($_GET['order'])) ? trim($_GET['order']) : '';
-	
-	switch ($claas_name) {
-		case 'Comments':
-            $allowed_keys = array('user_id', 'date', 'premoder');
-            $default_key = 'date';
-            break;
-		case 'FotoModule':
-		case 'StatModule':
-		case 'NewsModule':
-			$allowed_keys = array('views', 'date', 'comments');
-			$default_key = 'date';
-			break;
-		case 'LoadsModule':
-			$allowed_keys = array('views', 'date', 'comments', 'downloads');
-			$default_key = 'date';
-			break;
-		case 'UsersModule':
-			$allowed_keys = array('puttime', 'last_visit', 'name', 'rating', 'posts', 'status', 'warnings', 'city', 'jabber', 'byear', 'pol');
-			$default_key = 'puttime';
-			break;
-	}
-	
-	if (empty($order) && empty($default_key)) return false;
-	else if (empty($order) && !empty($default_key)) $out = $default_key;
-	else {
-		if (!empty($allowed_keys) && in_array($order, $allowed_keys)) {
-			$out = $order;
-		} else {
-			$out = $default_key;
-		}
-	}
-	
-	return (!empty($_GET['asc'])) ? $out . ' ASC' : $out . ' DESC';
-}
- 
-
 
 /**
  * CRON simulyation
@@ -457,6 +238,56 @@ function entryUrl($material, $module) {
 }
 
 
+/**
+ * Return URL to user profile.
+ *
+ * @param $user_id
+ * @return string
+ */
+function getProfileUrl($user_id) {
+    if (!empty($_SESSION['user']) && $_SESSION['user']['id'] == $user_id) {
+        //$url = '/users/edit_form/';
+        $url = '/users/info/' . $user_id . '/';
+    } else {
+        $url = '/users/info/' . $user_id . '/' ;
+    }
+    return $url;
+}
+
+
+/**
+ * Recursive search by array keys.
+ * Examples:
+ *     input: [
+ *                'module1' => [
+ *                    'eng' => 'path/to/eng1.php',
+ *                    'rus' => 'path/to/rus1.php',
+ *                ],
+ *                'module2' => [
+ *                    'eng' => 'path/to/eng2.php',
+ *                    'rus' => 'path/to/rus2.php',
+ *                 ],
+ *             ],
+ *            'eng'
+ *     return: [
+ *                'path/to/eng1.php',
+ *                'path/to/eng2.php',
+ *             ]
+ *
+ * @param $needle string
+ * @param $array array
+ * @return array array
+ */
+function array_search_recursive($needle, $array) {
+    $result = array();
+	if (!is_array($array)) return $result;
+    array_walk_recursive($array, function($v, $k) use ($needle, &$result){
+        if ($needle === $k) array_push($result, $v);
+    });
+    return $result;
+}
+
+
 
 /**
  * Work for language pack.
@@ -468,18 +299,40 @@ function entryUrl($material, $module) {
  * @return string
  */
 function __($key, $context = false) {
+    $Register = Register::getInstance();
     $language = getLang();
     if (empty($language) || !is_string($language)) $language = 'rus';
+    if (!empty($Register['translation_cache']))
+        $lang = $Register['translation_cache'];
+    else {
+        $lang_file = ROOT . '/sys/settings/languages/' . $language . '.php';
+        $tpl_lang_file = ROOT . '/template/' . getTemplateName() .'/languages/' . $language . '.php';
+        if (!file_exists($lang_file)) throw new Exception('Main language file not found');
 
-    $lang_file = ROOT . '/sys/settings/languages/' . $language . '.php';
-    $tpl_lang_file = ROOT . '/template/' . getTemplateName() .'/languages/' . $language . '.php';
-    if (!file_exists($lang_file)) throw new Exception('Main language file not found');
+        $lang = include $lang_file;
+        if (file_exists($tpl_lang_file)) {
+            $tpl_lang = include $tpl_lang_file;
+            $lang = array_merge($lang, $tpl_lang);
+        }
 
-    $lang = include $lang_file;
-    if (file_exists($tpl_lang_file)) {
-        $tpl_lang = include $tpl_lang_file;
-        $lang = array_merge($lang, $tpl_lang);
+
+        $mod_langs = array_search_recursive($language, $Register['modules_translations']);
+        if ($mod_langs) {
+            foreach ($mod_langs as $path) {
+                $mod_lang = include $path;
+                $lang = array_merge($lang, $mod_lang);
+            }
+        }
+        $Register['translation_cache'] = $lang;
     }
+
+
+    if ($context && is_string($context) && is_array($lang[$context])) {
+        if (array_key_exists($context, $lang) && array_key_exists($key, $lang[$context])) {
+            return $lang[$context][$key];
+        }
+    }
+
     if (array_key_exists($key, $lang)) return $lang[$key];
     return $key;
 }
@@ -525,7 +378,7 @@ function getPermittedLangs() {
  * Uses for valid create HTML tag IMG
  * and fill into him correctly url.
  * When you use this function you
- * mustn't wory obout Fapos install
+ * mustn't wory obout AtomX install
  * into subdir or SUBDIRS.
  * ALso if we wont change class of IMG or etc,
  * we change this only here and this changes apply
@@ -550,10 +403,10 @@ function get_img($url, $params = array(), $notRoot = false) {
 /**
  * Uses for valid create url.
  * When you use this function you
- * mustn't wory obout Fapos install
- * into subdri or SUBDIRS.
+ * mustn't wory obout the AtomX install
+ * into subdir or SUBDIRS.
  * This function return url only from root (/)
- * But you can send $notRoot and get url from not root.
+ * But you can send $notRoot as true and get relative URL.
  *
  * @param string $url
  * @param boolean $notRoot
@@ -571,7 +424,7 @@ function get_url($url, $notRoot = false, $useLang = true)
  * Uses for valid create HTML tag A
  * and fill into him correctli url.
  * When you use this function you
- * mustn't wory obout Fapos install
+ * mustn't wory obout AtomX install
  * into subdri or SUBDIRS.
  * ALso if we wont change class of A or etc,
  * we change this only here and this changes apply
@@ -601,6 +454,11 @@ function get_link($ankor, $url, $params = array(), $notRoot = false) {
  * work stop script and die. Better redirect
  * user to another page but if can't doing this
  * better stop script.
+ *
+ * @param $url (string)
+ * @param $header (int)
+ *     302 - Moved temporarily
+ *     301 - Moved permanently
  */
 function redirect($url, $header = 302) {
 	
@@ -625,12 +483,6 @@ function createOptionsFromParams($offset, $limit, $selected = false) {
 	return $output;
 }
 
-
-
-function CheckUserOnline($user_id) {
-	$users = getOnlineUsers();
-	return array_key_exists($user_id, $users);
-}
 
 /*
 * return who online
@@ -664,7 +516,7 @@ function getOnlineUsers() {
 		$users = $data['users'];
 	}
 	
-	return $users;
+	return (!empty($users)) ? $users : array();
 }
 
 
@@ -869,4 +721,28 @@ function getDirFiles($path)
 
 function memoryUsage($base_memory_usage) {
     printf("Bytes diff: %s<br />\n", getSimpleFileSize(memory_get_usage() - $base_memory_usage));
+}
+
+
+
+/**
+ * Create order link with a right URL params & title.
+ * The title will be with an arrows 
+ * which indicates the order direction.
+ */
+function getOrderLink($params) {
+	if (!$params || !is_array($params) || count($params) < 2) return '';
+	$order = (!empty($_GET['order'])) ? strtolower(trim($_GET['order'])) : '';
+	$new_order = strtolower($params[0]);
+	$active = ($order === $new_order);
+	$asc = ($active && isset($_GET['asc']));
+
+
+	$url = $_SERVER['REQUEST_URI'];
+	$url = preg_replace('#(order=[^&]*[&]?)|(asc=[^&]*[&]?)#i', '', $url);
+	if (substr($url, -1) !== '&' && substr($url, -1) !== '?') {
+		$url .= (!strstr($url, '?')) ? '?' : '&';
+	}
+
+	return '<a href="' . $url . 'order=' . $new_order . ($asc ? '' : '&asc=1') . '">' . $params[1] . ($active ? ' ' . ($asc ? '↑' : '↓') : '') . '</a>';
 }

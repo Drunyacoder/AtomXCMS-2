@@ -11,11 +11,11 @@
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
-| CMS Fapos,without the consent of the         |
+| CMS AtomX,without the consent of the         |
 | author, is illegal                           |
 |----------------------------------------------|
 | Любое распространение                        |
-| CMS Fapos или ее частей,                     |
+| CMS AtomX или ее частей,                     |
 | без согласия автора, является не законным    |
 \---------------------------------------------*/
 
@@ -63,7 +63,6 @@ class MaterialsList {
 		
 		$where = (!empty($_GET['premoder'])) ? array('premoder' => 'nochecked') : array();
 		$where[] = "`module` = '" . $module . "'";
-        $order = getOrderParam('Comments');
 
 		$total = $model->getTotal(array('cond' => $where));
 		list ($pages, $page) = pagination($total, 20, '/admin/comments_list.php?m=' . $module
@@ -76,7 +75,7 @@ class MaterialsList {
 		$materials = $model->getCollection($where, array(
 			'page' => $page,
 			'limit' => 20,
-			'order' => $order,
+			'order' => $model->getOrderParam(),
 		));
 		
 		if (empty($materials)) {
@@ -219,14 +218,6 @@ include_once ROOT . '/admin/template/header.php';
 ?>
 
 
-<?php if (!empty($_SESSION['message'])): ?>
-<div class="warning ok"><?php echo $_SESSION['message'] ?></div>
-<?php unset($_SESSION['message']); endif; ?>
-<?php if (!empty($_SESSION['errors'])): ?>
-<div class="warning error"><?php echo $_SESSION['errors'] ?></div>
-<?php unset($_SESSION['errors']); endif; ?>
-
-
 <form method="POST" action="" enctype="multipart/form-data">
 <div class="list">
 	<div class="title"><?php echo $pageNav; ?></div>
@@ -234,10 +225,10 @@ include_once ROOT . '/admin/template/header.php';
         <select onChange="window.location.href='/admin/comments_list.php?m=<?php echo $module ?>&order='+this.value;">
             <option><?php echo __('Ordering') ?></option>
             <option value="views"><?php echo __('Users') ?></option>
-            <option value="date"><?php echo __('Date') ?> (<)</option>
-            <option value="date&asc=1"><?php echo __('Date') ?> (>)</option>
-            <option value="premoder"><?php echo __('Premoderation') ?> (<)</option>
-            <option value="premoder&asc=1"><?php echo __('Premoderation') ?> (>)</option>
+            <option value="date"><?php echo __('Date') ?> (↓)</option>
+            <option value="date&asc=1"><?php echo __('Date') ?> (↑)</option>
+            <option value="premoder"><?php echo __('Premoderation') ?> (↓)</option>
+            <option value="premoder&asc=1"><?php echo __('Premoderation') ?> (↑)</option>
         </select>
     </div>
 	<div class="level1">

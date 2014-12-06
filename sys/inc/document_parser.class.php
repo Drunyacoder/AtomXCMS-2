@@ -5,7 +5,7 @@
 ## Author:       Andrey Brykin (Drunya)         ##
 ## Version:      1.7.5                          ##
 ## Project:      CMS                            ##
-## package       CMS Fapos                      ##
+## package       CMS AtomX                      ##
 ## subpackege    Document parser library        ##
 ## copyright     ©Andrey Brykin 2010-2014       ##
 ## last mod.     2014/02/21                     ##
@@ -15,11 +15,11 @@
 ##################################################
 ##												##
 ## any partial or not partial extension         ##
-## CMS Fapos,without the consent of the         ##
+## CMS AtomX,without the consent of the         ##
 ## author, is illegal                           ##
 ##################################################
 ## Любое распространение                        ##
-## CMS Fapos или ее частей,                     ##
+## CMS AtomX или ее частей,                     ##
 ## без согласия автора, является не законным    ##
 ##################################################
 
@@ -30,9 +30,9 @@
 * Quote/unquote global tags.
 *
 * @author        Andrey Brykin
-* @package       CMS Fapos
+* @package       CMS AtomX
 * @subpackage    Document parser
-* @link          http://fapos.net
+* @link          http://atomx.net
 */
 class Document_Parser {
 
@@ -80,16 +80,17 @@ class Document_Parser {
 
     /**
      * @param $message
+     * @param $entity (object|array)
      * @return mixed|string
      */
-    public function getPreview($message)
+    public function getPreview($message, $entity = false)
     {
         $outputContent = '';
 		
 		if (!empty($_SESSION['viewMessage'])) {
-			$viewer = new Fps_Viewer_Manager(new Fps_Viewer_Loader());
+			$viewer = $this->Register['Viewer'];
 			$context = array(
-				'message' => $this->Register['PrintText']->print_page($message),
+				'message' => $this->Register['PrintText']->parseBBCodes($message, $entity),
 			);
 			$outputContent = $viewer->view('previewmessage.html', $context);
 		}
@@ -97,17 +98,51 @@ class Document_Parser {
     }
 
 
-    /**
-     * @return mixed|string
-     */
-    public function getErrors()
+    public function wrapErrors($errors, $preprocess = false)
     {
-		$viewer = new Fps_Viewer_Manager(new Fps_Viewer_Loader());
-        $outputContent = '';
-        if (!empty($_SESSION['FpsForm']['error'])) {
-            $outputContent = $viewer->view('infomessage.html', array('info_message' => $_SESSION['FpsForm']['error']));
+        if ($preprocess) {
+            if (is_array($errors)) {
+                foreach ($errors as $k => $error) {
+                    $errors[$k] = $this->completeErrorMessage($error);
+                }
+            } else $errors = $this->completeErrorMessage($errors);
         }
-        return $outputContent;
+
+        $viewer = $this->Register['Viewer'];
+        return $viewer->view('infomessage.html', array('info_message' => $errors));
+    }
+
+
+    /**
+     * Displays HTTP error page & sends the HTTP headers
+     * with error code.
+     *
+     * @param int $code
+     */
+    public function showHttpError($code = 404)
+    {
+        $headers = array(
+            '404' => "HTTP/1.0 404 Not Found",
+            '403' => "HTTP/1.0 403 Forbidden You don't have permission to access / on this server.",
+            'ban' => "HTTP/1.0 403 Forbidden You don't have permission to access / on this server.",
+            'hack' => "HTTP/1.0 403 Forbidden You don't have permission to access / on this server.",
+        );
+        if (!empty($headers[$code])) {
+            header($headers[$code]);
+        }
+
+
+        // Set a markers collection used globalMarkers & addition key - "code"
+        // which displays HTTP error code.
+        $markers = array_merge(array(
+            'code' => (string)$code,
+        ), (array)$this->getGlobalMarkers());
+
+
+        $viewer = $this->Register['Viewer'];
+        $output = $viewer->view('error.html', array('context' => $markers));
+
+        die($output);
     }
 
 
@@ -357,6 +392,10 @@ class Document_Parser {
 		$out .= '</ul>';
 		return $out;
 	}
-	
+
+
+    private function completeErrorMessage($message) {
+        return "<li>$message</li>\n";
+    }
 }
 

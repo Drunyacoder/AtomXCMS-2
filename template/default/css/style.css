@@ -15,7 +15,8 @@
     font-family: 'IcoMoon';
     src: url('/template/default/fonts/icomoon.eot');
     src: url('/template/default/fonts/icomoon.eot?#iefix') format('embedded-opentype'),
-        url('/template/default/fonts/icomoon.svg#IcoMoon') format('svg'),                                              /* For CSSLOADER*/
+        url('/template/default/fonts/icomoon.svg#IcoMoon') format('svg'),                                              
+		/* For CSSLOADER*/
         url('/template/default/fonts/icomoon.woff') format('woff'),
         url('/template/default/fonts/icomoon.ttf') format('truetype');
     font-weight: normal;
@@ -28,7 +29,6 @@ body {text-align:center;margin: 0;background: url('../img/bg.jpg') repeat fixed;
 a {color: #d6d6d6;text-decoration: none;text-shadow: 0 1px 0 #000;font-family: ArialNarrow,sans-serif;cursor: pointer;}
 a:hover {color: #fff;}
 .clear {clear:both;}
-a.gallery > img {border:1px solid #777777; margin:3px; padding:3px;}
 /*----------------------------------------------------------ACTIVE_BUTTONS--------------------------------*/
 /*------------------------------CSSLOADER---------------------------------*/
 .for-redirect {
@@ -1020,6 +1020,11 @@ text-decoration:none !important;
 .codeSQL {padding:5px;}
 .codeCSS {}
 .codeJS {}
+
+a.gallery {display:inline-block; border:1px solid #333; background:#f3f3f3; padding:3px 3px 7px 3px; margin:2px;}
+a.gallery:hover {text-decoration:none;}
+/*a.gallery > img {border:1px solid #777777; margin:3px; padding:3px;}*/
+a .atm-img-description {font-size:11px; font-style:italic; color:#777; text-decoration:none;}
 
 /*--------------------------POLLS----------------------------*/
 .poll_question {margin: 10px;display: block !important;height: auto !important;}

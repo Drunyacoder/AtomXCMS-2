@@ -2,20 +2,20 @@
 /*---------------------------------------------\
 |											   |
 | @Author:       Andrey Brykin (Drunya)        |
-| @Version:      1.0                           |
+| @Version:      1.2                           |
 | @Project:      CMS                           |
 | @Package       AtomX CMS                     |
 | @subpackege    Stat Model                    |
-| @copyright     ©Andrey Brykin 2010-2012      |
-| @last mod      2012/04/25                    |
+| @copyright     ©Andrey Brykin 2010-2014      |
+| @last mod      2014/10/09                    |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
-| CMS Fapos,without the consent of the         |
+| CMS AtomX,without the consent of the         |
 | author, is illegal                           |
 |----------------------------------------------|
 | Любое распространение                        |
-| CMS Fapos или ее частей,                     |
+| CMS AtomX или ее частей,                     |
 | без согласия автора, является не законным    |
 \---------------------------------------------*/
 
@@ -32,12 +32,12 @@ class StatModel extends FpsModel
         'author' => array(
             'model' => 'Users',
             'type' => 'has_one',
-            'foreignKey' => 'author_id',
+            'internalKey' => 'author_id',
       	),
         'category' => array(
-            'model' => 'StatSections',
+            'model' => 'StatCategories',
             'type' => 'has_one',
-            'foreignKey' => 'category_id',
+            'internalKey' => 'category_id',
         ),
         'comments_' => array(
             'model' => 'Comments',
@@ -52,8 +52,20 @@ class StatModel extends FpsModel
         ),
     );
 
-	
-	
+    protected $orderParams = array(
+        'allowed' => array('views', 'date', 'comments'),
+        'default' => 'date',
+    );
+
+
+    public function getById($id)
+    {
+        $entity = parent::getById($id);
+        $entities = $this->getMaterialsAttaches(array($entity), 'stat');
+        return $entities[0];
+    }
+
+
     /**
      * @param array $params
      * @param array $addParams

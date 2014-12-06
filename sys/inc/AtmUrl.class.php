@@ -11,11 +11,11 @@
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
-| CMS Fapos,without the consent of the         |
+| CMS AtomX,without the consent of the         |
 | author, is illegal                           |
 |----------------------------------------------|
 | Любое распространение                        |
-| CMS Fapos или ее частей,                     |
+| CMS AtomX или ее частей,                     |
 | без согласия автора, является не законным    |
 \---------------------------------------------*/
 
@@ -24,89 +24,156 @@
 /**
  * @version       1.0.0
  * @author        Andrey Brykin
- * @url           http://fapos.net
+ * @url           http://atomx.net
  */
 class AtmUrl {
 
-	public function getEntryUrl($material, $module){
-		$matId = $material->getId();
-		$matTitle = $material->getTitle();
-		
-		
-		if (empty($matId)) 
-			trigger_error('Empty material ID', E_USER_ERROR);
-			
-		if (Config::read('hlu') != 1 || empty($matTitle)) {
-			$url = $module . '/view/' . $matId;
-			return $url;
-		}
-		
-		// extention
-		$extention = '';
-		$hlu_extention = Config::read('hlu_extention');
-		if (!empty($hlu_extention)) {
-			$extention = $hlu_extention;
-		}
-		
-		// URL pattern
-		$pattern = '/' . $module . '/%s' . $extention;
-		
-		
-		// Check tmp file with assocciations and build human like URL
-		clearstatcache();
-		$tmp_file = $this->getTmpFilePath($matId, $module);
-		
-		
-		if (file_exists($tmp_file) && is_readable($tmp_file)) {
-			$title = file_get_contents($tmp_file);
-			if (!empty($title)) {			
-			
-				$tmp_file_2 = $this->getTmpFilePath($title, $module);
-				if (!file_exists($tmp_file_2)) {
-					file_put_contents($tmp_file_2, $matId);
-				}
-				return h(sprintf($pattern, $title));
-			}
-		}
-		
-		
-		$title = $this->translit($matTitle);
-		$title = strtolower(preg_replace('#[^a-z0-9]#i', '_', $title));
-		
-		
-		// Colission protect
-		$tmp_file_title = $this->getTmpFilePath($title, $module);
-		while (file_exists($tmp_file_title)) {
-			$collision = file_get_contents($tmp_file_title);
-			if (!empty($collision) && $collision != $matId) {
-				$title .= '_';
-				$tmp_file_title = $this->getTmpFilePath($title, $module);
-			
-			} else {
-				$tmp_file_title_flag = true;
-				break;
-			}
-		}
+    public function saveOldEntryUrl($entity, $module, $new_title = null, $removeTmpFile = true)
+    {
+        if ($removeTmpFile === true) {
+            $this->removeOldTmpFile($entity, $module);
+            return true;
+        }
+        $old_title = $entity->getTitle();
+        $matId = $entity->getId();
+        $matTitle = $new_title;
 
-		
-		file_put_contents($tmp_file, $title);
-		if (empty($tmp_file_title_flag)) 
-			file_put_contents($this->getTmpFilePath($title, $module), $matId);
-		return h(sprintf($pattern, $title));
-	}
-	
-	
-	/**
-	 * Only create HLU URL by title
-	 *
-	 * @param stirng title
-	 * @return string
-	 */
-	public function getUrlByTitle($title) {
-		$title = $this->translit($title);
-		$title = strtolower(preg_replace('#[^a-z0-9]#i', '_', $title));
+
+        if (empty($matId))
+            throw new Exception('Empty material ID');
+
+        // Check tmp file with assocciations and build human like URL
+        clearstatcache();
+        $old_title = $this->getUrlByTitle($old_title);
+        $tmp_file_id = $this->getTmpFilePath($matId, $module);
+        $tmp_file_title = $this->getTmpFilePath($old_title, $module);
+        $title = $this->getUrlByTitle($matTitle);
+        $params = array(
+            'id' => $matId,
+            'title' => $title,
+        );
+
+
+        // Colission protect
+        while (file_exists($tmp_file_title)) {
+            $collision = json_decode(file_get_contents($tmp_file_title), true);
+            if (is_array($collision) && isset($collision['id']) && $collision['id'] != $matId) {
+                $old_title .= '_';
+                $tmp_file_title = $this->getTmpFilePath($old_title, $module);
+            } else break;
+        }
+
+        // check the old URLs (by the old title(s)) & put into them new data.
+        if (file_exists($tmp_file_id)) {
+            $path_to_tmp_file_title = json_decode(file_get_contents($tmp_file_id), true);
+            if (count($path_to_tmp_file_title) && is_array($path_to_tmp_file_title)) {
+                foreach ($path_to_tmp_file_title as $path) {
+                    if (file_exists($path)) {
+                        file_put_contents($path, json_encode($params));
+                    }
+                }
+            }
+        }
+        if (empty($path_to_tmp_file_title) || !is_array($path_to_tmp_file_title))
+            $path_to_tmp_file_title = array();
+        if (!in_array($tmp_file_title, $path_to_tmp_file_title)) $path_to_tmp_file_title[] = $tmp_file_title;
+        file_put_contents($tmp_file_id, json_encode($path_to_tmp_file_title));
+
+
+        file_put_contents($tmp_file_title, json_encode($params));
+        return true;
+    }
+
+
+    /**
+     * Removes just one temporary file related to the current object title
+     *
+     * @param $entity object
+     * @param $module string
+     */
+    public function removeOldTmpFile($entity, $module)
+    {
+        $title = $this->getUrlByTitle($entity->getTitle());
+        $tmp_file_title = $this->getTmpFilePath($title, $module);
+        if (file_exists($tmp_file_title)) @unlink($tmp_file_title);
+    }
+
+
+    /**
+     * Removes the all temporary files relates to the entity.
+     * Usualy uses during an entities deleting process.
+     *
+     * @param $entity object
+     * @param $module string
+     */
+    public function removeOldTmpFiles($entity, $module)
+    {
+        $tmp_file = $this->getTmpFilePath($entity->getId(), $module);
+        if (file_exists($tmp_file)) {
+            $data = json_decode(file_get_contents($tmp_file), true);
+            if (!empty($data) && is_array($data)) {
+                foreach ($data as $path) {
+                    clearstatcache();
+                    if (file_exists($path)) @unlink($path);
+                }
+            }
+            @unlink($tmp_file);
+        }
+    }
+
+
+    /**
+     * Return complete URL to the material page.
+     * If human like URL is enabled, will be returned human like URL.
+     * In opposite will be returned common URL. For example, /news/view/1/, for News module.
+     *
+     * @param $material object
+     * @param $module string
+     * @return string
+     */
+    public function getEntryUrl($material, $module){
+        if (Config::read('hlu') == 1) {
+            $pattern = '/' . $module . '/%s';
+
+
+            $title = $material->getClean_url_title();
+
+            if (!$title) {
+                // When we save title the clean_url_title will be set automatically
+                $material->setTitle($material->getTitle());
+                $title = $material->getClean_url_title();
+
+                if ($title) {
+                    $material->save();
+
+                } else { // Paranoia mode enable
+                    $title = $this->getUrlByTitle($material->getTitle());
+                }
+            }
+
+
+            $url = h(sprintf($pattern, $title));
+        } else {
+            $url = '/' . $module . '/' .
+                ($module === 'forum' ? 'view_theme' : 'view') .
+                '/' . $material->getId() . '/';
+        }
+        return $this->__invoke($url);
+    }
+
+
+    /**
+     * Only converts a title to the HLU title & add HLU Extension if it exists.
+     *
+     * @param $title string
+     * @param $use_extention bool
+     * @return string
+     */
+	public function getUrlByTitle($title, $use_extention = true) {
+		//$title = $this->translit($title);
+		$title = strtolower(preg_replace('#[^0-9a-zА-Я]#ui', '_', $title));
 		$hlu_extention = Config::read('hlu_extention');
-		return $title . $hlu_extention;
+		return ($use_extention == 1) ? $title . $hlu_extention : $title;
 	}
 	
 	
@@ -191,10 +258,10 @@ class AtmUrl {
 			!preg_match('#^(/?sys/.+|/image/.+|/?template/|/?admin)#', $url) &&
 			$lang !== $def_lang
 		) 
-			? '/' . WWW_ROOT . $lang . '/'
-			: '/' . WWW_ROOT;
-			
-		$url = $root . $url;
+			? '/' . trim(WWW_ROOT, '/') . '/' . $lang . '/'
+			: '/' . trim(WWW_ROOT, '/');
+
+		if (substr($url, 0, strlen($root)) !== $root) $url = $root . $url;
         $url = self::checkAndRepair($url);
         return Pather::parseRoutes($url);
     }

@@ -4,7 +4,7 @@
 ## Author:       Andrey Brykin (Drunya)         ##
 ## Version:      0.7                            ##
 ## Project:      CMS                            ##
-## package       CMS Fapos                      ##
+## package       CMS AtomX                      ##
 ## subpackege    Geting file size function      ##
 ## copyright     ©Andrey Brykin 2010-2011       ##
 ##################################################
@@ -13,11 +13,11 @@
 ##################################################
 ##												##
 ## any partial or not partial extension         ##
-## CMS Fapos,without the consent of the         ##
+## CMS AtomX,without the consent of the         ##
 ## author, is illegal                           ##
 ##################################################
 ## Любое распространение                        ##
-## CMS Fapos или ее частей,                     ##
+## CMS AtomX или ее частей,                     ##
 ## без согласия автора, является не законным    ##
 ##################################################
 
@@ -143,7 +143,7 @@ function downloadAtomAttaches($module, $entity_id = '') {
 			$filename = getSecureFilename($_FILES[$attach_name]['name'], $files_dir);
 			$ext = strrchr($_FILES[$attach_name]['name'], ".");
 
-			$is_image = isImageFile($_FILES[$attach_name]['type'], $ext) ? 1 : 0;
+			$is_image = isImageFile($_FILES[$attach_name]['type'], $ext);
 
 			// Перемещаем файл из временной директории сервера в директорию files
 			if (move_uploaded_file($_FILES[$attach_name]['tmp_name'], $files_dir . $filename)) {
@@ -189,15 +189,15 @@ function downloadAtomAttaches($module, $entity_id = '') {
  */
 function getSecureFilename($filename, $dirToCheck) {
 	if (empty($filename) || !is_string($filename)) {
-		return md5(microtime().rand(0, 99999)) . '-' . date("Y-m-d-H-i-s");
+        $filename = md5(microtime().rand(0, 99999)) . '-' . date("Y-m-d-H-i-s") . '.txt';
 	}
 	
 	
 	$ext = strrchr($filename, ".");
-	$ext = (isPermittedFile($ext)) ? $ext : '.txt';
+	$ext = (isPermittedFile($ext)) ? strtolower($ext) : '.txt';
 
 	
-	$filename = preg_replace('#[^a-z\d_\-]+#iu', 'x', mb_substr($filename, 0, mb_strlen($filename) - mb_strlen($ext)));
+	$filename = preg_replace('#[^a-z\d_\-]+#iu', 'x', mb_substr($filename, 0, -mb_strlen($ext)));
 	while (file_exists($dirToCheck . $filename . $ext)) {
 		$filename .= rand(0, 999);
 		clearstatcache();

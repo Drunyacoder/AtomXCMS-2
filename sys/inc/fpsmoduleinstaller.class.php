@@ -4,7 +4,7 @@
 |  @Author:       Andrey Brykin (Drunya)         |
 |  @Version:      1.0.2                          |
 |  @Project:      CMS                            |
-|  @package       CMS Fapos                      |
+|  @package       CMS AtomX                      |
 |  @subpackege    Module Installer  Class        |
 |  @copyright     ©Andrey Brykin 2010-2014       |
 |  @last mod.     2014/05/07                     |
@@ -13,11 +13,11 @@
 /*-----------------------------------------------\
 | 												 |
 |  any partial or not partial extension          |
-|  CMS Fapos,without the consent of the          |
+|  CMS AtomX,without the consent of the          |
 |  author, is illegal                            |
 |------------------------------------------------|
 |  Любое распространение                         |
-|  CMS Fapos или ее частей,                      |
+|  CMS AtomX или ее частей,                      |
 |  без согласия автора, является не законным     |
 \-----------------------------------------------*/
 
@@ -96,15 +96,23 @@ class FpsModuleInstaller
 
 
     /**
+     * Install new a modules.
+     * If you has put a new module files to modules directory,
+     * you can find that module in the left-side menu.
+     * Choose "install" in the module dropdown menu to start install process.
      *
+     * During the installation process a some files and settings will be import
+     * to the Atom.
+     * Files:
+     * @module/install_template/html -> @atomx_root/template/@current_template/html/@module
+     * @module/install_template/css -> @atomx_root/template/@current_template/css
      */
     public function installModule($module)
     {
 		$Register = Register::getInstance();
 		$instmodPath = ROOT . '/modules/' . $module . '/';
+
 		if (file_exists($instmodPath)) {
-		
-		
 			$instDbQueries = $instmodPath . $this->DBQueriesFile;
 			$instOrm = $instmodPath . $this->OrmFiles;
 			$instGroupsRules = $instmodPath . $this->rulesFile;
@@ -131,7 +139,7 @@ class FpsModuleInstaller
 
 
                 // MODULES TEMPLATE IMPORT -------------------------------
-                $this->importTemplateFiles($instTemplateFiles);
+                $this->importTemplateFiles($instTemplateFiles, $module);
             } catch (Exception $e) {
                 throw new Exception('Module installation has been stoped (' . $e->getMessage() . ')');
             }
@@ -241,10 +249,25 @@ class FpsModuleInstaller
     }
 
 
-	public function importTemplateFiles($pathToTemplateFiles)
+	public function importTemplateFiles($pathToTemplateFiles, $module)
 	{
         if (file_exists($pathToTemplateFiles) && is_dir($pathToTemplateFiles)) {
-            copyr($pathToTemplateFiles, ROOT . '/template/' . getTemplateName(), 0777);
+            $templatePath = ROOT . '/template/' . getTemplateName();
+            $dirs = glob($pathToTemplateFiles . '/*');
+
+            foreach ($dirs as $dir) {
+                $dirName = substr(strrchr($dir, '/'), 1);
+
+                // Copying HTML templates to the special module directory
+                if ($dirName === 'html') {
+                    touchDir($templatePath . '/html/' . $module, 0777);
+                    copyr($dir, $templatePath . '/html/' . $module, 0777);
+                    continue;
+                }
+
+                touchDir($templatePath . '/' . $dirName, 0777);
+                copyr($dir, $templatePath . '/' . $dirName, 0777);
+            }
         }
 	}
 }

@@ -11,11 +11,11 @@
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
-| CMS Fapos,without the consent of the         |
+| CMS AtomX,without the consent of the         |
 | author, is illegal                           |
 |----------------------------------------------|
 | Любое распространение                        |
-| CMS Fapos или ее частей,                     |
+| CMS AtomX или ее частей,                     |
 | без согласия автора, является не законным    |
 \---------------------------------------------*/
 
@@ -27,6 +27,13 @@
 class Fps_Viewer_Loader
 {
     /**
+     * Template files root dir
+     *
+     * @var string
+     */
+    public $templateRoot;
+
+    /**
      * If isn't set, will be used "default" dir in current template.
      * Example: /template/current/html/MODULE/filename.html
      *
@@ -35,12 +42,21 @@ class Fps_Viewer_Loader
     public $layout;
 
     /**
+     * If the Viewer can't find a file in <viewer_root_dir>/<layout>,
+     * he tried find it in <viewer_root_dir>/<defaultLayout>
+     * or in <viewer_root_dir>/ if <defaultLayout> is empty.
+     *
+     * @var string
+     */
+    public $defaultLayout = 'default';
+
+    /**
      * Used for change "[~ ID ~]" to URLs.
      * If isn't set, "[~ ID ~]" won't changed.
      *
      * @var object
      */
-    public $pagesModel;
+    public $createPageUrlCallback;
 
     /**
      * Used for process plugins.
@@ -48,7 +64,7 @@ class Fps_Viewer_Loader
      *
      * @var string(Class name)
      */
-    public $pluginsController;
+    public $pluginsCallback;
 
     /**
      * Used for parse snippets.
@@ -57,49 +73,67 @@ class Fps_Viewer_Loader
      * @var object
      */
     public $snippetsParser;
-
-    /**
-     * Used for get something from @var::read();
-     *
-     * @var string
-     */
-    public $config;
 	
 	/**
-	 * Used for debuging
+	 * Used for debuging.
+	 * Example: @var(
+	 *              array('Column1', 'Column2', 'Column3'[, ...])
+	 *              array($column1Data, $column2Data, $column3Data[, ...])
+	 *           )
 	 *
-	 * @var  string(Class name)
+	 * @var  function
 	 */
-	public $debug;
-	
-	
-	public $rootDir = 'default';
-	
+	public $debugCallback;
+
+	/**
+	 * @var array with functions
+	 */
 	public $cache = false;
 
 
 	public function __construct(array $params = array())
 	{
+        $this->templateRoot = (!empty($params['template_root'])) ? $params['template_root'] : false;
+		$this->layout = (!empty($params['layout'])) ? $params['layout'] : 'default';
+		$this->defaultLayout = (isset($params['default_layout'])) ? $params['default_layout'] : 'default';
+
+		
+		// Is it the Atom?
         if (class_exists('Register') && is_callable(array('Register', 'getInstance'))) {
             $Register = Register::getInstance();
-            $this->layout = (!empty($params['layout'])) ? $params['layout'] : 'default';
-            $this->pagesModel = $Register['ModManager']->getModelInstance('pages');
-            $this->snippetsParser = (!empty($params['snippets_object'])) ? $params['snippets_object'] : new AtmSnippets;
-            $this->pluginsController = (!empty($params['plugins_class'])) ? $params['plugins_class'] : 'Plugins';
-            $this->config = (!empty($params['config_class'])) ? $params['config_class'] : 'Config';
-            $this->debug = (!empty($params['debug_class'])) ? $params['debug_class'] : 'AtmDebug';
-            $this->rootDir = (isset($params['root_dir'])) ? $params['root_dir'] : 'default';
-
-			$cache = clone $Register['Cache'];
-			$cache->prefix = 'template';
-			$cache->cacheDir = ROOT . '/sys/cache/templates/';
-			$cache->lifeTime = 86400;
-			$this->cache = array(
-				'check' => array($cache, 'check'),
-				'read' => array($cache, 'read'),
-				'write' => array($cache, 'write'),
-			);
+			$this->snippetsParser = (!empty($params['snippets_object'])) ? $params['snippets_object'] : new AtmSnippets;
 			
+            $this->createPageUrlCallback = function($pageId) use ($Register) {
+				$model = $Register['ModManager']->getModelInstance('pages');
+				return get_url('/' . $model->buildUrl($pageId));
+			};
+			   
+			$this->pluginsCallback = (!empty($params['plugins_callback'])) 
+				? $params['plugins_callback'] 
+				: function() {
+					$args = func_get_args();
+					return call_user_func_array(array('Plugins', 'intercept'), $args);
+				};
+            
+			$this->debugCallback = (!empty($params['debug_callback'])) 
+				? $params['debug_callback'] 
+				: function() {
+					$args = func_get_args();
+					return call_user_func_array(array('AtmDebug', 'addRow'), $args);
+				};
+            
+
+			if (Config::read('templates_cache') == 1) {
+				$cache = clone $Register['Cache'];
+				$cache->prefix = 'template';
+				$cache->cacheDir = ROOT . '/sys/cache/templates/';
+				$cache->lifeTime = 86400;
+				$this->cache = array(
+					'check' => array($cache, 'check'),
+					'read' => array($cache, 'read'),
+					'write' => array($cache, 'write'),
+				);
+			}
         }
 	}
 }

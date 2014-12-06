@@ -11,11 +11,11 @@
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
-| CMS Fapos,without the consent of the         |
+| CMS AtomX,without the consent of the         |
 | author, is illegal                           |
 |----------------------------------------------|
 | Любое распространение                        |
-| CMS Fapos или ее частей,                     |
+| CMS AtomX или ее частей,                     |
 | без согласия автора, является не законным    |
 \---------------------------------------------*/
 
@@ -32,7 +32,7 @@ class ThemesModel extends FpsModel
         'forum' => array(
             'model' => 'Forum',
             'type' => 'has_one',
-            'foreignKey' => 'id_forum',
+            'internalKey' => 'id_forum',
       	),
         'poll' => array(
             'model' => 'Polls',
@@ -42,12 +42,12 @@ class ThemesModel extends FpsModel
         'author' => array(
             'model' => 'Users',
             'type' => 'has_one',
-            'foreignKey' => 'id_author',
+            'internalKey' => 'id_author',
         ),
         'last_author' => array(
             'model' => 'Users',
             'type' => 'has_one',
-            'foreignKey' => 'id_last_author',
+            'internalKey' => 'id_last_author',
         ),
         'postslist' => array(
             'model' => 'Posts',
