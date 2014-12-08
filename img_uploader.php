@@ -1,6 +1,18 @@
 <?php
 include_once 'sys/boot.php';
 
+
+// Check access. This script should be available only from the admin panel
+if (empty($_SESSION['adm_panel_authorize']) ||
+    $_SESSION['adm_panel_authorize'] < time() ||
+    empty($_SESSION['user'])
+) {
+    die('Access denied');
+} else if (!empty($_SESSION['adm_panel_authorize'])) {
+    $_SESSION['adm_panel_authorize'] = (time() + Config::read('session_time', 'secure'));
+}
+
+
 // files storage folder
 $dir = ROOT . '/sys/files/pages/';
 if (!file_exists($dir)) mkdir($dir, 0777, true);
