@@ -2,12 +2,12 @@
 /*---------------------------------------------\
 |											   |
 | @Author:       Andrey Brykin (Drunya)        |
-| @Version:      1.0                           |
+| @Version:      1.1                           |
 | @Project:      CMS                           |
 | @Package       AtomX CMS                     |
 | @subpackege    AtmApiService class           |
 | @copyright     ©Andrey Brykin 2010-2014      |
-| @last mod.     2014/11/01                    |
+| @last mod.     2014/12/08                    |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
@@ -41,7 +41,7 @@ class AtmApiService {
 
     public static function getServerMessage()
     {
-        if (!Config::read('allow_server_messages'))
+        if (!Config::read('allow_server_notifications'))
             return '';
 
         $context  = stream_context_create(array('http' => array('method'  => 'GET', 'timeout' => 2)));
