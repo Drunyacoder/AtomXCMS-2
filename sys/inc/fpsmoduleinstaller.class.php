@@ -253,10 +253,10 @@ class FpsModuleInstaller
 	{
         if (file_exists($pathToTemplateFiles) && is_dir($pathToTemplateFiles)) {
             $templatePath = ROOT . '/template/' . getTemplateName();
-            $dirs = glob($pathToTemplateFiles . '/*');
+            $dirs = glob($pathToTemplateFiles . '/*', GLOB_ONLYDIR);
 
             foreach ($dirs as $dir) {
-                $dirName = substr(strrchr($dir, '/'), 1);
+                $dirName = basename($dir);
 
                 // Copying HTML templates to the special module directory
                 if ($dirName === 'html') {
