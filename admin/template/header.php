@@ -122,7 +122,7 @@
 
 				$new_ver = AtmApiService::getLastVersion();
 				$new_ver = ($new_ver)
-                    ? '<a href="https://github.com/Drunyacoder/AtomXCMS-2/releases" title="Last version">' . h($new_ver) . '</a>'
+                    ? '<a href="https://github.com/Drunyacoder/AtomXCMS-2/releases" title="Last version">' . h(trim($new_ver)) . '</a>'
                     : '';
 				
 				$group_info = $Register['ACL']->get_user_group($_SESSION['user']['status']);
