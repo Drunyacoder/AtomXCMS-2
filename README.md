@@ -37,4 +37,4 @@ AtomX is a fast, modern and sterling Content Management System.
 * [Github Repository](https://github.com/Drunyacoder/AtomXCMS-2/)
 
 Copyright (C) 2012-2014 Brykin Andrey / Drunya [drunyacoder@gmail.com]
-Project developed with support by the hosting provider QWARTA.RU.
+Project have been developing with support by the hosting provider QWARTA.RU.
