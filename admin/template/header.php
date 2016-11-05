@@ -122,7 +122,7 @@
 
 				$new_ver = AtmApiService::getLastVersion();
 				$newVersion = ($new_ver)
-					? '<a href="https://atomx.net" title="Next version">' . __('New version of AtomX') . '</a>'
+					? '<a href="https://github.com/Drunyacoder/AtomXCMS-2/releases" title="Next version">' . __('New version of AtomX') . '</a>'
 					: '';
 				
 				
