@@ -1617,7 +1617,7 @@ Class ForumModule extends Module {
 	{
 		//check access
 		$this->ACL->turn(array('forum', 'add_themes'));
-		if (!isset($id_forum) || !isset($_POST['theme']) || !isset($_POST['main_text']))
+		if (!isset($id_forum) || !isset($_POST['theme']) || !isset($_POST['mainText']))
             redirect('/forum/');
 
 		$id_forum = intval($id_forum);
@@ -3533,7 +3533,7 @@ Class ForumModule extends Module {
 					'max_lenght' => 250,
 					'pattern' => V_TITLE,
 				),
-				'main_text' => array(
+				'mainText' => array(
 					'required' => true,
 					'max_lenght' => Config::read('max_post_lenght', 'forum'),
 					'title' => 'Text',
