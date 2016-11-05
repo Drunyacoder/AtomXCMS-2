@@ -28,6 +28,7 @@
  */
 class AtmApiService {
 
+    private static $apiUrl = 'http://atomx.net/';
 
 	public static function getLastVersion()
     {
