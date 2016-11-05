@@ -23,7 +23,7 @@
 	<link type="text/css" rel="StyleSheet" href="<?php echo WWW_ROOT ?>/sys/js/fancybox/css/fancy.css" />
 	
 	<link rel="StyleSheet" type="text/css" href="<?php echo WWW_ROOT ?>/admin/template/css/style.css" />
-	<link rel="StyleSheet" href="<?php echo WWW_ROOT ?>/admin/template/css/font-awesome.min.css" />
+	<!--<link rel="StyleSheet" href="<?php echo WWW_ROOT ?>/admin/template/css/font-awesome.min.css" />-->
 	
 	<script type="text/javascript">
 	
@@ -121,9 +121,10 @@
 
 
 				$new_ver = AtmApiService::getLastVersion();
-				$new_ver = ($new_ver)
-                    ? '<a href="https://github.com/Drunyacoder/AtomXCMS-2/releases" title="Last version">' . h(trim($new_ver)) . '</a>'
-                    : '';
+				$newVersion = ($new_ver)
+					? '<a href="https://atomx.net" title="Next version">' . __('New version of AtomX') . '</a>'
+					: '';
+				
 				
 				$group_info = $Register['ACL']->get_user_group($_SESSION['user']['status']);
 				$group_title = $group_info['title'];
@@ -226,7 +227,6 @@
 	</div>
 	<div id="wrapper">
 
-		
 		<!-- AdminBar -->
 		<script type="text/javascript">
 
@@ -237,7 +237,7 @@
 		  'sep',
 		  '<span><?php echo __('Version of AtomX'); ?> [ <b><?php echo FPS_VERSION ?></b> ]</span>',
 		  <?php if ($new_ver): ?>
-		  '<span><?php echo __('New version of AtomX'); ?> [ <?php echo $new_ver; ?> ]</span>',
+		  '<span><?php echo $newVersion; ?> [ <?php echo $new_ver; ?> ]</span>',
 		  <?php endif; ?>
 		  'sep',
 		  '<a href="/admin/settings.php?m=sys"><?php echo __('Common settings'); ?></a>',
