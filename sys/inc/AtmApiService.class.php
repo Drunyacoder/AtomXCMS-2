@@ -32,32 +32,40 @@ class AtmApiService {
 
 	public static function getLastVersion()
     {
+		return false;
+		
+		$ids = self::$apiUrl . 'cdn/versions.txt';
 		$id = 'versions.txt';
 		$cache = new Cache;
 		$cache->dirLevel = 0;
+		//$cache->lifeTime = 20;
 		$cache->cacheDir = ROOT . '/cdn/';
 
-		
-		if ($cache->check($id)) {
+	
+		if ($cache->check($id)) { 
 			return $cache->read($id);
 		}
 	
 		
 		$context  = stream_context_create(array('http' => array('method'  => 'GET', 'timeout' => 2)));
-		$new_ver = @file_get_contents(self::$apiUrl . 'cdn/versions.txt', false, $context);	
-		if ($new_ver > 46) {
-			return false;
-		}
+		$new_ver = @file_get_contents($ids, false, $context);
 		
-
-		$new_ver = preg_replace('#^(\d{1,2})([.]\d{1,2})([.]\d{0,2})(\w{0,40})*$#ui', "$1$2$3$4", $new_ver);
+		
 		if ($new_ver <= FPS_VERSION) {
-			$new_ver = '';
+			$new_ver = true; 
 		}
 		
-		$cache->write($new_ver, $id);
+		preg_match('#(\d{1,2})(.?\d{1,2})(.?\d{0,2})([a-zA-Z. +-_-]{0,30})#i', $new_ver, $matches);
+		if ($matches[0] == true) {
+			$matches = $matches[0]; 
+		} else {
+			$matches = '';
+		}
+	
 		
-		return $new_ver;
+		$cache->write($matches, $id);
+		
+		return $matches;
 	}
 	
 
