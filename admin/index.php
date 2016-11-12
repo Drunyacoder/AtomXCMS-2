@@ -22,7 +22,6 @@
 ## без согласия автора, является не законным    ##
 ##################################################
 
-
 include_once '../sys/boot.php';
 include_once ROOT . '/admin/inc/adm_boot.php';
 
@@ -34,7 +33,6 @@ $isMainPage = true;
 $pageTitle = __('Admin Panel');
 $pageNav = $pageTitle . __(' - General information');
 $pageNavr = '';
-
 
 
 
@@ -88,7 +86,6 @@ $all_hosts[0]['hosts_cnt'] += $today_hosts;
 
 
 
-
 	
 //echo $header;
 include 'template/header.php';
@@ -107,7 +104,8 @@ include 'template/header.php';
                     });
                 });
 
-                $('.atm-flex-box .atm-flex-child > .list .setting-item').css('height', '100%');
+				//$('.atm-flex-box .atm-flex-child > .list .setting-item').css('height', '100%');
+                $('.atm-flex-box .atm-flex-child > .list').css('height', '100%');
             }
         };
         $(window).resize(resizeHandler);
@@ -294,7 +292,7 @@ include 'template/header.php';
 			<div class="setting-item">
 				<div class="left">
 					<?php echo __('Total hosts') ?>
-					<span class="comment">*Хост - это уникальный посетитель, фактически - это<br />
+					<span class="comment">*Хост - это уникальный посетитель, фактически - это
 					заход на сайт с разных компьютеров или IP адресов</span>
 				</div>
 				<div class="right"><?php echo $all_hosts[0]['hosts_cnt'] ?></div>

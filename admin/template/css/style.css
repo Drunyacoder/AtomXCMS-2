@@ -13,16 +13,20 @@ h1, h2, h3, h4 {color:#555;}
 .green {color:#96c71e;}
 .red {color:#f10000;}
 .top-index {font-size:11px; position:relative; top:-6px; margin-left:2px;}
+#side-menu-label {width:70px; position:fixed; top:330px; left:-30px; font-size:13px; -webkit-border-radius:4px 4px 0px 0px; border-radius:4px 4px 0px 0px; background:#3C3C3D; z-index:999; padding:3px 5px; -webkit-transform: rotate(90deg); transform: rotate(90deg); text-align:center; -moz-box-shadow:inset 0 -8px 15px #0f0f0f, 0 -1px 0 #96c71e, 0 -1px 0 #96c71e, -1px -2px 3px 2px #111; box-shadow:inset 0 -8px 15px #0f0f0f, 0 -1px 0 #96c71e, 0 -1px 0 #96c71e, -1px -2px 3px 2px #111; }
+#side-menu-label a {text-decoration: none; color: #9b1;}
+#side-menu-label:hover {background:#555; -moz-box-shadow:inset 0 -6px 15px #222, 0 -1px 0 #96c71e, 0 -1px 0 #96c71e, 1px -2px 2px 1px #111; box-shadow:inset 0 -6px 15px #222, 0 -1px 0 #96c71e, 0 -1px 0 #96c71e, 1px -2px 2px 1px #111;}
 
 /* Flexbox */
-.atm-flex-box {display:flex; flex-flow:row wrap; justify-content: space-between; align-content: space-between;}
-.atm-flex-box .atm-flex-child {flex:2 3 auto; margin:10px;}
+.atm-flex-box {display:flex; flex-flow:column; flex-wrap:nowrap; justify-content: space-between; align-content: space-between;}
+.atm-flex-box .atm-flex-child {flex:0 0 auto; margin:10px;}
 .atm-flex-box .atm-flex-child > .list {height:100%;}
-.atm-flex-box .atm-flex-child > .list .level1 {height: calc(100% - 51px);}
+.atm-flex-box .atm-flex-child > .list .level1 {height: calc(100% - 43px);}
 .atm-flex-box .atm-flex-child > .list .level1 .items {display:flex; flex-flow: column nowrap; align-content: stretch; align-items: stretch; height: calc(100% - 53px);}
-.atm-flex-box .atm-flex-child > .list .level1 .items .setting-item {flex: 1 2 auto; /*height:100%;*/}
-.atm-flex-box .atm-flex-child > .list .level1 .items .setting-item .right {height:100%;}
-
+/*.atm-flex-box .atm-flex-child > .list .level1 .items .setting-item {flex: 1 2 auto; /*height:100%;*//*}
+.atm-flex-box .atm-flex-child > .list .level1 .items .setting-item .right {height:100%;}*/
+.atm-flex-box .atm-flex-child > .list .level1 .items .setting-item {flex: 1 2 auto; height:100%;}
+.atm-flex-box .atm-flex-child > .list .level1 .items .setting-item .left {height: calc(100% - 41px);}
 
 /* pagination */
 .pagination {color:#fff;}

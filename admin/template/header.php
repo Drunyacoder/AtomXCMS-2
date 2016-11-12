@@ -90,7 +90,7 @@
 <body>
 	<div class="headmenuwrap">
 		<div class="headmenu">
-			<div class="logo"></div>
+			<a href="<?php echo WWW_ROOT; ?>/admin/"><div class="logo"></div></a>
 			<div class="menu" id="topmenu">
 				<ul>
 					<li><a href="#">Общее</a></li>
@@ -222,8 +222,8 @@
 			}
 		}
 	</script>
-	<div id="side-menu-label" style="width:65px; height:10px; position:fixed; top:330px; left:-30px; border:1px solid #C8C7C7; -webkit-border-radius:3px 3px 0px 0px; border-radius:3px 3px 0px 0px; background:#3C3C3D; color:#96C703; z-index:999; border-bottom:none; padding:2px 5px; -webkit-transform: rotate(90deg); transform: rotate(90deg); letter-spacing:5px; text-align: center;" onClick="hideSide();">
-		Hide
+	<div id="side-menu-label" onClick="hideSide();">
+		<a href="#">Спрятать</a>
 	</div>
 	<div id="wrapper">
 
