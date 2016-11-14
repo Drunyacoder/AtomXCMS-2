@@ -29,18 +29,17 @@
 class AtmApiService {
 
     private static $apiUrl = 'http://atomx.net/';
+	
 
 	public static function getLastVersion()
     {
-		return false;
-		
-		$ids = self::$apiUrl . 'cdn/versions.txt';
 		$id = 'versions.txt';
+		$ids = self::$apiUrl . 'cdn/' . $id;
 		$cache = new Cache;
 		$cache->dirLevel = 0;
 		//$cache->lifeTime = 20;
 		$cache->cacheDir = ROOT . '/cdn/';
-
+		
 	
 		if ($cache->check($id)) { 
 			return $cache->read($id);
@@ -67,8 +66,8 @@ class AtmApiService {
 		
 		return $matches;
 	}
-	
 
+	
     public static function getServerMessage()
     {
         if (!Config::read('allow_server_notifications'))
