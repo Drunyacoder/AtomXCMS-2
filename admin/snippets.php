@@ -78,7 +78,7 @@ if (isset($_GET['a']) && $_GET['a'] == 'ed') {
 
 <div class="warning">
 	Снипеты позволяют создать блоки php кода и подключать их в любом месте сайта, прямо в шаблонах.<br />
-	Вызвать снипет из шаблона можно так <strong>{[ИМЯ СНИППЕТА]}</strong><br />
+	Вызвать сниппет из шаблона можно так <strong>{[ИМЯ СНИППЕТА]}</strong><br />
 	После того, как Вы добавите метку в шаблон, она будет заменена на результат выполнения кода сниппета.<br />
 	Тут приведен список, уже созданных, сниппетов. Вы можете их просматривать и редактировать.<br />
 	Для то, что бы создавать и редактировать сниппеты, желательно, обладать, хотя бы, базовыми знаниями PHP
@@ -87,9 +87,9 @@ if (isset($_GET['a']) && $_GET['a'] == 'ed') {
 
 
 <div class="white">
-	<div class="pages-tree" style="height:550px;">
+	<div class="pages-tree">
 		<div class="title"><?php echo __('Snippets') ?></div>
-		<div class="wrapper">
+		<div class="wrapper" style="height:390px;">
 			<div class="tree-wrapper">
 				<div id="pageTree">
 				<?php
@@ -103,7 +103,7 @@ if (isset($_GET['a']) && $_GET['a'] == 'ed') {
 				</div>
 			</div>
 		</div>
-		<div style="width:100%;">&nbsp;</div>
+		<!--<div style="width:100%;">&nbsp;</div>-->
 	</div>
 	
 	
@@ -131,7 +131,7 @@ if (isset($_GET['a']) && $_GET['a'] == 'ed') {
 				</div>
 				<div class="setting-item">
 					<div class="center">
-						<textarea name="text_edit" style="width:99%; height:300px;"><?php echo $content;?></textarea>
+						<textarea name="text_edit" style="width:98%; height:280px;"><?php echo $content;?></textarea>
 					</div>
 					<div class="clear"></div>
 				</div>
@@ -187,7 +187,7 @@ if (isset($_GET['a']) && $_GET['a'] == 'ed') {
 	
 <div class="warning">
 	Снипеты позволяют создать блоки php кода и подключать их в любом месте сайта, прямо в шаблонах.<br />
-	Вызвать снипет из шаблона можно так <strong>{[ИМЯ СНИППЕТА]}</strong><br />
+	Вызвать сниппет из шаблона можно так <strong>{[ИМЯ СНИППЕТА]}</strong><br />
 	После того, как Вы добавите метку в шаблон, она будет заменена на результат выполнения кода сниппета.<br />
 	На странице редактирования приведен список, уже созданных, сниппетов. Вы можете их просматривать и редактировать.<br />
 	Для то, что бы создавать и редактировать сниппеты, желательно, обладать, хотя бы, базовыми знаниями PHP
@@ -196,9 +196,9 @@ if (isset($_GET['a']) && $_GET['a'] == 'ed') {
 
 
 <div class="white">
-	<div class="pages-tree" style="height:550px;">
+	<div class="pages-tree">
 		<div class="title"><?php __('Snippets') ?></div>
-		<div class="wrapper">
+		<div class="wrapper" style="height:390px;" >
 			<div class="tree-wrapper">
 				<div id="pageTree">
 				<?php
@@ -212,16 +212,14 @@ if (isset($_GET['a']) && $_GET['a'] == 'ed') {
 				</div>
 			</div>
 		</div>
-		<div style="width:100%;">&nbsp;</div>
+		<!--<div style="width:100%;">&nbsp;</div>-->
 	</div>
 	
 	
-
 	<div style="display:none;" class="ajax-wrapper" id="ajax-loader"><div class="loader"></div></div>
 	<form action="snippets.php" method="post">
 
 
-	
 	<div class="list pages-form">
 		<div class="title"><?php echo __('Snippet editing') ?></div>
 		<div class="level1">
@@ -237,7 +235,7 @@ if (isset($_GET['a']) && $_GET['a'] == 'ed') {
 				</div>
 				<div class="setting-item">
 					<div class="center">
-						<textarea name="my_text" style="width:99%; height:300px;" ><?php if (!empty($_POST['my_text'])) echo h($_POST['my_text']) ?></textarea>
+						<textarea name="my_text" style="width:98%; height:280px;" ><?php if (!empty($_POST['my_text'])) echo h($_POST['my_text']) ?></textarea>
 					</div>
 					<div class="clear"></div>
 				</div>
@@ -254,7 +252,6 @@ if (isset($_GET['a']) && $_GET['a'] == 'ed') {
 	</div>
 	</form>
 	<div class="clear"></div>
-
 </div>	
 	
 	

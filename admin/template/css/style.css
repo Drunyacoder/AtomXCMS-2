@@ -121,7 +121,7 @@ table.side-separator, table.side-separator tr td {vertical-align:top; min-height
 .warning.error:before {background-position:-70px -62px;}
 .warning.clean {background-image:none; padding:15px;}
 
-.list {position:relative; margin:10px 0px; background:linear-gradient(#000, #fff 5%, #fff); -moz-border-radius:3px; -webkit-border-radius:3px; border-radius:3px; overflow: hidden;}
+.list {position:relative; margin:10px 0px; background:#fff; -moz-border-radius:3px; -webkit-border-radius:3px; border-radius:3px; overflow: hidden;}
 .list > .title {height:17px; padding:12px 20px; color:#96c703; font-size:15px; font-weight:bold; background:url('../img/list-title-bg.png') repeat-x; border-bottom:1px solid #8e8e8e; -moz-border-radius: 4px 4px 0 0; -webkit-border-radius: 4px 4px 0 0; border-radius: 4px 4px 0 0;}
 .list > .title ~ .title, .list .level1 > .title {height:47px; padding:20px 20px 20px 100px; background:#f1f1f1; color:#3a3a3a; font-size:17px; border:none; font-weight:normal; margin-top:50px; box-shadow:0px 2px 2px #777 inset;}
 .list > .title ~ .title > .descr, .list .level1 > .title > .descr {padding:5px 0px; color:#939393; font-size:12px; max-width:50%;}
@@ -130,26 +130,25 @@ table.side-separator, table.side-separator tr td {vertical-align:top; min-height
 .list .add-cat-butt + .add-cat-butt {right:175px;}
 .list .add-cat-butt select, .list .add-cat-butt input {width:160px;}
 
-.list > .level1 {border-top:1px solid #000;}
-.list > .level1 > .head {height:53px; color:#717171; font-size:13px; font-weight:bold; border-bottom:1px solid #c7c7c7; -moz-background:linear-gradient(#c2c1c1, #ececec); -ms-background:linear-gradient(#c2c1c1, #ececec); -webkit-background:linear-gradient(#c2c1c1, #ececec); background:linear-gradient(#c2c1c1, #ececec); display:flex; flex-flow:row nowrap;}
-.list > .level1 > .head .title {height:13px; padding:20px; color:#717171; font-size:13px; font-weight:bold; float:left; -moz-text-shadow:0px 1px 1px #fff; -webkit-text-shadow:0px 1px 1px #fff; text-shadow:0px 1px 1px #fff; flex:0 0 auto;}
-.list > .level1 > .head > .buttons, .list > .title ~ .title > .buttons, .list .level1 > .title > .buttons {height:13px; padding:20px 10px; float:right; border-left:1px solid #bebdbd; text-align:center; background:url('../img/1px-list-buttons-border.png') left repeat-y;}
+.list > .level1 {border-top:1px solid #333;}
+.list > .level1 > .head {height:53px; color:#717171; font-size:13px; font-weight:bold; border-bottom:1px solid #c7c7c7; -moz-background:linear-gradient(#c2c1c1, #ececec); -ms-background:linear-gradient(#c2c1c1, #ececec); -webkit-background:linear-gradient(#c2c1c1, #ececec); background:linear-gradient(#c2c1c1, #ececec); display:flex;/* flex-flow:row nowrap;*/}
+.list > .level1 > .head .title {height: 13px; width: 78%; padding: 20px; color:#717171; font-size:13px; font-weight:bold; float:left; -moz-text-shadow:0px 1px 1px #fff; -webkit-text-shadow:0px 1px 1px #fff; text-shadow:0px 1px 1px #fff;/* flex:0 0 auto;*/}
+.list > .level1 > .head > .buttons, .list > .title ~ .title > .buttons, .list .level1 > .title > .buttons {height:28px; width: 155px; padding:13px 15px 13px 15px; float:right; border-left:1px solid #bebdbd; text-align:center; background:url('../img/1px-list-buttons-border.png') left repeat-y;}
 .list > .level1 > .head > .buttons.long, .list > .title ~ .title > .buttons.long, .list .level1 > .title > .buttons.long {width:auto; padding:6px 30px; background:none; border:none;}
 .buttons.long label {color:#555; font-size:14px;}
 
 .list > .level1 > .items > .level2:nth-child(2n + 1) {background:#f4f2f2;}
-.list > .level1 > .items > .level2 {height:40px; color:#3a3a3a; font-size:13px; text-shadow:0px 0px 1px #777;}
-.list > .level1 > .items > .level2 .number {width:50px; height:20px; padding:10px; float:left; border-right:1px solid #e1e1e1; color:#717171; text-align:center;}
-.list > .level1 > .items > .level2 .title {min-height:20px; padding:10px 20px; float:left;}
-.list > .level1 > .items > .level2 .posts {width:30px; height:20px; padding:10px; background:url('../img/posts-cnt-bg.png') center center no-repeat; text-align:center; float:right; color:#fff; font-size:11px; font-weight: bold;}
-.list > .level1 > .items > .level2 .buttons {height:20px; padding:10px; float:right; border-left:1px solid #e1e1e1; text-align:center;}
+.list > .level1 > .items > .level2 {height:50px; color:#3a3a3a; font-size:13px; text-shadow:0px 0px 1px #777;}
+.list > .level1 > .items > .level2 .number {width:50px; height:20px; padding:15px; float:left; border-right:1px solid #e1e1e1; color:#717171; text-align:center;}
+.list > .level1 > .items > .level2 .title {min-height:20px; padding:15px 20px; float:left;}
+.list > .level1 > .items > .level2 .posts {width:30px; height:20px; padding:15px; background:url('../img/posts-cnt-bg.png') center center no-repeat; text-align:center; float:right; color:#fff; font-size:11px; font-weight: bold;}
+.list > .level1 > .items > .level2 .buttons {height:30px; padding:10px; float:right; border-left:1px solid #e1e1e1; text-align:center;}
 
-.list > .level1 > .items > .level2 .buttons, .list > .level1 > .head > .buttons {width:140px; padding-right:90px; text-align:right;}
+.list > .level1 > .items > .level2 .buttons, .list > .level1 > .head > .buttons {/*width:140px; padding-right:90px; */text-align:right;}
 .setting-item > .buttons {width:140px; padding-right:90px; text-align:right; border-left:1px solid #bebdbd; float:right;}
 .setting-item > .unbordered-buttons {width:140px; height:25px; padding-right:50px; text-align:right; border:none; position:absolute; top:0px; bottom:0px; right:0px; margin:auto; margin-right:0px;}
 .cat-indent {display:inline-block; padding-right:10px;}
 .cat-indent:after {content:" - ";}
-
 
 /* Settings list */
 .list > .level1 > .head .title.settings {width:23%; border-right:1px solid #bebdbd;}
@@ -158,15 +157,16 @@ table.side-separator, table.side-separator tr td {vertical-align:top; min-height
 .list > .level1 > .items > .setting-item.highlight:nth-child(2n) {background:#dfffd0;}
 .list > .level1 > .items > .setting-item.highlight {background:#efffe0;}
 .list > .level1 > .items > .setting-item {color:#3a3a3a; font-size:13px; text-shadow:0px 0px 1px #777; position:relative;}
-.list > .level1 > .items > .setting-item .left, .list > .level1 > .items > .setting-item .right {padding:20px;}
-.list > .level1 > .items > .setting-item .left {width:23%; float:left; border-right:1px solid #e1e1e1;}
+.list > .level1 > .items > .setting-item .left, .list > .level1 > .items > .setting-item .right {padding:13px;}
+.list > .level1 > .items > .setting-item .left {width:23%; float:left; border-right:1px solid #e1e1e1; padding:20px;}
 
 .list > .level1 > .items .comment2 {color:#939393; padding:0px 5px; font-size:11px; font-style:italic; -moz-text-shadow:none; -webkit-text-shadow:none; text-shadow:none;}
 .list > .level1 > .items > .setting-item .right {float:left; border-left:1px solid #e1e1e1; margin-left:-1px; vertical-align:center;}
 .list > .level1 > .items > .setting-item .right input[type="text"], select, textarea, .collection {width:390px;}
 .list > .level1 > .items > .setting-item .right textarea {height:auto; min-height:100px;}
-.list > .level1 > .items > .setting-item .center {padding:20px 0px;}
+.list > .level1 > .items > .setting-item .center {padding:20px; margin: 0 auto;}
 .list > .level1 > .items > .setting-item .center h3 {-moz-text-shadow:none; -webkit-text-shadow:none; text-shadow:none; color:#96C703;}
+
 .yes {width:23px; height:23px; background:url('../img/icons-sprite2.png') no-repeat;}
 .no {width:23px; height:23px; background:url('../img/icons-sprite2.png') 0px -67px no-repeat;}
 
@@ -195,7 +195,7 @@ table.side-separator, table.side-separator tr td {vertical-align:top; min-height
 
 
 /* Action icons */
-.list a.edit, .list a.delete, .list a.add, .list a.off-home, .list a.on-home, .list a.move, a.off, a.on, a.undo, a.edit-list, a.statistics, a.view {display:inline-block; width:24px; height:24px; margin-left:7px; cursor:pointer; border:1px solid #ddd; border-radius:2px; /*float:left;*/}
+.list a.edit, .list a.delete, .list a.add, .list a.off-home, .list a.on-home, .list a.move, a.off, a.on, a.undo, a.edit-list, a.statistics, a.view {display:inline-block; width:24px; height:24px; margin:2px 4px 2px 4px; cursor:pointer; border:1px solid #ddd; border-radius:2px; float:right;}
 .list a.edit:hover, .list a.delete:hover, .list a.add:hover, .list a.off-home:hover, .list a.on-home:hover, .list a.move:hover, a.off:hover, a.on:hover, a.undo:hover, a.edit-list:hover, a.statistics:hover, a.view:hover {border:1px solid #cf5; box-shadow:0px 0px 2px #cf5;}
 .list a.edit:before, .list a.delete:before, .list a.add:before, .list a.off-home:before, .list a.on-home:before, .list a.move:before, a.off:before, a.on:before, a.undo:before, a.edit-list:before, a.statistics:before, a.view:before {width:20px; height:20px; background:url('../img/icons-sprite.png') no-repeat; position:relative; top:2px; left:2px; content:""; float:left;}
 
@@ -313,7 +313,7 @@ select {height:27px;}
 .pages-tree {float:left; width:20%; min-height:500px; background:#fff; -moz-border-radius:5px; -webkit-border-radius:5px; border-radius:5px; overflow:hidden;}
 .pages-tree .title {height:17px; border-bottom:1px solid #8E8E8E; padding:12px 20px; background:url("../img/list-title-bg.png") repeat-x; color:#96C703; font-size:15px; font-weight:bold;}
 
-.pages-tree .wrapper {padding:10px; height: 440px; overflow: auto;}
+.pages-tree .wrapper {padding:10px; height: 485px; overflow: auto; border-top:1px solid #333;}
 .pages-tree .wrapper .tbn {color:#3A3A3A; font-weight:bold; padding-top:15px;}
 .pages-tree .wrapper a {color:#96C703;}
 .pages-tree .wrapper a:hover {text-decoration:none;}
