@@ -152,7 +152,7 @@ table.side-separator, table.side-separator tr td {vertical-align:top; min-height
 
 .list > .level1 > .items > .level2 .buttons, .list > .level1 > .head > .buttons {/*width:140px; padding-right:90px; */text-align:right;}
 .setting-item > .buttons {width:140px; padding-right:90px; text-align:right; border-left:1px solid #bebdbd; float:right;}
-.setting-item > .unbordered-buttons {width:140px; height:25px; padding-right:50px; text-align:right; border:none; position:absolute; top:0px; bottom:0px; right:0px; margin:auto; margin-right:0px;}
+.setting-item > .unbordered-buttons {width:140px; height:25px; padding-right:20px; text-align:right; border:none; position:absolute; top:0px; bottom:0px; right:0px; margin:auto; margin-right:0px;}
 .cat-indent {display:inline-block; padding-right:10px;}
 .cat-indent:after {content:" - ";}
 

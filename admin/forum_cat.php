@@ -237,9 +237,9 @@ function index(&$page_title) {
 				<div class="head">
 					<div class="title">' . h($result->getTitle()) . '</div>
 					<div class="buttons">
-						<a title="' . __('Add') . '" href="javascript://" onClick="openPopup(\'addForum' . $result->getId() . '\');" class="add"></a>
-						<a title="' . __('Edit') . '" href="javascript://" onClick="openPopup(\'editSec' . $result->getId() . '\');" class="edit"></a>
 						<a title="' . __('Delete') . '" href="?ac=del&id=' . $result->getId() . '&section" onClick="return _confirm();" class="delete"></a>
+						<a title="' . __('Edit') . '" href="javascript://" onClick="openPopup(\'editSec' . $result->getId() . '\');" class="edit"></a>
+						<a title="' . __('Add') . '" href="javascript://" onClick="openPopup(\'addForum' . $result->getId() . '\');" class="add"></a>
 					</div>
 					<div class="clear"></div>
 				</div>
@@ -455,8 +455,8 @@ function index(&$page_title) {
 								<div class="number">' . $cat->getId() . '</div>
 								<div class="title">' . h($cat->getTitle()) . ' ' . $issubforum . '</div>
 								<div class="buttons">
-									<a title="' . __('Edit') . '" href="javascript://" onClick="openPopup(\'editForum' . $cat->getId() . '\')" class="edit"></a>
 									<a title="' . __('Delete') . '" href="?ac=del&id=' . $cat->getId() . '" onClick="return _confirm();" class="delete"></a>
+									<a title="' . __('Edit') . '" href="javascript://" onClick="openPopup(\'editForum' . $cat->getId() . '\')" class="edit"></a>
 								</div>
 								<div class="posts">' . $cat->getThemes() . '</div>
 							</div>';
