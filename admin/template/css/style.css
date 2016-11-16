@@ -137,9 +137,15 @@ table.side-separator, table.side-separator tr td {vertical-align:top; min-height
 .list > .level1 > .head > .buttons.long, .list > .title ~ .title > .buttons.long, .list .level1 > .title > .buttons.long {width:auto; padding:6px 30px; background:none; border:none;}
 .buttons.long label {color:#555; font-size:14px;}
 
+.list > .level1 > .items td {padding: 10px 5px;}
+.list > .level1 > .items ul {padding:0px; -moz-text-shadow: 0px 0px 1px #777; -webkit-text-shadow: 0px 0px 1px #777; text-shadow: 0px 0px 1px #777; display:inline-bloc; list-style-type:none; background:#f3ffc0;}
+.list > .level1 > .items ul li {padding:10px 0px 0px 40px; font-size:14px; font-weight: lighter;}
+.list > .level1 > .items ul li ul {padding:10px 0px 0px 40px;}
+.list > .level1 > .items ul li ul li {padding:10px 0px 0px 0px;}
 .list > .level1 > .items > .level2:nth-child(2n + 1) {background:#f4f2f2;}
 .list > .level1 > .items > .level2 {height:50px; color:#3a3a3a; font-size:13px; text-shadow:0px 0px 1px #777;}
 .list > .level1 > .items > .level2 .number {width:50px; height:20px; padding:15px; float:left; border-right:1px solid #e1e1e1; color:#717171; text-align:center;}
+.list > .level1 > .level2 .title {min-height:20px; padding:15px 20px; float:left;}
 .list > .level1 > .items > .level2 .title {min-height:20px; padding:15px 20px; float:left;}
 .list > .level1 > .items > .level2 .posts {width:30px; height:20px; padding:15px; background:url('../img/posts-cnt-bg.png') center center no-repeat; text-align:center; float:right; color:#fff; font-size:11px; font-weight: bold;}
 .list > .level1 > .items > .level2 .buttons {height:30px; padding:10px; float:right; border-left:1px solid #e1e1e1; text-align:center;}

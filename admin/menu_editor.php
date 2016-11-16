@@ -360,26 +360,32 @@ function form1() {
 <div class="list">
 	<div class="title"><?php echo __('Menu editor') ?></div>
 	<div onClick="openPopup('addCat');" class="add-cat-butt"><div class="add"></div><?php echo __('Add an item') ?></div>
-	<table cellspacing="0" style="width:100%;" class="grid">
-		<tr>
-			<td>
-				<?php echo __('Template marker') ?>: 
-				<input style="width:100px; font-size:16px;" type="text" value="{MAINMENU}" onClick="" />
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<ul id="sort">
-				<?php  echo buildMenu($menu); ?>
-				</ul>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<input style="margin:auto;" class="save-button" type="submit" value="<?php echo __('Save') ?>" onClick="form1();" id="sendButton" />
-			</td>
-		</tr>
-	</table>
+	<div class="level1">
+		<div class="items">
+			<div class="level2">
+				<div class="number"></div>
+				<div class="title">
+					<?php echo __('Template marker') ?>: 
+					<input style="width:100px; font-size:16px;" type="text" value="{MAINMENU}" onClick="" />
+				</div>
+			</div>
+			<ul id="sort" class="ui-sortable">	
+			<div class="">
+				<li>
+					<div class="title">
+						<?php  echo buildMenu($menu); ?>
+					</div>
+				</li>
+			</div>
+			</ul>
+
+			<div class="level2">
+				<div class="title">
+					<input  class="save-button" type="submit" value="<?php echo __('Save') ?>" onClick="form1();" id="sendButton" />
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 
 

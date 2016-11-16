@@ -29,12 +29,12 @@ $pageTitle = __('List of materials');
 $Register = Register::getInstance();
 
 
-
 $allowed_mods = $Register['ModManager']->getAllowedModules('materialsList');
 $allowed_actions = array('edit', 'delete', 'index', 'premoder');
+
+
 if (empty($_GET['m']) || !in_array($_GET['m'], $allowed_mods)) redirect('/admin/');
 $module = $_GET['m'];
-
 
 $action = (!empty($_GET['ac'])) ? $_GET['ac'] : 'index';
 if (empty($action) && !in_array($action, $allowed_actions)) $action = 'index';
@@ -78,7 +78,9 @@ class MaterialsList {
 		));
 
 		
-		if (empty($materials)) $output = '<div class="setting-item"><div class="left"><b>' . __('Materials not found') . '</b></div><div class="clear"></div></div>';
+		if (empty($materials)) 
+			$output = '<div class="setting-item"><div class="left"><b>' 
+			. __('Materials not found') . '</b></div><div class="clear"></div></div>';
 
 
 
@@ -89,7 +91,7 @@ class MaterialsList {
 			$output .= '</div><div style="width:60%;" class="right">';
 			
 			if ($module == 'foto') {
-				$output .= '<img src="' . WWW_ROOT . '/sys/files/foto/preview/' . $mat->getFilename() . '" />';
+				$output .= '<img src="' . WWW_ROOT . '/image/' . $module . '/' . $mat->getFilename() . '/200/" />';
 			} else {
 				$output .= h(mb_substr($mat->getMain(), 0, 500));
 			}

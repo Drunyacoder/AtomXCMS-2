@@ -19,6 +19,7 @@ $FpsAllowModules = array (
     1 => 'news',
     2 => 'stat',
     3 => 'loads',
+	4 => 'foto',
   ),
   'commentsList' => 
   array (

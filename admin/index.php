@@ -54,14 +54,17 @@ if (!empty($users_groups)) {
 $cnt_for = $FpsDB->select('themes', DB_COUNT);
 $cnt_news = $FpsDB->select('news', DB_COUNT);
 $cnt_premoder_news = $FpsDB->select('news', DB_COUNT, array('cond' => array('premoder' => 'nochecked')));
-$cnt_premoder_news_comments = $FpsDB->select('comments', DB_COUNT, array('cond' => array('premoder' => 'nochecked', 'module' => 'news')));
+$cnt_premoder_news_comments = $FpsDB->select('news_categories', DB_COUNT);
 $cnt_loads = $FpsDB->select('loads', DB_COUNT);
 $cnt_premoder_loads = $FpsDB->select('loads', DB_COUNT, array('cond' => array('premoder' => 'nochecked')));
-$cnt_premoder_loads_comments = $FpsDB->select('comments', DB_COUNT, array('cond' => array('premoder' => 'nochecked', 'module' => 'loads')));
+$cnt_premoder_loads_comments = $FpsDB->select('loads_categories', DB_COUNT);
 $cnt_stat = $FpsDB->select('stat', DB_COUNT);
 $cnt_premoder_stat = $FpsDB->select('stat', DB_COUNT, array('cond' => array('premoder' => 'nochecked')));
-$cnt_premoder_stat_comments = $FpsDB->select('comments', DB_COUNT, array('cond' => array('premoder' => 'nochecked', 'module' => 'stat')));
-$cnt_mat = $cnt_news + $cnt_for + $cnt_loads + $cnt_stat;
+$cnt_premoder_stat_comments = $FpsDB->select('stat_categories', DB_COUNT);
+$cnt_foto = $FpsDB->select('foto', DB_COUNT);
+$cnt_foto_comments = $FpsDB->select('foto_categories', DB_COUNT);
+$cnt_mat = $cnt_news + $cnt_for + $cnt_loads + $cnt_stat + $cnt_foto;
+
 
 $all_hosts = $FpsDB->query("
 	SELECT 
@@ -216,6 +219,16 @@ include 'template/header.php';
 					<?php echo $cnt_stat ?> / 
 					<span class="red"><?php echo $cnt_premoder_stat ?></span> / 
 					<span class="green"><?php echo $cnt_premoder_stat_comments ?></span>
+				</div>
+				<div class="clear"></div>
+			</div>
+			<div class="setting-item">
+				<div class="left">
+					<?php echo __('Foto') ?>
+				</div>
+				<div class="right">
+					<?php echo $cnt_foto ?> / 
+					<span class="green"><?php echo $cnt_foto_comments ?></span>
 				</div>
 				<div class="clear"></div>
 			</div>
