@@ -29,8 +29,10 @@ h1, h2, h3, h4 {color:#555;}
 .atm-flex-box .atm-flex-child > .list .level1 .items .setting-item .left {height: calc(100% - 41px);}
 
 /* pagination */
-.pagination {color:#fff;}
-.pagination a.pages, .pagination strong {margin-right:5px;}
+.pagination {margin-top:20px;}
+.pagination a.pages, .pagination strong {padding:4px 7px; border:1px solid #96c703; border-radius:2px; margin-right:5px; background:#555; font-size:14px; text-decoration:none; transition:all 0.2s ease-in-out 0s;}
+.pagination a.pages:hover {border:1px solid #abff1f; background:#888;}
+.pagination strong {border:1px solid #66aa00; color:#66aa00; background:#333; font-weight: lighter;}
 
 /* graphs */
 .graph-wrapper {width:98%; padding:1%;}

@@ -104,9 +104,9 @@ function index(&$page_title) {
 	$themes = (!empty($_GET['cond']) && $_GET['cond'] == 'themes') ? '<a href="?cond=themes&value=0">' . __('Topics') . '</a>' : '<a href="?cond=themes&value=1">' . __('Topics') . '</a>';
 	$posts = (!empty($_GET['cond']) && $_GET['cond'] == 'posts') ? '<a href="?cond=posts&value=0">' . __('Posts') . '</a>' : '<a href="?cond=posts&value=1">' . __('Posts') . '</a>';
 	
-	$pages = '<div class="pages">' . $pages . '</div>';
+	$pages = '<div class="pagination">' . $pages . '</div>';
 	$content .= "<div class=\"list\">
-			<div class=\"title\">{$pages}</div>
+			<div class=\"title\">" . __('Users list') . "</div>
 			<table cellspacing=\"0\" class=\"grid\"><tr><th width=\"20%\">{$nick}</th>
 			<th width=\"25%\">{$email}</th>
 			<th width=\"20%\">{$puttime}</th>
@@ -132,10 +132,13 @@ function index(&$page_title) {
 	}
 	$content .= '</table></div>';
 	
+	
 	$content .= '<form method="POST" action="users_list.php?ac=index"><table class="metatb"><tr><td>
 				<input type="text" name="search" />
 				<input type="submit" name="send" class="save-button" value="' . __('Search') . '" />
 				</td></tr></table></form>';
+	
+	$content .= $pages;
 	
 	return $content;
   

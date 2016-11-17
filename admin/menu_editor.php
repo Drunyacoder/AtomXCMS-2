@@ -170,10 +170,11 @@ function buildMenu($node) {
 				. '<input type="hidden" name="prefix" value="' . h($value['prefix']) . '" />' . "\n"
 				. '<input type="hidden" name="sufix" value="' . h($value['sufix']) . '" />' . "\n" 
 				. '<input type="hidden" name="newwin" value="' . h($value['newwin']) . '" />' . "\n" 
-				. '<div style="float:right;"><a class="edit" ' 
+				. '<div style="float:right;"><a class="delete" title="Delete" '
+				. 'onClick="if(confirm(\''.__('Are you sure?').'\'))deletePoint(this);"></a>'
+				. '<a class="edit" ' 
 				. 'title="Edit" onClick="openPopup(\'edit' . $value['id'] . '\');"></a>' . "\n"
-				. '<a class="delete" title="Delete" '
-				. 'onClick="if(confirm(\''.__('Are you sure?').'\'))deletePoint(this);"></a><div style="clear:both;"></div></div>' . "\n"
+				. '<div style="clear:both;"></div></div>' . "\n"
 				. '</div>' . "\n";
 				
 			$checked = (!empty($value['newwin'])) ? 'selected="selected"' : '';

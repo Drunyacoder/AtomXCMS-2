@@ -293,8 +293,8 @@ if ($_GET['ac'] == 'index'):
 					<td><?php echo $required; ?></td>
 					<td><?php echo h(strtolower($field_marker)); ?></td>
 					<td>
-						<a class="edit" title="Edit" href="javascript://" onClick="openPopup('edit_<?php echo $field['id'] ?>')"></a>
 						<a class="delete" title="Delete" href="additional_fields.php?m=<?php echo $_GET['m'] ?>&ac=del&id=<?php echo $field['id'] ?>" onClick="return confirm('Are you sure?');"></a>
+						<a class="edit" title="Edit" href="javascript://" onClick="openPopup('edit_<?php echo $field['id'] ?>')"></a>
 					</td>
 				</tr>
 
