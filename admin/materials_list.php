@@ -83,15 +83,24 @@ class MaterialsList {
 			. __('Materials not found') . '</b></div><div class="clear"></div></div>';
 
 
-
 		foreach ($materials as $mat) {
 			$output .= '<div class="setting-item"><div class="left">';
-			$output .= '<a style="font-weight:bold; margin-bottom:5px;" href="' . get_url('/admin/materials_list.php?m=' . $module . '&ac=edit&id=' . $mat->getId()) . '">' . h($mat->getTitle()) . '</a>';
+			$output .= '<a style="font-weight:bold; margin-bottom:5px;" href="' 
+				. get_url('/admin/materials_list.php?m=' . $module . '&ac=edit&id=' 
+				. $mat->getId()) . '">' . h($mat->getTitle()) . '</a>';
 			$output .= '<br />(' . $mat->getAuthor()->getName() . ')';
 			$output .= '</div><div style="width:60%;" class="right">';
 			
+			
 			if ($module == 'foto') {
-				$output .= '<img src="' . WWW_ROOT . '/image/' . $module . '/' . $mat->getFilename() . '/200/" />';
+				$AtmFoto = h(preg_replace('#[^\w\d ]+#ui', ' ', $mat->getTitle()));
+				$AtmFoto = '<img alt="' . $AtmFoto . '" src="' . WWW_ROOT . '/sys/files/' . $module . '/preview/' 
+					. $mat->getFilename() . '" width="150px" />';
+				$AtmFoto = '<a target="_blank" href="' . WWW_ROOT . '/sys/files/' . $module . '/full/' 
+					. $mat->getFilename() . '">' . $AtmFoto . '</a>';
+				
+				$output .= $AtmFoto;
+
 			} else {
 				$output .= h(mb_substr($mat->getMain(), 0, 500));
 			}
@@ -113,7 +122,7 @@ class MaterialsList {
 				</div><div class="clear"></div></div>';
 			}
 		}
-
+		
 		return array($output, $pages);
 	}
 	
@@ -150,7 +159,15 @@ class MaterialsList {
 		$entity = $model->getById($id);
 		
 		if (!empty($entity)) {
-			$entity->delete();
+			if ($module == 'foto') {
+				_unlink(ROOT . '/sys/files/' . $module . '/full/' . $entity->getFilename());
+				_unlink(ROOT . '/sys/files/' . $module . '/preview/' . $entity->getFilename());
+				$entity->delete();
+				
+			} else {
+				$entity->delete();
+			}
+			
 			$_SESSION['message'] = __('Material has been delete');
 		}
 		
