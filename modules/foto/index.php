@@ -541,7 +541,7 @@ Class FotoModule extends Module {
 		$markers['action'] = get_url('/foto/add/');
 		$markers['cats_selector'] = $cats_change;
 		$markers['title'] = (!empty($title)) ? $title : '';
-		$markers['mainText'] = (!empty($data['description'])) ? $data['description'] : '';
+		$markers['main_text'] = (!empty($data['description'])) ? $data['description'] : '';
 		
 		
 		// Navigation Panel
@@ -608,7 +608,7 @@ Class FotoModule extends Module {
 			'filename'  => '',
 		);
 		
-		
+
         try {
             $entity = new FotoEntity($res);
             $id = $entity->save();
@@ -691,12 +691,13 @@ Class FotoModule extends Module {
 		
 		
         // Check for preview or errors
-        $data = array('title' => null, 'in_cat' => $entity->getCategory_id(), 'description' => null);
+        $data = array('title' => null, 'in_cat' => $entity->getCategory_id(), 
+			'description' => null, 'files__foto' => null);
         $data = Validate::getCurrentInputsValues($entity, $data);
 	
 		
 		$errors = $this->Register['Validate']->getErrors();
-        if (isset($_SESSION['FpsForm'])) unset($_SESSION['FpsForm']);;
+        if (isset($_SESSION['FpsForm'])) unset($_SESSION['FpsForm']);
 	
 		
 		//categories list
@@ -709,8 +710,9 @@ Class FotoModule extends Module {
 		
 		$entity->setAction(get_url('/foto/update/' . $id));
 		$entity->setCats_selector($cats_change);
-		$entity->setMainText($this->Textarier->parseBBCodes($entity->getDescription(), $entity));
-
+		$entity->setMain_text($this->Textarier->parseBBCodes($entity->getDescription(), $entity));
+		$entity->setDescription($this->Textarier->parseBBCodes($entity->getDescription(), $entity));
+		//pr($entity);
 		
 		$markers = array();
 		$entry_url = get_url(entryUrl($entity, $this->module));
@@ -720,7 +722,7 @@ Class FotoModule extends Module {
 		
 		$entity->setAdd_markers($markers);	
 		
-		
+		//die($errors);
 		$source = $this->render('editform.html', array('context' => $entity));
 		
 		return $this->_view($source);
@@ -754,7 +756,7 @@ Class FotoModule extends Module {
 		
 		$errors = $this->Register['Validate']->check($this->Register['action']);
 		
-		//pr('aaaa');
+		
 		// Обрезаем переменные до длины, указанной в параметре maxlength тега input
 		$title       = trim(mb_substr($_POST['title'], 0, 128));
 		$description = trim($_POST['main_text']);
@@ -764,19 +766,20 @@ Class FotoModule extends Module {
 		
 		$className = $this->Register['ModManager']->getModelNameFromModule($this->module . 'Categories');
 		$catModel = new $className;
-		$cats = $catModel->getById($in_cat);	
+		$cats = $catModel->getById($in_cat);
 		if (!$cats) $errors[] = __('Can not find category');
 
 		
 		// errors
-		if (empty( $errors )) {
+		if (!empty( $errors )) {
 			$data = array('title' => $title, 'description' => $description, 'in_cat' => $in_cat);
 			$data = array_merge($data, $_POST); 
 			$data['errors'] = $errors;
 			$_SESSION['FpsForm'] = $data;
 			redirect('/foto/edit_form/' . $id );
 		}
-
+		
+		
 		$description = mb_substr($description, 0, Config::read('description_lenght', 'foto'));
 		$entity->setTitle($title);
 		$entity->setDescription($description);
@@ -784,7 +787,7 @@ Class FotoModule extends Module {
 		$entity->save();
 		
 		
-		if (isset($_FILES['foto'])) {
+		if ($_FILES['foto']['tmp_name']) {
 			try {
 				$lost = $this->attached_files_path;
 				if ($entity->getFilename() && file_exists($this->attached_files_path . 'full/' . $entity->getFilename())) {
@@ -930,14 +933,14 @@ Class FotoModule extends Module {
 					'max_lenght' => 11,
 					'title' => 'Category',
 				),
-				'main_text' => array(
+				/*'main_text' => array(
 					'required' => 'editable',
 					'max_lenght' => Config::read('description_lenght', 'foto'),
-				),
+				),*/
 				'files__foto' => array(
 					'required' => true,
 					'type' => 'image',
-					'max_size' => Config::read('max_file_size', 'foto'),
+					'max_size' => Config::read('max_file_size', $this->module),
 				),
 			),
 			'update' => array(
@@ -946,21 +949,21 @@ Class FotoModule extends Module {
 					'max_lenght' => 250,
 					'title' => 'Title',
 				),
+				'main_text' => array(
+					'required' => false,
+					'max_lenght' => Config::read('max_lenght', $this->module),
+					'title' => 'Text',
+				),
 				'cats_selector' => array(
 					'required' => true,
 					'pattern' => V_INT,
 					'max_lenght' => 11,
 					'title' => 'Category',
 				),
-				'main_text' => array(
-					'required' => 'editable',
-					'max_lenght' => Config::read('description_lenght', 'foto'),
-					'title' => 'Description',
-				),
 				'files__foto' => array(
-					'required' => true,
+					'required' => false,
 					'type' => 'image',
-					'max_size' => Config::read('max_file_size', 'foto'),
+					'max_size' => Config::read('max_file_size', $this->module),
 				),
 			),
 		);
