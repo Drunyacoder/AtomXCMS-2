@@ -2,7 +2,7 @@
 /*-----------------------------------------------\
 | 												 |
 |  @Author:       Andrey Brykin (Drunya)         |
-|  @Version:      1.7.1                          |
+|  @Version:      1.7.2                          |
 |  @Project:      CMS                            |
 |  @package       CMS AtomX                      |
 |  @subpackege    Forum Module                   |
@@ -499,6 +499,7 @@ Class ForumModule extends Module {
 		&& $this->ACL->turn(array('forum', 'edit_mine_themes', $theme->getId_forum()), false))) {
 			$adminbar .= get_link('', '/forum/edit_theme_form/' . $theme->getId(), array(
 				'class' => 'fps-edit',
+				'title' => 'Edit',
 			));
 		}
 		
@@ -507,10 +508,12 @@ Class ForumModule extends Module {
 			if ( $theme->getLocked() == 0 ) { // заблокировать тему
 				$adminbar .= get_link('', '/forum/lock_theme/' . $theme->getId(), array(
 					'class' => 'fps-close',
+					'title' => 'Lock',
 				));
 			} else { // разблокировать тему
 				$adminbar .= get_link('', '/forum/unlock_theme/' . $theme->getId(), array(
 					'class' => 'fps-open',
+					'title' => 'An lock',
 				));
 			}
 		}
@@ -520,10 +523,12 @@ Class ForumModule extends Module {
 			if ($theme->getImportant() == 1) {
 				$adminbar .= get_link('', '/forum/unimportant/' . $theme->getId(), array(
 					'class' => 'fps-unfix',
+					'title' => 'Off on fix',
 				));
 			} else {
 				$adminbar .= get_link('', '/forum/important/' . $theme->getId(), array(
 					'class' => 'fps-fix',
+					'title' => 'Important',
 				));
 			}
 		}
@@ -535,6 +540,7 @@ Class ForumModule extends Module {
 			$adminbar .= get_link('', '/forum/delete_theme/' . $theme->getId(), array(
 				'class' => 'fps-delete',
 				'onClick' => "return confirm('" . __('Are you sure') . "')",
+				'title' => 'Delete',
 			));
 		}
 		$theme->setAdminbar($adminbar);
@@ -1617,7 +1623,7 @@ Class ForumModule extends Module {
 	{
 		//check access
 		$this->ACL->turn(array('forum', 'add_themes'));
-		if (!isset($id_forum) || !isset($_POST['theme']) || !isset($_POST['mainText']))
+		if (!isset($id_forum) || !isset($_POST['theme']) || !isset($_POST['main_text']))
             redirect('/forum/');
 
 		$id_forum = intval($id_forum);
@@ -3533,7 +3539,7 @@ Class ForumModule extends Module {
 					'max_lenght' => 250,
 					'pattern' => V_TITLE,
 				),
-				'mainText' => array(
+				'main_text' => array(
 					'required' => true,
 					'max_lenght' => Config::read('max_post_lenght', 'forum'),
 					'title' => 'Text',

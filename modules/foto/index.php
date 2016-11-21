@@ -4,7 +4,7 @@
 | @Author:       Andrey Brykin (Drunya)          |
 | @Email:        drunyacoder@gmail.com           |
 | @Site:         http://fapos.net                |
-| @Version:      1.8.7                           |
+| @Version:      1.8.8                           |
 | @Project:      CMS                             |
 | @package       CMS Fapos                       |
 | @subpackege    Foto Module  			 		 |
@@ -890,12 +890,20 @@ Class FotoModule extends Module {
 		if ($this->ACL->turn(array($this->module, 'edit_materials'), false) 
 		|| (!empty($_SESSION['user']['id']) && $uid == $_SESSION['user']['id']
 		&& $this->ACL->turn(array($this->module, 'edit_mine_materials'), false))) {
-			$moder_panel .= get_link('', '/' . $this->module . '/edit_form/' . $id, array('class' => 'fps-edit')) . '&nbsp;';
+			$moder_panel .= get_link('', '/' . $this->module . '/edit_form/' . $id, 
+				array(
+					'class' => 'fps-edit',
+					'title' => 'Edit',
+				)) . '&nbsp;';
 		}
 		
 		if ($this->ACL->turn(array($this->module, 'up_materials'), false)) {
 			$moder_panel .= get_link('', '/' . $this->module . '/upper/' . $id,
-				array('class' => 'fps-up', 'onClick' => "return confirm('" . __('Are you sure') . "')")) . '&nbsp;';
+				array(
+					'class' => 'fps-up', 
+					'onClick' => "return confirm('" . __('Are you sure') . "')",
+					'title' => 'Upper',
+				)) . '&nbsp;';
 		}
 		
 		
@@ -903,7 +911,11 @@ Class FotoModule extends Module {
 		|| (!empty($_SESSION['user']['id']) && $uid == $_SESSION['user']['id']
 		&& $this->ACL->turn(array($this->module, 'delete_mine_materials'), false))) {
 			$moder_panel .= get_link('', '/' . $this->module . '/delete/' . $id,
-				array('class' => 'fps-delete', 'onClick' => "return confirm('" . __('Are you sure') . "')")) . '&nbsp;';
+				array(
+					'class' => 'fps-delete', 
+					'onClick' => "return confirm('" . __('Are you sure') . "')",
+					'title' => 'Delete',
+				)) . '&nbsp;';
 		}
 		
 		return $moder_panel;

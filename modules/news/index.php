@@ -4,7 +4,7 @@
 | @Author:       Andrey Brykin (Drunya)        |
 | @Email:        drunyacoder@gmail.com         |
 | @Site:         http://atomx.net              |
-| @Version:      2.1.0                         |
+| @Version:      2.1.1                         |
 | @Project:      CMS                           |
 | @Package       AtomX CMS                     |
 | @Subpackege    News Module                   |
@@ -305,9 +305,11 @@ Class NewsModule extends Module {
      */
 	public function view ($id = null)
     {
+		
 		//turn access
 		$this->ACL->turn(array($this->module, 'view_materials'));
 		$id = intval($id);
+		//pr('AAAAA'); pr($id); die();
 		if (empty($id) || $id < 1) redirect('/');
 
 		
@@ -327,7 +329,7 @@ Class NewsModule extends Module {
 		if (!$this->ACL->turn(array('other', 'can_premoder'), false) && in_array($entity->getPremoder(), array('rejected', 'nochecked'))) {
 			return $this->showInfoMessage(__('Permission denied'), '/' . $this->module . '/');
 		}
-
+		
         Plugins::intercept('view_category', $entity->getCategory());
 
 		
@@ -354,7 +356,7 @@ Class NewsModule extends Module {
 			$this->comments  = $this->_get_comments($entity);
 		}
 
-
+		
         $this->addToPageMetaContext('category_title', h($entity->getCategory()->getTitle()));
         $this->addToPageMetaContext('entity_title', h($entity->getTitle()));
 		$tags = $entity->getTags();
@@ -1227,14 +1229,26 @@ Class NewsModule extends Module {
 		if ($this->ACL->turn(array($this->module, 'edit_materials'), false) 
 		|| (!empty($_SESSION['user']['id']) && $uid == $_SESSION['user']['id']
 		&& $this->ACL->turn(array($this->module, 'edit_mine_materials'), false))) {
-			$moder_panel .= get_link('', '/' . $this->module . '/edit_form/' . $id, array('class' => 'fps-edit')) . '&nbsp;';
+			$moder_panel .= get_link('', '/' . $this->module . '/edit_form/' . $id, 
+				array(
+					'class' => 'fps-edit',
+					'title' => 'Edit',
+				)) . '&nbsp;';
 		}
 		
 		if ($this->ACL->turn(array($this->module, 'up_materials'), false)) {
 			$moder_panel .= get_link('', '/' . $this->module . '/fix_on_top/' . $id,
-				array('class' => 'fps-star', 'onClick' => "return confirm('" . __('Are you sure') . "')")) . '&nbsp;';
+				array(
+					'class' => 'fps-star', 
+					'onClick' => "return confirm('" . __('Are you sure') . "')",
+					'title' => 'Fix on top',
+				)) . '&nbsp;';
 			$moder_panel .= get_link('', '/' . $this->module . '/upper/' . $id,
-				array('class' => 'fps-up', 'onClick' => "return confirm('" . __('Are you sure') . "')")) . '&nbsp;';
+				array(
+					'class' => 'fps-up', 
+					'onClick' => "return confirm('" . __('Are you sure') . "')",
+					'title' => 'Upper',
+				)) . '&nbsp;';
 		}
 		
 		if ($this->ACL->turn(array($this->module, 'on_home'), false)) {
@@ -1242,11 +1256,13 @@ Class NewsModule extends Module {
 					$moder_panel .= get_link('', '/' . $this->module . '/off_home/' . $id, array(
 						'class' => 'fps-on', 
 						'onClick' => "return confirm('" . __('Are you sure') . "')",
+						'title' => 'On home',
 					)) . '&nbsp;';
 				} else {
 					$moder_panel .= get_link('', '/' . $this->module . '/on_home/' . $id, array(
 						'class' => 'fps-off',
 						'onClick' => "return confirm('" . __('Are you sure') . "')",
+						'title' => 'Off home',
 					)) . '&nbsp;';
 				}
 		}
@@ -1255,7 +1271,11 @@ Class NewsModule extends Module {
 		|| (!empty($_SESSION['user']['id']) && $uid == $_SESSION['user']['id']
 		&& $this->ACL->turn(array($this->module, 'delete_mine_materials'), false))) {
 			$moder_panel .= get_link('', '/' . $this->module . '/delete/' . $id,
-				array('class' => 'fps-delete', 'onClick' => "return confirm('" . __('Are you sure') . "')")) . '&nbsp;';
+				array(
+					'class' => 'fps-delete', 
+					'onClick' => "return confirm('" . __('Are you sure') . "')",
+					'title' => 'Delete',
+				)) . '&nbsp;';
 		}
 		
 		
