@@ -22,7 +22,6 @@
 ## без согласия автора, является не законным    ##
 ##################################################
 
-
 include_once '../sys/boot.php';
 include_once ROOT . '/admin/inc/adm_boot.php';
 
@@ -34,7 +33,6 @@ $isMainPage = true;
 $pageTitle = __('Admin Panel');
 $pageNav = $pageTitle . __(' - General information');
 $pageNavr = '';
-
 
 
 
@@ -56,14 +54,17 @@ if (!empty($users_groups)) {
 $cnt_for = $FpsDB->select('themes', DB_COUNT);
 $cnt_news = $FpsDB->select('news', DB_COUNT);
 $cnt_premoder_news = $FpsDB->select('news', DB_COUNT, array('cond' => array('premoder' => 'nochecked')));
-$cnt_premoder_news_comments = $FpsDB->select('comments', DB_COUNT, array('cond' => array('premoder' => 'nochecked', 'module' => 'news')));
+$cnt_premoder_news_comments = $FpsDB->select('news_categories', DB_COUNT);
 $cnt_loads = $FpsDB->select('loads', DB_COUNT);
 $cnt_premoder_loads = $FpsDB->select('loads', DB_COUNT, array('cond' => array('premoder' => 'nochecked')));
-$cnt_premoder_loads_comments = $FpsDB->select('comments', DB_COUNT, array('cond' => array('premoder' => 'nochecked', 'module' => 'loads')));
+$cnt_premoder_loads_comments = $FpsDB->select('loads_categories', DB_COUNT);
 $cnt_stat = $FpsDB->select('stat', DB_COUNT);
 $cnt_premoder_stat = $FpsDB->select('stat', DB_COUNT, array('cond' => array('premoder' => 'nochecked')));
-$cnt_premoder_stat_comments = $FpsDB->select('comments', DB_COUNT, array('cond' => array('premoder' => 'nochecked', 'module' => 'stat')));
-$cnt_mat = $cnt_news + $cnt_for + $cnt_loads + $cnt_stat;
+$cnt_premoder_stat_comments = $FpsDB->select('stat_categories', DB_COUNT);
+$cnt_foto = $FpsDB->select('foto', DB_COUNT);
+$cnt_foto_comments = $FpsDB->select('foto_categories', DB_COUNT);
+$cnt_mat = $cnt_news + $cnt_for + $cnt_loads + $cnt_stat + $cnt_foto;
+
 
 $all_hosts = $FpsDB->query("
 	SELECT 
@@ -88,7 +89,6 @@ $all_hosts[0]['hosts_cnt'] += $today_hosts;
 
 
 
-
 	
 //echo $header;
 include 'template/header.php';
@@ -107,7 +107,8 @@ include 'template/header.php';
                     });
                 });
 
-                $('.atm-flex-box .atm-flex-child > .list .setting-item').css('height', '100%');
+				//$('.atm-flex-box .atm-flex-child > .list .setting-item').css('height', '100%');
+                $('.atm-flex-box .atm-flex-child > .list').css('height', '100%');
             }
         };
         $(window).resize(resizeHandler);
@@ -223,6 +224,16 @@ include 'template/header.php';
 			</div>
 			<div class="setting-item">
 				<div class="left">
+					<?php echo __('Foto') ?>
+				</div>
+				<div class="right">
+					<?php echo $cnt_foto ?> / 
+					<span class="green"><?php echo $cnt_foto_comments ?></span>
+				</div>
+				<div class="clear"></div>
+			</div>
+			<div class="setting-item">
+				<div class="left">
 					<?php echo __('Forum topics') ?>
 				</div>
 				<div class="right"><?php echo $cnt_for ?></div>
@@ -294,7 +305,7 @@ include 'template/header.php';
 			<div class="setting-item">
 				<div class="left">
 					<?php echo __('Total hosts') ?>
-					<span class="comment">*Хост - это уникальный посетитель, фактически - это<br />
+					<span class="comment">*Хост - это уникальный посетитель, фактически - это
 					заход на сайт с разных компьютеров или IP адресов</span>
 				</div>
 				<div class="right"><?php echo $all_hosts[0]['hosts_cnt'] ?></div>

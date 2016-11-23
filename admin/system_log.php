@@ -53,25 +53,8 @@ include_once ROOT . '/admin/template/header.php';
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <div class="list">
-<div class="title"><div class="pages"><?php echo $pages ?></div></div>
+<div class="title"><?php echo __('Action log') ?></div>
 <table class="grid" cellspacing="0" width="100%">
 	<?php if(!empty($data)): ?>
 	<th width="15%">Дата</th>
@@ -115,6 +98,10 @@ include_once ROOT . '/admin/template/header.php';
 	endif;
 	?>
 </table></div>
+
+<div class="pagination"><?php echo $pages ?></div>
+
+
 <?php
 include_once 'template/footer.php';
 ?>

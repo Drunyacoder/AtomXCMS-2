@@ -203,9 +203,14 @@ function buildCatsList($catsTree, $catsList, $indent = '') {
 					<div class="title">' . $indent . h($cat['title']) . '</div>
 					<div class="buttons">';
 					
-
-		
-
+			
+			
+		$out .= '<a title="' . __('Delete') . '" href="?ac=del&id=' . $cat['id'] 
+			. '&mod='.getCurrMod().'" class="delete" onClick="return _confirm();"></a>'
+			. '<a href="javascript://" class="edit" title="' . __('Edit') . '" ' 
+			. 'onClick="openPopup(\'' . $cat['id'] . '_cat\');"></a>';
+			
+			
 		if (getCurrMod() != 'foto') {
 			if ($cat['view_on_home'] == 1) {
 				$out .=  '<a class="off-home" title="' . __('View on home') . '" href="?ac=off_home&id=' 
@@ -215,16 +220,8 @@ function buildCatsList($catsTree, $catsList, $indent = '') {
 					. $cat['id'] . '&mod='.getCurrMod().'" onClick="return _confirm();"></a>';
 			}
 		}
-			
-			
-		$out .= '<a href="javascript://" class="edit" title="' . __('Edit') . '" ' 
-			. 'onClick="openPopup(\'' . $cat['id'] . '_cat\');"></a>' 
-			. '<a title="' . __('Delete') . '" href="?ac=del&id=' . $cat['id'] 
-			. '&mod='.getCurrMod().'" class="delete" onClick="return _confirm();"></a>
-				</div>
-			<div class="posts">' . $cat['cnt'] . '</div>
-		</div>';
-			
+
+		$out .= '</div><div class="posts">' . $cat['cnt'] . '</div></div>';		
 			
 			
 		$popups .=	'<div id="' . $cat['id'] . '_cat" class="popup">

@@ -334,7 +334,7 @@ echo '<form action="' . $_SERVER['REQUEST_URI'] . '" method="POST">';
 			<div class="items">
 				<div class="setting-item">
 					<div class="center">
-						<textarea title="Код шаблона" style="width:100%; height:380px;" wrap="off" name="templ" id="tmpl"><?php print h($template); ?></textarea>
+						<textarea title="Код шаблона" style="width:99%; height:380px; display:none;" wrap="off" name="templ" id="tmpl"><?php print h($template); ?></textarea>
 					</div>
 					<div class="clear"></div>
 				</div>
@@ -358,34 +358,33 @@ echo '<form action="' . $_SERVER['REQUEST_URI'] . '" method="POST">';
 	<div class="title"><?php echo __('Adding template') ?></div>
 	<div onClick="closePopup('sec');" class="close"></div>
 </div>
-<form action="design.php?ac=add_template" method="POST">
 <div class="items">
-	<div class="item">
-		<div class="left">
-			<?php echo __('Name') ?>
+	<form action="design.php?ac=add_template" method="POST">
+		<div class="item">
+			<div class="left">
+				<?php echo __('Name') ?>
+			</div>
+			<div class="right"><input type="text" name="title" velue="" /></div>
+			<div class="clear"></div>
 		</div>
-		<div class="right"><input type="text" name="title" /></div>
-		<div class="clear"></div>
-	</div>
-	<div class="item">
-		<div class="left">
-			HTML
+		<div class="item">
+			<div class="left">
+				HTML
+			</div>
+			<div class="right">
+				<textarea name="code" style="height:150px; overflow:auto;"></textarea>
+			</div>
+			<div class="clear"></div>
 		</div>
-		<div class="right">
-			<br />
-			<textarea name="code" style="height:400px; width:450px; overflow:auto;"></textarea>
+		<div class="item submit">
+			<div class="left"></div>
+			<div class="right" style="float:left;">
+				<input type="submit" value="<?php echo __('Save') ?>" name="send" class="save-button" />
+			</div>
+			<div class="clear"></div>
 		</div>
-		<div class="clear"></div>
-	</div>
-	<div class="item submit">
-		<div class="left"></div>
-		<div class="right" style="float:left;">
-			<input type="submit" value="<?php echo __('Save') ?>" name="send" class="save-button" />
-		</div>
-		<div class="clear"></div>
-	</div>
+	</form>
 </div>
-</form>
 </div>
 
 
@@ -402,9 +401,9 @@ echo '<form action="' . $_SERVER['REQUEST_URI'] . '" method="POST">';
 <link rel="StyleSheet" type="text/css" href="js/codemirror/theme/solarized.css" />
 <script type="text/javascript">
 $(document).ready(function(){
-	var wd = parseInt($('.list.pages-form').css('width'), 10);
+	var wd = parseInt($('.list.pages-form').css('width'), 10) - 20;
     var editor = CodeMirror.fromTextArea(document.getElementById("tmpl"), {
-		theme: "solarized", 
+		theme: "solarized",
 		mode: "<?php echo ($type === 'css') ? 'css' : 'vbscript'; ?>"
 	});
 	

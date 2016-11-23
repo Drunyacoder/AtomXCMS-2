@@ -29,12 +29,12 @@ $pageTitle = __('List of materials');
 $Register = Register::getInstance();
 
 
-
 $allowed_mods = $Register['ModManager']->getAllowedModules('materialsList');
 $allowed_actions = array('edit', 'delete', 'index', 'premoder');
+
+
 if (empty($_GET['m']) || !in_array($_GET['m'], $allowed_mods)) redirect('/admin/');
 $module = $_GET['m'];
-
 
 $action = (!empty($_GET['ac'])) ? $_GET['ac'] : 'index';
 if (empty($action) && !in_array($action, $allowed_actions)) $action = 'index';
@@ -78,36 +78,51 @@ class MaterialsList {
 		));
 
 		
-		if (empty($materials)) $output = '<div class="setting-item"><div class="left"><b>' . __('Materials not found') . '</b></div><div class="clear"></div></div>';
-
+		if (empty($materials)) 
+			$output = '<div class="setting-item"><div class="left"><b>' 
+			. __('Materials not found') . '</b></div><div class="clear"></div></div>';
 
 
 		foreach ($materials as $mat) {
 			$output .= '<div class="setting-item"><div class="left">';
-			$output .= '<a style="font-weight:bold; margin-bottom:5px;" href="' . get_url('/admin/materials_list.php?m=' . $module . '&ac=edit&id=' . $mat->getId()) . '">' . h($mat->getTitle()) . '</a>';
+			$output .= '<a style="font-weight:bold; margin-bottom:5px;" href="' 
+				. get_url('/admin/materials_list.php?m=' . $module . '&ac=edit&id=' 
+				. $mat->getId()) . '">' . h($mat->getTitle()) . '</a>';
 			$output .= '<br />(' . $mat->getAuthor()->getName() . ')';
 			$output .= '</div><div style="width:60%;" class="right">';
 			
+			
 			if ($module == 'foto') {
-				$output .= '<img src="' . WWW_ROOT . '/sys/files/foto/preview/' . $mat->getFilename() . '" />';
+				$AtmFoto = h(preg_replace('#[^\w\d ]+#ui', ' ', $mat->getTitle()));
+				$AtmFoto = '<img alt="' . $AtmFoto . '" src="' . WWW_ROOT . '/sys/files/' . $module . '/preview/' 
+					. $mat->getFilename() . '" width="150px" />';
+				$AtmFoto = '<a target="_blank" href="' . WWW_ROOT . '/sys/files/' . $module . '/full/' 
+					. $mat->getFilename() . '">' . $AtmFoto . '</a>';
+				
+				$output .= $AtmFoto;
+
 			} else {
 				$output .= h(mb_substr($mat->getMain(), 0, 500));
 			}
 			$output .= '<br /><span class="comment">' . AtmDateTime::getSimpleDate($mat->getDate()) . '</span>';
 			
+			
+			// rejected - отвергнуто
+			// confirmed - подтвердил
+			// nochecked - не проверено
 			if (!empty($_GET['premoder'])) {
 				$output .= '</div><div class="unbordered-buttons">
-				<a href="' . get_url('/admin/materials_list.php?m=' . $module . '&ac=premoder&status=confirmed&id=' . $mat->getId()) . '" class="on"></a>' .
-				'<a href="' . get_url('/admin/materials_list.php?m=' . $module . '&ac=premoder&status=rejected&id=' . $mat->getId()) . '" class="off"></a>
+				<a href="' . get_url('/admin/materials_list.php?m=' . $module . '&ac=premoder&status=rejected&id=' . $mat->getId()) . '" class="off"></a>' .
+				'<a href="' . get_url('/admin/materials_list.php?m=' . $module . '&ac=premoder&status=confirmed&id=' . $mat->getId()) . '" class="on"></a>
 				</div><div class="clear"></div></div>';
 			} else {
 				$output .= '</div><div class="unbordered-buttons">
-				<a href="' . get_url('/admin/materials_list.php?m=' . $module . '&ac=edit&id=' . $mat->getId()) . '" class="edit"></a>' .
-				'<a href="' . get_url('/admin/materials_list.php?m=' . $module . '&ac=delete&id=' . $mat->getId()) . '" class="delete"></a>
+				<a href="' . get_url('/admin/materials_list.php?m=' . $module . '&ac=delete&id=' . $mat->getId()) . '" class="delete"></a>' .
+				'<a href="' . get_url('/admin/materials_list.php?m=' . $module . '&ac=edit&id=' . $mat->getId()) . '" class="edit"></a>
 				</div><div class="clear"></div></div>';
 			}
 		}
-
+		
 		return array($output, $pages);
 	}
 	
@@ -144,7 +159,15 @@ class MaterialsList {
 		$entity = $model->getById($id);
 		
 		if (!empty($entity)) {
-			$entity->delete();
+			if ($module == 'foto') {
+				_unlink(ROOT . '/sys/files/' . $module . '/full/' . $entity->getFilename());
+				_unlink(ROOT . '/sys/files/' . $module . '/preview/' . $entity->getFilename());
+				$entity->delete();
+				
+			} else {
+				$entity->delete();
+			}
+			
 			$_SESSION['message'] = __('Material has been delete');
 		}
 		
@@ -247,10 +270,6 @@ include_once ROOT . '/admin/template/header.php';
 </div>
 <div class="pagination"><?php echo $pages ?></div>
 </form>
-
-
-
-
 
 
 

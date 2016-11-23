@@ -413,8 +413,4 @@ include_once ROOT . '/admin/template/header.php';
 
 
 
-<?php /*echo '<form method="POST" action="settings.php?m=' . $module . '" enctype="multipart/form-data">*/ ?>
-
-
-
 <?php include_once 'template/footer.php'; ?>

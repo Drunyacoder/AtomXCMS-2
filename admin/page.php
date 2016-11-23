@@ -534,7 +534,7 @@ include_once ROOT . '/admin/template/header.php';
 
 $(document).ready(function(){
 	redactor_ = $('#mainTextarea').redactor({
-		css: '/template/vrc/css/style_redactor.css', 
+		//css: '/template/vrc/css/style_redactor.css', 
 		iframe: true,
 		cleanup: false,
 		autoclear: false, 

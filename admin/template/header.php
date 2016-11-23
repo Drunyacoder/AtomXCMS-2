@@ -23,7 +23,7 @@
 	<link type="text/css" rel="StyleSheet" href="<?php echo WWW_ROOT ?>/sys/js/fancybox/css/fancy.css" />
 	
 	<link rel="StyleSheet" type="text/css" href="<?php echo WWW_ROOT ?>/admin/template/css/style.css" />
-	<link rel="StyleSheet" href="<?php echo WWW_ROOT ?>/admin/template/css/font-awesome.min.css" />
+	<!--<link rel="StyleSheet" href="<?php echo WWW_ROOT ?>/admin/template/css/font-awesome.min.css" />-->
 	
 	<script type="text/javascript">
 	
@@ -90,7 +90,7 @@
 <body>
 	<div class="headmenuwrap">
 		<div class="headmenu">
-			<div class="logo"></div>
+			<a href="<?php echo WWW_ROOT; ?>/admin/"><div class="logo"></div></a>
 			<div class="menu" id="topmenu">
 				<ul>
 					<li><a href="#">Общее</a></li>
@@ -121,9 +121,10 @@
 
 
 				$new_ver = AtmApiService::getLastVersion();
-				$new_ver = ($new_ver)
-                    ? '<a href="https://github.com/Drunyacoder/AtomXCMS-2/releases" title="Last version">' . h(trim($new_ver)) . '</a>'
-                    : '';
+				$newVersion = ($new_ver)
+					? '<a href="https://github.com/Drunyacoder/AtomXCMS-2/releases" title="Next version">' . __('New version of AtomX') . '</a>'
+					: '';
+				
 				
 				$group_info = $Register['ACL']->get_user_group($_SESSION['user']['status']);
 				$group_title = $group_info['title'];
@@ -221,12 +222,11 @@
 			}
 		}
 	</script>
-	<div id="side-menu-label" style="width:65px; height:10px; position:fixed; top:330px; left:-30px; border:1px solid #C8C7C7; -webkit-border-radius:3px 3px 0px 0px; border-radius:3px 3px 0px 0px; background:#3C3C3D; color:#96C703; z-index:999; border-bottom:none; padding:2px 5px; -webkit-transform: rotate(90deg); transform: rotate(90deg); letter-spacing:5px; text-align: center;" onClick="hideSide();">
-		Hide
+	<div id="side-menu-label" onClick="hideSide();">
+		<a href="#">Спрятать</a>
 	</div>
 	<div id="wrapper">
 
-		
 		<!-- AdminBar -->
 		<script type="text/javascript">
 
@@ -237,7 +237,7 @@
 		  'sep',
 		  '<span><?php echo __('Version of AtomX'); ?> [ <b><?php echo FPS_VERSION ?></b> ]</span>',
 		  <?php if ($new_ver): ?>
-		  '<span><?php echo __('New version of AtomX'); ?> [ <?php echo $new_ver; ?> ]</span>',
+		  '<span><?php echo $newVersion; ?> [ <?php echo $new_ver; ?> ]</span>',
 		  <?php endif; ?>
 		  'sep',
 		  '<a href="/admin/settings.php?m=sys"><?php echo __('Common settings'); ?></a>',

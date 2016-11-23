@@ -159,43 +159,37 @@ include_once ROOT . '/admin/template/header.php';
 <div class="list">
 	<div class="title"></div>
 	<a href="dump.php?ac=make_dump"><div class="add-cat-butt"><div class="add"></div><?php echo __('Create DB backup') ?></div></a>
-	<table style="width:100%;" cellspacing="0" class="grid">
-
-	<?php  
-	if (!empty($current_dumps)): 
-		foreach ($current_dumps as $dump): 
+	<div class="level1">
+		<div class="items">
 		
-		
-	?>
-
-		<tr>
-			<td><?php echo h(substr(strrchr($dump, '/'), 1, 16)) ?></td>
-			<td><?php echo round((filesize($dump) / 1024), 1) ?> Kb</td>
+		<?php 
+		if (!empty($current_dumps)): 
+			foreach ($current_dumps as $dump): ?>	
 			
-			<td width="40px">
-				<a class="undo" onClick="return confirm('Are you sure?')" title="<?php echo __('Restore') ?>" href="dump.php?ac=restore&id=<?php echo $dump ?>"></a>
-				<a class="delete" onClick="return confirm('Are you sure?')" title="<?php echo __('Delete') ?>" href="dump.php?ac=delete&id=<?php echo $dump ?>"></a>
-			</td>
-		</tr>
-
-	<?php	endforeach; ?>
-	<?php else: ?> 
-
-		<tr>
-			<td><?php echo __('DB backups not found') ?></td>
-		</tr>
-
-	<?php endif; ?>
-
-
-	</table>
+			<div class="level2">
+				<div class="number"><?php echo round((filesize($dump) / 1024), 1) ?> Kb</div>
+				<div class="title"><?php echo h(substr(strrchr($dump, '/'), 1, 16)) ?></div>
+				<div class="buttons">
+					<a title="<?php echo __('Delete') ?>" href="dump.php?ac=delete&id=<?php echo $dump ?>" onClick="return confirm('Are you sure?')" class="delete"></a>
+					<a title="<?php echo __('Restore') ?>" href="dump.php?ac=restore&id=<?php echo $dump ?>" onClick="return confirm('Are you sure?')" class="undo"></a>
+				</div>
+			</div>
+		
+		<?php	
+			endforeach; 
+		else: ?> 
+		
+			<div class="level2">
+				<div class="number"></div>
+				<div class="title"><?php echo __('DB backups not found') ?></div>
+			</div>
+		
+		<?php 
+		endif; 
+		?>
+		</div>
+	</div>
 </div>
-
-
-
-
-
-
 
 
 <?php include_once 'template/footer.php';

@@ -170,10 +170,11 @@ function buildMenu($node) {
 				. '<input type="hidden" name="prefix" value="' . h($value['prefix']) . '" />' . "\n"
 				. '<input type="hidden" name="sufix" value="' . h($value['sufix']) . '" />' . "\n" 
 				. '<input type="hidden" name="newwin" value="' . h($value['newwin']) . '" />' . "\n" 
-				. '<div style="float:right;"><a class="edit" ' 
+				. '<div style="float:right;"><a class="delete" title="Delete" '
+				. 'onClick="if(confirm(\''.__('Are you sure?').'\'))deletePoint(this);"></a>'
+				. '<a class="edit" ' 
 				. 'title="Edit" onClick="openPopup(\'edit' . $value['id'] . '\');"></a>' . "\n"
-				. '<a class="delete" title="Delete" '
-				. 'onClick="if(confirm(\''.__('Are you sure?').'\'))deletePoint(this);"></a><div style="clear:both;"></div></div>' . "\n"
+				. '<div style="clear:both;"></div></div>' . "\n"
 				. '</div>' . "\n";
 				
 			$checked = (!empty($value['newwin'])) ? 'selected="selected"' : '';
@@ -360,26 +361,32 @@ function form1() {
 <div class="list">
 	<div class="title"><?php echo __('Menu editor') ?></div>
 	<div onClick="openPopup('addCat');" class="add-cat-butt"><div class="add"></div><?php echo __('Add an item') ?></div>
-	<table cellspacing="0" style="width:100%;" class="grid">
-		<tr>
-			<td>
-				<?php echo __('Template marker') ?>: 
-				<input style="width:100px; font-size:16px;" type="text" value="{MAINMENU}" onClick="" />
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<ul id="sort">
-				<?php  echo buildMenu($menu); ?>
-				</ul>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<input style="margin:auto;" class="save-button" type="submit" value="<?php echo __('Save') ?>" onClick="form1();" id="sendButton" />
-			</td>
-		</tr>
-	</table>
+	<div class="level1">
+		<div class="items">
+			<div class="level2">
+				<div class="number"></div>
+				<div class="title">
+					<?php echo __('Template marker') ?>: 
+					<input style="width:100px; font-size:16px;" type="text" value="{MAINMENU}" onClick="" />
+				</div>
+			</div>
+			<ul id="sort" class="ui-sortable">	
+			<div class="">
+				<li>
+					<div class="title">
+						<?php  echo buildMenu($menu); ?>
+					</div>
+				</li>
+			</div>
+			</ul>
+
+			<div class="level2">
+				<div class="title">
+					<input  class="save-button" type="submit" value="<?php echo __('Save') ?>" onClick="form1();" id="sendButton" />
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 
 

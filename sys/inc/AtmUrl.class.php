@@ -2,7 +2,7 @@
 /*---------------------------------------------\
 |											   |
 | @Author:       Andrey Brykin (Drunya)        |
-| @Version:      1.0                           |
+| @Version:      1.1                           |
 | @Project:      CMS                           |
 | @Package       AtomX CMS                     |
 | @subpackege    Fps URL class                 |
@@ -132,32 +132,96 @@ class AtmUrl {
      * @return string
      */
     public function getEntryUrl($material, $module){
-        if (Config::read('hlu') == 1) {
-            $pattern = '/' . $module . '/%s';
+		$matId = $material->getId();
+		$matTitle = $material->getTitle();
+		
+		
+		if (empty($matId)) 
+			trigger_error('Empty material ID', E_USER_ERROR);
+			
+		if (Config::read('hlu') != 1 || empty($matTitle)) {
+			$url = $module . '/view/' . $matId;
+			return $url;
+		}
 
+		
+		if (Config::read('hlu') == 1) {
+			// extention
+			$extention = '';
+			$hlu_extention = Config::read('hlu_extention');
+			if (!empty($hlu_extention)) {
+				$extention = $hlu_extention;
+			}
+			
+			// URL pattern
+			$pattern = '/' . $module . '/%s' . $extention;
+			
+			
+			// Check tmp file with assocciations and build human like URL
+			clearstatcache();
+			$tmp_file = $this->getTmpFilePath($matId, $module);
 
-            $title = $material->getClean_url_title();
+			
+			if (file_exists($tmp_file) && is_readable($tmp_file)) {
+				$title = file_get_contents($tmp_file);
+				if (!empty($title)) {			
+				
+					$tmp_file_2 = $this->getTmpFilePath($title, $module);
+					if (!file_exists($tmp_file_2)) {
+						file_put_contents($tmp_file_2, $matId);
+					}
+					return h(sprintf($pattern, $title));
+				}
+			}
+			
+			
+			$title = $matTitle;
+			$title = preg_replace('#[^a-zа-я0-9]#uisU', '_', $title);
+			$title = mb_strtolower($title);
+
+			
+			// Colission protect
+			$tmp_file_title = $this->getTmpFilePath($title, $module);
+			while (file_exists($tmp_file_title)) {
+				$collision = file_get_contents($tmp_file_title);
+				if (!empty($collision) && $collision != $matId) {
+					$title .= '_';
+					$tmp_file_title = $this->getTmpFilePath($title, $module);
+				
+				} else {
+					$tmp_file_title_flag = true;
+					break;
+				}
+			}
+	
+
+			file_put_contents($tmp_file, $title);
+			if (empty($tmp_file_title_flag)) {
+				file_put_contents($this->getTmpFilePath($title, $module), $matId);
+			}
+			
 
             if (!$title) {
                 // When we save title the clean_url_title will be set automatically
                 $material->setTitle($material->getTitle());
                 $title = $material->getClean_url_title();
 
-                if ($title) {
-                    $material->save();
-
-                } else { // Paranoia mode enable
-                    $title = $this->getUrlByTitle($material->getTitle());
-                }
+				$material->save();
+				return h(sprintf($pattern, $title));
             }
-
-
-            $url = h(sprintf($pattern, $title));
-        } else {
+			
+			
+			$material->setClean_url_title($title)->save();
+		
+            return h(sprintf($pattern, $title));
+        
+		
+		} else {
             $url = '/' . $module . '/' .
                 ($module === 'forum' ? 'view_theme' : 'view') .
                 '/' . $material->getId() . '/';
         }
+		
         return $this->__invoke($url);
     }
 
@@ -202,6 +266,7 @@ class AtmUrl {
 		
 		return str_replace($cirilic, $latinic, $str);
 	}
+	
 
 
 	/**

@@ -1,6 +1,6 @@
 <?php 
 $set = array (
-  'cache' => 1,
+  'cache' => 0,
   'language' => 'rus',
   'permitted_languages' => 'rus,eng',
   'cache_querys' => 0,
@@ -10,7 +10,7 @@ $set = array (
   'debug_mode' => 0,
   'max_file_size' => '15000000',
   'min_password_lenght' => '5',
-  'admin_email' => 'test@email.cms',
+  'admin_email' => 'a@a.a',
   'redirect' => '',
   'redirect_delay' => '1',
   'time_on_line' => '10',
@@ -18,7 +18,7 @@ $set = array (
   'templates_cache' => 1,
   'use_additional_fields' => 0,
   'hlu' => 1,
-  'hlu_extention' => '.htm',
+  'hlu_extention' => '.html',
   'hlu_understanding' => 0,
   'allow_html' => 0,
   'autotags_active' => 1,
@@ -48,7 +48,7 @@ $set = array (
   'use_pdo' => 1,
   'new_pm_mail' => 1,
   'allow_server_notifications' => 1,
-  'latest_on_home' =>
+  'latest_on_home' => 
   array (
     'news' => 'news',
     'stat' => 'stat',

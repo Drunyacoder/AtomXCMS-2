@@ -22,23 +22,52 @@
 
 
 /**
- * @version       1.0.0
+ * @version       1.1.0
  * @author        Andrey Brykin
  * @url           http://atomx.net
  */
 class AtmApiService {
 
-    private static $apiUrl = 'http://home.develdo.com/';
+    private static $apiUrl = 'http://atomx.net/';
+	
 
 	public static function getLastVersion()
     {
-        $context  = stream_context_create(array('http' => array('method'  => 'GET', 'timeout' => 2)));
-        $new_ver = @file_get_contents(self::$apiUrl . 'cdn/versions.txt', null, $context);
-        return (!empty($new_ver) && $new_ver > FPS_VERSION)
-            ? $new_ver : false;
+		$id = 'versions.txt';
+		$ids = self::$apiUrl . 'cdn/' . $id;
+		$cache = new Cache;
+		$cache->dirLevel = 0;
+		//$cache->lifeTime = 20;
+		$cache->cacheDir = ROOT . '/cdn/';
+		
+	
+		if ($cache->check($id)) { 
+			return $cache->read($id);
+		}
+	
+		
+		$context  = stream_context_create(array('http' => array('method'  => 'GET', 'timeout' => 2)));
+		$new_ver = @file_get_contents($ids, false, $context);
+		
+		
+		if ($new_ver <= FPS_VERSION) {
+			$new_ver = true; 
+		}
+		
+		preg_match('#(\d{1,2})(.?\d{1,2})(.?\d{0,2})([a-zA-Z. +-_-]{0,30})#i', $new_ver, $matches);
+		if ($matches[0] == true) {
+			$matches = $matches[0]; 
+		} else {
+			$matches = '';
+		}
+	
+		
+		$cache->write($matches, $id);
+		
+		return $matches;
 	}
 
-
+	
     public static function getServerMessage()
     {
         if (!Config::read('allow_server_notifications'))

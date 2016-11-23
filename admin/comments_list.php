@@ -104,15 +104,19 @@ class MaterialsList {
 			$output .= h(mb_substr($mat->getMessage(), 0, 120));
 			$output .= '<br /><span class="comment">' . AtmDateTime::getSimpleDate($mat->getDate()) . '</span>';
 			
+			
+			// rejected - отвергнуто
+			// confirmed - подтвердил
+			// nochecked - не проверено
 			if (!empty($_GET['premoder'])) {
 				$output .= '</div><div class="unbordered-buttons">
-				<a href="' . get_url('/admin/comments_list.php?m=' . $module . '&ac=premoder&status=confirmed&id=' . $mat->getId()) . '" class="on"></a>
 				<a href="' . get_url('/admin/comments_list.php?m=' . $module . '&ac=premoder&status=rejected&id=' . $mat->getId()) . '" class="off"></a>
+				<a href="' . get_url('/admin/comments_list.php?m=' . $module . '&ac=premoder&status=confirmed&id=' . $mat->getId()) . '" class="on"></a>
 				</div><div class="clear"></div></div>';
 			} else {
 				$output .= '</div><div class="unbordered-buttons">
-				<a href="' . get_url('/admin/comments_list.php?m=' . $module . '&ac=edit&id=' . $mat->getId()) . '" class="edit"></a>
 				<a href="' . get_url('/admin/comments_list.php?m=' . $module . '&ac=delete&id=' . $mat->getId()) . '" class="delete"></a>
+				<a href="' . get_url('/admin/comments_list.php?m=' . $module . '&ac=edit&id=' . $mat->getId()) . '" class="edit"></a>
 				</div><div class="clear"></div></div>';
 			}
 		}
@@ -145,7 +149,7 @@ class MaterialsList {
 		} else {
 			$_SESSION['errors'] = __('Some error occurred');
 		}
-		redirect('/admin/comments_list.php?m=' . $module . '&premoder=1');
+		redirect('/admin/comments_list.php?m=' . $module . '&premoder=1&id=' . $entity->getUser_id());
 	}
 	
 	

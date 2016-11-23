@@ -3,8 +3,8 @@
 	  <div class="mat-content">
 	    <div class="photos_albums_container">
 		    <div class="bigimg margin">
-		      <a class="bigimglink gallery" href="{{ get_url('/sys/files/' ~ module ~ '/' ~ entity.filename) }}">
-                  <img alt="{{ entity.add_markers.foto_alt }}" src="{{ get_url('/image/' ~ module ~ '/' ~ entity.filename ~ '/400/') }}"/>
+		      <a class="bigimglink gallery" href="{{ get_url('/sys/files/' ~ module ~ '/main/' ~ entity.filename) }}">
+                  <img alt="{{ entity.add_markers.foto_alt }}" src="{{ entity.add_markers.main }}"/>
               </a>
 			  <a class="rotatorimg before" title="{{ 'Previous photo'|lang }}" href="{{ entity.add_markers.previous_url }}"></a>
 			  <a class="rotatorimg after" title="{{ 'Next photo'|lang }}" href="{{ entity.add_markers.next_url }}"></a>
@@ -19,7 +19,7 @@
 			      <br /><b>{{ 'Viewings'|lang }}:</b> {{ entity.views }}
 			      <br /><b>{{ 'Date'|lang }}:</b> {{ AtmGetDate(entity.date) }}
 			      <br />{{ entity.add_markers.moder_panel }}
-			    </div>
+			    </div> 
 	        </div>
 		</div>
       </div>
