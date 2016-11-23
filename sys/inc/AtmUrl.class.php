@@ -160,7 +160,7 @@ class AtmUrl {
 			// Check tmp file with assocciations and build human like URL
 			clearstatcache();
 			$tmp_file = $this->getTmpFilePath($matId, $module);
-			
+
 			
 			if (file_exists($tmp_file) && is_readable($tmp_file)) {
 				$title = file_get_contents($tmp_file);
@@ -168,7 +168,7 @@ class AtmUrl {
 				
 					$tmp_file_2 = $this->getTmpFilePath($title, $module);
 					if (!file_exists($tmp_file_2)) {
-						file_put_contents(iconv('UTF-8', 'CP1251', $tmp_file_2), $matId);
+						file_put_contents($tmp_file_2, $matId);
 					}
 					return h(sprintf($pattern, $title));
 				}
@@ -193,11 +193,12 @@ class AtmUrl {
 					break;
 				}
 			}
+	
 
-			
-			file_put_contents(iconv('UTF-8', 'CP1251', $tmp_file), $title);
-			if (empty($tmp_file_title_flag)) 
-				file_put_contents(iconv('UTF-8', 'CP1251', $this->getTmpFilePath($title, $module)), $matId);
+			file_put_contents($tmp_file, $title);
+			if (empty($tmp_file_title_flag)) {
+				file_put_contents($this->getTmpFilePath($title, $module), $matId);
+			}
 			
 
             if (!$title) {
