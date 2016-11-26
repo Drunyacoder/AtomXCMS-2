@@ -72,8 +72,7 @@ include_once ROOT . '/admin/template/footer.php';
 	
 	
 function index(&$page_title) {
-	global $FpsDB;
-	$page_title = __('Plugins list');
+	global $FpsDB, $pageTitle;
 	$content = '';
 
 	
@@ -83,19 +82,26 @@ function index(&$page_title) {
 			if (!is_dir($pl)) unset($plugs[$k]);
 		}
 	}
-	if (count($plugs) < 1) return '<div class="list"><table cellspacing="0" class="grid"><tr><td>' . __('Not found available plugins') . '</td></tr></table></div>';
+	if (count($plugs) < 1) 
+		return '<div class="list"><div class="head">
+				<div class="title">' . __('Not found available plugins') . '</div></div></div>';
 	
 	
 
 	
 	
-	$content .= "<div class=\"list\"><table cellspacing=\"0\" class=\"grid\">
-		<th width=\"\">" . __('Title') . "</th>
-		<th width=\"25%\">" . __('Path') . "</th>
-		<th width=\"20%\">" . __('Description') . "</th>
-		<th width=\"\">HOOK</th>
-		<th width=\"15%\">" . __('Directory') . "</th>
-		<th width=\"30px\" colspan=\"2\">" . __('Action') . "</th>";
+	$content .= "<div class=\"list\">
+		<div class='title'>" . $pageTitle . "</div>
+		<div class='level1'>
+			<div class='head'>
+				<div class='title'>" . __('Title') . "</div>
+				<div class='title' style='width:220%;'>" . __('Path')  . "</div>
+				<div class='title'>" . __('Description') . "</div>
+				<div class='title' style='width:30%;'>HOOK</div>
+				<div class='title'>" . __('Directory') . "</div>
+				<div class='title'>" . __('Action') .  "</div>
+			</div>
+			<div class='items'>";
 	
 
 	
@@ -120,26 +126,35 @@ function index(&$page_title) {
 		}
 		if (empty($hook)) $hook = 'Unknown';
 		
-	
-	
-		$content .= "<tr><td><div class=\"plugin_path\"><a href='plugins.php?ac=edit&dir={$dir}'>{$name}</a></div></td>
-			<td><div class=\"plugin_path\">{$result}</div></td>
-			<td><div class=\"plugin_path\">{$descr}</div></td>
-			<td><span style=\"color:#\">{$hook}</span></td>
-			<td>{$dir}</td>
-			<td colspan=\"2\">
-				<a class=\"edit\" href='plugins.php?ac=edit&dir={$dir}'></a>&nbsp;";
-			
-			if (!empty($params['active'])) {
-				$content .= "<a class=\"off\" href='plugins.php?ac=off&dir={$dir}'></a>
-				</td>";
-			} else {
-				$content .= "<a class=\"on\" href='plugins.php?ac=on&dir={$dir}'></a>
-				</td>";
-
-			}
+		
+		$selce = '';
+		$content .= "
+				<div class='level2'>
+					<div class='title2' style='width:10%;'>
+						<a href='plugins.php?ac=edit&dir={$dir}'>{$name}</a>
+					</div>	
+					<div class='title2' style='width:30%;'>
+						{$result}
+					</div>
+					<div class='title2' style='width:15%;'>
+						{$descr}
+					</div>
+					<div class='title2'><span class='unknown' style=\"color:#\">{$hook}</span></div>
+					<div class='title2' style='width:12%;'>{$dir}</div>
+					<div class='title2-buttons'>
+						<a class=\"edit\" href='plugins.php?ac=edit&dir={$dir}'></a>&nbsp;";
+						
+						if (!empty($params['active'])) {
+							$selce = "<a class=\"off\" href='plugins.php?ac=off&dir={$dir}'></a>";
+						} else {
+							$selce = "<a class=\"on\" href='plugins.php?ac=on&dir={$dir}'></a>";
+						}
+						$content .= $selce;
+		
+		$content .= "</div>
+				</div>";
 	}
-	$content .= '</table></div>';
+	$content .= '</div></div></div>';
 
 	
 	return $content;
@@ -157,7 +172,11 @@ function editPlugin(&$page_title) {
 	
 	
 	$settigs_file_path = ROOT . '/sys/plugins/' . $dir . '/settings.php';
-	if (!file_exists($settigs_file_path)) return '<h2>No settings for this plugin</h2>';
+	if (!file_exists($settigs_file_path)) 
+		return '<div class="list"><div class="title"></div><div class="level1"><div class="head">
+				<div class="title">No settings for this plugin</div></div></div></div>';
+	
+	
 	include_once $settigs_file_path;
 	$page_title = 'Настройка Плагина';
 	return (!empty($output)) ? $output : '';
@@ -193,3 +212,4 @@ function offPlugin() {
 		file_put_contents($conf_pach, json_encode($history));
 		redirect('../admin/plugins.php');
 }
+
