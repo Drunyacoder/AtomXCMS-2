@@ -28,7 +28,7 @@ include_once ROOT . '/admin/inc/adm_boot.php';
 
 $Register = Register::getInstance();
 $FpsDB = $Register['DB'];
-$api_url = 'http://home.develdo.com/';
+$api_url = 'http://home.atomx.net/';
 
 
 

@@ -33,7 +33,7 @@
 <div id="footer1">
 	<div style="float:left;">
 		<a href="http://atomx.net/">OFF. SITE</a>
-		<a href="http://home.develdo.com/">ABOUT</a>
+		<a href="http://home.atomx.net/">ABOUT</a>
 		<a href="http://atomx.net/forum/">SUPPORT</a>
 		<a href="http://atomx.net/documa/">WIKI</a>
 	</div>

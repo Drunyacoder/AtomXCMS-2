@@ -28,7 +28,7 @@
  */
 class AtmApiService {
 
-    private static $apiUrl = 'http://atomx.net/';
+    private static $apiUrl = 'http://home.atomx.net/';
 	
 
 	public static function getLastVersion()
@@ -38,7 +38,7 @@ class AtmApiService {
 		$cache = new Cache;
 		$cache->dirLevel = 0;
 		//$cache->lifeTime = 20;
-		$cache->cacheDir = ROOT . '/cdn/';
+		$cache->cacheDir = ROOT . '/sys/tmp/cdn/';
 		
 	
 		if ($cache->check($id)) { 
@@ -50,9 +50,10 @@ class AtmApiService {
 		$new_ver = @file_get_contents($ids, false, $context);
 		
 		
-		if ($new_ver <= FPS_VERSION) {
-			$new_ver = true; 
+		if (trim($new_ver) <= FPS_VERSION) {
+			$new_ver = true;
 		}
+
 		
 		preg_match('#(\d{1,2})(.?\d{1,2})(.?\d{0,2})([a-zA-Z. +-_-]{0,30})#i', $new_ver, $matches);
 		if ($matches[0] == true) {

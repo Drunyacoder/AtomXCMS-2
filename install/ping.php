@@ -10,7 +10,7 @@ if ($_GET['type'] === true) {
 
 
 function checkUpdate() {
-	@$b = file_get_contents('http://home.develdo.com/cdn/versions.txt');
+	@$b = file_get_contents('http://home.atomx.net/cdn/versions.txt');
 	if ($b) {
 		if (preg_match('#[^></]+#i', $b)) {
 			echo '<a target="_blank" href="https://github.com/Drunyacoder/AtomXCMS-2/releases">Последняя версия ' . trim($b) . '</a>';
@@ -23,6 +23,6 @@ function checkUpdate() {
 }
 
 function checkRequest() {
-	@$b = file_get_contents('http://home.develdo.com/check.php?v=2.7.0Beta&d=' . $_SERVER['HTTP_HOST']);
+	@$b = file_get_contents('http://home.atomx.net/check.php?v=2.7.0Beta&d=' . $_SERVER['HTTP_HOST']);
 }
 ?>
