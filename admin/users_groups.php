@@ -316,10 +316,12 @@ if (!empty($errors)) {
 			<td><?php echo h($value['title']); ?></td>
 			<td><?php echo h($value['cnt_users']); ?></td>
 			<td>
-				<?php if ($key !== 0 && $key !== 1): ?>
+				<?php if ($key !== 0 && $key !== 1 && $key !== 4): ?>
 				<a title="<?php echo __('Delete') ?>" href="users_groups.php?ac=delete&id=<?php echo h($key) ?>" onClick="return confirm('Are you sure?')" class="delete"></a>
 				<?php endif; ?>
+				<?php if ($key !== 4): ?>
 				<a title="<?php echo __('Move') ?>" href="javascript://" onClick="openPopup('<?php echo h($key) ?>_Move')" class="move"></a>
+				<?php endif; ?>
 				<a title="<?php echo __('Edit') ?>" href="javascript://" onClick="openPopup('<?php echo h($key) ?>_Edit')" class="edit"></a>
 			</td>
 		</tr>

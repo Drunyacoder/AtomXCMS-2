@@ -114,11 +114,12 @@
 				
 				}
 
-
+				
                 // Used below
+				$isMainPage = true;
                 $serverMessage = (!empty($isMainPage))
                     ? AtmApiService::getServerMessage() : '';
-
+		
 
 				$new_ver = AtmApiService::getLastVersion();
 				$newVersion = ($new_ver)

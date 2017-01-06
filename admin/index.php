@@ -27,7 +27,6 @@ include_once ROOT . '/admin/inc/adm_boot.php';
 
 $Register = Register::getInstance();
 $FpsDB = $Register['DB'];
-$isMainPage = true;
 
 
 $pageTitle = __('Admin Panel');
