@@ -2,11 +2,11 @@
 ##################################################
 ##												##
 ## Author:       Andrey Brykin (Drunya)         ##
-## Version:      1.3                            ##
+## Version:      1.4                            ##
 ## Project:      CMS                            ##
 ## package       CMS AtomX                      ##
 ## subpackege    Admin Panel module             ##
-## copyright     ©Andrey Brykin 2010-2011       ##
+## copyright     ©Andrey Brykin 2010-2017       ##
 ##################################################
 
 

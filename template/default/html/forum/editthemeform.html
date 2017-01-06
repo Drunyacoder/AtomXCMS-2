@@ -60,7 +60,7 @@ $(function() {
 			<span class="siu_title"><strong>{{ 'To close access'|lang }}:</strong></span>
             <span class="siu_data">
 			{% for group in context.users_groups %}
-		      <label><input type="checkbox" {% if context.gr_access %} {% for curr in context.gr_access %} {% if curr == group.id %} checked="checked" {% endif %} {% endfor %} {% endif %} value="{{ group.id }}" name="gr_access_{{ group.id }}" />{{ group.title }}</label>
+		      <label><input type="checkbox" {% if context.gr_access %} {% for curr in context.gr_access %} {% if curr == group.id %} checked="checked" {% endif %} {% endfor %} {% endif %} value="{{ group.id }}" name="gr_access_{{ group.id }}" />{{ group.title }}</label><br />
            {% endfor %}
 		   </span>
 		  </li>

@@ -4,11 +4,11 @@
 | @Author:       Andrey Brykin (Drunya)          |
 | @Email:        drunyacoder@gmail.com           |
 | @Site:         http://atomx.net                |
-| @Version:      1.4                             |
+| @Version:      1.5                             |
 | @Project:      CMS                             |
 | @package       CMS AtomX                       |
 | @subpackege    Admin Panel module  			 |
-| @copyright     ©Andrey Brykin 2010-2013        |
+| @copyright     ©Andrey Brykin 2010-2017        |
 \-----------------------------------------------*/
 
 /*-----------------------------------------------\
@@ -79,7 +79,8 @@ echo $popups_content;
 ?>
 
 <!-- Find users for add new special rules -->
-<div id="sp_rules_find_users" class="popup" data-top="200">
+<!-- data-top="200" -->
+<div id="sp_rules_find_users" class="popup">
 	<div class="top">
 		<div class="title"><?php echo __('Find users') ?></div>
 		<div onClick="closePopup('sp_rules_find_users');" class="close"></div>
@@ -96,12 +97,9 @@ echo $popups_content;
 			<div class="clear"></div>
 		</div>
 		<div id="add_users_list"></div>
-			
-			
-
 	</div>
 </div>
-<script>
+<script type="text/javascript">
 function findUsersWindow(url) {
 	$('#add_users_list').html('');
 	$('#sp_rules_find_users input[type="text"]').val('');
@@ -109,6 +107,7 @@ function findUsersWindow(url) {
 	
 	$('#autocomplete_inp').keypress(function(e){
 		var inp = $(this);
+		//inp.val().length <= 2;
 		if (inp.val().length < 2) return;
 		setTimeout(function(){
 			AtomX.findUsersForForums('/admin/find_users.php?name='+inp.val(), 'add_users_list', url);
@@ -459,6 +458,7 @@ function index(&$page_title) {
 									<a title="' . __('Edit') . '" href="javascript://" onClick="openPopup(\'editForum' . $cat->getId() . '\')" class="edit"></a>
 								</div>
 								<div class="posts">' . $cat->getThemes() . '</div>
+								<div class="clear"></div>
 							</div>';
 
 							
@@ -574,7 +574,7 @@ function index(&$page_title) {
 				$html .= '<div class="level2"><div class="left"><div class="title">' . __('Empty') . '</div></div></div>';
 			}
 			
-			$html .= '</div></div>';
+			$html .= '<div class="clear"></div></div></div>';
 			
 		}
 		$html .= '</div>';

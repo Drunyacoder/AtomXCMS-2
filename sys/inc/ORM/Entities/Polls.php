@@ -7,7 +7,7 @@
 | @Package       AtomX CMS                     |
 | @subpackege    Pages Entity                  |
 | @copyright     ©Andrey Brykin 2010-2013      |
-| @last mod      2013/04/03                    |
+| @last mod      2017/01/06                    |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |

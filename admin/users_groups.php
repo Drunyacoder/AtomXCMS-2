@@ -1,26 +1,25 @@
 <?php
-##################################################
-##												##
-## Author:       Andrey Brykin (Drunya)         ##
-## Version:      0.7                            ##
-## Project:      CMS                            ##
-## package       CMS AtomX                      ##
-## subpackege    Admin Panel module             ##
-## copyright     ©Andrey Brykin 2010-2011       ##
-##################################################
-
-
-##################################################
-##												##
-## any partial or not partial extension         ##
-## CMS AtomX,without the consent of the         ##
-## author, is illegal                           ##
-##################################################
-## Любое распространение                        ##
-## CMS AtomX или ее частей,                     ##
-## без согласия автора, является не законным    ##
-##################################################
-
+/*---------------------------------------------\
+|											   |
+| Author:       Andrey Brykin (Drunya)         |
+| Version:      1.1                            |
+| Project:      CMS                            |
+| package       CMS AtomX                      |
+| subpackege    Admin Panel module             |
+| copyright     Andrey Brykin 2010-2016        |
+|----------------------------------------------|
+|											   |
+| any partial or not partial extension         |
+| CMS AtomX,without the consent of the         |
+| author, is illegal                           |
+|----------------------------------------------|
+| Любое распространение                        |
+| CMS AtomX или ее частей,                     |
+| без согласия автора, является не законным    |
+\---------------------------------------------*/
+ 
+ 
+ 
 include_once '../sys/boot.php';
 include_once ROOT . '/admin/inc/adm_boot.php';
 
@@ -54,6 +53,7 @@ if (!empty($acl_groups)) {
 
 //move users into other group
 if (!empty($_GET['ac']) && $_GET['ac'] == 'move') {
+	
 	if (isset($_POST['id']) && is_numeric($_POST['id']) && (int)$_POST['id'] !== 0) {
 		$from = (int)$_POST['id'];
 		if (!empty($_POST['to']) && is_numeric($_POST['to'])) {

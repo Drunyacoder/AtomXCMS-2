@@ -2,12 +2,12 @@
 ##################################################
 ##												##
 ## Author:       Andrey Brykin (Drunya)         ##
-## Version:      1.3                            ##
+## Version:      1.4                            ##
 ## Project:      CMS                            ##
 ## package       CMS AtomX                      ##
 ## subpackege    ACL library                    ##
 ## copyright     ©Andrey Brykin 2010-2014       ##
-## last mod.     2014/01/09                     ##
+## last mod.     2017/01/06                     ##
 ##################################################
 
 
@@ -49,7 +49,7 @@ class ACL {
         include_once $path . 'acl_rules.php';
         include_once $path . 'acl_groups.php';
         include_once $path . 'forums_moderators.php';
-
+		
 		$this->rules = $acl_rules;
 		$this->groups = $acl_groups;
 		$this->forumsModerators = $forums_moderators;
@@ -171,6 +171,23 @@ class ACL {
 		}
 	}
 	
+	
+	public function rulesPanelEntry() {
+		$data = $this->getRules();
+		$access = $data['panel.entry']['groups'];
+		
+		$groups_access = $this->getGroups();
+		foreach ($groups_access as $k => $gr) {
+			foreach ($access as $g) {
+				if ($gr['id'] == $g) {
+					$gr['id'] = $g;
+					unset($groups_access[$k]);
+				}
+			}
+		}
+		
+		return $groups_access;
+	}
 	
 	/**
 	*
