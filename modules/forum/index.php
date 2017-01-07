@@ -499,7 +499,7 @@ Class ForumModule extends Module {
 		if (!$this->ACL->turn(array('forum', 'edit_themes', $theme->getId_forum()), false) 
 		&& (empty($_SESSION['user']['id']) || $theme->getId_author() != $_SESSION['user']['id'] 
 		|| !$this->ACL->turn(array('forum', 'edit_mine_themes', $theme->getId_forum()), false))) {
-			return $this->showInfoMessage(__('Permission denied'), '/forum/view_forum/' . $id_forum );
+			//return $this->showInfoMessage(__('Permission denied'), '/forum/view_forum/' . $id_forum );
 		}
 		
 		//ADMINBAR 
