@@ -173,7 +173,7 @@ progress::-webkit-progress-bar {width:300px; height:15px; border-radius:8px; bor
 progress::-webkit-progress-value {border-radius:6px; background:linear-gradient(to left, #b7b840, #c6f543, #b7b840); background:-webkit-linear-gradient(left, #b7b840, #c6f543, #b7b840);}
 progress::-moz-progress-bar {border-radius:6px; background:linear-gradient(to left, #b7b840, #c6f543, #b7b840); background:-webkit-linear-gradient(left, #b7b840, #c6f543, #b7b840);}
 /*------------------------------------------------------------RAZMETKA------------------------------------------------------------------------------*/
-.global {max-width:1500px;margin: 0 auto;padding-bottom: 1px;}
+.global {max-width:1200px;margin: 0 auto;padding-bottom: 1px;}
 .header {width: 100%;height: 300px;}
 /*----------------------------------------------------------ADMIN-PANEL--------------------------------------------------------------------------------*/
 .headpanel {
@@ -908,7 +908,7 @@ box-shadow: inset 0 0 5px #333;  -webkit-box-shadow: inset 0 0 5px #333;  -moz-b
 .forumblock .forumcontent {border-bottom: 1px solid #acacac;}
 .forumblock .forumcontent:last-child {-moz-border-radius: 0 0 6px 6px;-webkit-border-radius: 0 0 6px 6px;border-radius: 0 0 6px 6px;}
 .forumblock .forumcontent:last-child {border: none;}
-.forumblock .forumcontent div {display: table-cell;vertical-align: middle;height: 45px;border-right: 1px solid #acacac;padding: 0 5px;}
+.forumblock .forumcontent div {display: table-cell;vertical-align: middle; /*height: 45px;*/ border-right: 1px solid #acacac;padding: 3px 5px;}
 .forumblock .forumcontent div:last-child {border:none;}
 .forumblock .forumcontent .forstatus {border-left: 1px solid transparent;}
 .forumblock .forumcontent .forstatus span {display:block; height:100%;position: relative;}
@@ -919,7 +919,7 @@ box-shadow: inset 0 0 5px #333;  -webkit-box-shadow: inset 0 0 5px #333;  -moz-b
      .forumblock .forumcontent .forname .foruminfo .namefor, .forumblock .forumcontent .fornametemes .forinfoteme .namefor {display: inline-block;height: auto;line-height: normal;border: none;padding: 0;color: #780;text-shadow: none;font-weight: bold;cursor: pointer;}
      .forumblock .forumcontent .forname .foruminfo .namefor:hover, .forumblock .forumcontent .fornametemes .forinfoteme .namefor:hover {text-decoration:underline;}
 	 .forumblock .forumcontent .forname .foruminfo .fordescription, .forumblock .forumcontent .fornametemes .forinfoteme .fordescriptionteme {display: block;line-height: normal;height: auto;font-size: 12px;padding: 0;}
-   .forumblock .forumcontent .forname .moderforum, .forumblock .forumcontent .fornametemes .moderforum {border-left: 1px solid #acacac;border-bottom: 1px solid #acacac;height: 5px;position: absolute;padding: 20px 10px;right: -5px;top: 0;}
+   .forumblock .forumcontent .forname .moderforum, .forumblock .forumcontent .fornametemes .moderforum {border-left: 1px solid #acacac;border-bottom: 1px solid #acacac;height: 5px;position: absolute;padding: 20px 10px;right: -5px;top: -3px;}
 .mozilacostil {display: block !important;position: relative !important;height: 100% !important;}
 .forumblock div .fornametemes {width: 600px;}
 .forumblock div .foranswerteme {width: 70px;}
@@ -932,7 +932,7 @@ box-shadow: inset 0 0 5px #333;  -webkit-box-shadow: inset 0 0 5px #333;  -moz-b
 .forumblock .forumpost {border-top: 3px solid #aaa;height: 100%;}
 .forumblock .forumpost:first-child, #post1 {border:0;}
 .forumblock .forumpost:nth-last-child(2n) {background-color: #f7f7f7;}
-.forumblock .forumhead .forheadpost {height: 10px;}
+.forumblock .forumhead .forheadpost {height: 0px;}
 .forumblock .poststarterinfo {display: inline-block; min-width:150px; width:13%; min-height:200px; padding: 10px;vertical-align: top;overflow: hidden;}
   .forumblock .poststarterinfo a.postusername {font-size: 16px;}
   .forumblock .poststarterinfo span.onlinestatus {color: #aaa;font-size: 12px;}

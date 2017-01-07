@@ -3,12 +3,12 @@
 ##################################################
 ##												##
 ## Author:       Andrey Brykin (Drunya)         ##
-## Version:      1.7.5                          ##
+## Version:      1.8.5                          ##
 ## Project:      CMS                            ##
 ## package       CMS AtomX                      ##
 ## subpackege    Document parser library        ##
 ## copyright     ©Andrey Brykin 2010-2014       ##
-## last mod.     2014/02/21                     ##
+## last mod.     2017/01/06                     ##
 ##################################################
 
 

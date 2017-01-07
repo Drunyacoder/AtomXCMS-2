@@ -2,12 +2,12 @@
 /*---------------------------------------------\
 |											   |
 | @Author:       Andrey Brykin (Drunya)        |
-| @Version:      1.2                           |
+| @Version:      1.4                           |
 | @Project:      CMS                           |
 | @Package       AtomX CMS                     |
 | @subpackege    Themes Entity                 |
-| @copyright     ©Andrey Brykin 2010-2013      |
-| @last mod      2013/04/03                    |
+| @copyright     Andrey Brykin 2010-2013       |
+| @last mod      2016/12/26                    |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |

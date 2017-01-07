@@ -2,12 +2,12 @@
 /*-----------------------------------------------\
 | 												 |
 |  @Author:       Andrey Brykin (Drunya)         |
-|  @Version:      1.7.2                          |
+|  @Version:      1.8.2                          |
 |  @Project:      CMS                            |
 |  @package       CMS AtomX                      |
 |  @subpackege    Forum Module                   |
 |  @copyright     ©Andrey Brykin                 |
-|  @last mod.     2014/03/13                     |
+|  @last mod.     2017/01/06                     |
 |------------------------------------------------|
 |  any partial or not partial extension          |
 |  CMS AtomX,without the consent of the          |
@@ -25,7 +25,7 @@
 * @author      Andrey Brykin 
 * @package     CMS AtomX
 * @subpackage  Forum module
-* @link        http://cms.develdo.com
+* @link        http://atomx.net
 */
 Class ForumModule extends Module {
 
@@ -47,6 +47,10 @@ Class ForumModule extends Module {
 	 */
 	private $denyExtentions = array('.php', '.phtml', '.php3', '.html', '.htm', '.pl', '.PHP', '.PHTML', '.PHP3', '.HTML', '.HTM', '.PL', '.js', '.JS');
 	
+	
+	public function __construct($params) {
+		parent::__construct($params);
+	}
 	
 	
 	/**
@@ -491,6 +495,12 @@ Class ForumModule extends Module {
 
 		$theme->setTheme_url(entryUrl($theme, $this->module));
 
+		//check access
+		if (!$this->ACL->turn(array('forum', 'edit_themes', $theme->getId_forum()), false) 
+		&& (empty($_SESSION['user']['id']) || $theme->getId_author() != $_SESSION['user']['id'] 
+		|| !$this->ACL->turn(array('forum', 'edit_mine_themes', $theme->getId_forum()), false))) {
+			//return $this->showInfoMessage(__('Permission denied'), '/forum/view_forum/' . $id_forum );
+		}
 		
 		//ADMINBAR 
 		$adminbar = '';
@@ -557,7 +567,8 @@ Class ForumModule extends Module {
 		// Last post author
 		$last_user = __('Guest');
 		if ($theme->getId_last_author()) {
-			$last_user = get_link(h($theme->getLast_author()->getName()), getProfileUrl($theme->getId_last_author()));
+			//$last_user = get_link(h($theme->getLast_author()->getName()), getProfileUrl($theme->getId_last_author()));
+			$last_user = get_link(h($theme->getLast_author()), getProfileUrl($theme->getId_last_author()));
 		}
 		$last_page = get_link(__('To last'), '/forum/view_theme/' . $theme->getId() . '?page=99999');
 		
@@ -582,6 +593,7 @@ Class ForumModule extends Module {
 				$near_pages .= ')';
 			}
 		}
+		
 		
 		
 		$theme->setLast_page($last_page);
@@ -661,13 +673,11 @@ Class ForumModule extends Module {
 		$id_theme = (int)$id_theme;
 		if (empty($id_theme) || $id_theme < 1) redirect('/forum/');
 
-		
-		
+
 		$themeModel = $this->Register['ModManager']->getModelInstance('Themes');
 		$themeModel->bindModel('forum');
 		$themeModel->bindModel('poll');
 		$theme = $themeModel->getById($id_theme);
-
 		
 		if (!$theme->getForum())  return $this->showInfoMessage(__('Can not find forum'), '/forum/' );
 		
@@ -678,7 +688,7 @@ Class ForumModule extends Module {
 		// Check access to this forum. May be locked by pass or posts count
 		$this->__checkForumAccess($theme->getForum());
 		$id_forum = $theme->getId_forum();
-
+		
 		$this->__checkThemeAccess($theme);
 		
 		
@@ -695,7 +705,7 @@ Class ForumModule extends Module {
 			// Заголовок страницы (содержимое тега title)
             $this->addToPageMetaContext('entity_title', h($theme->getTitle()));
             $this->addToPageMetaContext('category_title', h($theme->getForum()->getTitle()));
-
+			
 			$markers = array();
 			$markers['navigation'] = get_link(__('Forums list'), '/forum/') . __('Separator') . get_link($theme->getForum()->getTitle(), 
 			'/forum/view_forum/' .  $id_forum) . __('Separator') . get_link($theme->getTitle(), '/forum/view_theme/' . $id_theme);
@@ -962,23 +972,30 @@ Class ForumModule extends Module {
 			}
 			$this->setCacheTag('theme_id_' . $id_theme);
 			
-			
+
 			// Polls render
 			$polls = $theme->getPoll();
-			if (!empty($polls[0])) {
-				$theme->setPoll($this->_renderPoll($polls[0]));
+			
+			if (!empty($polls)) {
+				$theme->setPoll($this->_renderPoll($polls));
+				$polls = $theme->getPoll();
+			
+				$second = $this->render('polls.html', array('poll' => $polls));
+				//print_r($second); print_r('<hr />');
+				//print_r($theme->getPoll()); print_r('<hr />');
+			
 			} else {
 				$theme->setPoll('');
+				$second = '';
 			}
-			
-			
+
 			
 			$markers = array(
 				'reply_form' => $this->add_post_form($theme),
 			);
 			$this->_globalize($markers);
 			
-			$source = $this->render('posts_list.html', array(
+			$source = $second = $this->render('posts_list.html', array(
 				'posts' => $posts,
 				'theme' => $theme,
 			));
@@ -1051,59 +1068,115 @@ Class ForumModule extends Module {
 
 	
 	
-	protected function _renderPoll($poll) 
+	protected function _renderPoll($polls) 
 	{
-		if (!$poll) {
 		
+		foreach ($polls as $poll) {
+			
+			if (!$poll) {
+			
+			}
+
+			
+			$questions = $poll;
+			$questions = json_decode($poll->getVariants(), true);
+			if (!$questions && !is_array($questions)) {
+			
+			}
+				
+				
+			$all_votes_summ = 0;
+			foreach ($questions as $case) {
+				$all_votes_summ += $case['votes']; 
+			}
+			
+			// Find 1% value
+			$percent = round($all_votes_summ / 100, 2);
+			
+			
+			// Show percentage graph for each variant
+			foreach ($questions as $k => $case) {
+				$questions[$k] = array(
+					'ansver' 		=> h($case['ansver']),
+					'ansver_id'  	=> $k + 1,
+					'votes'			=> $case['votes'],
+					'percentage'  	=> ($case['votes'] > 0) ? round($case['votes'] / $percent) : 0,
+				);
+				
+				//$poll->setPercentage(round($case / $percent)); 
+			}
+			
+			$poll->setVariants($questions);
+			
+			
+			// Did user voted
+			if (!empty($_SESSION['user'])) {
+				$voted_users = explode(',', $poll->getVoted_users());
+				if ($voted_users && is_array($voted_users)) {
+					
+					
+					if (!in_array($_SESSION['user']['id'], $voted_users)) {
+						$poll->setCan_voted(1);
+					}
+				}
+			}
+			
+			$this->render('polls.html', array('poll' => $poll));
 		}
+		$poll = $polls[0];
+		$this->render('polls.html', array('poll' => $poll));
+		return $poll;
+	}
+	
+	
+	/**
+	 *
+	 */
+	protected function _votePoll($id)
+	{
+		$id = (int)$id;
+		if ($id < 1) redirect('/forum/');
+		
+		//$ansver_id = 1 ? 1 : 2;
+		
+		$pollModel = new PollsModel;
+		$poll = $pollModel->getById($id);
 		
 		
 		$questions = json_decode($poll->getVariants(), true);
-		if (!$questions && !is_array($questions)) {
-		
-		}
+		if ($questions && is_array($questions)) {
 			
+			print_r($id);
+			print_r($questions);
+			$poll->save();
 			
-		$all_votes_summ = 0;
-		foreach ($questions as $case) {
-			$all_votes_summ += $case['votes']; 
-		}
-		
-		// Find 1% value
-		$percent = round($all_votes_summ / 100, 2);
-		
-		
-		// Show percentage graph for each variant
-		foreach ($questions as $k => $case) {
-			$questions[$k] = array(
-				'ansver' => h($case['ansver']),
-				'votes'			=> $case['votes'],
-				'percentage'  	=> ($case['votes'] > 0) ? round($case['votes'] / $percent) : 0,
-				'ansver_id'  	=> $k + 1,
-			);
-			
-			//$poll->setPercentage(round($case / $percent)); 
-		}
-		
-		$poll->setVariants($questions);
-		
-		
-		// Did user voted
-		if (!empty($_SESSION['user'])) {
-			$voted_users = explode(',', $poll->getVoted_users());
-			if ($voted_users && is_array($voted_users)) {
-				
-				
-				if (!in_array($_SESSION['user']['id'], $voted_users)) {
-					$poll->setCan_voted(1);
-				}
+			// Create response data for AJAX request
+			$all_votes_summ = 0;
+			foreach ($questions as $case) {
+				$all_votes_summ += $case['votes']; 
 			}
+			
+			// Find 1% value
+			$percent = round($all_votes_summ / 100, 2);
+			
+			
+			// Show percentage graph for each variant
+			foreach ($questions as $k => $case) {
+				$questions[$k] = array(
+					'ansver' 		=> h($case['ansver']),
+					'votes'			=> $case['votes'],
+					'percentage'  	=> ($case['votes'] > 0) ? round($case['votes'] / $percent) : 0,
+					'ansver_id'  	=> $k, // + 1,
+				);
+			}
+			
+			
+			$questions = json_encode($questions);
 		}
-	
-		
-		return $this->render('polls.html', array('poll' => $poll));
+		//$questions = json_encode($questions);
+		print_r($id . ' S');
+		return $id;
 	}
-	
 	
 	
 	/**
@@ -1112,7 +1185,7 @@ Class ForumModule extends Module {
 	public function vote_poll($id)
 	{	
 		if (empty($_SESSION['user'])) die('ERROR: permission denied');
-	
+		
 		$id = (int)$id;
 		if ($id < 1) die('ERROR: empty ID');
 		
@@ -1292,7 +1365,7 @@ Class ForumModule extends Module {
 		// Получаем из БД информацию о форуме
 		$forum = $this->Model->getById($id_forum);
 		$action = get_url('/forum/update_forum/' . $id_forum);
-
+		
 		
 		// Если при заполнении формы были допущены ошибки
 		if (isset($_SESSION['FpsForm'])) {
@@ -1597,6 +1670,7 @@ Class ForumModule extends Module {
 		);
 
 		$markers['users_groups'] = $this->Register['ACL']->getGroups();
+		//unset($markers['users_groups'][4]);
 		
 		// nav block
 		$navi = array();
@@ -1649,10 +1723,13 @@ Class ForumModule extends Module {
 		$message = trim($message);
 		$first_top = isset($_POST['first_top']) ? '1' : '0';
 		
+		// Dont use admins in there 
 		$gr_access = array();
 		$groups = $this->Register['ACL']->getGroups();
+		unset($groups[4]);
 		foreach ($groups as $grid => $grval) {
-			if (isset($_POST['gr_access_' . $grid])) $gr_access[] = $grid;
+			if (isset($_POST['gr_access_' . $grid]))
+				$gr_access[] = $grid;
 		}
 		
 		
@@ -1809,15 +1886,17 @@ Class ForumModule extends Module {
 		$id_theme = (int)$id_theme;
 		if (empty($id_theme) || $id_theme < 1) redirect('/forum/');
 
-
+		$this->ACL->rulesPanelEntry();
 		// Получаем из БД информацию о редактируемой теме
 		$themeModel = $this->Register['ModManager']->getModelInstance('Themes');
 		$themeModel->bindModel('author');
 		$theme = $themeModel->getById($id_theme);
+		
 		if (!$theme) redirect('/forum/');
 		
 		
 		$id_forum = $theme->getId_forum();
+		//$this->__parseThemeTable($theme);
 		
 		
 		//check access
@@ -1851,16 +1930,20 @@ Class ForumModule extends Module {
 		$forums = $this->Model->getCollection(array(), array('order' => 'pos'));
 		if (!$forums) redirect('/forum/');
 
-
+		
 		$options = '';
 		foreach ($forums as $forum) {
-			if ($forum->getId() == $theme->getId_forum())
+			if ($forum->getId() == $theme->getId_forum()) {
 				$options = $options.'<option value="'.$forum->getId().'" selected>'.h($forum->getTitle()).'</option>'."\n";
-			else
+			} else {
 				$options = $options.'<option value="'.$forum->getId().'">'.h($forum->getTitle()).'</option>'."\n";
+			}
 		}
+	
+		
+		$groups_access = $this->ACL->rulesPanelEntry();
 
-
+		
 		$author_name = ($theme->getId_author()) ? h($theme->getAuthor()->getName()) : __('Guest');
 		$data = array(
 			'errors' => !empty($errors) ? $errors : '',
@@ -1873,7 +1956,7 @@ Class ForumModule extends Module {
 			'first_top' => (!empty($first_top)) ? $first_top : '0',
 		);
 			
-		$data['users_groups'] = $this->ACL->getGroups();
+		$data['users_groups'] = $groups_access;
 		
 		// nav block
 		$navi = array();
@@ -1881,7 +1964,7 @@ Class ForumModule extends Module {
             . __('Separator') . __('Edit theme');
 		$this->_globalize($navi);
 		
-		
+	
 		$source = $this->render('editthemeform.html', array(
 			'context' => $data,
 		));

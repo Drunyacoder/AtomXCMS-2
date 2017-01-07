@@ -1,26 +1,25 @@
 <?php
-##################################################
-##												##
-## Author:       Andrey Brykin (Drunya)         ##
-## Version:      0.7                            ##
-## Project:      CMS                            ##
-## package       CMS AtomX                      ##
-## subpackege    Admin Panel module             ##
-## copyright     ©Andrey Brykin 2010-2011       ##
-##################################################
-
-
-##################################################
-##												##
-## any partial or not partial extension         ##
-## CMS AtomX,without the consent of the         ##
-## author, is illegal                           ##
-##################################################
-## Любое распространение                        ##
-## CMS AtomX или ее частей,                     ##
-## без согласия автора, является не законным    ##
-##################################################
-
+/*---------------------------------------------\
+|											   |
+| Author:       Andrey Brykin (Drunya)         |
+| Version:      1.1                            |
+| Project:      CMS                            |
+| package       CMS AtomX                      |
+| subpackege    Admin Panel module             |
+| copyright     Andrey Brykin 2010-2016        |
+|----------------------------------------------|
+|											   |
+| any partial or not partial extension         |
+| CMS AtomX,without the consent of the         |
+| author, is illegal                           |
+|----------------------------------------------|
+| Любое распространение                        |
+| CMS AtomX или ее частей,                     |
+| без согласия автора, является не законным    |
+\---------------------------------------------*/
+ 
+ 
+ 
 include_once '../sys/boot.php';
 include_once ROOT . '/admin/inc/adm_boot.php';
 
@@ -54,6 +53,7 @@ if (!empty($acl_groups)) {
 
 //move users into other group
 if (!empty($_GET['ac']) && $_GET['ac'] == 'move') {
+	
 	if (isset($_POST['id']) && is_numeric($_POST['id']) && (int)$_POST['id'] !== 0) {
 		$from = (int)$_POST['id'];
 		if (!empty($_POST['to']) && is_numeric($_POST['to'])) {
@@ -316,10 +316,12 @@ if (!empty($errors)) {
 			<td><?php echo h($value['title']); ?></td>
 			<td><?php echo h($value['cnt_users']); ?></td>
 			<td>
-				<?php if ($key !== 0 && $key !== 1): ?>
+				<?php if ($key !== 0 && $key !== 1 && $key !== 4): ?>
 				<a title="<?php echo __('Delete') ?>" href="users_groups.php?ac=delete&id=<?php echo h($key) ?>" onClick="return confirm('Are you sure?')" class="delete"></a>
 				<?php endif; ?>
+				<?php if ($key !== 4): ?>
 				<a title="<?php echo __('Move') ?>" href="javascript://" onClick="openPopup('<?php echo h($key) ?>_Move')" class="move"></a>
+				<?php endif; ?>
 				<a title="<?php echo __('Edit') ?>" href="javascript://" onClick="openPopup('<?php echo h($key) ?>_Edit')" class="edit"></a>
 			</td>
 		</tr>

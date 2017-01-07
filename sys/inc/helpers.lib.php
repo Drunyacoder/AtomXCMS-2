@@ -2,12 +2,12 @@
 /*---------------------------------------------\
 |											   |
 | Author:       Andrey Brykin (Drunya)         |
-| Version:      1.7.3                          |
+| Version:      1.8.3                          |
 | Project:      CMS                            |
 | package       CMS AtomX                      |
 | subpackege    Helpers library                |
 | copyright     ©Andrey Brykin 2010-2014       |
-| last mod.     2014/10/24                     |
+| last mod.     2017/01/06                     |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
