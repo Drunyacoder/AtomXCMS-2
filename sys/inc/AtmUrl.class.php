@@ -167,9 +167,16 @@ class AtmUrl {
 				if (!empty($title)) {			
 				
 					$tmp_file_2 = $this->getTmpFilePath($title, $module);
-					if (!file_exists($tmp_file_2)) {
-						file_put_contents($tmp_file_2, $matId);
+					
+					preg_match('#([\w\D]+[/])#i', $tmp_file_2, $matches);
+					if (isset($matches)) {
+						$tmp_file_2 = $matches[0] . iconv("UTF-8", "windows-1251", substr(strrchr($tmp_file_2, "/"), 1));
+						
+						if (!file_exists($tmp_file_2)) {
+							file_put_contents($tmp_file_2, $matId);
+						}
 					}
+
 					return h(sprintf($pattern, $title));
 				}
 			}
@@ -194,10 +201,15 @@ class AtmUrl {
 				}
 			}
 	
-
-			file_put_contents($tmp_file, $title);
+			
+			file_put_contents(iconv("UTF-8", "windows-1251", $tmp_file), $title);
 			if (empty($tmp_file_title_flag)) {
-				file_put_contents($this->getTmpFilePath($title, $module), $matId);
+				$tmp = $this->getTmpFilePath($title, $module);
+				
+				preg_match('#([\w\D]+[/])#i', $tmp, $matches);
+				if (isset($matches)) {
+					file_put_contents($matches[0] . iconv("UTF-8", "windows-1251", substr(strrchr($tmp, "/"), 1)), $matId);
+				}
 			}
 			
 
@@ -243,7 +255,7 @@ class AtmUrl {
 	
 	public function getTmpFilePath($filename, $module) {
 		$padStr = str_pad($filename, 8, 0, STR_PAD_LEFT);
-		$dir1 = substr($padStr, 0, 4);
+		$dir1 = iconv("UTF-8", "windows-1251", substr($padStr, 0, 4));
 
 		$tmp_dir = ROOT . '/sys/tmp/hlu_' . $module . '/' . $dir1 . '/';
 		$tmp_file = $tmp_dir . $filename . '.dat';
