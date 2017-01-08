@@ -56,6 +56,7 @@ class AtmApiService {
 
 		
 		preg_match('#(\d{1,2})(.?\d{1,2})(.?\d{0,2})([a-zA-Z. +-_-]{0,30})#i', $new_ver, $matches);
+		if (empty($matches)) $matches = array(0);
 		if ($matches[0] == true) {
 			$matches = $matches[0]; 
 		} else {
