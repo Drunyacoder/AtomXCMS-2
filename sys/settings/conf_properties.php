@@ -23,6 +23,7 @@ $settingsInfo = array(
 			'title' => __('Human like URL understanding'),
 			'description' => __('URL will be generated as normal URL, but Human like URL will be work for compatibility with old links'),
 			'checked' => '1',
+			'value' => '1',
 		),
 	),
 	
