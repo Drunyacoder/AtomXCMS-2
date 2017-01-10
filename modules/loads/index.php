@@ -561,12 +561,12 @@ Class LoadsModule extends Module {
 
 
         // Check for preview or errors
-        $data = array('title' => null, 'mainText' => null, 'in_cat' => null, 'description' => null, 'tags' => null, 'sourse' => null, 'sourse_email' => null, 'sourse_site' => null, 'commented' => null, 'available' => null, 'download_url' => null, 'download_url_size' => null);
+        $data = array('title' => null, 'main_text' => null, 'in_cat' => null, 'description' => null, 'tags' => null, 'sourse' => null, 'sourse_email' => null, 'sourse_site' => null, 'commented' => null, 'available' => null, 'download_url' => null, 'download_url_size' => null);
         $data = array_merge($data, $markers);
         $data = Validate::getCurrentInputsValues($data);
 
 
-        $data['preview'] = $this->Parser->getPreview($data['mainText']);
+        $data['preview'] = $this->Parser->getPreview($data['main_text']);
         $data['errors'] = $this->Register['Validate']->getErrors();
         if (isset($_SESSION['viewMessage'])) unset($_SESSION['viewMessage']);
         if (isset($_SESSION['FpsForm'])) unset($_SESSION['FpsForm']);
@@ -647,7 +647,7 @@ Class LoadsModule extends Module {
 		
 		// Обрезаем переменные до длины, указанной в параметре maxlength тега input
 		$title     = mb_substr(trim($_POST['title']), 0, 128 );
-		$addLoad   = trim($_POST['mainText']);
+		$addLoad   = trim($_POST['main_text']);
 		$title     = trim( $title );
 		$in_cat    = intval($_POST['cats_selector']);
 		$commented = (!empty($_POST['commented'])) ? 1 : 0;
@@ -660,7 +660,7 @@ Class LoadsModule extends Module {
 		if ( isset( $_POST['viewMessage'] ) ) {
 			$_SESSION['viewMessage'] = array_merge(array(
 			'title' => null, 
-			'mainText' => null, 
+			'main_text' => null, 
 			'in_cat' => $in_cat, 
 			'description' => null, 
 			'tags' => null, 
@@ -686,7 +686,7 @@ Class LoadsModule extends Module {
 		if (!empty($errors)) {
 			$_SESSION['FpsForm'] = array_merge(array(
 			'title' => null, 
-			'mainText' => null, 
+			'main_text' => null, 
 			'in_cat' => $in_cat,
 			'description' => null, 
 			'tags' => null, 
@@ -817,7 +817,7 @@ Class LoadsModule extends Module {
         // Check for preview or errors
         $data = array(
             'title' => '',
-            'mainText' => $entity->getMain(),
+            'main_text' => $entity->getMain(),
             'in_cat' => $entity->getCategory_id(),
             'description' => '',
             'tags' => '',
@@ -830,7 +830,7 @@ Class LoadsModule extends Module {
             'download_url_size' => '',
         );
         $markers = Validate::getCurrentInputsValues($entity, $data);
-        $markers->setMainText($data['mainText']);
+        $markers->setMain_text($data['main_text']);
 
 
         $markers->setPreview($this->Parser->getPreview($markers->getMain()));
@@ -939,7 +939,7 @@ Class LoadsModule extends Module {
 		
 		// Обрезаем переменные до длины, указанной в параметре maxlength тега input
 		$title  	= trim(mb_substr( $_POST['title'], 0, 128));
-		$editLoad   = trim($_POST['mainText']);
+		$editLoad   = trim($_POST['main_text']);
 		$in_cat 	= intval($_POST['cats_selector']);
 		$commented = (!empty($_POST['commented'])) ? 1 : 0;
 		$available = (!empty($_POST['available'])) ? 1 : 0;
@@ -949,7 +949,7 @@ Class LoadsModule extends Module {
 
 		// Preview
 		if (isset($_POST['viewMessage'])) {
-			$_SESSION['viewMessage'] = array_merge(array('title' => null, 'mainText' => null, 'in_cat' => $in_cat, 
+			$_SESSION['viewMessage'] = array_merge(array('title' => null, 'main_text' => null, 'in_cat' => $in_cat, 
 				'description' => null, 'tags' => null, 'sourse' => null, 'sourse_email' => null, 
 				'sourse_site' => null, 'download_url' => null, 'download_url_size' => null, 'commented' => null, 'available' => null), $_POST);
 			redirect('/' . $this->module . '/edit_form/' . $id);
@@ -974,7 +974,7 @@ Class LoadsModule extends Module {
 		
 		// Errors
 		if (!empty($errors)) {
-			$_SESSION['FpsForm'] = array_merge(array('title' => null, 'mainText' => null, 
+			$_SESSION['FpsForm'] = array_merge(array('title' => null, 'main_text' => null, 
 				'description' => null, 'tags' => null, 'sourse' => null, 'sourse_email' => null, 'in_cat' => $in_cat,
 				'sourse_site' => null, 'download_url' => null, 'download_url_size' => null, 'commented' => null, 'available' => null), $_POST);
 			$_SESSION['FpsForm']['errors'] = $errors;
@@ -1504,7 +1504,7 @@ Class LoadsModule extends Module {
 					'max_lenght' => 250,
 					'title' => 'Title',
 				),
-				'mainText' => array(
+				'main_text' => array(
 					'required' => true,
 					'max_lenght' => $this->Register['Config']->read('max_lenght', $this->module),
 					'title' => 'Text',
@@ -1565,7 +1565,7 @@ Class LoadsModule extends Module {
 					'max_lenght' => 250,
 					'title' => 'Title',
 				),
-				'mainText' => array(
+				'main_text' => array(
 					'required' => true,
 					'max_lenght' => Config::read('max_lenght', $this->module),
 					'title' => 'Text',

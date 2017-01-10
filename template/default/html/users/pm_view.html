@@ -77,7 +77,7 @@
                         });
                         $('#messages-agregator').html(content + $('#messages-agregator').html());
 						fpsWnd.hide('AtmPmLoader');
-						$('textarea[name="mainText"]').val('');
+						$('textarea[name="main_text"]').val('');
 						return false;
                     }
 
@@ -101,7 +101,7 @@
                     <li class="sendbutton" id="send_pm_a" onclick="sendPM()">{{ 'To open the form for the answer'|lang }}</li>
                     <li id="pm_send_form" style="display:none; overflow:visible;">
                         <form name="sendForm" id="sendForm" action="/users/pm_send"  method="POST">
-                            <textarea {{ editor_text }} class="text-area" name="mainText"></textarea>
+                            <textarea {{ editor_text }} class="text-area" name="main_text"></textarea>
                             <input type="text" name="toUser" id="toUser" maxlength="30" value="{{ collocutor.name }}" style="display: none" />
                             <input class="subm" type="submit" name="submitForm" onClick="" value="{{ 'Send'|lang }}" />
                         </form>
