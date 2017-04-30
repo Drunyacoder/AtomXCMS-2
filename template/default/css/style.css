@@ -438,7 +438,7 @@ box-shadow: 0 0 100px rgba(255, 255, 255, 0.2); -webkit-box-shadow: 0 0 100px rg
 }
 /*----------------------------------------------------------MENU--------------------------------------------------------------------------------*/
 .sidertop {background: url('../img/bg_side_top.jpg') repeat-x;height:60px;width:100%;border-radius: 20px; -moz-border-radius: 20px; -webkit-border-radius: 20px; -khtml-border-radius: 20px;}
-.sidertop ul {list-style-type: none; width: 70%; min-width:650px; height: 50px;padding-left: 50px;margin: 0; float: left;}
+.sidertop ul {list-style-type: none; width: 65%; min-width:650px; height: 50px;padding-left: 50px;margin: 0; float: left;}
 .sidertop ul li {float: left; border-right: 1px solid #474747; position:relative;}
 .sidertop ul li:first-child {border-left: 1px solid #474747;}
 .sidertop ul li a {display: block; height: 50px;line-height: 50px;padding: 0 15px; font-family: ArialNarrow, Arial, sans-serif; color: #000; font-stretch: condensed; text-shadow: none; transition: all 0.7s ease-in-out 0s;}
@@ -903,7 +903,7 @@ box-shadow: inset 0 0 5px #333;  -webkit-box-shadow: inset 0 0 5px #333;  -moz-b
 .forumblock div .forteme {width: 80px;}
 .forumblock div .foranswer{width: 80px;}
 .forumblock div .fornewmess{width: 150px;}
-.forumblock .forumhead div {display: inline-block;vertical-align: top;height: 25px;line-height: 25px;font-size: 13px;border-right: 1px solid #6b6b6b;padding: 0 5px;}
+.forumblock .forumhead div {display: table-cell;vertical-align: top;height: 25px;line-height: 25px;font-size: 13px;border-right: 1px solid #6b6b6b;padding: 0 5px;}
 .forumblock .forumhead div:last-child {border:none;}
 .forumblock .forumcontent {border-bottom: 1px solid #acacac;}
 .forumblock .forumcontent:last-child {-moz-border-radius: 0 0 6px 6px;-webkit-border-radius: 0 0 6px 6px;border-radius: 0 0 6px 6px;}
@@ -1228,5 +1228,123 @@ background: rgba(177, 199, 150, 1);
 /*--rating--*/
 
 @media screen and (max-width:1200px) {
-	.forumblock .posttextuser {width:80%;}
+	.forumblock .posttextuser {width:70%;}
+}
+
+
+@media screen and (max-width: 950px) {
+	body {
+	    min-width: 650px;
+	}
+
+	.headpanel {
+		min-width: 100px;
+	}
+	.headpanel .linksap {
+		display: none;
+	}
+	.global {
+		min-width: 650px;
+	}
+	.twoblocks {
+	    padding-right: 0px;
+	}
+	.infohead {
+		width: 400px;
+		height: 100px; 
+	}
+	.infohead .infoblock {
+		display: none;
+	}
+	.logohead {
+	    margin-top: 40px;
+	    background: url('../img/logo.png') no-repeat;
+	    background-size: 100%;
+	    width: 180px;
+	    height: 110px;
+	}
+	.logohead a img {
+	    display: none;
+	}
+	.sider {
+		border-radius: 0px;
+		-moz-border-radius: 0px;
+		-webkit-border-radius: 0px;
+	}
+	.sidertop {
+		height: 101px;
+		background: url('../img/bg_side.jpg') repeat;
+		border-radius: 0px;
+		-moz-border-radius: 0px;
+		-webkit-border-radius: 0px;
+		-khtml-border-radius: 0px;
+	}
+	.sidertop .fpsMainMenu {
+		height: 100px;
+		min-width: 350px;
+		width: 57%;
+		padding-left: 0px;
+	}
+	.sidertop .fpsMainMenu li {
+		border-bottom: 1px solid #474747;
+		box-shadow: inset 0 0 0 #000;
+		margin-left: 0;
+		/*display: none;*/
+	}
+	.sidertop .fpsMainMenu li.active {
+		box-shadow: inset 0 0 0 #000;
+		margin-left: 0;
+		/*display: none;*/
+	}
+	.sidertop .fpsMainMenu li:first-child {
+		border-left: 0px solid #474747;
+	}
+	.content {
+		margin: 0px;
+		
+		border-radius: 0px;
+		-moz-border-radius: 0px;
+		-webkit-border-radius: 0px;
+		-khtml-border-radius: 0px;
+	}
+	.content .material {
+		background-color: #fff;
+		box-shadow: 0px 0px 0px #fff;
+		-webkit-box-shadow: 0px 0px 0px #fff;
+		-moz-box-shadow: 0px 0px 0px #fff;
+	}
+	.content div .material .mat-title {
+		-moz-border-radius: 0px 0px 0px 0px;
+		-webkit-border-radius: 0px 0px 0px 0px;
+		border-radius: 0px 0px 0px 0px;
+	}
+	.content .material .mat-content .announce {
+		background: #fff;
+		border: 0px solid #fff;
+		box-shadow: 0px 0px 0px #fff;
+		-webkit-box-shadow: 0px 0px 0px #fff;
+		-moz-box-shadow: 0px 0px 0px #fff;
+	}
+	.content .material .mat-content .topinfo .left, .content .material .mat-content .topinfo .right {
+		border-radius: 0px 0 0px 0;
+		-webkit-box-shadow: 0 0 0px #fff;
+		-moz-box-shadow: 0 0 0px #fff;
+		margin-bottom: 0px;
+	}
+	.mat-content .main_text {
+		border: 0px solid #fff;
+		box-shadow: 0px 0px 0px #fff;
+		-webkit-box-shadow: 0px 0px 0px #fff;
+		-moz-box-shadow: 0px 0px 0px #fff;
+	}
+	.footer .people, .footer .support, .footer .faposcms {
+		display: none;
+	}
+	.footerbottom {
+		display: none;
+	}
+
+	.header {
+		height: 160px;
+	}
 }

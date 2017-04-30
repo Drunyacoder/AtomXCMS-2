@@ -1423,7 +1423,7 @@ Class UsersModule extends Module {
 		// Обрезаем лишние пробелы
 		$toUser  = trim($_POST['toUser']);
 		$subject = (!empty($_POST['subject'])) ? trim($_POST['subject']) : '';
-		$message = trim($_POST['mainText']);
+		$message = trim($_POST['main_text']);
 
 		
 		// Если пользователь хочет посмотреть на сообщение перед отправкой
@@ -2986,7 +2986,7 @@ Class UsersModule extends Module {
 					'required' => false,
 					'max_lenght' => 200,
 				),
-				'mainText' => array(
+				'main_text' => array(
 					'required' => true,
 					'max_lenght' => Config::read('max_message_lenght', 'users'),
 				),

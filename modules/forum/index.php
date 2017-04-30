@@ -2334,7 +2334,7 @@ Class ForumModule extends Module {
 	 */
 	public function add_post($id_theme = null) 
 	{
-		if (empty($id_theme) || !isset($_POST['mainText'])) redirect('/forum/');
+		if (empty($id_theme) || !isset($_POST['main_text'])) redirect('/forum/');
 		$id_theme = (int)$id_theme;
 		if ($id_theme < 1) redirect('/forum/');
 		
@@ -2360,7 +2360,7 @@ Class ForumModule extends Module {
 		
 
 		// Обрезаем сообщение (пост) до длины $set['forum']['max_post_lenght']
-		$message = trim($_POST['mainText']);
+		$message = trim($_POST['main_text']);
 		// Если пользователь хочет посмотреть на сообщение перед отправкой
 		if (isset($_POST['viewMessage'])) {
 			$_SESSION['viewMessage'] = $message;
@@ -2651,7 +2651,7 @@ Class ForumModule extends Module {
 	 */
 	public function update_post($id = null) {
 		// Если не переданы данные формы - значит функция была вызвана по ошибке
-		if (empty($id) || !isset($_POST['mainText'])) redirect('/forum/');
+		if (empty($id) || !isset($_POST['main_text'])) redirect('/forum/');
 
 		$id = (int)$id;
 		if ($id < 1) redirect('/forum/');
@@ -2783,7 +2783,8 @@ Class ForumModule extends Module {
 		$this->DB->cleanSqlCache();
 		if ($this->Log) $this->Log->write('editing post', 'post id(' . $id . '), theme id(' . $id_theme . ')');
 		
-		
+
+		getReferer();
 		return $this->showInfoMessage(__('Operation is successful'), getReferer());
 	}
 
@@ -3658,7 +3659,7 @@ Class ForumModule extends Module {
 				),
 			),
 			'add_post' => array(
-				'mainText' => array(
+				'main_text' => array(
 					'required' => true,
 					'max_lenght' => Config::read('max_post_lenght', 'forum'),
 				),
@@ -3672,7 +3673,7 @@ Class ForumModule extends Module {
 				),
 			),
 			'update_post' => array(
-				'mainText' => array(
+				'main_text' => array(
 					'required' => true,
 					'max_lenght' => Config::read('max_post_lenght', 'forum'),
 				),
