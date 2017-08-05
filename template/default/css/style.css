@@ -1299,13 +1299,21 @@ background: rgba(177, 199, 150, 1);
 	.sidertop .fpsMainMenu li:first-child {
 		border-left: 0px solid #474747;
 	}
+	
+	.mezdyblock {
+		margin: 5px;
+	}
+	
 	.content {
-		margin: 0px;
-		
+		margin: 1px 0px 0px 0px;
+		padding: 0;
 		border-radius: 0px;
 		-moz-border-radius: 0px;
 		-webkit-border-radius: 0px;
 		-khtml-border-radius: 0px;
+		box-shadow: 0px 0px 0px #fff;
+		-webkit-box-shadow: 0px 0px 0px #fff;
+		-moz-box-shadow: 0px 0px 0px #fff;
 	}
 	.content .material {
 		background-color: #fff;
@@ -1320,6 +1328,7 @@ background: rgba(177, 199, 150, 1);
 	}
 	.content .material .mat-content .announce {
 		background: #fff;
+		font-size: 14px;
 		border: 0px solid #fff;
 		box-shadow: 0px 0px 0px #fff;
 		-webkit-box-shadow: 0px 0px 0px #fff;
@@ -1327,9 +1336,18 @@ background: rgba(177, 199, 150, 1);
 	}
 	.content .material .mat-content .topinfo .left, .content .material .mat-content .topinfo .right {
 		border-radius: 0px 0 0px 0;
-		-webkit-box-shadow: 0 0 0px #fff;
-		-moz-box-shadow: 0 0 0px #fff;
 		margin-bottom: 0px;
+		font-size: 13px;
+	}
+	.content .material .mat-content .topinfo .right {
+		border-radius: 0px 0 0px 2px;
+	}
+	.content .material .mat-content .topinfo span {
+		background: #CCC;
+		
+	}
+	.content .infomats .namesmats {
+		display: none;
 	}
 	.mat-content .main_text {
 		border: 0px solid #fff;
@@ -1337,6 +1355,7 @@ background: rgba(177, 199, 150, 1);
 		-webkit-box-shadow: 0px 0px 0px #fff;
 		-moz-box-shadow: 0px 0px 0px #fff;
 	}
+	
 	.footer .people, .footer .support, .footer .faposcms {
 		display: none;
 	}
