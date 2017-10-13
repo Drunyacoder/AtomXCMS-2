@@ -1,4 +1,26 @@
 <?php
+/*---------------------------------------------\
+|											   |
+| @Author:       Andrey Brykin (Drunya)        |
+| @Email:        drunyacoder@gmail.com         |
+| @Site:         http://atomx.net              |
+| @Version:      2.0.1                         |
+| @Project:      CMS                           |
+| @Package       AtomX CMS                     |
+| @Subpackege    Define library                |
+| @Copyright     ©Andrey Brykin                |
+| @Last mod      2017/10/13                    |
+|----------------------------------------------|
+|											   |
+| any partial or not partial extension         |
+| CMS AtomX,without the consent of the         |
+| author, is illegal                           |
+|----------------------------------------------|
+| Любое распространение                        |
+| CMS AtomX или ее частей,                     |
+| без согласия автора, является не законным    |
+\---------------------------------------------*/
+
 session_start();
 if (isset($_SESSION['db_querys'])) unset($_SESSION['db_querys']);
 
@@ -6,7 +28,7 @@ if (isset($_SESSION['db_querys'])) unset($_SESSION['db_querys']);
 /**
  * Current version of engine
  */
-define('FPS_VERSION', '2.7.0 Beta');
+define('FPS_VERSION', '2.7.2 Beta');
 
 /**
  * Path constants
