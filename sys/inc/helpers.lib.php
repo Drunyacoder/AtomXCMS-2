@@ -2,12 +2,12 @@
 /*---------------------------------------------\
 |											   |
 | Author:       Andrey Brykin (Drunya)         |
-| Version:      1.8.3                          |
+| Version:      1.8.4                          |
 | Project:      CMS                            |
 | package       CMS AtomX                      |
 | subpackege    Helpers library                |
 | copyright     ©Andrey Brykin 2010-2014       |
-| last mod.     2017/01/06                     |
+| last mod.     2017/10/13                     |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
@@ -613,7 +613,11 @@ function dumpVar($var) {
  * mysql_real_escape_string copy
  */
 function resc($str) {
-	return mysql_real_escape_string($str);
+	if (mysql_real_escape_string($str)) {
+		return mysql_real_escape_string($str);
+	}
+	
+	return $str;
 }
 
 

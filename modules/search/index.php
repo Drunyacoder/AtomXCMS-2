@@ -2,12 +2,12 @@
 /*-----------------------------------------------\
 | 												 |
 |  @Author:       Andrey Brykin (Drunya)         |
-|  @Version:      1.8                            |
+|  @Version:      1.9                            |
 |  @Project:      CMS                            |
 |  @package       CMS AtomX                      |
 |  @subpackege    Search Module                  |
 |  @copyright     ©Andrey Brykin 2010-2013       |
-|  @last mod.     2013/11/11                     |
+|  @last mod.     2017/10/13                     |
 \-----------------------------------------------*/
 
 /*-----------------------------------------------\
@@ -81,6 +81,7 @@ class SearchModule extends Module {
 		}
 		$_SESSION['m'] = $modules;
 
+		
 		if (isset($_POST['search']) || isset($_GET['search'])) {
 			$str = (isset($_POST['search'])) ? h($_POST['search']) : '';
 			if (empty($str))
@@ -88,7 +89,7 @@ class SearchModule extends Module {
 			if (!is_string($str))
 				$str = (string) $str;
 			$str = trim($str);
-
+			
 
 			if (empty($str) || mb_strlen($str) < $this->minInputStr)
 				$error = $error . '<li>' . sprintf(__('Very small query'), $this->minInputStr) . '</li>';
@@ -113,6 +114,7 @@ class SearchModule extends Module {
 			$str = Plugins::intercept('before_search', $str);
 			$results = $this->__search($str, $modules);
 			$results = Plugins::intercept('search_results', $results);
+			
 			
 			if (count($results) && is_array($results)) {
 				foreach ($results as $result) {
@@ -158,8 +160,7 @@ class SearchModule extends Module {
 				'form' => $form,
 				'error' => $error,
 				)));
-
-
+		
 		//write into cache
 		if ($this->cached && !empty($str)) {
 			//set users_id that are on this page
@@ -239,21 +240,26 @@ class SearchModule extends Module {
 	private function __search($str, $modules) {
 		$words = explode(' ', $str);
 		$_words = array();
+		
 		foreach ($words as $key => $word) {
 			$word = $this->__filterText($word);
 			if (mb_strlen($word) < $this->minInputStr)
 				continue;
 			$_words[] = $word;
 		}
-		if (count($_words) < 1)
+		
+		if (count($_words) < 1) {
 			return array();
+		}
 		$string = resc(implode('* ', $_words) . '*');
-
+		
 		//query
 		$limit = intval($this->Register['Config']->read('per_page', $this->module));
 		if ($limit < 1)
 			$limit = 10;
+		
 		$results = $this->Model->getSearchResults($string, $limit, $modules);
+		
 		return $results;
 	}
 
