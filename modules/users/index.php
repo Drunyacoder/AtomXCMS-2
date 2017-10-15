@@ -2,12 +2,12 @@
 /*---------------------------------------------\
 |											   |
 | @Author:       Andrey Brykin (Drunya)        |
-| @Version:      1.6.2                         |
+| @Version:      1.7.0                         |
 | @Project:      CMS                           |
 | @Package       AtomX CMS                     |
 | @subpackege    Users Module                  |
 | @copyright     ©Andrey Brykin 2010-2014      |
-| @last mod      2014/10/29                    |
+| @last mod      2017/10/15                    |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
@@ -1334,7 +1334,8 @@ Class UsersModule extends Module {
 	public function pm_send_form($id = null)
     {
 		// Незарегистрированный пользователь не может отправлять личные сообщения
-		if (!isset($_SESSION['user'])) redirect('/');
+		if (!isset($_SESSION['user'])) $this->showInfoMessage(__('pm_send_form'), '/' . $this->module . '/' );
+		//if (!isset($_SESSION['user'])) redirect('/');
 		$writer_status = (!empty($_SESSION['user']['status'])) ? $_SESSION['user']['status'] : 0;
 
 

@@ -94,6 +94,7 @@ return array(
 	'restricted_access' 			=> 'Разграниченный доступ <span class="comment">*Если необходим доступ только к некоторым разделам админ панели. К камим именно смотрите ниже.</span>', 
 	'restricted_access_page' 		=> 'Редактор страниц <span class="comment">(Разграниченный доступ)</span>', 
 	'restricted_access_snippets' 	=> 'Сниппеты <span class="comment">(Разграниченный доступ)</span>',
+	'pm_send_form'                  => 'Вы не зарегистрированы',
 
 	// Forms
 	'Permission denied'             => 'У вас нет для этого полномочий',
