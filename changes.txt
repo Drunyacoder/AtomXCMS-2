@@ -51,6 +51,7 @@ v2.8 Beta            	 *☢☠
 48. Домен home/atomx.net.
 49. Фикс админки.
 50. Фикс поиска.
+51. Пользователь исползует $this->showInfoMessage() а не redirect().
 
 
 

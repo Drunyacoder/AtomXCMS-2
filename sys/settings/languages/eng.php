@@ -93,6 +93,7 @@ return array(
 	'restricted_access' 			=> 'Separate access <span class="comment">*If necessary-only access to some parts of the admin panel. To which see below.</span>', 
 	'restricted_access_page' 		=> 'The page editor <span class="comment">(limited access)</span>', 
 	'restricted_access_snippets' 	=> 'Snippets <span class="comment">(limited access)</span>',
+	'pm_send_form'                  => 'You are not registred',
 
 	// Forms
 	'Permission denied'             => 'You don\'t have the authority',
