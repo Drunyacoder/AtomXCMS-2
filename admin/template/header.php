@@ -163,10 +163,10 @@
 			foreach ($nsmods as $mk => $mv):
 		?>	
 		
-			<li>
+			<li id="not-sub">
 				<div class="icon new-module"></div>
-                <div class="sub-opener" onClick="subMenu('sub<?php echo $mk; ?>')"></div>
-                <a href="#"><?php echo $mk; ?></a>
+				<div class="sub-opener" onClick="subMenu('sub<?php echo $mk; ?>')"></div>
+				<a href="#"><?php echo $mk; ?></a>
 				<div class="clear"></div>
 				<div id="sub<?php echo $mk; ?>" class="sub">
 					<div class="shadow">
@@ -187,11 +187,15 @@
 
 		foreach ($modules as $modKey => $modData): 
 			if (!empty($nsmods) && array_key_exists($modKey, $nsmods)) continue;
+			
 		?>
 		
-			<li>
+			<li <?php if (isset($_GET['m']) && $modKey == $_GET['m']) { ?> 
+			class="li-sub-opener <?php echo $modKey . '_a' ?>" <?php } else { ?> id="not-sub" <?php } ?>>
 				<div class="icon <?php echo $modKey ?>"></div>
-                <div class="sub-opener" onClick="subMenu('sub<?php echo $modKey ?>')"></div>
+                
+				<div class="sub-opener" onClick="subMenu('sub<?php echo $modKey ?>')"></div>
+				
                 <a href="<?php echo $modData['url']; ?>"><?php echo $modData['ankor']; ?></a>
 				<div class="clear"></div>
 				<div id="sub<?php echo $modKey ?>" class="sub">
