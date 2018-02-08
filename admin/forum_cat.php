@@ -32,6 +32,9 @@ include_once ROOT . '/admin/inc/adm_boot.php';
 $pageTitle = __('Forum');
 $ACL = $Register['ACL'];
 
+// If for menu
+$_GET['m'] = "forum";
+
 // For all popup's(edit & add). Their must be in main wrapper
 $popups_content = '';
 

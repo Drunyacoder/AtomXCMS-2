@@ -24,6 +24,10 @@
 include_once '../sys/boot.php';
 include_once ROOT . '/admin/inc/adm_boot.php';
 
+// If for menu
+$_GET['m'] = 'statistics';
+
+
 
 $date = (!empty($_GET['date'])) ? $_GET['date'] : time();
 $_date = date("Y-m-d", $date);

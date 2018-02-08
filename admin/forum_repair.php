@@ -30,7 +30,8 @@
 include_once '../sys/boot.php';
 include_once ROOT . '/admin/inc/adm_boot.php';
 
-
+// If for menu
+$_GET['m'] = "forum";
 
 
 $forums = $FpsDB->select('forums', DB_ALL, array());
