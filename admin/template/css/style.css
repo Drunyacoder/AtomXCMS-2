@@ -182,6 +182,7 @@ table.side-separator, table.side-separator tr td {vertical-align:top; min-height
 .list > .level1 > .items > .setting-item {color:#3a3a3a; font-size:13px; text-shadow:0px 0px 1px #777; position:relative;}
 .list > .level1 > .items > .setting-item .left, .list > .level1 > .items > .setting-item .right {padding:13px;}
 .list > .level1 > .items > .setting-item .left {width:23%; float:left; border-right:1px solid #e1e1e1; padding:20px;}
+.list > .level1 > .items > .setting-item .left .rights {width:23%; color:#3a3a3a; position:absolute; text-align:right;  }
 
 .list > .level1 > .items .comment2 {color:#939393; padding:0px 5px; font-size:11px; font-style:italic; -moz-text-shadow:none; -webkit-text-shadow:none; text-shadow:none;}
 .list > .level1 > .items > .setting-item .right {float:left; border-left:1px solid #e1e1e1; margin-left:-1px; vertical-align:center;}

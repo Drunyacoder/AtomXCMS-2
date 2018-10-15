@@ -86,11 +86,15 @@ class MaterialsList {
 	
 		foreach ($materials as $mat) {
 			$output .= '<div class="setting-item"><div class="left">';
+			
+			$output .= '<div class="rights">' . $mat->getParent_entity()->getId() . '</div>';
+			
 			$output .= '<a style="font-weight:bold; margin-bottom:5px;" href="' 
 				. get_url('/admin/materials_list.php?m=' . $module . '&ac=edit&id=' . $mat->getParent_entity()->getId()) . '">' 
 				. h($mat->getParent_entity()->getTitle()) . '</a><br>';
 			$output .= __('Author') . ': ';
-
+		
+			
 			if (is_object($mat->getAuthor())) {
 				$output .= '<a style="font-weight:bold; margin-bottom:5px;" href="' . get_url('/admin/users_list.php?ac=ank&id=' . $mat->getAuthor()->getId()) . '">';
 				$output .= h($mat->getAuthor()->getName());
