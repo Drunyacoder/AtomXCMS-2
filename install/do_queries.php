@@ -357,7 +357,7 @@ $array[] = "CREATE TABLE `{$set['db']['prefix']}users` (
 	`pol` ENUM( 'f', 'm', '' ) DEFAULT '' NOT NULL,
 	`jabber` VARCHAR( 100 ) DEFAULT '' NOT NULL,
 	`city` VARCHAR( 100 ) DEFAULT '' NOT NULL,
-	`telephone` BIGINT( 15 ) DEFAULT 0 NOT NULL,
+	`telephone` VARCHAR( 15 ) DEFAULT '' NOT NULL,
 	`byear` INT( 4 ) DEFAULT 0 NOT NULL,
 	`bmonth` INT( 2 ) DEFAULT 0 NOT NULL,
 	`bday` INT( 2 ) DEFAULT 0 NOT NULL,

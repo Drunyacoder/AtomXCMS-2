@@ -26,8 +26,22 @@
 include_once '../sys/boot.php';
 include_once ROOT . '/admin/inc/adm_boot.php';
 
-
-
+// If for menu
+switch($_GET['mod']) {
+	case 'foto':
+		$_GET['m'] = 'foto';
+		break;
+	case 'loads':
+		$_GET['m'] = 'loads';
+		break;
+	case 'news':
+		$_GET['m'] = 'news';
+		break;
+	case 'stat':
+		$_GET['m'] = 'stat';
+		break;
+}
+		
 
 /**
  * Return current module which we editing

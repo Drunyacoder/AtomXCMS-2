@@ -2,12 +2,12 @@
 /*---------------------------------------------\
 |											   |
 | @Author:       Andrey Brykin (Drunya)        |
-| @Version:      1.7.0                         |
+| @Version:      1.7.1                         |
 | @Project:      CMS                           |
 | @Package       AtomX CMS                     |
 | @subpackege    Users Module                  |
 | @copyright     ©Andrey Brykin 2010-2014      |
-| @last mod      2017/10/15                    |
+| @last mod      2018/09/25                    |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
@@ -621,7 +621,7 @@ Class UsersModule extends Module {
 	public function edit_form()
     {
 		if (!isset($_SESSION['user'])) redirect('/');
-
+		
 		
 		//turn access
 		$this->ACL->turn(array('users', 'edit_mine'));
@@ -685,7 +685,7 @@ Class UsersModule extends Module {
         $data->setBmonth_selector(createOptionsFromParams(1, 12, $data->getBmonth()));
         $data->setBday_selector(createOptionsFromParams(1, 31, $data->getBday()));
 
-
+		
         $unlinkfile = '';
         if (is_file(ROOT . '/sys/avatars/' . $_SESSION['user']['id'] . '.jpg')) {
             $unlinkfile = '<input type="checkbox" name="unlink" value="1" />'
@@ -718,7 +718,7 @@ Class UsersModule extends Module {
 
 		//turn access
 		$this->ACL->turn(array('users', 'edit_mine'));
-
+		
 
         $markers = array();
 		
@@ -726,12 +726,11 @@ Class UsersModule extends Module {
 			'bmonth', 'bday', 'url', 'about', 'signature', 'email_notification', 'summer_time');
 		$fields_settings = (array)$this->Register['Config']->read('fields', 'users');
 		$fields_settings = array_merge($fields_settings, array('email'));
-		
-		
+
 		foreach ($fields as $field) {
 			$$field = (isset($_POST[$field])) ? trim($_POST[$field]) : '';
 		}
-		
+
 		
 		if ('1' === $pol) $pol =  'm';
 		else if ('2' === $pol) $pol = 'f';
@@ -753,7 +752,7 @@ Class UsersModule extends Module {
 		$icq          = mb_substr($icq, 0, 12);
 		$jabber    	  = mb_substr($jabber, 0, 100);
 		$city	      = mb_substr($city, 0, 50);
-		$telephone    = number_format(mb_substr((int)$telephone, 0, 20), 0, '', '');
+		$telephone    = number_format(mb_substr($telephone, 0, 20), 0, '', '');
 		$byear	      = intval(mb_substr($byear, 0, 4));
 		$bmonth	      = intval(mb_substr($bmonth, 0, 2));
 		$bday	      = intval(mb_substr($bday, 0, 2));
@@ -763,7 +762,7 @@ Class UsersModule extends Module {
 		$email_notification = intval($email_notification);
 		$summer_time = intval($summer_time);
 
-
+		
         // Если заполнено поле "Текущий пароль" - значит пользователь
         // хочет изменить его или поменять свой e-mail
         $changePassword = false;
@@ -780,20 +779,20 @@ Class UsersModule extends Module {
             if ($email != $_SESSION['user']['email']) $changeEmail = true;
         }
 
-
+		
         $errors = $this->Register['Validate']->check($this->Register['action']);
 
 
 		// Additional fields
 		if (is_object($this->AddFields)) {
             try {
-                $_addFields = $this->AddFields->checkFields();
+				$_addFields = $this->AddFields->checkFields();
             } catch (Exception $e) {
-                $errors[] = $this->AddFields->getErrors();
+				$errors[] = $this->AddFields->getErrors();
             }
 		}
 		
-
+		
 		$tmp_key = rand(0, 9999999);
 		if (!empty($_FILES['avatar']['name'])) {
 		
@@ -816,6 +815,7 @@ Class UsersModule extends Module {
 		$timezone = (int)$_POST['timezone'];
 		if ($timezone < -12 || $timezone > 12) $timezone = 0;
 
+
 		
 		// if an Errors
 		if (!empty($errors)) {
@@ -824,9 +824,10 @@ Class UsersModule extends Module {
 			'telephone' => null, 'city' => null, 'jabber' => null, 'byear' => null, 
 			'bmonth' => null, 'bday' => null, 'email_notification' => null, 'summer_time' => null), $_POST);
 			$_SESSION['FpsForm']['errors'] = $errors;
+			
 			redirect('/users/edit_form/');
 		}
-
+		
 		
 		// Если выставлен флажок "Удалить загруженный ранее файл"
 		if (isset( $_POST['unlink']) and is_file(ROOT . '/sys/avatars/' . $_SESSION['user']['id'] . '.jpg')) {
@@ -839,13 +840,14 @@ Class UsersModule extends Module {
 			}
 			unlink(ROOT . '/sys/tmp/images/' . $tmp_key . '.jpg');
 		}
-
+		
 		// Все поля заполнены правильно - записываем изменения в БД
 		if (!empty($url) && mb_substr($url, 0, mb_strlen('http://')) !== 'http://') $url = 'http://' . $url;
 
-
+		
         $user = $this->Model->getById($_SESSION['user']['id']);
-
+		
+		
 		if ( $changePassword ) {
 			$user->setPassw(md5($newpassword));
 			$_SESSION['user']['passw'] = md5( $newpassword );
@@ -855,6 +857,7 @@ Class UsersModule extends Module {
 			$_SESSION['user']['email'] = $email;
 		}
 		
+		 
         $user->setTimezone($timezone);
         $user->setUrl($url);
         $user->setIcq($icq);
@@ -869,16 +872,18 @@ Class UsersModule extends Module {
         $user->setSignature($signature);
         $user->setEmail_notification($email_notification);
         $user->setSummer_time($summer_time);
-        $user->save();
-
+		
+		
 		// Additional fields saving
 		if (is_object($this->AddFields)) {
 			$this->AddFields->save($_SESSION['user']['id'], $_addFields);
 		}
 		
-		
 		// Теперь надо обновить данные о пользователе в массиве $_SESSION['user']
 		$_SESSION['user'] = array_merge($_SESSION['user'], $user->asArray());
+		
+		
+		$user->save();
 		
 		
 		// ... и в массиве $_COOKIE
@@ -888,6 +893,7 @@ Class UsersModule extends Module {
 			setcookie( 'userid', $_SESSION['user']['id'], time() + 3600 * 24 * Config::read('cookie_time'), $path );
 			setcookie( 'password', $_SESSION['user']['passw'], time() + 3600 * 24 * Config::read('cookie_time'), $path );
 		}
+		
 		if ($this->Log) $this->Log->write('editing user', 'user id(' . $_SESSION['user']['id'] . ')');
 		return $this->showInfoMessage(__('Your profile has been changed'), getProfileUrl($_SESSION['user']['id']));
 	}
@@ -1072,7 +1078,7 @@ Class UsersModule extends Module {
 		$icq          = mb_substr($icq, 0, 12);
 		$jabber    	  = mb_substr($jabber, 0, 100);
 		$city	      = mb_substr($city, 0, 50);
-		$telephone    = number_format(mb_substr((int)$telephone, 0, 20), 0, '', '');
+		$telephone    = number_format(mb_substr($telephone, 0, 20), 0, '', '');
 		$byear	      = intval(mb_substr($byear, 0, 4));
 		$bmonth	      = intval(mb_substr($bmonth, 0, 2));
 		$bday	      = intval(mb_substr($bday, 0, 2));

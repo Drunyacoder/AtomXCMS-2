@@ -441,6 +441,10 @@ box-shadow: 0 0 100px rgba(255, 255, 255, 0.2); -webkit-box-shadow: 0 0 100px rg
 .sidertop ul {list-style-type: none; width: 65%; min-width:650px; height: 50px;padding-left: 50px;margin: 0; float: left;}
 .sidertop ul li {float: left; border-right: 1px solid #474747; position:relative;}
 .sidertop ul li:first-child {border-left: 1px solid #474747;}
+
+.sidertop ul.uMenuRoot2 {display: none; position: relative; top: 0px; padding: 0px; height: auto; z-index: 999; background: #999;}
+.sidertop ul.uMenuRoot3 {}
+
 .sidertop ul li a {display: block; height: 50px;line-height: 50px;padding: 0 15px; font-family: ArialNarrow, Arial, sans-serif; color: #000; font-stretch: condensed; text-shadow: none; transition: all 0.7s ease-in-out 0s;}
 .sidertop ul li:hover a {text-decoration: none;
 background-image: -webkit-radial-gradient(center 100%, rgba(255, 255, 255, 0.20), transparent);
@@ -448,7 +452,7 @@ background-image: -moz-radial-gradient(center 100%, rgba(255, 255, 255, 0.15), t
 background-image: -o-radial-gradient(center 100%, rgba(255, 255, 255, 0.15), transparent);
 background-image: -ms-radial-gradient(center 100%, rgba(255, 255, 255, 0.15), transparent);
 background-color: rgba(0, 0, 0, 0.15);}
-.sidertop ul li:active, .sidertop ul li.active {box-shadow: inset 0 0 10px #000;border: 1px solid #747474;border-width: 0 1px;margin-left: -1px;background-color: rgba(0, 0, 0, 0.05); }
+.sidertop ul li:active, .sidertop ul li.active {box-shadow: inset 0 0 10px #000;border: 1px solid #747474;border-width: 0 1px;margin-left: -1px;background-color: rgba(0, 0, 0, 0.05);}
 .sidertop ul li:first-child:active, .sidertop ul li.active:first-child {margin-left: 0;}
 .sidertop ul li:hover ul.atm-menu {
 	-moz-transform-origin: center top; 
@@ -562,6 +566,10 @@ border-bottom: 1px solid #c2c2c2;
 border-radius: 10px; -moz-border-radius: 10px; -webkit-border-radius: 10px; -khtml-border-radius: 10px;
 box-shadow: inset 0 2px 5px #000; -webkit-box-shadow: inset 0 2px 5px #000; -moz-box-shadow: inset 0 2px 5px #000;
 }
+
+.content h1 {font-size: 20px; text-align: center;}
+.content h2 {font-size: 18px;}
+
 
 .content {color: #3c3c3c;font-size: 15px;}
 .content a, .greenlink {font-family: Arial,HelveticaCY,Helvetica,sans-serif;color: #780;text-shadow: none;}
@@ -1272,32 +1280,47 @@ background: rgba(177, 199, 150, 1);
 		-webkit-border-radius: 0px;
 	}
 	.sidertop {
-		height: 101px;
+		height: 50px;
 		background: url('../img/bg_side.jpg') repeat;
 		border-radius: 0px;
 		-moz-border-radius: 0px;
 		-webkit-border-radius: 0px;
 		-khtml-border-radius: 0px;
 	}
+	.search {
+		display: none;
+	}
 	.sidertop .fpsMainMenu {
-		height: 100px;
-		min-width: 350px;
-		width: 57%;
-		padding-left: 0px;
+		display: none;
 	}
-	.sidertop .fpsMainMenu li {
-		border-bottom: 1px solid #474747;
-		box-shadow: inset 0 0 0 #000;
-		margin-left: 0;
-		/*display: none;*/
+	.sidertop ul.uMenuRoot2 {
+		display: block;
+		background: #676767;
+		width: 100%;
 	}
-	.sidertop .fpsMainMenu li.active {
-		box-shadow: inset 0 0 0 #000;
-		margin-left: 0;
-		/*display: none;*/
+	.sidertop ul.uMenuRoot2 li {
+		float: none;
+		border: 0px solid #676767;
 	}
-	.sidertop .fpsMainMenu li:first-child {
-		border-left: 0px solid #474747;
+	.sidertop li:hover ul  {
+		display: block;
+		background-color: #676767;
+	}
+	.sidertop ul li ul {
+		height: auto;
+		padding: 0px;
+		width: 100%;
+		display: none;
+	}
+	.content .lastpostsbutton {
+		margin: 5px 5px 0 0;
+	}
+	.activewindow div .uslinkminpro {
+		/*position: absolute;
+		z-index: 999999;*/
+	}
+	.activewindow div .uslinkminpro a {
+		height: 24px;
 	}
 	
 	.mezdyblock {

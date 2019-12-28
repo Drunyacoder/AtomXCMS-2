@@ -182,17 +182,20 @@ function addWin(prefix) {
 
 function subMenu(id) {
 	menu_item_over = true;
-	hideAll();
-
-	if (!$('#'+id).is(':visible')) {
-		$('#'+id).slideDown();
-	} else {
-		$('#'+id).slideUp();
+	//console.log($('#' + id));
+	if ($('.li-sub-opener #' + id).is(':visible')) {
+		$('.li-sub-opener #' + id).slideDown();
+		return;
 	}
 	
-	
-}
+	hideAll();
 
+	if (!$('#' + id).is(':visible')) {
+		$('#' + id).slideDown();
+	} else {
+		$('#' + id).slideUp();
+	}
+}
 
 function save(prefix) {
 
@@ -287,8 +290,7 @@ function hideAll() {
 		$(this).slideUp('fast');
 	});
 	
-	
-	$('.side-menu > ul > li .sub').each(function(){
+	$('.side-menu > ul > li#not-sub .sub').each(function(){
 		$(this).slideUp('fast');
 	});
 	

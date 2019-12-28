@@ -2,7 +2,7 @@
 /*---------------------------------------------\
 |											   |
 | Author:       Andrey Brykin (Drunya)         |
-| Version:      1.1                            |
+| Version:      1.2                            |
 | Project:      CMS                            |
 | package       CMS AtomX                      |
 | subpackege    Admin Panel module             |
@@ -22,6 +22,9 @@
  
 include_once '../sys/boot.php';
 include_once ROOT . '/admin/inc/adm_boot.php';
+
+// If for menu
+$_GET['m'] = 'users'; 
 
  
 $pageTitle = __('Users');

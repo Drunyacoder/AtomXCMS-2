@@ -141,6 +141,20 @@ $(document).ready(function() {
 <div class="sider">
     <div class="sidertop">
 	  {{ mainmenu }}
+	  
+	  <ul class="uMenuRoot2" style="">
+		<li><div class="uMenuItem"><a href="{{ get_url('/') }}" >{{ 'Home'|lang }}</a></div>
+			<ul class="">
+				<li><div class="uMenuItem"><a href="{{ get_url('/forum/') }}" >{{ 'Forum'|lang }}</a></div></li>
+				<li><div class="uMenuItem"><a href="{{ get_url('/news') }}" >{{ 'News'|lang }}</a></div></li>
+				<li><div class="uMenuItem"><a href="{{ get_url('/stat/') }}" >{{ 'Articles'|lang }}</a></div></li>
+				<li><div class="uMenuItem"><a href="{{ get_url('/loads/') }}" >{{ 'Files'|lang }}</a></div></li>	
+				<li><div class="uMenuItem"><a href="{{ get_url('/foto/') }}">{{ 'Photo catalog'|lang }}</a></div></li>
+			</ul>
+		</li>
+	</ul>
+
+	  
 	  <div class="search">
 	   <form method="POST" action="{{ get_url('/search/') }}"> 
         <input type="hidden" name="subaction" value="search"> 
@@ -150,7 +164,7 @@ $(document).ready(function() {
 	  </div>
 	</div>
 	<!-----------------------------------------CONTENT/---------------------------------------------------------->
-    <div class="content">
+	<div class="content">
 	<div class="spedbar">
 		<div>
 			<div>{{ navigation }}</div>
@@ -170,7 +184,7 @@ $(document).ready(function() {
 		<div class="materials">
 			{% if pagination %}<div class="mezdyblock"><span class="meta">{{ meta }}</span><div class="paginator">
 			<div class="pages">{{ 'Pages:'|lang }} {{ pagination }}</div></div></div>{% endif %}
-            {{ content }}
+			{{ content }}
 			<div class="paginator"><div class="pages">{{ comments_pagination }}</div></div>
 			{{ comments }}
 			<div class="paginator"><div class="pages">{{ comments_pagination }}</div></div>

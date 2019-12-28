@@ -1,32 +1,29 @@
 <?php
+/*---------------------------------------------\
+|											   |
+| Author:       Andrey Brykin (Drunya)         |
+| Version:      1.5                            |
+| Project:      CMS                            |
+| package       CMS AtomX                      |
+| subpackege    Admin Panel module             |
+| copyright     Andrey Brykin 2010-2016        |
+|----------------------------------------------|
+|											   |
+| any partial or not partial extension         |
+| CMS AtomX,without the consent of the         |
+| author, is illegal                           |
+|----------------------------------------------|
+| Любое распространение                        |
+| CMS AtomX или ее частей,                     |
+| без согласия автора, является не законным    |
+\---------------------------------------------*/
 
-##################################################
-##												##
-## Author:       Andrey Brykin (Drunya)         ##
-## Version:      1.2                            ##
-## Project:      CMS                            ##
-## package       CMS AtomX                      ##
-## subpackege    Admin Panel module             ##
-## copyright     ©Andrey Brykin                 ##
-## last mod.     2014/03/04                     ##
-##################################################
-
-
-##################################################
-##												##
-## any partial or not partial extension         ##
-## CMS AtomX,without the consent of the         ##
-## author, is illegal                           ##
-##################################################
-## Любое распространение                        ##
-## CMS AtomX или ее частей,                     ##
-## без согласия автора, является не законным    ##
-##################################################
 
 include_once '../sys/boot.php';
 include_once ROOT . '/admin/inc/adm_boot.php';
 
-
+// If for menu
+$_GET['m'] = 'users'; 
 
 
 $pageTitle = __('Mass mailing');
